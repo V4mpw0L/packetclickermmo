@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Packet Clicker MMO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- PWA / SEO / SOCIAL META -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#161a22">
+  <meta name="description" content="Packet Clicker MMO – Cyberpunk idle clicker MMO for web and mobile. Evolve, earn gems, collect skins, compete and have fun!">
+  <meta property="og:title" content="Packet Clicker MMO">
+  <meta property="og:description" content="Cyberpunk idle MMO game: evolve, earn gems, compete, unlock skins and more!">
+  <meta property="og:image" content="https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://seusite.com/"> <!-- Update to your real site -->
+  <link rel="icon" href="https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker" type="image/svg+xml">
+
+  <!-- Tailwind CDN (for dev, use Tailwind CLI for production!) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gradient-to-b from-black to-[#021916] text-cyan-300 font-mono min-h-screen flex flex-col items-center">
+  <!-- Top Navigation Bar -->
+  <nav class="top-bar neon-card flex items-center justify-between mb-3 w-full max-w-md mt-5">
+    <div class="flex items-center gap-3 min-w-0">
+      <img id="avatar" class="rounded-full border-2 border-[#1df7b7] w-11 h-11 bg-black" src="https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker" alt="Avatar" draggable="false">
+      <span id="player-name" class="font-bold text-neon-cyan text-lg truncate">Player</span>
+      <span id="vip-badge" class="ml-2"></span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span id="gem-display" class="text-neon-yellow font-bold text-lg flex items-center gap-1">
+        <span style="font-size:1.5em;line-height:1;">💎</span>
+        <span id="gem-count">0</span>
+      </span>
+      <button id="open-settings" class="text-2xl text-neon-yellow hover:text-neon-cyan" title="Settings">⚙️</button>
+    </div>
+  </nav>
+
+  <!-- Tab Menu Bar -->
+  <div class="w-full max-w-md flex justify-between mb-4 menu-bar neon-card px-0 py-2">
+    <button class="tab-btn" data-tab="game" aria-label="Game">🕹️</button>
+    <button class="tab-btn" data-tab="upgrades" aria-label="Upgrades">🛠️</button>
+    <button class="tab-btn" data-tab="achievements" aria-label="Achievements">🎯</button>
+    <button class="tab-btn" data-tab="shop" aria-label="Shop">🏬</button>
+    <button class="tab-btn" data-tab="leaderboard" aria-label="Leaderboard">🏆</button>
+  </div>
+
+  <!-- Main Content / Tabs -->
+  <div class="w-full max-w-md flex-1" id="tab-content"></div>
+
+  <!-- Modals: Profile & Settings -->
+  <div id="modal-backdrop" class="modal-backdrop hidden"></div>
+  <div id="modal" class="modal-box hidden"></div>
+
+  <!-- HUD notification (injected by JS) -->
+
+  <footer class="text-xs text-cyan-800 mb-3 mt-10 text-center opacity-75">
+    Cyberpunk MMO Idle &copy; 2025 | <span style="color:#f7cf5c">Built for Android &amp; iOS</span>
+  </footer>
+
+  <!-- Main Game Logic -->
+  <script src="main.js"></script>
+
+  <!-- PWA: Register Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').then(function(reg) {
+        // console.log('Service worker registered.', reg);
+      });
+    }
+  </script>
+</body>
+</html>
