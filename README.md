@@ -1,7 +1,5 @@
 # PacketClickerMMO
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/YOUR_NETLIFY_BADGE_ID/deploy-status)](https://packetclickermmo.netlify.app/)
-
 Cyberpunk MMO idle clicker game — evolua, colecione skins, VIP, gems e muito mais!
 
 
