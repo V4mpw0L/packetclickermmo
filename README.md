@@ -1,6 +1,9 @@
 # PacketClickerMMO
 
-Cyberpunk MMO idle clicker para web e mobile. Evolua, conquiste skins, VIP, gemas e rankeie no topo!
+[![Netlify Status](https://api.netlify.com/api/v1/badges/YOUR_NETLIFY_BADGE_ID/deploy-status)](https://packetclickermmo.netlify.app/)
+
+Cyberpunk MMO idle clicker game — evolua, colecione skins, VIP, gems e muito mais!
+
 
 ## Como rodar local
 1. Clone o repo
