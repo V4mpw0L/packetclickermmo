@@ -375,7 +375,8 @@ function renderBoosts() {
 
   let boostItems = BOOST_SHOP.map((boost) => {
     return `<button class="gem-btn w-full mb-2" data-boost="${boost.id}">
-      ${boost.name} - ${boost.gems} 💎
+      <div class="font-bold">${boost.name}</div>
+      <div class="text-sm opacity-75">${boost.gems} 💎</div>
       <div class="text-xs text-neon-gray">${boost.desc}</div>
     </button>`;
   }).join("");
@@ -406,12 +407,12 @@ function renderThemes() {
 
       return `<button class="gem-btn w-full mb-2 ${isActive ? "opacity-75" : ""} ${!isUnlocked && !canBuy ? "opacity-50" : ""}"
                     data-theme="${id}" ${isActive ? "disabled" : ""}>
-      ${theme.name} ${isActive ? "(Active)" : ""}
-      ${!isUnlocked ? `- ${theme.cost || 0} 💎` : ""}
-      <div class="text-xs text-neon-gray">
-        Colors: <span style="color: ${theme.colors[0]}">●</span> <span style="color: ${theme.colors[1]}">●</span> <span style="color: ${theme.colors[2]}">●</span>
-      </div>
-    </button>`;
+        <div class="font-bold">${theme.name} ${isActive ? "(Active)" : ""}</div>
+        ${!isUnlocked ? `<div class="text-sm opacity-75">${theme.cost || 0} 💎</div>` : ""}
+        <div class="text-xs text-neon-gray">
+          Colors: <span style="color: ${theme.colors[0]}">●</span> <span style="color: ${theme.colors[1]}">●</span> <span style="color: ${theme.colors[2]}">●</span>
+        </div>
+      </button>`;
     })
     .join("");
 
@@ -576,10 +577,10 @@ function renderPrestige() {
 
       ${
         canPrestige
-          ? `<button id="do-prestige" class="neon-btn w-full mb-2">
-          Prestige Now! (+${shardGain} 🔷)
-        </button>
-        <div class="text-center text-neon-gray text-xs mb-4">Reset progress for permanent bonuses</div>`
+          ? `<button id="do-prestige" class="neon-btn w-full mb-2" style="white-space: normal; display: flex; flex-direction: column; align-items: center; gap: 0.15rem;">
+          <span>Prestige Now! (+${shardGain} 🔷)</span>
+          <span class="text-neon-gray" style="font-size: 0.75rem; position: static; transform: none; left: auto; width: auto; pointer-events: auto; opacity: 0.9; display: block; line-height: 1.2; white-space: normal; margin-top: 0.1rem;">Reset progress for permanent bonuses</span>
+        </button>`
           : `<div class="text-center text-neon-gray mb-4">
           Need 50,000 packets to prestige<br>
           Current: ${state.packets.toLocaleString()}

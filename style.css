@@ -615,6 +615,15 @@ body {
 .upgrade-btn {
     position: relative;
 }
+.gem-btn {
+    flex-direction: column;
+    align-items: center;
+    white-space: normal;
+}
+.gem-btn .text-xs {
+    display: block;
+    line-height: 1.2;
+}
 
 .neon-btn::before,
 .upgrade-btn::before,
