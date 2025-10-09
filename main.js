@@ -1227,8 +1227,11 @@ function buyTheme(themeId) {
 
   // If it's unlocked, just switch to it
   if (isUnlocked) {
+    state.theme = themeId;
+    save();
     applyTheme(themeId);
     showHudNotify(`${theme.name} theme activated!`, "🎨");
+    updateTopBar();
     renderTab();
     return;
   }
@@ -1243,9 +1246,10 @@ function buyTheme(themeId) {
   if (!state.themes) state.themes = {};
   state.themes[themeId] = true;
 
+  state.theme = themeId;
+  save();
   applyTheme(themeId);
   showHudNotify(`${theme.name} theme purchased and activated!`, "🎨");
-  save();
   updateTopBar();
   renderTab();
 }
@@ -1388,12 +1392,16 @@ function bindTabEvents(tab) {
 // =============== INIT ===============
 function init() {
   load();
+  // Expose state/save globally so UI helpers can persist theme changes
+  window.state = state;
+  window.save = save;
   updateTopBar();
   document.querySelectorAll(".tab-btn").forEach((btn) => {
     btn.onclick = () => setTab(btn.dataset.tab);
   });
   document.getElementById("open-settings").onclick = showSettings;
-  document.getElementById("modal-backdrop").onclick = closeModal;
+  // Handled by PacketUI.showModal with target check; avoid closing modal on any click
+  // document.getElementById("modal-backdrop").onclick = closeModal;
   setInterval(idleTick, 1000);
   setInterval(save, 10000);
 
