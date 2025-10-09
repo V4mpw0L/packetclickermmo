@@ -755,7 +755,7 @@ function renderActiveEvent() {
 
   let event = RANDOM_EVENTS.find((e) => e.type === state.randomEvent.type);
   return `<div class="random-event">
-    🎪 ${event.name} - ${remaining}s remaining
+    ${event.type === "packetRain" ? '<span class="icon-packet"></span>' : "🎪"} ${event.name} - ${remaining}s remaining
   </div>`;
 }
 
