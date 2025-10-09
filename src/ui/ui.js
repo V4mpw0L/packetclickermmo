@@ -1,5 +1,5 @@
 /**
- * UI helpers for Packet Clicer
+ * UI helpers for Packet Clicker
  * - Modal open/close
  * - HUD notifications
  * - Theme application

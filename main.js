@@ -1,4 +1,4 @@
-// ==== Packet Clicer: Enhanced Mobile & Visual Effects ====
+// ==== Packet Clicker: Enhanced Mobile & Visual Effects ====
 
 /* Using global DEFAULT_AVATAR and STORAGE_KEY from constants UMD (src/data/constants.js) */
 
@@ -1719,7 +1719,7 @@ function showNamePrompt() {
   backdrop.classList.remove("hidden");
   backdrop.setAttribute("aria-hidden", "false");
   modal.classList.remove("hidden");
-  modal.innerHTML = `<h2 id="modal-title" class="text-neon-cyan mb-2 text-lg">🎮 Welcome to Packet Clicer!</h2>
+  modal.innerHTML = `<h2 id="modal-title" class="text-neon-cyan mb-2 text-lg">🎮 Welcome to Packet Clicker!</h2>
     <div style="text-align: center; padding: 1rem;">
       <p style="margin-bottom: 1rem; color: var(--text-primary);">What's your name, future packet master?</p>
       <input type="text" id="name-input" placeholder="Enter your name" value="Player"
@@ -1779,7 +1779,7 @@ function skipNameSetup() {
   localStorage.setItem("packet_clicker_name_prompted", "true");
   window.__NAME_PROMPT_LOCK__ = false;
   closeModal();
-  showHudNotify("Welcome to Packet Clicer! Click to start!", "🎮");
+  showHudNotify("Welcome to Packet Clicker! Click to start!", "🎮");
 }
 
 window.onload = init;

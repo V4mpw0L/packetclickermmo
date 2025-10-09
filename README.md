@@ -1,4 +1,4 @@
-# 📦 Packet Clicer
+# 📦 Packet Clicker
 
 > **A cyberpunk-themed idle clicker MMO with deep progression systems, anti-cheat protection, and PWA support**
 

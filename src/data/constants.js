@@ -1,5 +1,5 @@
 /**
- * Packet Clicer - Constants (UMD)
+ * Packet Clicker - Constants (UMD)
  *
  * Purpose:
  * - Provide all game data constants in a format compatible with non-module usage.

@@ -1,5 +1,5 @@
 /**
- * Packet Clicer - Modular bootstrap
+ * Packet Clicker - Modular bootstrap
  *
  * Goal:
  * - Provide a safe, modular entrypoint that organizes constants, utils, and shims
