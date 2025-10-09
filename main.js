@@ -655,6 +655,17 @@ function renderGame() {
   let effectivePerClick = Math.floor(state.perClick * totalMultiplier);
   let effectivePerSec = Math.floor(state.perSec * totalMultiplier);
 
+  // If anti-bot challenge is active, render it as a body overlay
+  if (state.antiBotChallenge.active) {
+    setTimeout(() => {
+      let existing = document.querySelector(".anti-bot-challenge");
+      if (!existing) {
+        let challengeHTML = renderAntiBotChallenge();
+        document.body.insertAdjacentHTML("beforeend", challengeHTML);
+      }
+    }, 10);
+  }
+
   return `
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
       <h2 class="tab-title">🎮 Game</h2>
@@ -672,7 +683,6 @@ function renderGame() {
       ${boostStatus}
       ${renderActiveEvent()}
       ${state.prestige.level >= 1 ? `<div class="text-center"><button id="prestige-btn" class="neon-btn text-sm">⭐ Prestige Available</button></div>` : ""}
-      ${renderAntiBotChallenge()}
     </div>
     ${adBanner}
   `;
@@ -1126,7 +1136,7 @@ function renderAntiBotChallenge() {
       let a = Math.floor(Math.random() * 20) + 1;
       let b = Math.floor(Math.random() * 20) + 1;
       challenge = `
-        <div class="bg-red-900 border border-red-500 p-3 rounded mt-2">
+        <div class="anti-bot-challenge" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; width: 90%; max-width: 400px;">
           <div class="text-center text-white font-bold mb-2">🤖 Anti-Bot Check</div>
           <div class="text-center mb-2">What is ${a} + ${b}?</div>
           <input type="number" id="bot-answer" class="w-full p-1 rounded text-black" placeholder="Enter answer">
@@ -1135,7 +1145,7 @@ function renderAntiBotChallenge() {
       break;
     case "sequence":
       challenge = `
-        <div class="bg-red-900 border border-red-500 p-3 rounded mt-2">
+        <div class="anti-bot-challenge" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; width: 90%; max-width: 400px;">
           <div class="text-center text-white font-bold mb-2">🤖 Anti-Bot Check</div>
           <div class="text-center mb-2">Complete: 1, 2, 4, 8, ?</div>
           <input type="number" id="bot-answer" class="w-full p-1 rounded text-black" placeholder="Next number">
@@ -1144,7 +1154,7 @@ function renderAntiBotChallenge() {
       break;
     case "color":
       challenge = `
-        <div class="bg-red-900 border border-red-500 p-3 rounded mt-2">
+        <div class="anti-bot-challenge" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; width: 90%; max-width: 400px;">
           <div class="text-center text-white font-bold mb-2">🤖 Anti-Bot Check</div>
           <div class="text-center mb-2">Click the ${state.antiBotChallenge.answer} button:</div>
           <div class="flex gap-2 justify-center">
@@ -1166,6 +1176,7 @@ function checkAntiBotAnswer(answer) {
     state.antiBotChallenge.suspicionLevel = 0;
     state.antiBotChallenge.consecutiveFails = 0;
     showHudNotify("Human verified! ✅", "🤖");
+    document.body.removeChild(document.querySelector(".anti-bot-challenge"));
     renderTab();
   } else {
     state.antiBotChallenge.consecutiveFails++;
@@ -1178,18 +1189,22 @@ function checkAntiBotAnswer(answer) {
       setTimeout(() => {
         state.antiBotChallenge.active = false;
         state.antiBotChallenge.suspicionLevel = 0;
+        let challengeEl = document.querySelector(".anti-bot-challenge");
+        if (challengeEl) document.body.removeChild(challengeEl);
         renderTab();
       }, 30000);
     } else {
       showHudNotify("Wrong answer! Try again", "❌");
-      triggerAntiBotChallenge(); // New challenge
+      let challengeEl = document.querySelector(".anti-bot-challenge");
+      if (challengeEl) document.body.removeChild(challengeEl);
+      setTimeout(() => triggerAntiBotChallenge(), 500); // New challenge with slight delay
     }
   }
 }
 
 // =============== RANDOM EVENTS ===============
 function triggerRandomEvent() {
-  if (state.randomEvent.active) return;
+  if (state.randomEvent.active || state.antiBotChallenge.active) return;
 
   if (Math.random() < 0.01) {
     // 1% chance per idle tick
@@ -1701,18 +1716,29 @@ function bindTabEvents(tab) {
     let prestigeBtn = document.getElementById("prestige-btn");
     if (prestigeBtn) prestigeBtn.onclick = () => setTab("prestige");
 
-    // Anti-bot challenge handlers
-    let submitBtn = document.getElementById("submit-bot-answer");
-    if (submitBtn) {
-      submitBtn.onclick = () => {
-        let answer = document.getElementById("bot-answer").value;
-        checkAntiBotAnswer(answer);
-      };
-    }
+    // Anti-bot challenge handlers - bind to body since it's a fixed overlay
+    setTimeout(() => {
+      let submitBtn = document.getElementById("submit-bot-answer");
+      if (submitBtn) {
+        submitBtn.onclick = () => {
+          let answer = document.getElementById("bot-answer").value;
+          checkAntiBotAnswer(answer);
+        };
+      }
 
-    document.querySelectorAll("[data-color]").forEach((btn) => {
-      btn.onclick = () => checkAntiBotAnswer(btn.getAttribute("data-color"));
-    });
+      document.querySelectorAll("[data-color]").forEach((btn) => {
+        btn.onclick = () => checkAntiBotAnswer(btn.getAttribute("data-color"));
+      });
+
+      let answerInput = document.getElementById("bot-answer");
+      if (answerInput) {
+        answerInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            checkAntiBotAnswer(answerInput.value);
+          }
+        });
+      }
+    }, 100);
   }
   if (tab === "upgrades") {
     let uc = document.getElementById("upgrade-click");

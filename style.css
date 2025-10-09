@@ -591,41 +591,59 @@ footer {
 /* --- Anti-Bot Challenge Styles --- */
 .anti-bot-challenge {
     background: linear-gradient(135deg, #8b0000, #4b0000);
-    border: 2px solid #ff4444;
+    border: 3px solid #ff4444;
     border-radius: 12px;
-    padding: 16px;
+    padding: 20px;
     margin-top: 12px;
     animation: pulseRed 2s infinite;
+    box-shadow: 0 0 50px rgba(255, 68, 68, 0.8);
+    backdrop-filter: blur(5px);
+    position: fixed !important;
+    z-index: 99999 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90% !important;
+    max-width: 450px !important;
+    min-height: 200px !important;
 }
 
 @keyframes pulseRed {
     0%,
     100% {
-        box-shadow: 0 0 5px #ff4444;
+        box-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+        border-color: #ff4444;
     }
     50% {
-        box-shadow: 0 0 20px #ff4444;
+        box-shadow: 0 0 60px rgba(255, 68, 68, 1);
+        border-color: #ff6666;
     }
 }
 
 .anti-bot-challenge input {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     border: 2px solid #666;
-    border-radius: 6px;
-    padding: 8px;
-    font-size: 1rem;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 1.1rem;
     text-align: center;
+    width: 100%;
+    margin: 8px 0;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .anti-bot-challenge button {
     background: linear-gradient(90deg, #ff4444, #cc0000);
     color: white;
     border: none;
-    border-radius: 6px;
-    padding: 8px 16px;
+    border-radius: 8px;
+    padding: 12px 20px;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s;
+    font-size: 1rem;
+    margin: 4px 2px;
+    min-width: 60px;
 }
 
 .anti-bot-challenge button:hover {
