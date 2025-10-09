@@ -992,7 +992,25 @@ footer {
 }
 
 .shake-element {
-    animation: shakeCombo 0.6s ease-in-out;
+    animation: shakeCombo 0.2s ease-in-out;
+}
+
+@keyframes shakeCombo {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+        transform: translate(-1px, 0) rotate(-0.8deg);
+    }
+    50% {
+        transform: translate(1px, 0) rotate(0.8deg);
+    }
+    75% {
+        transform: translate(-1px, 0) rotate(-0.6deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
 }
 
 /* Disable base shake on click button unless MEGA combo is active */
@@ -1154,6 +1172,50 @@ body:has(.click-effect.mega-combo) #click-btn::after {
     font-size: 1.2em !important;
     font-family: inherit !important;
     outline: none !important;
+}
+
+#combo-total-hud {
+    position: fixed;
+    top: 12%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius-lg);
+    font-weight: bold;
+    color: var(--primary-color);
+    background: linear-gradient(
+        135deg,
+        var(--bg-secondary) 0%,
+        var(--bg-card) 100%
+    );
+    box-shadow:
+        0 4px 20px var(--shadow-primary),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+    z-index: 1001;
+    pointer-events: none;
+    max-width: 90vw;
+    backdrop-filter: blur(8px);
+    opacity: 0.98;
+    transition:
+        transform 120ms ease,
+        opacity 160ms ease,
+        box-shadow 320ms ease;
+    animation: comboGlow 2.2s ease-in-out infinite;
+}
+
+@keyframes comboGlow {
+    0%,
+    100% {
+        box-shadow:
+            0 4px 18px var(--shadow-primary),
+            0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+    }
+    50% {
+        box-shadow:
+            0 6px 24px var(--shadow-primary),
+            0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    }
 }
 
 .hud-close-btn:hover {

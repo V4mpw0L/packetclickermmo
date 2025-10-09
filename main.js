@@ -831,18 +831,20 @@ function clickPacket(event) {
 
     // Determine effect type based on combo
     let effectText = `+${amount}`;
+    let displayedGain = amount;
     if (clickCombo >= 10) {
       clickFX.classList.add("mega-combo");
       // 25% combo bonus on MEGA streaks
       const extra = Math.floor(amount * 0.25);
       state.packets += extra;
       state.stats.totalPackets += extra;
+      displayedGain += extra;
       effectText = `MEGA! +${amount} (+25%)`;
       // Shake the click button
       const clickBtn = document.getElementById("click-btn");
       if (clickBtn) {
         clickBtn.classList.add("shake-element");
-        setTimeout(() => clickBtn.classList.remove("shake-element"), 600);
+        setTimeout(() => clickBtn.classList.remove("shake-element"), 220);
       }
     } else if (clickCombo >= 5) {
       clickFX.classList.add("combo");
@@ -850,15 +852,55 @@ function clickPacket(event) {
       const extra = Math.floor(amount * 0.1);
       state.packets += extra;
       state.stats.totalPackets += extra;
+      displayedGain += extra;
       effectText = `${clickCombo}x +${amount} (+10%)`;
       const clickBtn = document.getElementById("click-btn");
       if (clickBtn) {
         clickBtn.classList.add("shake-element");
-        setTimeout(() => clickBtn.classList.remove("shake-element"), 300);
+        setTimeout(() => clickBtn.classList.remove("shake-element"), 160);
       }
     }
 
     clickFX.textContent = effectText;
+    // Update stacked combo HUD
+    if (clickCombo === 1) {
+      clickPacket._comboTotal = 0;
+    }
+    clickPacket._comboTotal = (clickPacket._comboTotal || 0) + displayedGain;
+    let hud = document.getElementById("combo-total-hud");
+    if (!hud) {
+      hud = document.createElement("div");
+      hud.id = "combo-total-hud";
+      hud.style.position = "fixed";
+      hud.style.top = "12%";
+      hud.style.left = "50%";
+      hud.style.transform = "translate(-50%, 0)";
+      hud.style.padding = "8px 12px";
+      hud.style.border = "2px solid var(--primary-color)";
+      hud.style.borderRadius = "12px";
+      hud.style.fontWeight = "bold";
+      hud.style.color = "var(--primary-color)";
+      hud.style.background =
+        "linear-gradient(135deg, var(--bg-secondary), var(--bg-card))";
+      hud.style.boxShadow =
+        "0 4px 20px var(--shadow-primary), 0 0 0 1px rgba(255,255,255,0.1) inset";
+      hud.style.zIndex = "1001";
+      hud.style.pointerEvents = "none";
+      document.body.appendChild(hud);
+    }
+    hud.textContent = `Total +${(clickPacket._comboTotal || 0).toLocaleString()} 📦`;
+    hud.style.transition = "transform 120ms ease";
+    hud.style.transform = "translate(-50%, -6px) scale(1.06)";
+    setTimeout(() => {
+      const h = document.getElementById("combo-total-hud");
+      if (h) h.style.transform = "translate(-50%, 0) scale(1)";
+    }, 130);
+    if (clickPacket._comboHideTimer) clearTimeout(clickPacket._comboHideTimer);
+    clickPacket._comboHideTimer = setTimeout(() => {
+      const h = document.getElementById("combo-total-hud");
+      if (h) h.remove();
+      clickPacket._comboTotal = 0;
+    }, COMBO_TIMEOUT + 200);
 
     // Position above the click button
     const clickBtn = document.getElementById("click-btn");
@@ -866,16 +908,50 @@ function clickPacket(event) {
       const rect = clickBtn.getBoundingClientRect();
       clickFX.style.left = rect.left + rect.width / 2 + "px";
       clickFX.style.top = rect.top - 20 + "px";
+
+      // Critical hit effect indicator
+      if (crit) {
+        const critFX = document.createElement("div");
+        critFX.className = "click-effect critical";
+        critFX.textContent = `CRITICAL ${Number.isInteger(critMultiplier) ? critMultiplier : critMultiplier.toFixed(1)}x! +${displayedGain}`;
+        critFX.style.left = rect.left + rect.width / 2 + "px";
+        critFX.style.top = rect.top - 50 + "px";
+        document.body.appendChild(critFX);
+        setTimeout(() => {
+          if (critFX && critFX.parentNode)
+            critFX.parentNode.removeChild(critFX);
+        }, 900);
+        critFX.addEventListener("animationend", () => {
+          if (critFX && critFX.parentNode)
+            critFX.parentNode.removeChild(critFX);
+        });
+      }
     } else {
       clickFX.style.left = "50%";
       clickFX.style.top = "50%";
+      if (crit) {
+        const critFX = document.createElement("div");
+        critFX.className = "click-effect critical";
+        critFX.textContent = `CRITICAL ${Number.isInteger(critMultiplier) ? critMultiplier : critMultiplier.toFixed(1)}x! +${displayedGain}`;
+        critFX.style.left = "50%";
+        critFX.style.top = "45%";
+        document.body.appendChild(critFX);
+        setTimeout(() => {
+          if (critFX && critFX.parentNode)
+            critFX.parentNode.removeChild(critFX);
+        }, 900);
+        critFX.addEventListener("animationend", () => {
+          if (critFX && critFX.parentNode)
+            critFX.parentNode.removeChild(critFX);
+        });
+      }
     }
 
     document.body.appendChild(clickFX);
 
     // Remove element after animation
     const animationDuration =
-      clickCombo >= 10 ? 2000 : clickCombo >= 5 ? 1500 : 1200;
+      clickCombo >= 10 ? 900 : clickCombo >= 5 ? 1100 : 900;
     setTimeout(() => {
       if (clickFX.parentNode) {
         document.body.removeChild(clickFX);
