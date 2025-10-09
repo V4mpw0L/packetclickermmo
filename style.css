@@ -962,6 +962,47 @@ footer {
     animation: shakeCombo 0.6s ease-in-out;
 }
 
+/* Disable base shake on click button unless MEGA combo is active */
+body:not(:has(.click-effect.mega-combo)) #click-btn.shake-element {
+    animation: none !important;
+}
+
+/* MEGA combo electric effects on click button */
+body:has(.click-effect.mega-combo) #click-btn {
+    animation: electricShake 0.6s ease-in-out infinite;
+    box-shadow:
+        0 0 0.35rem rgba(29, 233, 182, 0.6),
+        0 0 1rem rgba(247, 207, 92, 0.45),
+        0 0 1.75rem rgba(255, 107, 53, 0.35);
+}
+
+/* Electric lightning glow overlay while MEGA is active */
+body:has(.click-effect.mega-combo) #click-btn::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 14px;
+    pointer-events: none;
+    background:
+        radial-gradient(
+                closest-side,
+                rgba(255, 255, 255, 0.35),
+                transparent 60%
+            )
+            center/105% 105% no-repeat,
+        conic-gradient(
+            from 0deg,
+            rgba(29, 233, 182, 0.8),
+            rgba(247, 207, 92, 0.8),
+            rgba(255, 107, 53, 0.8),
+            rgba(29, 233, 182, 0.8)
+        );
+    mix-blend-mode: screen;
+    filter: blur(6px) saturate(1.15);
+    opacity: 0.85;
+    animation: lightningPulse 220ms steps(2, end) infinite;
+}
+
 #click-btn {
     position: relative;
     overflow: visible;
@@ -970,6 +1011,59 @@ footer {
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;
     user-select: none;
+}
+
+/* Electric shake (MEGA only, triggered via :has) */
+@keyframes electricShake {
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+    10% {
+        transform: translate(-2px, -1px) rotate(-1.5deg) scale(1.01);
+    }
+    20% {
+        transform: translate(3px, 1px) rotate(1.2deg) scale(1.01);
+    }
+    30% {
+        transform: translate(-4px, 0px) rotate(-1.8deg) scale(1.02);
+    }
+    40% {
+        transform: translate(2px, -1px) rotate(1.6deg) scale(1.01);
+    }
+    50% {
+        transform: translate(-3px, 2px) rotate(-1.3deg) scale(1.02);
+    }
+    60% {
+        transform: translate(4px, -2px) rotate(1.4deg) scale(1.01);
+    }
+    70% {
+        transform: translate(-2px, 1px) rotate(-1deg) scale(1.01);
+    }
+    80% {
+        transform: translate(2px, -1px) rotate(0.8deg) scale(1.01);
+    }
+    90% {
+        transform: translate(-1px, 1px) rotate(-0.6deg) scale(1);
+    }
+}
+
+@keyframes lightningPulse {
+    0% {
+        opacity: 0.6;
+    }
+    30% {
+        opacity: 1;
+    }
+    60% {
+        opacity: 0.7;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.6;
+    }
 }
 
 /* === HUD NOTIFICATIONS === */

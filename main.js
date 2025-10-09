@@ -1,13 +1,11 @@
 // ==== Packet Clicker MMO: Enhanced Mobile & Visual Effects ====
 
-const DEFAULT_AVATAR =
-  "https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker";
-const STORAGE_KEY = "packet_clicker_save_v3";
+/* Using global DEFAULT_AVATAR and STORAGE_KEY from constants UMD (src/data/constants.js) */
 
 // Click combo tracking
 let clickCombo = 0;
 let lastClickTime = 0;
-const COMBO_TIMEOUT = 1000; // 1 second to maintain combo
+/* Using global COMBO_TIMEOUT from constants UMD */
 
 const state = {
   player: {
@@ -73,394 +71,8 @@ const state = {
   },
 };
 
-const GEM_PACKS = [
-  { id: "small", label: "10 Gems", gems: 10, price: 0.99 },
-  { id: "medium", label: "60 Gems", gems: 60, price: 4.99 },
-  { id: "big", label: "150 Gems", gems: 150, price: 9.99 },
-];
-
-const DAILY_REWARDS = [
-  { day: 1, gems: 1, packets: 50 },
-  { day: 2, gems: 2, packets: 100 },
-  { day: 3, gems: 3, packets: 200 },
-  { day: 4, gems: 5, packets: 500 },
-  { day: 5, gems: 8, packets: 1000 },
-  { day: 6, gems: 12, packets: 2000 },
-  { day: 7, gems: 20, packets: 5000 },
-];
-
-const PRESTIGE_UPGRADES = [
-  {
-    id: "autoClicker",
-    name: "Auto Clicker",
-    desc: "Clicks 1/sec automatically",
-    cost: 1,
-    maxLevel: 10,
-  },
-  {
-    id: "packetBoost",
-    name: "Packet Multiplier",
-    desc: "+10% packet gain per level",
-    cost: 2,
-    maxLevel: 20,
-  },
-  {
-    id: "gemFind",
-    name: "Gem Hunter",
-    desc: "5% chance to find gems on click",
-    cost: 3,
-    maxLevel: 5,
-  },
-  {
-    id: "critBoost",
-    name: "Critical Master",
-    desc: "+5% crit chance per level",
-    cost: 4,
-    maxLevel: 15,
-  },
-  {
-    id: "offlineEarnings",
-    name: "Offline Packets",
-    desc: "Earn packets while offline (1hr/level)",
-    cost: 5,
-    maxLevel: 24,
-  },
-  {
-    id: "luckyClicks",
-    name: "Lucky Clicker",
-    desc: "1% chance for 10x click reward",
-    cost: 8,
-    maxLevel: 10,
-  },
-  {
-    id: "megaCrits",
-    name: "Mega Crits",
-    desc: "Crits give 3x instead of 2x",
-    cost: 12,
-    maxLevel: 5,
-  },
-  {
-    id: "gemMagnet",
-    name: "Gem Magnet",
-    desc: "Idle packets have chance to give gems",
-    cost: 15,
-    maxLevel: 8,
-  },
-];
-
-const BOOST_SHOP = [
-  {
-    id: "doublePackets",
-    name: "Double Packets",
-    desc: "2x packets for 5 minutes",
-    gems: 3,
-    duration: 300000, // 5 minutes
-  },
-  {
-    id: "tripleGems",
-    name: "Triple Gems",
-    desc: "3x gem find rate for 10 minutes",
-    gems: 8,
-    duration: 600000, // 10 minutes
-  },
-  {
-    id: "quadrupleClick",
-    name: "Quad Click Power",
-    desc: "4x click power for 3 minutes",
-    gems: 5,
-    duration: 180000, // 3 minutes
-  },
-  {
-    id: "megaCrit",
-    name: "Mega Crit Mode",
-    desc: "50% crit chance for 2 minutes",
-    gems: 12,
-    duration: 120000, // 2 minutes
-  },
-  {
-    id: "autoClicker",
-    name: "Temporary Auto-Clicker",
-    desc: "10 clicks/sec for 1 minute",
-    gems: 15,
-    duration: 60000, // 1 minute
-  },
-];
-
-const THEMES = {
-  cyberpunk: {
-    name: "Cyberpunk",
-    colors: ["#1de9b6", "#f7cf5c", "#222c38"],
-    unlocked: true,
-  },
-  neon: {
-    name: "Neon Pink",
-    colors: ["#ff1493", "#00ffff", "#1a0d26"],
-    cost: 50,
-    unlocked: false,
-  },
-  dark: {
-    name: "Dark Mode",
-    colors: ["#ffffff", "#888888", "#000000"],
-    cost: 25,
-    unlocked: false,
-  },
-  matrix: {
-    name: "Matrix Green",
-    colors: ["#00ff41", "#008f11", "#0d1117"],
-    cost: 100,
-    unlocked: false,
-  },
-  retro: {
-    name: "Retro Amber",
-    colors: ["#ffb000", "#ff6600", "#2d1b00"],
-    cost: 75,
-    unlocked: false,
-  },
-};
-
 // Apply theme to document
-function applyTheme(themeId) {
-  const theme = THEMES[themeId];
-  if (!theme) return;
-
-  document.documentElement.setAttribute("data-theme", themeId);
-
-  // Update CSS custom properties
-  const root = document.documentElement.style;
-  root.setProperty("--primary-color", theme.colors[0]);
-  root.setProperty("--secondary-color", theme.colors[1]);
-  root.setProperty("--bg-secondary", theme.colors[2]);
-
-  state.theme = themeId;
-  save();
-}
-
-const RANDOM_EVENTS = [
-  {
-    type: "packetRain",
-    name: "Packet Rain!",
-    desc: "2x packet gain for 2 minutes",
-    chance: 0.3,
-    duration: 120000,
-    multiplier: 2,
-  },
-  {
-    type: "gemRush",
-    name: "Gem Rush!",
-    desc: "10x gem find chance for 90 seconds",
-    chance: 0.2,
-    duration: 90000,
-    multiplier: 10,
-  },
-  {
-    type: "critFrenzy",
-    name: "Critical Frenzy!",
-    desc: "All clicks are critical for 1 minute",
-    chance: 0.15,
-    duration: 60000,
-    multiplier: 1,
-  },
-  {
-    type: "bonusPackets",
-    name: "Packet Surge!",
-    desc: "Instant packet bonus based on current rate",
-    chance: 0.25,
-    duration: 0,
-    multiplier: 1,
-  },
-  {
-    type: "upgradeDiscount",
-    name: "Upgrade Sale!",
-    desc: "50% off all upgrades for 3 minutes",
-    chance: 0.1,
-    duration: 180000,
-    multiplier: 0.5,
-  },
-];
-
-const EXPANDED_SHOP_ITEMS = [
-  {
-    id: "theme_neon",
-    name: "Neon Pink Theme",
-    gems: 50,
-    type: "theme",
-    theme: "neon",
-    desc: "Unlock neon pink theme",
-  },
-  {
-    id: "theme_dark",
-    name: "Dark Mode Theme",
-    gems: 25,
-    type: "theme",
-    theme: "dark",
-    desc: "Unlock dark mode theme",
-  },
-  {
-    id: "theme_matrix",
-    name: "Matrix Theme",
-    gems: 100,
-    type: "theme",
-    theme: "matrix",
-    desc: "Unlock matrix green theme",
-  },
-  {
-    id: "theme_retro",
-    name: "Retro Theme",
-    gems: 75,
-    type: "theme",
-    theme: "retro",
-    desc: "Unlock retro amber theme",
-  },
-  {
-    id: "premium_avatar1",
-    name: "Cyber Ninja",
-    gems: 30,
-    type: "avatar",
-    avatar: "CyberNinja",
-    desc: "Unlock exclusive avatar",
-  },
-  {
-    id: "premium_avatar2",
-    name: "Data Ghost",
-    gems: 45,
-    type: "avatar",
-    avatar: "DataGhost",
-    desc: "Unlock rare avatar",
-  },
-];
-
-const SHOP_ITEMS = [
-  {
-    id: "vip7",
-    label: "VIP 7 days",
-    gems: 25,
-    type: "vip",
-    days: 7,
-    desc: "Auto-collect, +25% earnings",
-  },
-  {
-    id: "vip30",
-    label: "VIP 30 days",
-    gems: 60,
-    type: "vip",
-    days: 30,
-    desc: "Auto-collect, +25% earnings",
-  },
-  {
-    id: "skinElite",
-    label: "Elite Skin",
-    gems: 12,
-    type: "skin",
-    avatar: "EliteHacker",
-    desc: "Unlocks Elite avatar",
-  },
-  {
-    id: "noAds",
-    label: "Remove Ads",
-    gems: 16,
-    type: "noAds",
-    desc: "No ads forever",
-  },
-];
-
-const ACHIEVEMENTS = [
-  {
-    id: "start",
-    name: "Getting Started",
-    emoji: "🟢",
-    desc: "Send your first Packet!",
-    req: (s) => s.packets >= 1,
-    gem: 1,
-  },
-  {
-    id: "100packets",
-    name: "Packet Handler",
-    emoji: "📦",
-    desc: "Reach 100 Packets",
-    req: (s) => s.packets >= 100,
-    gem: 1,
-  },
-  {
-    id: "1kgems",
-    name: "Gem Collector",
-    emoji: "💎",
-    desc: "Earn 10 Gems",
-    req: (s) => s.gems >= 10,
-    gem: 2,
-  },
-  {
-    id: "click10",
-    name: "Fast Clicker",
-    emoji: "👆",
-    desc: "Upgrade Click Power 10x",
-    req: (s) => s.upgrades.click >= 10,
-    gem: 1,
-  },
-  {
-    id: "idle10",
-    name: "Idler",
-    emoji: "🤖",
-    desc: "Upgrade Idle Power 10x",
-    req: (s) => s.upgrades.idle >= 10,
-    gem: 1,
-  },
-  {
-    id: "crit1",
-    name: "Critical!",
-    emoji: "✨",
-    desc: "Unlock Critical Hits",
-    req: (s) => s.upgrades.crit >= 1,
-    gem: 1,
-  },
-  {
-    id: "shopSkin",
-    name: "Elite!",
-    emoji: "😎",
-    desc: "Buy the Elite skin",
-    req: (s) => s.shop.skinBought,
-    gem: 2,
-  },
-  {
-    id: "vip",
-    name: "VIP Status",
-    emoji: "👑",
-    desc: "Activate VIP",
-    req: (s) => isVIP(),
-    gem: 3,
-  },
-  {
-    id: "adfree",
-    name: "Ad Free!",
-    emoji: "🚫",
-    desc: "Remove Ads",
-    req: (s) => state.player.noAds,
-    gem: 1,
-  },
-  {
-    id: "clicker100",
-    name: "Click Master",
-    emoji: "🖱️",
-    desc: "Click 100 times",
-    req: (s) => s.stats.totalClicks >= 100,
-    gem: 2,
-  },
-  {
-    id: "prestige1",
-    name: "First Prestige",
-    emoji: "⭐",
-    desc: "Reach your first prestige",
-    req: (s) => s.prestige.level >= 1,
-    gem: 5,
-  },
-  {
-    id: "daily7",
-    name: "Week Warrior",
-    emoji: "📅",
-    desc: "Claim daily rewards for 7 days",
-    req: (s) => s.dailyRewards.streak >= 7,
-    gem: 10,
-  },
-];
+// applyTheme is provided by the UI module (src/ui/ui.js)
 
 function getUnlockedAvatars() {
   let avatars = [{ seed: "Hacker", name: "Default" }];
@@ -473,48 +85,94 @@ function getUnlockedAvatars() {
   return avatars;
 }
 
-function isSaveValid(data) {
-  if (!data) return false;
-  if (
-    !data.player ||
-    typeof data.player.name !== "string" ||
-    typeof data.player.avatar !== "string"
-  )
-    return false;
-  if (
-    typeof data.player.sound !== "boolean" ||
-    typeof data.player.vipUntil !== "number" ||
-    typeof data.player.noAds !== "boolean"
-  )
-    return false;
-  if (
-    typeof data.packets !== "number" ||
-    typeof data.perClick !== "number" ||
-    typeof data.perSec !== "number"
-  )
-    return false;
-  if (typeof data.critChance !== "number" || typeof data.critMult !== "number")
-    return false;
-  if (
-    !data.upgrades ||
-    typeof data.upgrades.click !== "number" ||
-    typeof data.upgrades.idle !== "number" ||
-    typeof data.upgrades.crit !== "number"
-  )
-    return false;
-  if (typeof data.gems !== "number") return false;
-  if (!data.shop || typeof data.shop.skinBought !== "boolean") return false;
-  if (!Array.isArray(data.achievements)) return false;
-  if (typeof data.ads !== "boolean") return false;
-
-  return true;
-}
+// Using Packet.storage.isSaveValid (see src/utils/storage.js)
 
 function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  if (
+    window.Packet &&
+    Packet.storage &&
+    typeof Packet.storage.saveState === "function"
+  ) {
+    Packet.storage.saveState(state);
+  } else {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
 }
 
 function load() {
+  // Delegate to Packet.storage when available (preserves existing user-facing messages)
+  if (window.Packet && Packet.storage) {
+    const has = Packet.storage;
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      let parsed = null;
+      try {
+        parsed = raw ? JSON.parse(raw) : null;
+      } catch (e) {
+        parsed = null;
+      }
+
+      // Corrupted JSON
+      if (raw && parsed === null) {
+        localStorage.removeItem(STORAGE_KEY);
+        Object.assign(
+          state,
+          typeof has.createInitialState === "function"
+            ? has.createInitialState()
+            : state,
+        );
+        setTimeout(
+          () =>
+            showModal(
+              "Error",
+              "Save data was corrupted and has been reset.<br>Starting a new game.",
+            ),
+          700,
+        );
+        return;
+      }
+
+      // Invalid/old save shape
+      if (
+        parsed &&
+        typeof has.isSaveValid === "function" &&
+        !has.isSaveValid(parsed)
+      ) {
+        localStorage.removeItem(STORAGE_KEY);
+        Object.assign(
+          state,
+          typeof has.createInitialState === "function"
+            ? has.createInitialState()
+            : state,
+        );
+        setTimeout(
+          () =>
+            showModal(
+              "Game Updated",
+              "Old save was incompatible and has been reset.<br>Enjoy the new version!",
+            ),
+          700,
+        );
+        return;
+      }
+
+      // Load sanitized state
+      if (typeof has.loadOrInit === "function") {
+        const loaded = has.loadOrInit();
+        Object.assign(state, loaded);
+
+        // Backward compatible safety shims
+        if (!state.player.vipUntil) state.player.vipUntil = 0;
+        if (state.player.noAds === undefined) state.player.noAds = false;
+        if (typeof state.gems !== "number") state.gems = 0;
+        if (!state.theme) state.theme = "cyberpunk";
+        if (!state.themes) state.themes = {};
+        return;
+      }
+    } catch (e) {
+      // fall back to legacy logic below
+    }
+  }
   let d;
   try {
     d = JSON.parse(localStorage.getItem(STORAGE_KEY));
@@ -787,32 +445,9 @@ function upgradeCost(type) {
 
 // =============== HUD NOTIFICATION ===============
 function showHudNotify(msg, icon = "✨") {
-  // Remove any existing notifications first
-  const existingNotifications = document.querySelectorAll(".hud-notify");
-  existingNotifications.forEach((notification) => notification.remove());
-
-  let hud = document.createElement("div");
-  hud.className = "hud-notify";
-  hud.innerHTML = `<span style="font-size:1.3em;">${icon}</span> <span>${msg}</span>`;
-
-  // Create close button separately to avoid onclick issues
-  const closeBtn = document.createElement("button");
-  closeBtn.innerHTML = "×";
-  closeBtn.className = "hud-close-btn";
-  closeBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    hud.remove();
-  });
-  hud.appendChild(closeBtn);
-  document.body.appendChild(hud);
-  setTimeout(() => hud.classList.add("active"), 60);
-  setTimeout(() => {
-    hud.classList.remove("active");
-    setTimeout(() => {
-      if (hud.parentNode) hud.remove();
-    }, 500);
-  }, 3000);
+  if (window.PacketUI && typeof PacketUI.showHudNotify === "function") {
+    return PacketUI.showHudNotify(msg, icon);
+  }
 }
 
 // =============== ACHIEVEMENTS PANEL ===============
@@ -1189,63 +824,80 @@ function clickPacket(event) {
   lastClickTime = now;
 
   // Enhanced visual feedback for click with combo system
-  let clickFX = document.createElement("div");
-  clickFX.className = "click-effect";
+  if (!clickPacket._lastFxTime || Date.now() - clickPacket._lastFxTime > 80) {
+    clickPacket._lastFxTime = Date.now();
+    let clickFX = document.createElement("div");
+    clickFX.className = "click-effect";
 
-  // Determine effect type based on combo
-  let effectText = `+${amount}`;
-  if (clickCombo >= 10) {
-    clickFX.classList.add("mega-combo");
-    effectText = `MEGA! +${amount}`;
-    // Shake the click button
+    // Determine effect type based on combo
+    let effectText = `+${amount}`;
+    if (clickCombo >= 10) {
+      clickFX.classList.add("mega-combo");
+      // 25% combo bonus on MEGA streaks
+      const extra = Math.floor(amount * 0.25);
+      state.packets += extra;
+      state.stats.totalPackets += extra;
+      effectText = `MEGA! +${amount} (+25%)`;
+      // Shake the click button
+      const clickBtn = document.getElementById("click-btn");
+      if (clickBtn) {
+        clickBtn.classList.add("shake-element");
+        setTimeout(() => clickBtn.classList.remove("shake-element"), 600);
+      }
+    } else if (clickCombo >= 5) {
+      clickFX.classList.add("combo");
+      // 10% combo bonus on streaks
+      const extra = Math.floor(amount * 0.1);
+      state.packets += extra;
+      state.stats.totalPackets += extra;
+      effectText = `${clickCombo}x +${amount} (+10%)`;
+      const clickBtn = document.getElementById("click-btn");
+      if (clickBtn) {
+        clickBtn.classList.add("shake-element");
+        setTimeout(() => clickBtn.classList.remove("shake-element"), 300);
+      }
+    }
+
+    clickFX.textContent = effectText;
+
+    // Position above the click button
     const clickBtn = document.getElementById("click-btn");
     if (clickBtn) {
-      clickBtn.classList.add("shake-element");
-      setTimeout(() => clickBtn.classList.remove("shake-element"), 600);
+      const rect = clickBtn.getBoundingClientRect();
+      clickFX.style.left = rect.left + rect.width / 2 + "px";
+      clickFX.style.top = rect.top - 20 + "px";
+    } else {
+      clickFX.style.left = "50%";
+      clickFX.style.top = "50%";
     }
-  } else if (clickCombo >= 5) {
-    clickFX.classList.add("combo");
-    effectText = `${clickCombo}x +${amount}`;
+
+    document.body.appendChild(clickFX);
+
+    // Remove element after animation
+    const animationDuration =
+      clickCombo >= 10 ? 2000 : clickCombo >= 5 ? 1500 : 1200;
+    setTimeout(() => {
+      if (clickFX.parentNode) {
+        document.body.removeChild(clickFX);
+      }
+    }, animationDuration);
+
+    // Remove effect after animation
+    clickFX.addEventListener("animationend", () => {
+      if (clickFX.parentNode) {
+        clickFX.remove();
+      }
+    });
   }
-
-  clickFX.textContent = effectText;
-
-  // Position above the click button
-  const clickBtn = document.getElementById("click-btn");
-  if (clickBtn) {
-    const rect = clickBtn.getBoundingClientRect();
-    clickFX.style.left = rect.left + rect.width / 2 + "px";
-    clickFX.style.top = rect.top - 20 + "px";
-  } else {
-    clickFX.style.left = "50%";
-    clickFX.style.top = "50%";
-  }
-
-  document.body.appendChild(clickFX);
-
-  // Remove element after animation
-  const animationDuration =
-    clickCombo >= 10 ? 2000 : clickCombo >= 5 ? 1500 : 1200;
-  setTimeout(() => {
-    if (clickFX.parentNode) {
-      document.body.removeChild(clickFX);
-    }
-  }, animationDuration);
-
-  // Remove effect after animation
-  clickFX.addEventListener("animationend", () => {
-    if (clickFX.parentNode) {
-      clickFX.remove();
-    }
-  });
-
   // Restore instant responsiveness
   if (crit && state.player.sound) playSound("crit");
   else if (state.player.sound) playSound("click");
 
   save();
   updateTopBar();
-  renderTab();
+  if (activeTab !== "game") {
+    renderTab();
+  }
   checkAchievements();
 }
 
@@ -1272,7 +924,9 @@ function upgrade(type) {
   if (state.player.sound) playSound("upgrade");
   save();
   updateTopBar();
-  renderTab();
+  if (activeTab === "game") {
+    /* keep UI responsive - no full rerender on each click */
+  }
   checkAchievements();
   showHudNotify("Upgrade purchased!", "🛠️");
 }
@@ -1418,84 +1072,16 @@ function checkAchievements() {
 
 // =============== MODAL / FEEDBACK ===============
 function showModal(title, html) {
-  const backdrop = document.getElementById("modal-backdrop");
-  const modal = document.getElementById("modal");
-
-  backdrop.classList.remove("hidden");
-  backdrop.setAttribute("aria-hidden", "false");
-  modal.classList.remove("hidden");
-  modal.innerHTML = `<h2 id="modal-title" class="text-neon-cyan mb-2 text-lg">${title}</h2>
-    <div>${html}</div>
-    <button id="modal-close-btn" class="mt-5 neon-btn w-full">Close</button>
-  `;
-
-  // Add event listener to close button to avoid onclick issues
-  const closeBtn = modal.querySelector("#modal-close-btn");
-  if (closeBtn) {
-    closeBtn.addEventListener("click", closeModal);
+  if (window.PacketUI && typeof PacketUI.showModal === "function") {
+    return PacketUI.showModal(title, html);
   }
-
-  // Add keyboard event listener for Escape key
-  const handleKeydown = (e) => {
-    if (e.key === "Escape") {
-      closeModal();
-    }
-  };
-  document.addEventListener("keydown", handleKeydown);
-
-  // Store reference to remove listener later
-  backdrop._keydownHandler = handleKeydown;
-
-  // Add click listener to backdrop to close modal
-  const handleBackdropClick = (e) => {
-    if (e.target === backdrop) {
-      closeModal();
-    }
-  };
-  backdrop.addEventListener("click", handleBackdropClick);
-  backdrop._backdropClickHandler = handleBackdropClick;
-
-  // Focus the modal for accessibility
-  setTimeout(() => {
-    const firstFocusable = modal.querySelector("input, button");
-    if (firstFocusable) {
-      firstFocusable.focus();
-    } else {
-      modal.focus();
-    }
-  }, 100);
 }
 
 function closeModal() {
-  const backdrop = document.getElementById("modal-backdrop");
-  const modal = document.getElementById("modal");
-
-  // Remove focus from any focused elements inside the modal first
-  const focusedElement = modal.querySelector(":focus");
-  if (focusedElement) {
-    focusedElement.blur();
+  if (window.PacketUI && typeof PacketUI.closeModal === "function") {
+    return PacketUI.closeModal();
   }
-
-  // Remove event listeners
-  if (backdrop._keydownHandler) {
-    document.removeEventListener("keydown", backdrop._keydownHandler);
-    backdrop._keydownHandler = null;
-  }
-  if (backdrop._backdropClickHandler) {
-    backdrop.removeEventListener("click", backdrop._backdropClickHandler);
-    backdrop._backdropClickHandler = null;
-  }
-
-  backdrop.classList.add("hidden");
-  modal.classList.add("hidden");
-  modal.innerHTML = ""; // Clear modal content to prevent focus issues
-
-  // Return focus to the body
-  setTimeout(() => {
-    document.body.focus();
-  }, 10);
 }
-window.closeModal = closeModal;
 
 // =============== SOUND FX ===============
 function playSound(type) {
@@ -1731,7 +1317,12 @@ function bindTabEvents(tab) {
 
   if (tab === "game") {
     let btn = document.getElementById("click-btn");
-    if (btn) btn.onclick = clickPacket;
+    if (btn) {
+      btn.onclick = null;
+      btn.onpointerdown = (e) => {
+        clickPacket(e);
+      };
+    }
 
     let prestigeBtn = document.getElementById("prestige-btn");
     if (prestigeBtn) prestigeBtn.onclick = () => setTab("prestige");
@@ -1843,13 +1434,19 @@ function init() {
   document.addEventListener(
     "touchend",
     function (event) {
-      const now = new Date().getTime();
-      if (now - lastTouchEnd <= 300) {
+      const now = Date.now();
+      const t = event.target;
+      const allowFastTap =
+        t &&
+        (t.id === "click-btn" ||
+          (typeof t.closest === "function" &&
+            t.closest("#click-btn,.tab-btn,.neon-btn,.upgrade-btn,.gem-btn")));
+      if (!allowFastTap && now - lastTouchEnd <= 300) {
         event.preventDefault();
       }
       lastTouchEnd = now;
     },
-    false,
+    { passive: false },
   );
 
   // Disable pinch zoom

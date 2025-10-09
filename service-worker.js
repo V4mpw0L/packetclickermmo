@@ -1,8 +1,12 @@
-const CACHE_NAME = "packet-clicker-cache-v2";
+const CACHE_NAME = "packet-clicker-cache-v3";
 const ASSETS_TO_CACHE = [
   "./",
   "index.html",
   "main.js",
+  "src/data/constants.js",
+  "src/ui/ui.js",
+  "src/logic/bootstrap.js",
+  "src/utils/storage.js",
   "style.css",
   "manifest.json",
   "icon-192.png",
