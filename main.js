@@ -301,15 +301,21 @@ function updateTopBar() {
   document.getElementById("player-name").textContent = state.player.name;
   document.getElementById("avatar").src = state.player.avatar;
   let badge = document.getElementById("vip-badge");
+
+  // Pills to show under the name (centered by CSS)
   let packets = `<span class="ml-2 text-neon-green font-bold" id="packets-bar" style="font-size:1em;display:inline-block;min-width:65px;text-align:right;"><span class="icon-packet"></span> ${state.packets.toLocaleString()}</span>`;
+  let gemPill = `<span class="ml-2 text-neon-green font-bold" style="font-size:1em;display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .5rem;border:1px solid var(--border-color);border-radius:999px;background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));box-shadow:0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,0.35);"><img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/><span>${state.gems}</span></span>`;
+
   if (isVIP()) {
     let ms = state.player.vipUntil - Date.now();
     let days = Math.floor(ms / (1000 * 60 * 60 * 24));
     let hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
-    badge.innerHTML = `<span class="font-bold text-yellow-400 ml-2" style="margin-right:8px;display:inline-block;">👑 VIP ${days > 0 ? days + "d " : ""}${hours}h</span>${packets}`;
+    badge.innerHTML = `<span class="font-bold text-yellow-400 ml-2" style="margin-right:8px;display:inline-block;">👑 VIP ${days > 0 ? days + "d " : ""}${hours}h</span> ${gemPill} ${packets}`;
   } else {
-    badge.innerHTML = packets;
+    badge.innerHTML = `${gemPill} ${packets}`;
   }
+
+  // Keep existing gem counter (in the settings area) in sync
   let el = document.getElementById("gem-count");
   if (el) el.textContent = state.gems;
 }
@@ -427,9 +433,9 @@ function renderUpgrades() {
   return `
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
       <h2 class="tab-title">🛠️ Upgrades</h2>
-      <button id="upgrade-click" class="upgrade-btn">+1/click — <span>${upgradeCost("click")}</span> <span class="icon-packet"></span></button>
-      <button id="upgrade-idle" class="upgrade-btn">+1/sec — <span>${upgradeCost("idle")}</span> <span class="icon-packet"></span></button>
-      <button id="upgrade-crit" class="upgrade-btn">+2% crit — <span>${upgradeCost("crit")}</span> <span class="icon-packet"></span></button>
+      <button id="upgrade-click" class="upgrade-btn" data-level="Lvl. ${state.upgrades.click}">+1/click — <span>${upgradeCost("click")}</span> <span class="icon-packet"></span></button>
+      <button id="upgrade-idle" class="upgrade-btn" data-level="Lvl. ${state.upgrades.idle}">+1/sec — <span>${upgradeCost("idle")}</span> <span class="icon-packet"></span></button>
+      <button id="upgrade-crit" class="upgrade-btn" data-level="Lvl. ${state.upgrades.crit}">+2% crit — <span>${upgradeCost("crit")}</span> <span class="icon-packet"></span></button>
       <div class="text-neon-gray text-xs mt-1">
         Each upgrade increases cost. <span class="text-neon-yellow">Critical Hits</span> give 2x per click!
       </div>
@@ -1076,9 +1082,16 @@ function upgrade(type) {
   if (state.player.sound) playSound("upgrade");
   save();
   updateTopBar();
+
+  // Refresh the Upgrades tab so costs and levels update immediately
+  if (activeTab === "upgrades") {
+    renderTab();
+  }
+  // Keep UI responsive on Game tab (no full rerender)
   if (activeTab === "game") {
     /* keep UI responsive - no full rerender on each click */
   }
+
   checkAchievements();
   showHudNotify("Upgrade purchased!", "🛠️");
 }
