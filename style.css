@@ -141,6 +141,18 @@ body {
     flex: 1 0 auto;
 }
 
+/* === ICONS === */
+.icon-packet {
+    display: inline-block;
+    width: 1.1rem;
+    height: 1.1rem;
+    background-image: url("src/assets/packet-32.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
+}
+
 /* === CARD SYSTEM === */
 .neon-card {
     background: var(--bg-card);

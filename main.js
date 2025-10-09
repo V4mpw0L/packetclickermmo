@@ -301,7 +301,7 @@ function updateTopBar() {
   document.getElementById("player-name").textContent = state.player.name;
   document.getElementById("avatar").src = state.player.avatar;
   let badge = document.getElementById("vip-badge");
-  let packets = `<span class="ml-2 text-neon-green font-bold" id="packets-bar" style="font-size:1em;display:inline-block;min-width:65px;text-align:right;">📦 ${state.packets.toLocaleString()}</span>`;
+  let packets = `<span class="ml-2 text-neon-green font-bold" id="packets-bar" style="font-size:1em;display:inline-block;min-width:65px;text-align:right;"><span class="icon-packet"></span> ${state.packets.toLocaleString()}</span>`;
   if (isVIP()) {
     let ms = state.player.vipUntil - Date.now();
     let days = Math.floor(ms / (1000 * 60 * 60 * 24));
@@ -338,7 +338,7 @@ function renderGame() {
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
       <h2 class="tab-title">🎮 Game</h2>
       <button id="click-btn" class="neon-btn text-2xl py-4 active:scale-95 transition-transform">
-        Collect Packets <span class="text-neon-yellow">📦</span>
+        Collect Packets <span class="icon-packet"></span>
       </button>
       <div class="flex justify-between items-center text-neon-green text-sm">
         <span>Packets/Click: ${effectivePerClick}</span>
@@ -427,9 +427,9 @@ function renderUpgrades() {
   return `
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
       <h2 class="tab-title">🛠️ Upgrades</h2>
-      <button id="upgrade-click" class="upgrade-btn">+1/click — <span>${upgradeCost("click")}</span> 📦</button>
-      <button id="upgrade-idle" class="upgrade-btn">+1/sec — <span>${upgradeCost("idle")}</span> 📦</button>
-      <button id="upgrade-crit" class="upgrade-btn">+2% crit — <span>${upgradeCost("crit")}</span> 📦</button>
+      <button id="upgrade-click" class="upgrade-btn">+1/click — <span>${upgradeCost("click")}</span> <span class="icon-packet"></span></button>
+      <button id="upgrade-idle" class="upgrade-btn">+1/sec — <span>${upgradeCost("idle")}</span> <span class="icon-packet"></span></button>
+      <button id="upgrade-crit" class="upgrade-btn">+2% crit — <span>${upgradeCost("crit")}</span> <span class="icon-packet"></span></button>
       <div class="text-neon-gray text-xs mt-1">
         Each upgrade increases cost. <span class="text-neon-yellow">Critical Hits</span> give 2x per click!
       </div>
@@ -461,7 +461,7 @@ function renderAchievements() {
   let achList = ACHIEVEMENTS.map((ach) => {
     let unlocked = state.achievements.includes(ach.id);
     return `<li class="achievement-badge${unlocked ? " unlocked" : ""}">
-      <span class="emoji">${ach.emoji}</span>
+      <span class="emoji">${ach.emoji === "📦" ? '<span class="icon-packet"></span>' : ach.emoji}</span>
       <div class="text">
         <span class="font-bold">${ach.name}</span>
         <div class="desc">${ach.desc}</div>
@@ -606,7 +606,7 @@ function renderDaily() {
           : "bg-gray-800 border-gray-600"
     }">
       <span>Day ${reward.day}</span>
-      <span>${reward.gems}💎 + ${reward.packets}📦</span>
+      <span>${reward.gems}💎 + ${reward.packets}<span class="icon-packet"></span></span>
       <span>${claimed ? "✅" : current ? "🎁" : "⏳"}</span>
     </div>`;
   }).join("");
@@ -620,7 +620,7 @@ function renderDaily() {
           canClaim
             ? `<button id="claim-daily" class="neon-btn mt-2">
             Claim Day ${streak + 1} Reward!
-            <div class="text-xs">${nextReward.gems}💎 + ${nextReward.packets}📦</div>
+            <div class="text-xs">${nextReward.gems}💎 + ${nextReward.packets}<span class="icon-packet"></span></div>
           </button>`
             : `<div class="text-neon-gray text-sm mt-2">Come back tomorrow for next reward!</div>`
         }
@@ -946,7 +946,7 @@ function clickPacket(event) {
       hud.style.pointerEvents = "none";
       document.body.appendChild(hud);
     }
-    hud.textContent = `Total +${(clickPacket._comboTotal || 0).toLocaleString()} 📦`;
+    hud.innerHTML = `Total +${(clickPacket._comboTotal || 0).toLocaleString()} <span class="icon-packet"></span>`;
     hud.style.transition = "transform 120ms ease";
     hud.style.transform = "translate(-50%, -6px) scale(1.06)";
     setTimeout(() => {
@@ -1502,7 +1502,7 @@ function claimDailyReward() {
 
   showModal(
     "Daily Reward!",
-    `You received ${reward.gems} 💎 and ${reward.packets} 📦!<br>Streak: ${state.dailyRewards.streak} days`,
+    `You received ${reward.gems} 💎 and ${reward.packets} <span class="icon-packet"></span>!<br>Streak: ${state.dailyRewards.streak} days`,
   );
   showHudNotify(`Day ${state.dailyRewards.streak} claimed!`, "📅");
 

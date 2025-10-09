@@ -355,7 +355,7 @@
       {
         id: "100packets",
         name: "Packet Handler",
-        emoji: "📦",
+        emoji: '<span class="icon-packet"></span>',
         desc: "Reach 100 Packets",
         req: function (s) {
           return (s && s.packets) >= 100;
