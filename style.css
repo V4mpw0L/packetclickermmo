@@ -138,6 +138,7 @@ body {
     width: 100%;
     min-height: clamp(20rem, 50vh, 40rem);
     gap: var(--spacing-md);
+    flex: 1 0 auto;
 }
 
 /* === CARD SYSTEM === */
@@ -1279,7 +1280,7 @@ body.mega-active #click-btn::before {
 .hud-close-btn {
     background: rgba(255, 255, 255, 0.1) !important;
     border: 1px solid var(--primary-color) !important;
-    color: var(--primary-color) !important;
+    color: #ff3040 !important;
     border-radius: 50% !important;
     width: 24px !important;
     height: 24px !important;
@@ -1358,8 +1359,8 @@ body:has(.click-effect.critical) #combo-total-hud {
 
 .hud-close-btn:hover {
     background: var(--primary-color) !important;
-    color: var(--bg-primary) !important;
-    transform: scale(1.1) !important;
+    color: #ff3040 !important;
+    border-color: var(--primary-color) !important;
 }
 
 .hud-close-btn:active {

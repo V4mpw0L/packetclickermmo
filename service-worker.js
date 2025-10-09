@@ -23,13 +23,25 @@ self.addEventListener("install", (event) => {
           "[Service Worker] Caching all assets (best-effort):",
           ASSETS_TO_CACHE,
         );
+        const CORE_BUST = new Set([
+          "./",
+          "index.html",
+          "main.js",
+          "style.css",
+          "manifest.json",
+        ]);
         return Promise.allSettled(
-          ASSETS_TO_CACHE.map((url) =>
-            const bust = (u) => new Request(u + (u.includes("?") ? "&" : "?") + "v=" + VERSION, { cache: "reload" });
-            cache.add(bust(url)).catch((err) => {
+          ASSETS_TO_CACHE.map((url) => {
+            const req = CORE_BUST.has(url)
+              ? new Request(
+                  url + (url.includes("?") ? "&" : "?") + "v=" + VERSION,
+                  { cache: "reload" },
+                )
+              : new Request(url, { cache: "reload" });
+            return cache.add(req).catch((err) => {
               console.warn("[Service Worker] Skipped caching:", url, err);
-            }),
-          ),
+            });
+          }),
         );
       })
       .catch((error) => {
@@ -96,7 +108,9 @@ self.addEventListener("fetch", (event) => {
         .catch(() =>
           caches
             .match(req, { ignoreSearch: true })
-            .then((r) => r || caches.match("index.html", { ignoreSearch: true })),
+            .then(
+              (r) => r || caches.match("index.html", { ignoreSearch: true }),
+            ),
         ),
     );
     return;

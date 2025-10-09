@@ -28,18 +28,35 @@
             property="og:description"
             content="Cyberpunk idle MMO game: evolve, earn gems, compete, unlock skins and more!"
         />
-        <meta
-            property="og:image"
-            content="https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker"
-        />
+        <meta property="og:image" content="src/assets/packet-512.png" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://seusite.com/" />
         <!-- Update to your real site -->
         <link
             rel="icon"
-            href="https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker"
-            type="image/svg+xml"
+            href="src/assets/packet-32.png"
+            sizes="32x32"
+            type="image/png"
         />
+        <link
+            rel="icon"
+            href="src/assets/packet-48.png"
+            sizes="48x48"
+            type="image/png"
+        />
+        <link
+            rel="icon"
+            href="src/assets/packet-64.png"
+            sizes="64x64"
+            type="image/png"
+        />
+        <link
+            rel="icon"
+            href="src/assets/packet-512.png"
+            sizes="512x512"
+            type="image/png"
+        />
+        <link rel="apple-touch-icon" href="src/assets/packet-512.png" />
 
         <!-- Custom CSS only - no external dependencies -->
         <link rel="stylesheet" href="style.css" />
@@ -189,7 +206,7 @@
                 "
             >
                 <span
-                    >Cyberpunk MMO Idle &copy; 2025 | Developed by:
+                    >Packet Clicker &copy; 2025 | Developed by:
                     <a
                         href="https://www.gennisys.com"
                         target="_blank"
@@ -223,6 +240,16 @@
                         box-shadow: 0 2px 10px var(--shadow-primary);
                     "
                 >
+                    <img
+                        src="src/assets/gem.png"
+                        alt="💎"
+                        style="
+                            height: 1rem;
+                            width: 1rem;
+                            display: inline-block;
+                            vertical-align: middle;
+                        "
+                    />
                     <span>Version</span><strong>0.0.1</strong>
                 </span>
             </div>
@@ -245,12 +272,17 @@
                 navigator.serviceWorker
                     .register("service-worker.js")
                     .then(function (reg) {
-                        // If there's an updated worker waiting, activate it immediately
-                        if (reg.waiting) {
+                        const hasController =
+                            !!navigator.serviceWorker.controller;
+                        // Only request skipWaiting once per session and only when updating an existing SW
+                        const alreadySkipped =
+                            sessionStorage.getItem("sw-skip") === "1";
+                        if (reg.waiting && hasController && !alreadySkipped) {
                             reg.waiting.postMessage({ type: "SKIP_WAITING" });
+                            sessionStorage.setItem("sw-skip", "1");
                         }
 
-                        // Listen for a new worker, and force it to activate when installed
+                        // Listen for a new worker and activate it once per session when updating
                         reg.addEventListener("updatefound", function () {
                             const newWorker = reg.installing;
                             if (!newWorker) return;
@@ -259,26 +291,29 @@
                                 function () {
                                     if (
                                         newWorker.state === "installed" &&
-                                        navigator.serviceWorker.controller
+                                        hasController &&
+                                        sessionStorage.getItem("sw-skip") !==
+                                            "1"
                                     ) {
                                         newWorker.postMessage({
                                             type: "SKIP_WAITING",
                                         });
+                                        sessionStorage.setItem("sw-skip", "1");
                                     }
                                 },
                             );
                         });
 
-                        // Trigger an update check on load
-                        try {
-                            reg.update();
-                        } catch (e) {}
+                        // Update check disabled to avoid redundant updates
                     });
 
-                // Reload the page when the new service worker takes control
+                // Guarded one-time reload when the new service worker takes control
                 navigator.serviceWorker.addEventListener(
                     "controllerchange",
                     function () {
+                        if (sessionStorage.getItem("sw-reloaded") === "1")
+                            return;
+                        sessionStorage.setItem("sw-reloaded", "1");
                         window.location.reload();
                     },
                 );
