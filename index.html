@@ -3,7 +3,18 @@
     <head>
         <meta charset="UTF-8" />
         <title>Packet Clicker MMO</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover, user-scalable=no, shrink-to-fit=no"
+        />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="black-translucent"
+        />
+        <meta name="apple-touch-fullscreen" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
 
         <!-- PWA / SEO / SOCIAL META -->
         <link rel="manifest" href="manifest.json" />
@@ -30,44 +41,35 @@
             type="image/svg+xml"
         />
 
-        <!-- Tailwind CDN (for dev, use Tailwind CLI for production!) -->
-        <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Custom CSS only - no external dependencies -->
         <link rel="stylesheet" href="style.css" />
     </head>
-    <body
-        class="bg-gradient-to-b from-black to-[#021916] text-cyan-300 font-mono min-h-screen flex flex-col items-center"
-    >
+    <body>
         <!-- Top Navigation Bar -->
-        <nav
-            class="top-bar neon-card flex items-center justify-between mb-3 w-full max-w-md mt-5"
-        >
-            <div class="flex items-center gap-3 min-w-0">
+        <nav class="top-bar" role="navigation" aria-label="Main navigation">
+            <div class="user-info">
                 <img
                     id="avatar"
-                    class="rounded-full border-2 border-[#1df7b7] w-11 h-11 bg-black"
                     src="https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker"
-                    alt="Avatar"
+                    alt="Player avatar"
                     draggable="false"
                 />
-                <span
-                    id="player-name"
-                    class="font-bold text-neon-cyan text-lg truncate"
-                    >Player</span
-                >
-                <span id="vip-badge" class="ml-2"></span>
+                <span id="player-name">Player</span>
+                <span id="vip-badge"></span>
             </div>
-            <div class="flex items-center gap-3">
-                <span
-                    id="gem-display"
-                    class="text-neon-yellow font-bold text-lg flex items-center gap-1"
-                >
-                    <span style="font-size: 1.5em; line-height: 1">💎</span>
+            <div class="controls">
+                <span id="gem-display">
+                    <span
+                        style="font-size: 1.5em; line-height: 1"
+                        aria-hidden="true"
+                        >💎</span
+                    >
                     <span id="gem-count">0</span>
                 </span>
                 <button
                     id="open-settings"
-                    class="text-2xl text-neon-yellow hover:text-neon-cyan"
                     title="Settings"
+                    aria-label="Open settings"
                 >
                     ⚙️
                 </button>
@@ -75,58 +77,116 @@
         </nav>
 
         <!-- Tab Menu Bar -->
-        <div
-            class="w-full max-w-md flex flex-wrap justify-center mb-4 menu-bar neon-card px-1 py-2 gap-1"
-        >
-            <button class="tab-btn" data-tab="game" aria-label="Game">
+        <nav class="menu-bar" role="tablist" aria-label="Game sections">
+            <button
+                class="tab-btn"
+                data-tab="game"
+                role="tab"
+                aria-label="Game"
+                title="Game"
+            >
                 🕹️
             </button>
-            <button class="tab-btn" data-tab="upgrades" aria-label="Upgrades">
+            <button
+                class="tab-btn"
+                data-tab="upgrades"
+                role="tab"
+                aria-label="Upgrades"
+                title="Upgrades"
+            >
                 🛠️
             </button>
             <button
                 class="tab-btn"
                 data-tab="achievements"
+                role="tab"
                 aria-label="Achievements"
+                title="Achievements"
             >
                 🎯
             </button>
-            <button class="tab-btn" data-tab="shop" aria-label="Shop">
+            <button
+                class="tab-btn"
+                data-tab="shop"
+                role="tab"
+                aria-label="Shop"
+                title="Shop"
+            >
                 🏬
             </button>
-            <button class="tab-btn" data-tab="boosts" aria-label="Boosts">
+            <button
+                class="tab-btn"
+                data-tab="boosts"
+                role="tab"
+                aria-label="Boosts"
+                title="Boosts"
+            >
                 ⚡
             </button>
-            <button class="tab-btn" data-tab="themes" aria-label="Themes">
+            <button
+                class="tab-btn"
+                data-tab="themes"
+                role="tab"
+                aria-label="Themes"
+                title="Themes"
+            >
                 🎨
             </button>
-            <button class="tab-btn" data-tab="prestige" aria-label="Prestige">
+            <button
+                class="tab-btn"
+                data-tab="prestige"
+                role="tab"
+                aria-label="Prestige"
+                title="Prestige"
+            >
                 ⭐
             </button>
-            <button class="tab-btn" data-tab="daily" aria-label="Daily">
+            <button
+                class="tab-btn"
+                data-tab="daily"
+                role="tab"
+                aria-label="Daily"
+                title="Daily"
+            >
                 📅
             </button>
             <button
                 class="tab-btn"
                 data-tab="leaderboard"
+                role="tab"
                 aria-label="Leaderboard"
+                title="Leaderboard"
             >
                 🏆
             </button>
-        </div>
+        </nav>
 
         <!-- Main Content / Tabs -->
-        <div class="w-full max-w-md flex-1" id="tab-content"></div>
+        <main id="tab-content" role="main" aria-live="polite"></main>
 
         <!-- Modals: Profile & Settings -->
-        <div id="modal-backdrop" class="modal-backdrop hidden"></div>
-        <div id="modal" class="modal-box hidden"></div>
+        <div id="modal-backdrop" class="modal-backdrop hidden">
+            <div
+                id="modal"
+                class="modal-box hidden"
+                role="dialog"
+                aria-modal="true"
+                tabindex="-1"
+                aria-labelledby="modal-title"
+            ></div>
+        </div>
 
         <!-- HUD notification (injected by JS) -->
 
-        <footer class="text-xs text-cyan-800 mb-3 mt-10 text-center opacity-75">
-            Cyberpunk MMO Idle &copy; 2025 |
-            <span style="color: #f7cf5c">Built for Android &amp; iOS</span>
+        <footer role="contentinfo">
+            Cyberpunk MMO Idle &copy; 2025 | Developed by:
+            <a
+                href="https://www.gennisys.com"
+                target="_blank"
+                rel="noopener"
+                style="color: #00ff41; text-decoration: none; font-weight: bold"
+                >Gennisys</a
+            >
         </footer>
 
         <!-- Main Game Logic -->

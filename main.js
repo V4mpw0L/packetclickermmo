@@ -1,8 +1,13 @@
-// ==== Packet Clicker MMO: Emoji UI, HUD Notify, Bar Fixes, Topbar Alignment ====
+// ==== Packet Clicker MMO: Enhanced Mobile & Visual Effects ====
 
 const DEFAULT_AVATAR =
   "https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker";
 const STORAGE_KEY = "packet_clicker_save_v3";
+
+// Click combo tracking
+let clickCombo = 0;
+let lastClickTime = 0;
+const COMBO_TIMEOUT = 1000; // 1 second to maintain combo
 
 const state = {
   player: {
@@ -49,16 +54,7 @@ const state = {
     megaCrit: 0,
     autoClicker: 0,
   },
-  // Anti-Bot System
-  antiBotChallenge: {
-    active: false,
-    type: null,
-    answer: null,
-    timeStarted: 0,
-    consecutiveFails: 0,
-    suspicionLevel: 0,
-    lastClickTimes: [],
-  },
+
   // Random Events
   randomEvent: {
     active: false,
@@ -221,6 +217,23 @@ const THEMES = {
     unlocked: false,
   },
 };
+
+// Apply theme to document
+function applyTheme(themeId) {
+  const theme = THEMES[themeId];
+  if (!theme) return;
+
+  document.documentElement.setAttribute("data-theme", themeId);
+
+  // Update CSS custom properties
+  const root = document.documentElement.style;
+  root.setProperty("--primary-color", theme.colors[0]);
+  root.setProperty("--secondary-color", theme.colors[1]);
+  root.setProperty("--bg-secondary", theme.colors[2]);
+
+  state.theme = themeId;
+  save();
+}
 
 const RANDOM_EVENTS = [
   {
@@ -573,6 +586,8 @@ function load() {
   if (!state.player.vipUntil) state.player.vipUntil = 0;
   if (state.player.noAds === undefined) state.player.noAds = false;
   if (typeof state.gems !== "number") state.gems = 0;
+  if (!state.theme) state.theme = "cyberpunk";
+  if (!state.themes) state.themes = {};
 }
 
 // =============== TABS & UI RENDERING ===============
@@ -655,17 +670,6 @@ function renderGame() {
   let effectivePerClick = Math.floor(state.perClick * totalMultiplier);
   let effectivePerSec = Math.floor(state.perSec * totalMultiplier);
 
-  // If anti-bot challenge is active, render it as a body overlay
-  if (state.antiBotChallenge.active) {
-    setTimeout(() => {
-      let existing = document.querySelector(".anti-bot-challenge");
-      if (!existing) {
-        let challengeHTML = renderAntiBotChallenge();
-        document.body.insertAdjacentHTML("beforeend", challengeHTML);
-      }
-    }, 10);
-  }
-
   return `
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
       <h2 class="tab-title">🎮 Game</h2>
@@ -731,11 +735,11 @@ function renderThemes() {
       let canBuy = !isUnlocked && state.gems >= (theme.cost || 0);
 
       return `<button class="gem-btn w-full mb-2 ${isActive ? "opacity-75" : ""} ${!isUnlocked && !canBuy ? "opacity-50" : ""}"
-                    data-theme="${id}" ${isActive || (!isUnlocked && !canBuy) ? "disabled" : ""}>
+                    data-theme="${id}" ${isActive ? "disabled" : ""}>
       ${theme.name} ${isActive ? "(Active)" : ""}
       ${!isUnlocked ? `- ${theme.cost || 0} 💎` : ""}
-      <div class="text-xs" style="color: ${theme.colors[0]}">
-        Preview: ${theme.colors[0]} • ${theme.colors[1]} • ${theme.colors[2]}
+      <div class="text-xs text-neon-gray">
+        Colors: <span style="color: ${theme.colors[0]}">●</span> <span style="color: ${theme.colors[1]}">●</span> <span style="color: ${theme.colors[2]}">●</span>
       </div>
     </button>`;
     })
@@ -783,13 +787,32 @@ function upgradeCost(type) {
 
 // =============== HUD NOTIFICATION ===============
 function showHudNotify(msg, icon = "✨") {
+  // Remove any existing notifications first
+  const existingNotifications = document.querySelectorAll(".hud-notify");
+  existingNotifications.forEach((notification) => notification.remove());
+
   let hud = document.createElement("div");
   hud.className = "hud-notify";
   hud.innerHTML = `<span style="font-size:1.3em;">${icon}</span> <span>${msg}</span>`;
+
+  // Create close button separately to avoid onclick issues
+  const closeBtn = document.createElement("button");
+  closeBtn.innerHTML = "×";
+  closeBtn.className = "hud-close-btn";
+  closeBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    hud.remove();
+  });
+  hud.appendChild(closeBtn);
   document.body.appendChild(hud);
   setTimeout(() => hud.classList.add("active"), 60);
-  setTimeout(() => hud.classList.remove("active"), 2100);
-  setTimeout(() => hud.remove(), 2600);
+  setTimeout(() => {
+    hud.classList.remove("active");
+    setTimeout(() => {
+      if (hud.parentNode) hud.remove();
+    }, 500);
+  }, 3000);
 }
 
 // =============== ACHIEVEMENTS PANEL ===============
@@ -860,19 +883,19 @@ function renderLeaderboard() {
     .slice(0, 10)
     .map(
       (p, idx) => `
-    <li class="flex gap-3 items-center py-2">
-      <span class="w-8 text-right text-neon-yellow font-bold">${idx + 1}.</span>
-      <img src="${p.avatar || DEFAULT_AVATAR}" class="w-8 h-8 rounded-full border border-[#1df7b7]" alt="">
-      <span class="font-semibold">${p.name === state.player.name ? "You" : p.name}</span>
-      <span class="ml-auto font-mono">${p.packets.toLocaleString()}</span>
+    <li style="display: flex; gap: 0.75rem; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #273742;">
+      <span style="width: 2rem; text-align: right; color: var(--secondary-color); font-weight: bold;">${idx + 1}.</span>
+      <img src="${p.avatar || DEFAULT_AVATAR}" style="width: 2rem; height: 2rem; border-radius: 50%; border: 1px solid var(--primary-color);" alt="">
+      <span style="font-weight: 600; color: ${p.name === state.player.name ? "var(--primary-color)" : "var(--text-primary)"};">${p.name === state.player.name ? "You" : p.name}</span>
+      <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary);">${p.packets.toLocaleString()}</span>
     </li>
   `,
     )
     .join("");
-  return `<div class="neon-card px-2 py-4">
+  return `<div class="neon-card" style="padding: 1rem 0.5rem;">
     <h2 class="tab-title">🏆 Leaderboard</h2>
-    <ul id="leaderboard">${html}</ul>
-    <div class="text-xs text-neon-gray text-center mt-3">Bots are randomly generated. Your score is real!</div>
+    <ul id="leaderboard" style="list-style: none; margin: 0; padding: 0;">${html}</ul>
+    <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center; margin-top: 0.75rem;">Bots are randomly generated. Your score is real!</div>
   </div>`;
 }
 
@@ -1048,163 +1071,9 @@ function showSettings() {
   };
 }
 
-// =============== ANTI-BOT SYSTEM ===============
-function updateClickPattern() {
-  let now = Date.now();
-  state.antiBotChallenge.lastClickTimes.push(now);
-
-  // Keep only last 10 clicks
-  if (state.antiBotChallenge.lastClickTimes.length > 10) {
-    state.antiBotChallenge.lastClickTimes.shift();
-  }
-
-  // Check for bot-like patterns
-  if (state.antiBotChallenge.lastClickTimes.length >= 5) {
-    let intervals = [];
-    for (let i = 1; i < state.antiBotChallenge.lastClickTimes.length; i++) {
-      intervals.push(
-        state.antiBotChallenge.lastClickTimes[i] -
-          state.antiBotChallenge.lastClickTimes[i - 1],
-      );
-    }
-
-    // Check for too regular intervals (bot detection)
-    let avgInterval = intervals.reduce((a, b) => a + b) / intervals.length;
-    let variance =
-      intervals.reduce(
-        (sum, interval) => sum + Math.pow(interval - avgInterval, 2),
-        0,
-      ) / intervals.length;
-
-    // If clicks are too regular or too fast, increase suspicion
-    if (variance < 100 || avgInterval < 50) {
-      state.antiBotChallenge.suspicionLevel += 10;
-    } else {
-      state.antiBotChallenge.suspicionLevel = Math.max(
-        0,
-        state.antiBotChallenge.suspicionLevel - 2,
-      );
-    }
-
-    // Trigger challenge if suspicion is high
-    if (
-      state.antiBotChallenge.suspicionLevel >= 50 &&
-      !state.antiBotChallenge.active
-    ) {
-      triggerAntiBotChallenge();
-    }
-  }
-}
-
-function triggerAntiBotChallenge() {
-  let challengeTypes = ["math", "sequence", "color", "pattern"];
-  let type = challengeTypes[Math.floor(Math.random() * challengeTypes.length)];
-
-  state.antiBotChallenge.active = true;
-  state.antiBotChallenge.type = type;
-  state.antiBotChallenge.timeStarted = Date.now();
-
-  switch (type) {
-    case "math":
-      let a = Math.floor(Math.random() * 20) + 1;
-      let b = Math.floor(Math.random() * 20) + 1;
-      state.antiBotChallenge.answer = a + b;
-      break;
-    case "sequence":
-      let seq = [1, 2, 4, 8];
-      state.antiBotChallenge.answer = 16;
-      break;
-    case "color":
-      let colors = ["red", "blue", "green", "yellow"];
-      state.antiBotChallenge.answer =
-        colors[Math.floor(Math.random() * colors.length)];
-      break;
-    case "pattern":
-      state.antiBotChallenge.answer = "ABC";
-      break;
-  }
-
-  renderTab(); // Refresh to show challenge
-}
-
-function renderAntiBotChallenge() {
-  if (!state.antiBotChallenge.active) return "";
-
-  let challenge = "";
-  switch (state.antiBotChallenge.type) {
-    case "math":
-      let a = Math.floor(Math.random() * 20) + 1;
-      let b = Math.floor(Math.random() * 20) + 1;
-      challenge = `
-        <div class="anti-bot-challenge" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; width: 90%; max-width: 400px;">
-          <div class="text-center text-white font-bold mb-2">🤖 Anti-Bot Check</div>
-          <div class="text-center mb-2">What is ${a} + ${b}?</div>
-          <input type="number" id="bot-answer" class="w-full p-1 rounded text-black" placeholder="Enter answer">
-          <button id="submit-bot-answer" class="neon-btn w-full mt-2">Submit</button>
-        </div>`;
-      break;
-    case "sequence":
-      challenge = `
-        <div class="anti-bot-challenge" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; width: 90%; max-width: 400px;">
-          <div class="text-center text-white font-bold mb-2">🤖 Anti-Bot Check</div>
-          <div class="text-center mb-2">Complete: 1, 2, 4, 8, ?</div>
-          <input type="number" id="bot-answer" class="w-full p-1 rounded text-black" placeholder="Next number">
-          <button id="submit-bot-answer" class="neon-btn w-full mt-2">Submit</button>
-        </div>`;
-      break;
-    case "color":
-      challenge = `
-        <div class="anti-bot-challenge" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; width: 90%; max-width: 400px;">
-          <div class="text-center text-white font-bold mb-2">🤖 Anti-Bot Check</div>
-          <div class="text-center mb-2">Click the ${state.antiBotChallenge.answer} button:</div>
-          <div class="flex gap-2 justify-center">
-            <button class="p-2 bg-red-500 text-white rounded" data-color="red">Red</button>
-            <button class="p-2 bg-blue-500 text-white rounded" data-color="blue">Blue</button>
-            <button class="p-2 bg-green-500 text-white rounded" data-color="green">Green</button>
-            <button class="p-2 bg-yellow-500 text-black rounded" data-color="yellow">Yellow</button>
-          </div>
-        </div>`;
-      break;
-  }
-
-  return challenge;
-}
-
-function checkAntiBotAnswer(answer) {
-  if (answer == state.antiBotChallenge.answer) {
-    state.antiBotChallenge.active = false;
-    state.antiBotChallenge.suspicionLevel = 0;
-    state.antiBotChallenge.consecutiveFails = 0;
-    showHudNotify("Human verified! ✅", "🤖");
-    document.body.removeChild(document.querySelector(".anti-bot-challenge"));
-    renderTab();
-  } else {
-    state.antiBotChallenge.consecutiveFails++;
-    if (state.antiBotChallenge.consecutiveFails >= 3) {
-      // Temporary click disable
-      showModal(
-        "Too Many Failed Attempts",
-        "Clicking disabled for 30 seconds due to failed verification.",
-      );
-      setTimeout(() => {
-        state.antiBotChallenge.active = false;
-        state.antiBotChallenge.suspicionLevel = 0;
-        let challengeEl = document.querySelector(".anti-bot-challenge");
-        if (challengeEl) document.body.removeChild(challengeEl);
-        renderTab();
-      }, 30000);
-    } else {
-      showHudNotify("Wrong answer! Try again", "❌");
-      let challengeEl = document.querySelector(".anti-bot-challenge");
-      if (challengeEl) document.body.removeChild(challengeEl);
-      setTimeout(() => triggerAntiBotChallenge(), 500); // New challenge with slight delay
-    }
-  }
-}
-
 // =============== RANDOM EVENTS ===============
 function triggerRandomEvent() {
-  if (state.randomEvent.active || state.antiBotChallenge.active) return;
+  if (state.randomEvent.active) return;
 
   if (Math.random() < 0.01) {
     // 1% chance per idle tick
@@ -1244,21 +1113,13 @@ function renderActiveEvent() {
   }
 
   let event = RANDOM_EVENTS.find((e) => e.type === state.randomEvent.type);
-  return `<div class="bg-purple-900 border border-purple-500 p-2 rounded mt-2 text-center">
+  return `<div class="random-event">
     🎪 ${event.name} - ${remaining}s remaining
   </div>`;
 }
 
 // =============== GAME LOGIC ===============
 function clickPacket(event) {
-  // Anti-bot check
-  if (state.antiBotChallenge.active) {
-    showHudNotify("Complete the verification first!", "🤖");
-    return;
-  }
-
-  updateClickPattern();
-
   let bonus = isVIP() ? 1.25 : 1;
 
   // Apply prestige bonus
@@ -1318,25 +1179,87 @@ function clickPacket(event) {
     }
   }
 
-  // Visual feedback for click
-  let clickFX = document.createElement("div");
-  clickFX.className = "click-effect";
-  clickFX.textContent = `+${amount}`;
-  clickFX.style.left = (event.clientX || window.innerWidth / 2) + "px";
-  clickFX.style.top = (event.clientY || window.innerHeight / 2) + "px";
-  document.body.appendChild(clickFX);
+  // Enhanced visual feedback for click with combo system
+  const now = Date.now();
+  if (now - lastClickTime < COMBO_TIMEOUT) {
+    clickCombo++;
+  } else {
+    clickCombo = 1;
+  }
+  lastClickTime = now;
 
-  // Remove effect after animation
-  clickFX.addEventListener("animationend", () => {
-    clickFX.remove();
+  // Enhanced visual feedback for click with combo system (optimized)
+  requestAnimationFrame(() => {
+    let clickFX = document.createElement("div");
+    clickFX.className = "click-effect";
+
+    // Determine effect type based on combo
+    let effectText = `+${amount}`;
+    if (clickCombo >= 10) {
+      clickFX.classList.add("mega-combo");
+      effectText = `MEGA! +${amount}`;
+      // Shake the click button
+      const clickBtn = document.getElementById("click-btn");
+      if (clickBtn) {
+        clickBtn.classList.add("shake-element");
+        setTimeout(() => clickBtn.classList.remove("shake-element"), 600);
+      }
+    } else if (clickCombo >= 5) {
+      clickFX.classList.add("combo");
+      effectText = `${clickCombo}x +${amount}`;
+    }
+
+    clickFX.textContent = effectText;
+
+    // Position above the click button (cached for performance)
+    const clickBtn = document.getElementById("click-btn");
+    if (clickBtn) {
+      const rect = clickBtn.getBoundingClientRect();
+      clickFX.style.left = rect.left + rect.width / 2 + "px";
+      clickFX.style.top = rect.top - 20 + "px";
+    } else {
+      clickFX.style.left = "50%";
+      clickFX.style.top = "50%";
+    }
+
+    document.body.appendChild(clickFX);
+
+    // Remove element after animation
+    const animationDuration =
+      clickCombo >= 10 ? 2000 : clickCombo >= 5 ? 1500 : 1200;
+    setTimeout(() => {
+      if (clickFX.parentNode) {
+        document.body.removeChild(clickFX);
+      }
+    }, animationDuration);
   });
+
+  // Click effect cleanup is handled in the setTimeout above
 
   if (crit && state.player.sound) playSound("crit");
   else if (state.player.sound) playSound("click");
-  save();
+
+  // Optimize UI updates - defer heavy operations
+  if (window.requestIdleCallback) {
+    requestIdleCallback(() => {
+      save();
+      checkAchievements();
+    });
+  } else {
+    // Fallback for browsers without requestIdleCallback
+    setTimeout(() => {
+      save();
+      checkAchievements();
+    }, 16);
+  }
+
+  // Only update top bar immediately for responsive feel
   updateTopBar();
-  renderTab();
-  checkAchievements();
+
+  // Defer tab rendering to prevent click lag
+  if (activeTab === "game") {
+    setTimeout(() => renderTab(), 16); // ~1 frame delay
+  }
 }
 
 function upgrade(type) {
@@ -1508,18 +1431,82 @@ function checkAchievements() {
 
 // =============== MODAL / FEEDBACK ===============
 function showModal(title, html) {
-  document.getElementById("modal-backdrop").classList.remove("hidden");
-  let box = document.getElementById("modal");
-  box.classList.remove("hidden");
-  box.innerHTML = `<h2 class="text-neon-cyan mb-2 text-lg">${title}</h2>
+  const backdrop = document.getElementById("modal-backdrop");
+  const modal = document.getElementById("modal");
+
+  backdrop.classList.remove("hidden");
+  backdrop.setAttribute("aria-hidden", "false");
+  modal.classList.remove("hidden");
+  modal.innerHTML = `<h2 id="modal-title" class="text-neon-cyan mb-2 text-lg">${title}</h2>
     <div>${html}</div>
-    <button onclick="closeModal()" class="mt-5 neon-btn w-full">Close</button>
+    <button id="modal-close-btn" class="mt-5 neon-btn w-full">Close</button>
   `;
+
+  // Add event listener to close button to avoid onclick issues
+  const closeBtn = modal.querySelector("#modal-close-btn");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeModal);
+  }
+
+  // Add keyboard event listener for Escape key
+  const handleKeydown = (e) => {
+    if (e.key === "Escape") {
+      closeModal();
+    }
+  };
+  document.addEventListener("keydown", handleKeydown);
+
+  // Store reference to remove listener later
+  backdrop._keydownHandler = handleKeydown;
+
+  // Add click listener to backdrop to close modal
+  const handleBackdropClick = (e) => {
+    if (e.target === backdrop) {
+      closeModal();
+    }
+  };
+  backdrop.addEventListener("click", handleBackdropClick);
+  backdrop._backdropClickHandler = handleBackdropClick;
+
+  // Focus the modal for accessibility
+  setTimeout(() => {
+    const firstFocusable = modal.querySelector("input, button");
+    if (firstFocusable) {
+      firstFocusable.focus();
+    } else {
+      modal.focus();
+    }
+  }, 100);
 }
 
 function closeModal() {
-  document.getElementById("modal-backdrop").classList.add("hidden");
-  document.getElementById("modal").classList.add("hidden");
+  const backdrop = document.getElementById("modal-backdrop");
+  const modal = document.getElementById("modal");
+
+  // Remove focus from any focused elements inside the modal first
+  const focusedElement = modal.querySelector(":focus");
+  if (focusedElement) {
+    focusedElement.blur();
+  }
+
+  // Remove event listeners
+  if (backdrop._keydownHandler) {
+    document.removeEventListener("keydown", backdrop._keydownHandler);
+    backdrop._keydownHandler = null;
+  }
+  if (backdrop._backdropClickHandler) {
+    backdrop.removeEventListener("click", backdrop._backdropClickHandler);
+    backdrop._backdropClickHandler = null;
+  }
+
+  backdrop.classList.add("hidden");
+  modal.classList.add("hidden");
+  modal.innerHTML = ""; // Clear modal content to prevent focus issues
+
+  // Return focus to the body
+  setTimeout(() => {
+    document.body.focus();
+  }, 10);
 }
 window.closeModal = closeModal;
 
@@ -1655,17 +1642,36 @@ function buyBoost(boostId) {
 
 function buyTheme(themeId) {
   let theme = THEMES[themeId];
-  if (!theme || theme.unlocked || (state.themes && state.themes[themeId]))
+  if (!theme) return;
+
+  // Safety check - don't do anything if this is already the current theme
+  if (state.theme === themeId) {
     return;
-  if (state.gems < (theme.cost || 0)) return;
+  }
+
+  // Check if theme is already unlocked (including default themes)
+  let isUnlocked = theme.unlocked || (state.themes && state.themes[themeId]);
+
+  // If it's unlocked, just switch to it
+  if (isUnlocked) {
+    applyTheme(themeId);
+    showHudNotify(`${theme.name} theme activated!`, "🎨");
+    renderTab();
+    return;
+  }
+
+  // If not unlocked, try to buy it
+  if (state.gems < (theme.cost || 0)) {
+    showHudNotify(`Not enough gems! Need ${theme.cost} 💎`, "❌");
+    return;
+  }
 
   state.gems -= theme.cost;
   if (!state.themes) state.themes = {};
   state.themes[themeId] = true;
-  state.theme = themeId;
 
-  // Apply theme colors (would need CSS updates for full effect)
-  showHudNotify(`${theme.name} theme activated!`, "🎨");
+  applyTheme(themeId);
+  showHudNotify(`${theme.name} theme purchased and activated!`, "🎨");
   save();
   updateTopBar();
   renderTab();
@@ -1708,37 +1714,40 @@ function claimDailyReward() {
 }
 
 // =============== UI BINDING ===============
+function clearTabEvents() {
+  // Clear theme button events specifically
+  document.querySelectorAll("[data-theme]").forEach((btn) => {
+    btn.onclick = null;
+  });
+
+  // Clear other button events
+  document.querySelectorAll("[data-boost]").forEach((btn) => {
+    btn.onclick = null;
+  });
+
+  document.querySelectorAll("[data-prestige-upgrade]").forEach((btn) => {
+    btn.onclick = null;
+  });
+
+  document.querySelectorAll("[data-gem-pack]").forEach((btn) => {
+    btn.onclick = null;
+  });
+
+  document.querySelectorAll("[data-shop-item]").forEach((btn) => {
+    btn.onclick = null;
+  });
+}
+
 function bindTabEvents(tab) {
+  // Clear any existing event listeners first
+  clearTabEvents();
+
   if (tab === "game") {
     let btn = document.getElementById("click-btn");
     if (btn) btn.onclick = clickPacket;
 
     let prestigeBtn = document.getElementById("prestige-btn");
     if (prestigeBtn) prestigeBtn.onclick = () => setTab("prestige");
-
-    // Anti-bot challenge handlers - bind to body since it's a fixed overlay
-    setTimeout(() => {
-      let submitBtn = document.getElementById("submit-bot-answer");
-      if (submitBtn) {
-        submitBtn.onclick = () => {
-          let answer = document.getElementById("bot-answer").value;
-          checkAntiBotAnswer(answer);
-        };
-      }
-
-      document.querySelectorAll("[data-color]").forEach((btn) => {
-        btn.onclick = () => checkAntiBotAnswer(btn.getAttribute("data-color"));
-      });
-
-      let answerInput = document.getElementById("bot-answer");
-      if (answerInput) {
-        answerInput.addEventListener("keypress", (e) => {
-          if (e.key === "Enter") {
-            checkAntiBotAnswer(answerInput.value);
-          }
-        });
-      }
-    }, 100);
   }
   if (tab === "upgrades") {
     let uc = document.getElementById("upgrade-click");
@@ -1787,7 +1796,13 @@ function bindTabEvents(tab) {
   }
   if (tab === "themes") {
     document.querySelectorAll("[data-theme]").forEach((btn) => {
-      btn.onclick = () => buyTheme(btn.getAttribute("data-theme"));
+      // Only add event listener if button is not disabled and not already active theme
+      if (!btn.disabled && btn.getAttribute("data-theme") !== state.theme) {
+        btn.onclick = (e) => {
+          e.preventDefault();
+          buyTheme(btn.getAttribute("data-theme"));
+        };
+      }
     });
   }
 }
@@ -1803,7 +1818,135 @@ function init() {
   document.getElementById("modal-backdrop").onclick = closeModal;
   setInterval(idleTick, 1000);
   setInterval(save, 10000);
+
+  // Apply current theme
+  applyTheme(state.theme);
+
+  // Prompt for player name if still default (only on first load)
+  if (
+    state.player.name === "Player" &&
+    !localStorage.getItem("packet_clicker_name_prompted")
+  ) {
+    setTimeout(() => {
+      localStorage.setItem("packet_clicker_name_prompted", "true");
+      showNamePrompt();
+    }, 1000);
+  }
+
   renderTab();
   checkAchievements();
+
+  // Additional mobile zoom prevention
+  document.addEventListener(
+    "touchstart",
+    function (e) {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    },
+    { passive: false },
+  );
+
+  document.addEventListener("gesturestart", function (e) {
+    e.preventDefault();
+  });
+
+  // Prevent double-tap zoom
+  let lastTouchEnd = 0;
+  document.addEventListener(
+    "touchend",
+    function (event) {
+      const now = new Date().getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    },
+    false,
+  );
+
+  // Disable pinch zoom
+  document.addEventListener(
+    "wheel",
+    function (e) {
+      if (e.ctrlKey) {
+        e.preventDefault();
+      }
+    },
+    { passive: false },
+  );
+
+  // Prevent context menu on long press
+  document.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+  });
 }
+
+// Custom name prompt modal
+function showNamePrompt() {
+  const backdrop = document.getElementById("modal-backdrop");
+  const modal = document.getElementById("modal");
+
+  backdrop.classList.remove("hidden");
+  backdrop.setAttribute("aria-hidden", "false");
+  modal.classList.remove("hidden");
+  modal.innerHTML = `<h2 id="modal-title" class="text-neon-cyan mb-2 text-lg">🎮 Welcome to Packet Clicker MMO!</h2>
+    <div style="text-align: center; padding: 1rem;">
+      <p style="margin-bottom: 1rem; color: var(--text-primary);">What's your name, future packet master?</p>
+      <input type="text" id="name-input" placeholder="Enter your name" value="Player"
+             style="width: 100%; padding: 0.75rem; border: 2px solid var(--primary-color);
+                    border-radius: 8px; background: var(--bg-secondary); color: var(--text-primary);
+                    font-family: inherit; font-size: 1rem; text-align: center;">
+      <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+        <button id="start-game-btn" class="neon-btn w-full">Start Game!</button>
+        <button id="skip-name-btn" class="gem-btn w-full">Skip</button>
+      </div>
+    </div>`;
+
+  // Add event listeners to avoid onclick issues
+  const startBtn = modal.querySelector("#start-game-btn");
+  const skipBtn = modal.querySelector("#skip-name-btn");
+  if (startBtn) startBtn.addEventListener("click", setPlayerName);
+  if (skipBtn) skipBtn.addEventListener("click", skipNameSetup);
+
+  // Focus the modal and input after it appears
+  setTimeout(() => {
+    modal.focus();
+    const input = document.getElementById("name-input");
+    if (input) {
+      input.focus();
+      input.select();
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          setPlayerName();
+        }
+      });
+    }
+  }, 100);
+}
+
+function setPlayerName() {
+  const input = document.getElementById("name-input");
+  const playerName = input ? input.value.trim() : "";
+
+  if (playerName && playerName !== "" && playerName !== "Player") {
+    state.player.name = playerName;
+    save();
+    document.getElementById("player-name").textContent = state.player.name;
+    closeModal();
+    showHudNotify(
+      `Welcome, ${state.player.name}! Ready to click some packets?`,
+      "🎮",
+    );
+  } else {
+    showHudNotify("Please enter a valid name!", "⚠️");
+  }
+}
+
+function skipNameSetup() {
+  closeModal();
+  showHudNotify("Welcome to Packet Clicker MMO! Click to start!", "🎮");
+}
+
 window.onload = init;
