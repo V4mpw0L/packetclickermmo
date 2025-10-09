@@ -1,5 +1,5 @@
 /**
- * Packet Clicker MMO - Modular bootstrap
+ * Cyber Clicker - Modular bootstrap
  *
  * Goal:
  * - Provide a safe, modular entrypoint that organizes constants, utils, and shims
@@ -58,10 +58,8 @@
 
   var dataCatalog = {
     // Core identifiers
-    STORAGE_KEY:
-      safeGetGlobal("STORAGE_KEY") || STORAGE_KEY_FALLBACK,
-    DEFAULT_AVATAR:
-      safeGetGlobal("DEFAULT_AVATAR") || DEFAULT_AVATAR_FALLBACK,
+    STORAGE_KEY: safeGetGlobal("STORAGE_KEY") || STORAGE_KEY_FALLBACK,
+    DEFAULT_AVATAR: safeGetGlobal("DEFAULT_AVATAR") || DEFAULT_AVATAR_FALLBACK,
 
     // Game content (copied by reference; defined by main.js today)
     GEM_PACKS: safeGetGlobal("GEM_PACKS") || null,
@@ -223,8 +221,7 @@
     return {
       player: {
         name: "Player",
-        avatar:
-          dataCatalog.DEFAULT_AVATAR || DEFAULT_AVATAR_FALLBACK,
+        avatar: dataCatalog.DEFAULT_AVATAR || DEFAULT_AVATAR_FALLBACK,
         sound: true,
         vipUntil: 0,
         noAds: false,
@@ -324,4 +321,10 @@
 
   // Soft signal for diagnostics/tools
   g.__PACKET_BOOTSTRAP_READY__ = true;
-})(typeof window !== "undefined" ? window : (typeof globalThis !== "undefined" ? globalThis : this));
+})(
+  typeof window !== "undefined"
+    ? window
+    : typeof globalThis !== "undefined"
+      ? globalThis
+      : this,
+);

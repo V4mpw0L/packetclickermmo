@@ -1,4 +1,5 @@
-const CACHE_NAME = "packet-clicker-cache-v3";
+const CACHE_NAME = "cyber-clicker-cache-v5";
+const VERSION = "v5";
 const ASSETS_TO_CACHE = [
   "./",
   "index.html",
@@ -9,17 +10,8 @@ const ASSETS_TO_CACHE = [
   "src/utils/storage.js",
   "style.css",
   "manifest.json",
-  "icon-192.png",
-  "icon-512.png",
-  "icon-maskable.png",
+
   "screenshot-1.png",
-  "https://cdn.jsdelivr.net/gh/vikern/gamesfx/click1.mp3",
-  "https://cdn.jsdelivr.net/gh/vikern/gamesfx/crit.mp3",
-  "https://cdn.jsdelivr.net/gh/vikern/gamesfx/upgrade.mp3",
-  "https://cdn.jsdelivr.net/gh/vikern/gamesfx/achieve.mp3",
-  "https://cdn.jsdelivr.net/gh/vikern/gamesfx/coin.mp3",
-  "https://cdn.tailwindcss.com", // Cache Tailwind CDN for offline styling
-  "https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap", // Cache Google Fonts CSS
 ];
 
 self.addEventListener("install", (event) => {
@@ -27,8 +19,18 @@ self.addEventListener("install", (event) => {
     caches
       .open(CACHE_NAME)
       .then((cache) => {
-        console.log("[Service Worker] Caching all assets:", ASSETS_TO_CACHE);
-        return cache.addAll(ASSETS_TO_CACHE);
+        console.log(
+          "[Service Worker] Caching all assets (best-effort):",
+          ASSETS_TO_CACHE,
+        );
+        return Promise.allSettled(
+          ASSETS_TO_CACHE.map((url) =>
+            const bust = (u) => new Request(u + (u.includes("?") ? "&" : "?") + "v=" + VERSION, { cache: "reload" });
+            cache.add(bust(url)).catch((err) => {
+              console.warn("[Service Worker] Skipped caching:", url, err);
+            }),
+          ),
+        );
       })
       .catch((error) => {
         console.error(
@@ -54,13 +56,18 @@ self.addEventListener("activate", (event) => {
     }),
   );
   self.clients.claim();
+  self.addEventListener("message", (event) => {
+    if (event.data && event.data.type === "SKIP_WAITING") {
+      self.skipWaiting();
+    }
+  });
 });
 
 self.addEventListener("fetch", (event) => {
   // Only handle GET requests for navigation and assets
   if (event.request.method === "GET") {
     event.respondWith(
-      caches.match(event.request).then((response) => {
+      caches.match(event.request, { ignoreSearch: true }).then((response) => {
         // Cache hit - return response
         if (response) {
           return response;

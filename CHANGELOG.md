@@ -1,4 +1,4 @@
-# 📝 Changelog - Packet Clicker MMO
+# 📝 Changelog - Cyber Clicker
 
 ## Version 2.0.0 - Enhanced Mobile & Visual Experience
 *Released: January 2025*

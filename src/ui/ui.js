@@ -1,5 +1,5 @@
 /**
- * UI helpers for Packet Clicker MMO
+ * UI helpers for Cyber Clicker
  * - Modal open/close
  * - HUD notifications
  * - Theme application
@@ -8,11 +8,11 @@
  * Also exposes a PacketUI namespace and CommonJS/AMD compatibility.
  */
 (function (global) {
-  'use strict';
+  "use strict";
 
   // Utility: safe DOM query
   function $(sel) {
-    return typeof document !== 'undefined' ? document.querySelector(sel) : null;
+    return typeof document !== "undefined" ? document.querySelector(sel) : null;
   }
 
   // Utility: add and remember event handlers for cleanup (stored on element)
@@ -42,7 +42,7 @@
    * @param {{themes?: any}} [opts]
    */
   function applyTheme(themeId, opts) {
-    if (typeof document === 'undefined') return;
+    if (typeof document === "undefined") return;
 
     const themes = (opts && opts.themes) || global.THEMES || null;
     if (!themes) return;
@@ -51,21 +51,21 @@
     if (!theme) return;
 
     // Mark active theme
-    document.documentElement.setAttribute('data-theme', themeId);
+    document.documentElement.setAttribute("data-theme", themeId);
 
     // Update CSS custom properties
     const root = document.documentElement.style;
     if (Array.isArray(theme.colors) && theme.colors.length >= 3) {
-      root.setProperty('--primary-color', theme.colors[0]);
-      root.setProperty('--secondary-color', theme.colors[1]);
-      root.setProperty('--bg-secondary', theme.colors[2]);
+      root.setProperty("--primary-color", theme.colors[0]);
+      root.setProperty("--secondary-color", theme.colors[1]);
+      root.setProperty("--bg-secondary", theme.colors[2]);
     }
 
     // Persist on existing state/save if present (non-breaking)
     if (global.state) {
       try {
         global.state.theme = themeId;
-        if (typeof global.save === 'function') {
+        if (typeof global.save === "function") {
           global.save();
         }
       } catch {
@@ -80,20 +80,20 @@
    * @param {string} [icon="✨"]
    */
   function showHudNotify(msg, icon) {
-    if (typeof document === 'undefined') return;
-    const ico = icon == null ? '✨' : icon;
+    if (typeof document === "undefined") return;
+    const ico = icon == null ? "✨" : icon;
 
     // Remove existing notifications to avoid stacking overflow
-    document.querySelectorAll('.hud-notify').forEach((n) => n.remove());
+    document.querySelectorAll(".hud-notify").forEach((n) => n.remove());
 
-    const hud = document.createElement('div');
-    hud.className = 'hud-notify';
+    const hud = document.createElement("div");
+    hud.className = "hud-notify";
     hud.innerHTML = `<span style="font-size:1.3em;">${ico}</span> <span>${msg}</span>`;
 
-    const closeBtn = document.createElement('button');
-    closeBtn.innerHTML = '×';
-    closeBtn.className = 'hud-close-btn';
-    addTrackedEvent(closeBtn, 'click', function (e) {
+    const closeBtn = document.createElement("button");
+    closeBtn.innerHTML = "×";
+    closeBtn.className = "hud-close-btn";
+    addTrackedEvent(closeBtn, "click", function (e) {
       e.preventDefault();
       e.stopPropagation();
       if (hud && hud.parentNode) hud.parentNode.removeChild(hud);
@@ -103,11 +103,11 @@
     document.body.appendChild(hud);
 
     // Animate in
-    setTimeout(() => hud.classList.add('active'), 60);
+    setTimeout(() => hud.classList.add("active"), 60);
 
     // Auto dismiss
     setTimeout(() => {
-      hud.classList.remove('active');
+      hud.classList.remove("active");
       setTimeout(() => {
         if (hud && hud.parentNode) hud.parentNode.removeChild(hud);
       }, 500);
@@ -121,37 +121,37 @@
    * @param {string} html
    */
   function showModal(title, html) {
-    if (typeof document === 'undefined') return;
+    if (typeof document === "undefined") return;
 
-    const backdrop = $('#modal-backdrop');
-    const modal = $('#modal');
+    const backdrop = $("#modal-backdrop");
+    const modal = $("#modal");
     if (!backdrop || !modal) return;
 
-    backdrop.classList.remove('hidden');
-    backdrop.setAttribute('aria-hidden', 'false');
-    modal.classList.remove('hidden');
+    backdrop.classList.remove("hidden");
+    backdrop.setAttribute("aria-hidden", "false");
+    modal.classList.remove("hidden");
 
-    modal.setAttribute('role', 'dialog');
-    modal.setAttribute('aria-modal', 'true');
-    modal.setAttribute('tabindex', '-1');
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("tabindex", "-1");
 
     modal.innerHTML = `<h2 id="modal-title" class="text-neon-cyan mb-2 text-lg">${title}</h2>
       <div>${html}</div>
       <button id="modal-close-btn" class="mt-5 neon-btn w-full">Close</button>
     `;
 
-    const closeBtn = modal.querySelector('#modal-close-btn');
+    const closeBtn = modal.querySelector("#modal-close-btn");
     if (closeBtn) {
-      addTrackedEvent(closeBtn, 'click', closeModal);
+      addTrackedEvent(closeBtn, "click", closeModal);
     }
 
     // Keyboard: ESC closes
     const keydownHandler = function (e) {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         closeModal();
       }
     };
-    addTrackedEvent(document, 'keydown', keydownHandler);
+    addTrackedEvent(document, "keydown", keydownHandler);
 
     // Backdrop click closes
     const backdropClickHandler = function (e) {
@@ -159,7 +159,7 @@
         closeModal();
       }
     };
-    addTrackedEvent(backdrop, 'click', backdropClickHandler);
+    addTrackedEvent(backdrop, "click", backdropClickHandler);
 
     // Store refs for cleanup
     backdrop._keydownHandler = keydownHandler;
@@ -167,10 +167,12 @@
 
     // Focus first focusable element or the modal itself
     setTimeout(() => {
-      const firstFocusable = modal.querySelector('input, button, select, textarea, [tabindex]:not([tabindex="-1"])');
-      if (firstFocusable && typeof firstFocusable.focus === 'function') {
+      const firstFocusable = modal.querySelector(
+        'input, button, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (firstFocusable && typeof firstFocusable.focus === "function") {
         firstFocusable.focus();
-      } else if (typeof modal.focus === 'function') {
+      } else if (typeof modal.focus === "function") {
         modal.focus();
       }
     }, 100);
@@ -180,16 +182,16 @@
    * Close and cleanup modal
    */
   function closeModal() {
-    if (typeof document === 'undefined') return;
+    if (typeof document === "undefined") return;
 
-    const backdrop = $('#modal-backdrop');
-    const modal = $('#modal');
+    const backdrop = $("#modal-backdrop");
+    const modal = $("#modal");
     if (!backdrop || !modal) return;
 
     // Blur focused control inside modal to avoid focus traps
     try {
-      const focusedInModal = modal.querySelector(':focus');
-      if (focusedInModal && typeof focusedInModal.blur === 'function') {
+      const focusedInModal = modal.querySelector(":focus");
+      if (focusedInModal && typeof focusedInModal.blur === "function") {
         focusedInModal.blur();
       }
     } catch {
@@ -198,29 +200,33 @@
 
     // Remove tracked handlers
     if (backdrop._keydownHandler) {
-      document.removeEventListener('keydown', backdrop._keydownHandler);
+      document.removeEventListener("keydown", backdrop._keydownHandler);
       backdrop._keydownHandler = null;
     } else {
-      removeTrackedEvents(document, 'keydown');
+      removeTrackedEvents(document, "keydown");
     }
 
     if (backdrop._backdropClickHandler) {
-      backdrop.removeEventListener('click', backdrop._backdropClickHandler);
+      backdrop.removeEventListener("click", backdrop._backdropClickHandler);
       backdrop._backdropClickHandler = null;
     } else {
-      removeTrackedEvents(backdrop, 'click');
+      removeTrackedEvents(backdrop, "click");
     }
 
-    backdrop.classList.add('hidden');
-    backdrop.setAttribute('aria-hidden', 'true');
+    backdrop.classList.add("hidden");
+    backdrop.setAttribute("aria-hidden", "true");
 
-    modal.classList.add('hidden');
-    modal.innerHTML = '';
+    modal.classList.add("hidden");
+    modal.innerHTML = "";
 
     // Return focus to body shortly after to stabilize screen readers
     setTimeout(() => {
       try {
-        if (document && document.body && typeof document.body.focus === 'function') {
+        if (
+          document &&
+          document.body &&
+          typeof document.body.focus === "function"
+        ) {
           document.body.focus();
         }
       } catch {
@@ -238,20 +244,27 @@
   };
 
   // Non-breaking global attachment: don't override if already defined
-  if (typeof global.applyTheme !== 'function') global.applyTheme = applyTheme;
-  if (typeof global.showHudNotify !== 'function') global.showHudNotify = showHudNotify;
-  if (typeof global.showModal !== 'function') global.showModal = showModal;
-  if (typeof global.closeModal !== 'function') global.closeModal = closeModal;
+  if (typeof global.applyTheme !== "function") global.applyTheme = applyTheme;
+  if (typeof global.showHudNotify !== "function")
+    global.showHudNotify = showHudNotify;
+  if (typeof global.showModal !== "function") global.showModal = showModal;
+  if (typeof global.closeModal !== "function") global.closeModal = closeModal;
 
   // Namespaced access
   global.PacketUI = Object.assign({}, global.PacketUI || {}, api);
 
   // CommonJS / AMD support (optional)
-  if (typeof module !== 'undefined' && module.exports) {
+  if (typeof module !== "undefined" && module.exports) {
     module.exports = api;
-  } else if (typeof define === 'function' && define.amd) {
+  } else if (typeof define === "function" && define.amd) {
     define(function () {
       return api;
     });
   }
-})(typeof window !== 'undefined' ? window : (typeof globalThis !== 'undefined' ? globalThis : this));
+})(
+  typeof window !== "undefined"
+    ? window
+    : typeof globalThis !== "undefined"
+      ? globalThis
+      : this,
+);

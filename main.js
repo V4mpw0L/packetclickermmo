@@ -1,4 +1,4 @@
-// ==== Packet Clicker MMO: Enhanced Mobile & Visual Effects ====
+// ==== Cyber Clicker: Enhanced Mobile & Visual Effects ====
 
 /* Using global DEFAULT_AVATAR and STORAGE_KEY from constants UMD (src/data/constants.js) */
 
@@ -156,19 +156,25 @@ function load() {
         return;
       }
 
-      // Load sanitized state
-      if (typeof has.loadOrInit === "function") {
-        const loaded = has.loadOrInit();
-        Object.assign(state, loaded);
+      // Load sanitized state (avoid Packet.storage.loadOrInit to prevent recursion)
+      let baseState =
+        parsed ||
+        (typeof has.createInitialState === "function"
+          ? has.createInitialState()
+          : {});
+      let sanitized =
+        typeof has.sanitizeState === "function"
+          ? has.sanitizeState(baseState)
+          : baseState;
+      Object.assign(state, sanitized);
 
-        // Backward compatible safety shims
-        if (!state.player.vipUntil) state.player.vipUntil = 0;
-        if (state.player.noAds === undefined) state.player.noAds = false;
-        if (typeof state.gems !== "number") state.gems = 0;
-        if (!state.theme) state.theme = "cyberpunk";
-        if (!state.themes) state.themes = {};
-        return;
-      }
+      // Backward compatible safety shims
+      if (!state.player.vipUntil) state.player.vipUntil = 0;
+      if (state.player.noAds === undefined) state.player.noAds = false;
+      if (typeof state.gems !== "number") state.gems = 0;
+      if (!state.theme) state.theme = "cyberpunk";
+      if (!state.themes) state.themes = {};
+      return;
     } catch (e) {
       // fall back to legacy logic below
     }
@@ -754,7 +760,50 @@ function renderActiveEvent() {
 }
 
 // =============== GAME LOGIC ===============
+let _megaFXTimer = null;
+function activateMegaFX() {
+  try {
+    document.body.classList.add("mega-active");
+    let sentinel = document.getElementById("mega-sentinel");
+    if (!sentinel) {
+      sentinel = document.createElement("div");
+      sentinel.id = "mega-sentinel";
+      sentinel.className = "click-effect mega-combo";
+      sentinel.style.position = "fixed";
+      sentinel.style.left = "-9999px";
+      sentinel.style.top = "-9999px";
+      sentinel.style.width = "1px";
+      sentinel.style.height = "1px";
+      sentinel.style.opacity = "0";
+      sentinel.style.pointerEvents = "none";
+      document.body.appendChild(sentinel);
+    }
+    if (_megaFXTimer) clearTimeout(_megaFXTimer);
+    _megaFXTimer = setTimeout(() => {
+      try {
+        document.body.classList.remove("mega-active");
+        const s = document.getElementById("mega-sentinel");
+        if (s && s.parentNode) s.parentNode.removeChild(s);
+      } catch {}
+      _megaFXTimer = null;
+    }, 1200);
+  } catch {}
+}
+function scheduleMegaFXClear() {
+  if (_megaFXTimer) {
+    clearTimeout(_megaFXTimer);
+    _megaFXTimer = setTimeout(() => {
+      try {
+        document.body.classList.remove("mega-active");
+        const s = document.getElementById("mega-sentinel");
+        if (s && s.parentNode) s.parentNode.removeChild(s);
+      } catch {}
+      _megaFXTimer = null;
+    }, 200);
+  }
+}
 function clickPacket(event) {
+  const packetsBefore = state.packets;
   let bonus = isVIP() ? 1.25 : 1;
 
   // Apply prestige bonus
@@ -834,6 +883,7 @@ function clickPacket(event) {
     let displayedGain = amount;
     if (clickCombo >= 10) {
       clickFX.classList.add("mega-combo");
+      activateMegaFX();
       // 25% combo bonus on MEGA streaks
       const extra = Math.floor(amount * 0.25);
       state.packets += extra;
@@ -862,6 +912,14 @@ function clickPacket(event) {
     }
 
     clickFX.textContent = effectText;
+    // Match individual click effect color with combo level using theme variables
+    if (clickCombo >= 10) {
+      clickFX.style.color = "var(--accent-color)";
+    } else if (clickCombo >= 5) {
+      clickFX.style.color = "var(--secondary-color)";
+    } else {
+      clickFX.style.color = "var(--primary-color)";
+    }
     // Update stacked combo HUD
     if (clickCombo === 1) {
       clickPacket._comboTotal = 0;
@@ -913,7 +971,7 @@ function clickPacket(event) {
       if (crit) {
         const critFX = document.createElement("div");
         critFX.className = "click-effect critical";
-        critFX.textContent = `CRITICAL ${Number.isInteger(critMultiplier) ? critMultiplier : critMultiplier.toFixed(1)}x! +${displayedGain}`;
+        critFX.textContent = `CRITICAL ${((state.packets - packetsBefore) / Math.max(1, state.perClick)).toFixed(2).replace(/\.00$/, "")}x! +${(state.packets - packetsBefore).toLocaleString()}`;
         critFX.style.left = rect.left + rect.width / 2 + "px";
         critFX.style.top = rect.top - 50 + "px";
         document.body.appendChild(critFX);
@@ -932,7 +990,7 @@ function clickPacket(event) {
       if (crit) {
         const critFX = document.createElement("div");
         critFX.className = "click-effect critical";
-        critFX.textContent = `CRITICAL ${Number.isInteger(critMultiplier) ? critMultiplier : critMultiplier.toFixed(1)}x! +${displayedGain}`;
+        critFX.textContent = `CRITICAL ${((state.packets - packetsBefore) / Math.max(1, state.perClick)).toFixed(2).replace(/\.00$/, "")}x! +${(state.packets - packetsBefore).toLocaleString()}`;
         critFX.style.left = "50%";
         critFX.style.top = "45%";
         document.body.appendChild(critFX);
@@ -948,6 +1006,7 @@ function clickPacket(event) {
     }
 
     document.body.appendChild(clickFX);
+    if (clickCombo < 10) scheduleMegaFXClear();
 
     // Remove element after animation
     const animationDuration =
@@ -965,9 +1024,26 @@ function clickPacket(event) {
       }
     });
   }
-  // Restore instant responsiveness
-  if (crit && state.player.sound) playSound("crit");
-  else if (state.player.sound) playSound("click");
+  // Restore instant responsiveness with escalating SFX
+  if (state.player.sound) {
+    if (crit) {
+      playSound("crit");
+      if (clickCombo >= 10) {
+        setTimeout(() => playSound("crit"), 90);
+        setTimeout(() => playSound("click"), 180);
+      } else if (clickCombo >= 5) {
+        setTimeout(() => playSound("crit"), 80);
+      }
+    } else {
+      playSound("click");
+      if (clickCombo >= 10) {
+        setTimeout(() => playSound("click"), 70);
+        setTimeout(() => playSound("click"), 140);
+      } else if (clickCombo >= 5) {
+        setTimeout(() => playSound("click"), 50);
+      }
+    }
+  }
 
   save();
   updateTopBar();
@@ -1148,6 +1224,9 @@ function checkAchievements() {
 
 // =============== MODAL / FEEDBACK ===============
 function showModal(title, html) {
+  if (window.__NAME_PROMPT_LOCK__ || window.__NAME_PROMPT_PENDING__) {
+    return;
+  }
   if (window.PacketUI && typeof PacketUI.showModal === "function") {
     return PacketUI.showModal(title, html);
   }
@@ -1161,26 +1240,70 @@ function closeModal() {
 
 // =============== SOUND FX ===============
 function playSound(type) {
-  let url;
   if (!state.player.sound) return;
-  switch (type) {
-    case "click":
-      url = "https://cdn.jsdelivr.net/gh/vikern/gamesfx/click1.mp3";
-      break;
-    case "crit":
-      url = "https://cdn.jsdelivr.net/gh/vikern/gamesfx/crit.mp3";
-      break;
-    case "upgrade":
-      url = "https://cdn.jsdelivr.net/gh/vikern/gamesfx/upgrade.mp3";
-      break;
-    case "achievement":
-      url = "https://cdn.jsdelivr.net/gh/vikern/gamesfx/achieve.mp3";
-      break;
-    case "shop":
-      url = "https://cdn.jsdelivr.net/gh/vikern/gamesfx/coin.mp3";
-      break;
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+
+    // Reuse a single audio context for all SFX
+    const ctx = (window._audioCtx ||= new AudioCtx());
+
+    // Basic tone design per event
+    let freq = 480;
+    let dur = 0.06;
+    let wave = "square";
+
+    switch (type) {
+      case "click":
+        freq = 880;
+        dur = 0.035;
+        wave = "square";
+        break;
+      case "crit":
+        freq = 240;
+        dur = 0.12;
+        wave = "sawtooth";
+        break;
+      case "upgrade":
+        freq = 660;
+        dur = 0.1;
+        wave = "triangle";
+        break;
+      case "achievement":
+        freq = 520;
+        dur = 0.16;
+        wave = "sine";
+        break;
+      case "shop":
+        freq = 600;
+        dur = 0.09;
+        wave = "triangle";
+        break;
+      default:
+        freq = 500;
+        dur = 0.05;
+        wave = "square";
+        break;
+    }
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = wave;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+    // Soft attack, quick decay envelope
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.14, ctx.currentTime + 0.006);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + dur + 0.01);
+  } catch {
+    // Silently ignore audio failures
   }
-  if (url) new Audio(url).play();
 }
 
 // =============== AD BANNER / SIMULATION ===============
@@ -1484,14 +1607,14 @@ function init() {
   // Apply current theme
   applyTheme(state.theme);
 
-  // Prompt for player name if still default (only on first load)
+  // Prompt for player name if still default (only when no modal is open)
   if (
     state.player.name === "Player" &&
     !localStorage.getItem("packet_clicker_name_prompted")
   ) {
+    window.__NAME_PROMPT_PENDING__ = true;
     setTimeout(() => {
-      localStorage.setItem("packet_clicker_name_prompted", "true");
-      showNamePrompt();
+      scheduleNamePromptWhenIdle();
     }, 1000);
   }
 
@@ -1551,14 +1674,29 @@ function init() {
 }
 
 // Custom name prompt modal
+function scheduleNamePromptWhenIdle() {
+  try {
+    const backdrop = document.getElementById("modal-backdrop");
+    const modalOpen = backdrop && !backdrop.classList.contains("hidden");
+    if (modalOpen) {
+      setTimeout(scheduleNamePromptWhenIdle, 500);
+      return;
+    }
+    showNamePrompt();
+  } catch {
+    showNamePrompt();
+  }
+}
 function showNamePrompt() {
   const backdrop = document.getElementById("modal-backdrop");
   const modal = document.getElementById("modal");
 
+  window.__NAME_PROMPT_LOCK__ = true;
+  window.__NAME_PROMPT_PENDING__ = false;
   backdrop.classList.remove("hidden");
   backdrop.setAttribute("aria-hidden", "false");
   modal.classList.remove("hidden");
-  modal.innerHTML = `<h2 id="modal-title" class="text-neon-cyan mb-2 text-lg">🎮 Welcome to Packet Clicker MMO!</h2>
+  modal.innerHTML = `<h2 id="modal-title" class="text-neon-cyan mb-2 text-lg">🎮 Welcome to Cyber Clicker!</h2>
     <div style="text-align: center; padding: 1rem;">
       <p style="margin-bottom: 1rem; color: var(--text-primary);">What's your name, future packet master?</p>
       <input type="text" id="name-input" placeholder="Enter your name" value="Player"
@@ -1603,6 +1741,8 @@ function setPlayerName() {
     save();
     document.getElementById("player-name").textContent = state.player.name;
     closeModal();
+    localStorage.setItem("packet_clicker_name_prompted", "true");
+    window.__NAME_PROMPT_LOCK__ = false;
     showHudNotify(
       `Welcome, ${state.player.name}! Ready to click some packets?`,
       "🎮",
@@ -1613,8 +1753,10 @@ function setPlayerName() {
 }
 
 function skipNameSetup() {
+  localStorage.setItem("packet_clicker_name_prompted", "true");
+  window.__NAME_PROMPT_LOCK__ = false;
   closeModal();
-  showHudNotify("Welcome to Packet Clicker MMO! Click to start!", "🎮");
+  showHudNotify("Welcome to Cyber Clicker! Click to start!", "🎮");
 }
 
 window.onload = init;
