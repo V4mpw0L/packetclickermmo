@@ -136,7 +136,7 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    min-height: clamp(20rem, 50vh, 40rem);
+    min-height: clamp(16rem, 35vh, 32rem);
     gap: var(--spacing-md);
     flex: 1 0 auto;
 }
@@ -719,7 +719,7 @@ footer {
     font-size: var(--font-size-xs);
     letter-spacing: 0.01em;
     filter: drop-shadow(0 1.5px 3px var(--shadow-primary));
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
 }
 
 /* === ANIMATIONS === */
