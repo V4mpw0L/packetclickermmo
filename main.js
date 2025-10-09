@@ -332,7 +332,7 @@ function renderGame() {
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
       <h2 class="tab-title">🎮 Game</h2>
       <button id="click-btn" class="neon-btn text-2xl py-4 active:scale-95 transition-transform">
-        Click Packet! <span class="text-neon-yellow">📦</span>
+        Collect Packets <span class="text-neon-yellow">📦</span>
       </button>
       <div class="flex justify-between items-center text-neon-green text-sm">
         <span>Packets/Click: ${effectivePerClick}</span>
