@@ -1,5 +1,5 @@
-const CACHE_NAME = "cyber-clicker-cache-v5";
-const VERSION = "v5";
+const CACHE_NAME = "packet-clicker-cache-v0.0.1";
+const VERSION = "0.0.1";
 const ASSETS_TO_CACHE = [
   "./",
   "index.html",
@@ -11,7 +11,11 @@ const ASSETS_TO_CACHE = [
   "style.css",
   "manifest.json",
 
-  "screenshot-1.png",
+  "src/assets/gem.png",
+  "src/assets/packet-32.png",
+  "src/assets/packet-48.png",
+  "src/assets/packet-64.png",
+  "src/assets/packet-512.png",
 ];
 
 self.addEventListener("install", (event) => {
