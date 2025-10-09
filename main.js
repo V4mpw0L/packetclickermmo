@@ -1188,78 +1188,65 @@ function clickPacket(event) {
   }
   lastClickTime = now;
 
-  // Enhanced visual feedback for click with combo system (optimized)
-  requestAnimationFrame(() => {
-    let clickFX = document.createElement("div");
-    clickFX.className = "click-effect";
+  // Enhanced visual feedback for click with combo system
+  let clickFX = document.createElement("div");
+  clickFX.className = "click-effect";
 
-    // Determine effect type based on combo
-    let effectText = `+${amount}`;
-    if (clickCombo >= 10) {
-      clickFX.classList.add("mega-combo");
-      effectText = `MEGA! +${amount}`;
-      // Shake the click button
-      const clickBtn = document.getElementById("click-btn");
-      if (clickBtn) {
-        clickBtn.classList.add("shake-element");
-        setTimeout(() => clickBtn.classList.remove("shake-element"), 600);
-      }
-    } else if (clickCombo >= 5) {
-      clickFX.classList.add("combo");
-      effectText = `${clickCombo}x +${amount}`;
-    }
-
-    clickFX.textContent = effectText;
-
-    // Position above the click button (cached for performance)
+  // Determine effect type based on combo
+  let effectText = `+${amount}`;
+  if (clickCombo >= 10) {
+    clickFX.classList.add("mega-combo");
+    effectText = `MEGA! +${amount}`;
+    // Shake the click button
     const clickBtn = document.getElementById("click-btn");
     if (clickBtn) {
-      const rect = clickBtn.getBoundingClientRect();
-      clickFX.style.left = rect.left + rect.width / 2 + "px";
-      clickFX.style.top = rect.top - 20 + "px";
-    } else {
-      clickFX.style.left = "50%";
-      clickFX.style.top = "50%";
+      clickBtn.classList.add("shake-element");
+      setTimeout(() => clickBtn.classList.remove("shake-element"), 600);
     }
+  } else if (clickCombo >= 5) {
+    clickFX.classList.add("combo");
+    effectText = `${clickCombo}x +${amount}`;
+  }
 
-    document.body.appendChild(clickFX);
+  clickFX.textContent = effectText;
 
-    // Remove element after animation
-    const animationDuration =
-      clickCombo >= 10 ? 2000 : clickCombo >= 5 ? 1500 : 1200;
-    setTimeout(() => {
-      if (clickFX.parentNode) {
-        document.body.removeChild(clickFX);
-      }
-    }, animationDuration);
+  // Position above the click button
+  const clickBtn = document.getElementById("click-btn");
+  if (clickBtn) {
+    const rect = clickBtn.getBoundingClientRect();
+    clickFX.style.left = rect.left + rect.width / 2 + "px";
+    clickFX.style.top = rect.top - 20 + "px";
+  } else {
+    clickFX.style.left = "50%";
+    clickFX.style.top = "50%";
+  }
+
+  document.body.appendChild(clickFX);
+
+  // Remove element after animation
+  const animationDuration =
+    clickCombo >= 10 ? 2000 : clickCombo >= 5 ? 1500 : 1200;
+  setTimeout(() => {
+    if (clickFX.parentNode) {
+      document.body.removeChild(clickFX);
+    }
+  }, animationDuration);
+
+  // Remove effect after animation
+  clickFX.addEventListener("animationend", () => {
+    if (clickFX.parentNode) {
+      clickFX.remove();
+    }
   });
 
-  // Click effect cleanup is handled in the setTimeout above
-
+  // Restore instant responsiveness
   if (crit && state.player.sound) playSound("crit");
   else if (state.player.sound) playSound("click");
 
-  // Optimize UI updates - defer heavy operations
-  if (window.requestIdleCallback) {
-    requestIdleCallback(() => {
-      save();
-      checkAchievements();
-    });
-  } else {
-    // Fallback for browsers without requestIdleCallback
-    setTimeout(() => {
-      save();
-      checkAchievements();
-    }, 16);
-  }
-
-  // Only update top bar immediately for responsive feel
+  save();
   updateTopBar();
-
-  // Defer tab rendering to prevent click lag
-  if (activeTab === "game") {
-    setTimeout(() => renderTab(), 16); // ~1 frame delay
-  }
+  renderTab();
+  checkAchievements();
 }
 
 function upgrade(type) {
