@@ -775,6 +775,12 @@ footer {
     opacity: 0.9;
 }
 
+/* Foreground streaks (fast, straight down) */
+/* removed: packet rain foreground layer (using .random-event::after instead) */
+
+/* Mid/background streaks (angled drift, slower) */
+/* removed: packet rain background layers (using .random-event::after instead) */
+
 /* Gentle pulse for the bar */
 @keyframes eventPulse {
     0%,
@@ -807,6 +813,8 @@ footer {
         opacity: 0.92;
     }
 }
+
+/* removed: rainDrift, using single purpleRain animation */
 @keyframes fadeIn {
     from {
         opacity: 0;
