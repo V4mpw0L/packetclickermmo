@@ -1,5 +1,5 @@
 /**
- * Cyber Clicker - Constants (UMD)
+ * Packet Clicer - Constants (UMD)
  *
  * Purpose:
  * - Provide all game data constants in a format compatible with non-module usage.

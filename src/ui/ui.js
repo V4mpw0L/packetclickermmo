@@ -1,5 +1,5 @@
 /**
- * UI helpers for Cyber Clicker
+ * UI helpers for Packet Clicer
  * - Modal open/close
  * - HUD notifications
  * - Theme application

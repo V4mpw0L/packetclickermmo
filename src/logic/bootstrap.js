@@ -1,5 +1,5 @@
 /**
- * Cyber Clicker - Modular bootstrap
+ * Packet Clicer - Modular bootstrap
  *
  * Goal:
  * - Provide a safe, modular entrypoint that organizes constants, utils, and shims
