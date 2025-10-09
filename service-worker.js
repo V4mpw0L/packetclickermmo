@@ -64,47 +64,66 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  // Only handle GET requests for navigation and assets
-  if (event.request.method === "GET") {
+  // Production strategy:
+  // - Network-first for HTML (navigation/doc requests)
+  // - Stale-while-revalidate for static assets
+  if (event.request.method !== "GET") return;
+
+  const req = event.request;
+  const isHTML =
+    req.mode === "navigate" ||
+    (req.headers.get("accept") || "").includes("text/html");
+
+  if (isHTML) {
+    // Network-first for HTML: always try network, fall back to cache/index.html
     event.respondWith(
-      caches.match(event.request, { ignoreSearch: true }).then((response) => {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
-
-        // No cache hit - fetch from network
-        return fetch(event.request)
-          .then(function (response) {
-            // Check if we received a valid response
-            if (
-              !response ||
-              response.status !== 200 ||
-              response.type !== "basic"
-            ) {
-              return response;
-            }
-
-            // IMPORTANT: Clone the response. A response is a stream
-            // and can only be consumed once. We must clone it so that
-            // we can consume the stream twice (one for the cache, one for the browser).
-            var responseToCache = response.clone();
-
-            caches.open(CACHE_NAME).then(function (cache) {
-              cache.put(event.request, responseToCache);
-            });
-
-            return response;
-          })
-          .catch(function (error) {
-            console.log(
-              "[Service Worker] Fetch failed; returning offline page or generic response:",
-              error,
+      fetch(req)
+        .then((res) => {
+          if (!res || res.status !== 200) {
+            // Fallback to cached page
+            return (
+              caches.match(req, { ignoreSearch: true }) ||
+              caches.match("index.html", { ignoreSearch: true })
             );
-            // You could return an offline page here if you had one
-            // For now, it will simply fail the request.
-          });
-      }),
+          }
+          const copy = res.clone();
+          caches
+            .open(CACHE_NAME)
+            .then((cache) => cache.put(req, copy))
+            .catch(() => {});
+          return res;
+        })
+        .catch(() =>
+          caches
+            .match(req, { ignoreSearch: true })
+            .then((r) => r || caches.match("index.html", { ignoreSearch: true })),
+        ),
     );
+    return;
   }
+
+  // Stale-while-revalidate for assets
+  event.respondWith(
+    caches.match(req, { ignoreSearch: true }).then((cached) => {
+      const fetchPromise = fetch(req)
+        .then((res) => {
+          // Cache successful basic/cors responses
+          if (
+            res &&
+            res.status === 200 &&
+            (res.type === "basic" || res.type === "cors")
+          ) {
+            const copy = res.clone();
+            caches
+              .open(CACHE_NAME)
+              .then((cache) => cache.put(req, copy))
+              .catch(() => {});
+          }
+          return res;
+        })
+        .catch(() => cached);
+      // Return cache immediately if present, while revalidating in background
+      return cached || fetchPromise;
+    }),
+  );
 });

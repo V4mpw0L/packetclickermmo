@@ -179,14 +179,53 @@
         <!-- HUD notification (injected by JS) -->
 
         <footer role="contentinfo">
-            Cyberpunk MMO Idle &copy; 2025 | Developed by:
-            <a
-                href="https://www.gennisys.com"
-                target="_blank"
-                rel="noopener"
-                style="color: #00ff41; text-decoration: none; font-weight: bold"
-                >Gennisys</a
+            <div
+                style="
+                    display: flex;
+                    gap: 0.5rem;
+                    align-items: center;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                "
             >
+                <span
+                    >Cyberpunk MMO Idle &copy; 2025 | Developed by:
+                    <a
+                        href="https://www.gennisys.com"
+                        target="_blank"
+                        rel="noopener"
+                        style="
+                            color: #00ff41;
+                            text-decoration: none;
+                            font-weight: bold;
+                        "
+                        >Gennisys</a
+                    >
+                </span>
+                <span
+                    id="version-badge"
+                    title="App version"
+                    style="
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 0.35rem;
+                        padding: 0.15rem 0.5rem;
+                        border: 1px solid var(--primary-color);
+                        color: var(--primary-color);
+                        border-radius: 8px;
+                        font-weight: 700;
+                        font-size: 0.85rem;
+                        background: linear-gradient(
+                            135deg,
+                            var(--bg-secondary),
+                            var(--bg-card)
+                        );
+                        box-shadow: 0 2px 10px var(--shadow-primary);
+                    "
+                >
+                    <span>Version</span><strong>0.0.1</strong>
+                </span>
+            </div>
         </footer>
 
         <!-- Constants (UMD) -->

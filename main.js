@@ -306,7 +306,7 @@ function updateTopBar() {
     let ms = state.player.vipUntil - Date.now();
     let days = Math.floor(ms / (1000 * 60 * 60 * 24));
     let hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
-    badge.innerHTML = `<span class="font-bold text-yellow-400 ml-2">👑 VIP ${days > 0 ? days + "d " : ""}${hours}h</span>${packets}`;
+    badge.innerHTML = `<span class="font-bold text-yellow-400 ml-2" style="margin-right:8px;display:inline-block;">👑 VIP ${days > 0 ? days + "d " : ""}${hours}h</span>${packets}`;
   } else {
     badge.innerHTML = packets;
   }
@@ -363,7 +363,7 @@ function renderBoosts() {
   Object.keys(state.boosts).forEach((boostType) => {
     if (state.boosts[boostType] > Date.now()) {
       let remaining = Math.ceil((state.boosts[boostType] - Date.now()) / 1000);
-      activeBoosts += `<div class="text-green-400 text-sm mb-2">🚀 ${boostType} active (${remaining}s)</div>`;
+      activeBoosts += `<div class="text-green-400 text-sm mb-2">🚀 ${((Array.isArray(BOOST_SHOP) && BOOST_SHOP.find((b) => b.id === boostType)) || { name: boostType }).name} active (${remaining}s)</div>`;
     }
   });
 
@@ -427,9 +427,9 @@ function renderUpgrades() {
   return `
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
       <h2 class="tab-title">🛠️ Upgrades</h2>
-      <button id="upgrade-click" class="upgrade-btn">+1/click — <span>${upgradeCost("click")}</span> 🟡</button>
-      <button id="upgrade-idle" class="upgrade-btn">+1/sec — <span>${upgradeCost("idle")}</span> 🟡</button>
-      <button id="upgrade-crit" class="upgrade-btn">+2% crit — <span>${upgradeCost("crit")}</span> 🟡</button>
+      <button id="upgrade-click" class="upgrade-btn">+1/click — <span>${upgradeCost("click")}</span> 📦</button>
+      <button id="upgrade-idle" class="upgrade-btn">+1/sec — <span>${upgradeCost("idle")}</span> 📦</button>
+      <button id="upgrade-crit" class="upgrade-btn">+2% crit — <span>${upgradeCost("crit")}</span> 📦</button>
       <div class="text-neon-gray text-xs mt-1">
         Each upgrade increases cost. <span class="text-neon-yellow">Critical Hits</span> give 2x per click!
       </div>
@@ -1338,14 +1338,37 @@ function randomName() {
 
 function generateBots(n = 6) {
   let bots = [];
+  const p = Math.max(0, state.packets);
+
   for (let i = 0; i < n; i++) {
-    let base = Math.floor(Math.random() * 3500 + 250);
+    // Scale difficulty with player progress:
+    // - Most bots sit around 40%–120% of player's packets
+    // - Top 40% of bots get an extra challenge bias
+    const variance = 0.4 + Math.random() * 0.8; // 0.4x .. 1.2x
+    const challengeBias =
+      i < Math.ceil(n * 0.4) ? 1.2 + Math.random() * 0.8 : 1; // +20%..+100% for tougher bots
+    const base = Math.max(100, Math.floor(p * variance * challengeBias));
+    const jitter = Math.floor(
+      Math.random() * Math.max(200, Math.floor(p * 0.05)),
+    ); // small random spread
     bots.push({
       name: randomName(),
-      packets: base + Math.floor(Math.random() * 2100),
+      packets: base + jitter,
       avatar: `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${randomName()}`,
     });
   }
+
+  // Ensure at least one bot is slightly above the player to keep it challenging
+  if (bots.length) {
+    const idx = Math.floor(Math.random() * bots.length);
+    bots[idx].packets = Math.max(
+      bots[idx].packets,
+      Math.floor(p * (1.1 + Math.random() * 0.4)), // 1.1x .. 1.5x
+    );
+  }
+
+  // Sort descending for leaderboard display
+  bots.sort((a, b) => b.packets - a.packets);
   return bots;
 }
 
