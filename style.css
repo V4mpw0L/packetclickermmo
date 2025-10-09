@@ -204,10 +204,12 @@ footer {
     width: 100%;
     max-width: 100%;
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr auto;
     grid-template-areas:
-        "avatar name settings"
-        "pills  pills  pills";
+        "center settings"
+        "pills  pills";
+    align-items: center;
+    min-height: 130px;
     align-items: center;
     gap: var(--spacing-sm);
     position: sticky;
@@ -217,7 +219,21 @@ footer {
 }
 
 .top-bar .user-info {
-    display: contents;
+    grid-area: center;
+    position: static;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+    justify-content: center;
+}
+
+/* Center the name below the avatar while keeping both in the middle */
+.top-bar .user-info #player-name {
+    position: static;
+    display: block;
+    margin-top: 0.25rem;
+    white-space: nowrap;
 }
 
 .top-bar .controls {
@@ -227,6 +243,7 @@ footer {
     column-gap: var(--spacing-xs);
     flex-shrink: 0;
     grid-area: settings;
+    justify-self: end;
 }
 .top-bar .controls #gem-display {
     display: none;
@@ -237,9 +254,9 @@ footer {
         0 0 0 3px #1de9b611,
         0 2px 8px #c4ebea33;
     background: var(--bg-primary);
-    width: clamp(40px, 6vw, 56px);
-    height: clamp(40px, 6vw, 56px);
-    min-width: clamp(40px, 6vw, 56px);
+    width: clamp(56px, 8vw, 72px);
+    height: clamp(56px, 8vw, 72px);
+    min-width: clamp(56px, 8vw, 72px);
     border-radius: 50%;
     object-fit: cover;
     grid-area: avatar;
@@ -257,7 +274,7 @@ footer {
     flex: 1 1 auto;
     min-width: 0;
     max-width: clamp(14ch, 60vw, 28ch);
-    grid-area: name;
+    /* centered via .user-info grid */
     justify-self: center;
     text-align: center;
 }
@@ -281,14 +298,15 @@ footer {
 
 @media (max-width: 480px) {
     .top-bar {
+        /* Keep same grid as default to avoid layout conflicts on small screens */
         grid-template-columns: 1fr auto;
         grid-template-areas:
-            "avatar settings"
-            "name   name"
+            "center settings"
             "pills  pills";
     }
     .top-bar .user-info {
-        display: contents;
+        display: flex;
+        justify-self: center;
     }
     #player-name {
         max-width: 100%;
@@ -296,6 +314,7 @@ footer {
     #vip-badge {
         margin-left: 0;
         align-self: center;
+        justify-self: center;
     }
 }
 
@@ -433,6 +452,36 @@ footer {
     border: 1px solid var(--border-color);
     padding: 0.15rem 0.45rem;
     border-radius: 999px;
+}
+
+/* Ensure Daily Rewards shows the PNG packet icon properly */
+.space-y-2 .icon-packet {
+    width: 1.2rem !important;
+    height: 1.2rem !important;
+    background-image: url("src/assets/packet-32.png") !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    display: inline-block !important;
+    vertical-align: middle;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* Prestige: keep main label on one line; if description is inside button, push it visually below */
+#do-prestige {
+    position: relative;
+    white-space: nowrap;
+}
+#do-prestige .text-xs {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, calc(100% + 0.4rem));
+    white-space: normal;
+    width: max-content;
+    max-width: 100%;
+    pointer-events: none;
+    opacity: 0.9;
 }
 
 /* Ensure sticky top-bar doesn't overlap initial content on very small screens */

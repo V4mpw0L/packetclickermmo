@@ -576,10 +576,10 @@ function renderPrestige() {
 
       ${
         canPrestige
-          ? `<button id="do-prestige" class="neon-btn w-full mb-4">
+          ? `<button id="do-prestige" class="neon-btn w-full mb-2">
           Prestige Now! (+${shardGain} 🔷)
-          <div class="text-xs">Reset progress for permanent bonuses</div>
-        </button>`
+        </button>
+        <div class="text-center text-neon-gray text-xs mb-4">Reset progress for permanent bonuses</div>`
           : `<div class="text-center text-neon-gray mb-4">
           Need 50,000 packets to prestige<br>
           Current: ${state.packets.toLocaleString()}
@@ -612,7 +612,7 @@ function renderDaily() {
           : "bg-gray-800 border-gray-600"
     }">
       <span>Day ${reward.day}</span>
-      <span>${reward.gems}💎 + ${reward.packets}<span class="icon-packet"></span></span>
+      <span>${reward.gems}💎 + ${reward.packets}<img src="src/assets/packet-32.png" alt="Packets" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true" /></span>
       <span>${claimed ? "✅" : current ? "🎁" : "⏳"}</span>
     </div>`;
   }).join("");
@@ -626,7 +626,7 @@ function renderDaily() {
           canClaim
             ? `<button id="claim-daily" class="neon-btn mt-2">
             Claim Day ${streak + 1} Reward!
-            <div class="text-xs">${nextReward.gems}💎 + ${nextReward.packets}<span class="icon-packet"></span></div>
+            <div class="text-xs">${nextReward.gems}💎 + ${nextReward.packets}<img src="src/assets/packet-32.png" alt="Packets" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true" /></div>
           </button>`
             : `<div class="text-neon-gray text-sm mt-2">Come back tomorrow for next reward!</div>`
         }
