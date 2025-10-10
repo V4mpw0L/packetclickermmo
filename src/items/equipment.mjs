@@ -473,14 +473,11 @@ export function renderTab(state) {
       </div>`
       : "";
 
-  const invCards =
-    totalItems === 0
-      ? `<div class="text-neon-gray text-xs">No items yet. Keep clicking!</div>`
-      : `
+  const invCards = `
         <div class="inv-grid" style="display:grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .5rem; padding: .5rem; box-sizing: border-box; width: 100%;">
           ${gridHtml}
         </div>
-        ${pagerHtml}
+        ${totalItems === 0 ? '<div class="text-neon-gray text-xs" style="text-align:center; margin-top:.25rem;">No items yet. Keep clicking!</div>' : pagerHtml}
       `;
 
   return `
