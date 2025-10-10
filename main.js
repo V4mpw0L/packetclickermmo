@@ -382,7 +382,7 @@ function renderGame() {
       </div>
       ${boostStatus}
       ${renderActiveEvent()}
-      ${state.prestige.level >= 1 ? `<div class="text-center"><button id="prestige-btn" class="neon-btn text-sm">⭐ Prestige Available</button></div>` : ""}
+      ${state.packets >= 50000 ? `<div class="text-center"><button id="prestige-btn" class="neon-btn text-sm">⭐ Prestige Available</button></div>` : ""}
     </div>
     ${adBanner}
   `;
@@ -794,6 +794,7 @@ function renderActiveEvent() {
 
 // =============== GAME LOGIC ===============
 let _megaFXTimer = null;
+let _ultraFXTimer = null;
 function activateMegaFX() {
   try {
     document.body.classList.add("mega-active");
@@ -917,7 +918,44 @@ function clickPacket(event) {
     // Determine effect type based on combo
     let effectText = `+${amount}`;
     let displayedGain = amount;
-    if (clickCombo >= 10) {
+    if (clickCombo >= 20) {
+      clickFX.classList.add("ultra-combo");
+      // ULTRA streak bonus: +50%
+      const extra = Math.floor(amount * 0.5);
+      state.packets += extra;
+      state.stats.totalPackets += extra;
+      displayedGain += extra;
+      effectText = `ULTRA! +${amount} (+50%)`;
+      // Stronger shake and ULTRA FX
+      // ULTRA shake handled via CSS (body.ultra-active); avoid .shake-element to prevent conflicts
+      // Activate ULTRA FX (temporary body class + sentinel)
+      try {
+        document.body.classList.add("ultra-active");
+        let sentinel = document.getElementById("ultra-sentinel");
+        if (!sentinel) {
+          sentinel = document.createElement("div");
+          sentinel.id = "ultra-sentinel";
+          sentinel.className = "click-effect ultra-combo";
+          sentinel.style.position = "fixed";
+          sentinel.style.left = "-9999px";
+          sentinel.style.top = "-9999px";
+          sentinel.style.width = "1px";
+          sentinel.style.height = "1px";
+          sentinel.style.opacity = "0";
+          sentinel.style.pointerEvents = "none";
+          document.body.appendChild(sentinel);
+        }
+        if (_ultraFXTimer) clearTimeout(_ultraFXTimer);
+        _ultraFXTimer = setTimeout(() => {
+          try {
+            document.body.classList.remove("ultra-active");
+            const s = document.getElementById("ultra-sentinel");
+            if (s && s.parentNode) s.parentNode.removeChild(s);
+          } catch {}
+          _ultraFXTimer = null;
+        }, 1400);
+      } catch {}
+    } else if (clickCombo >= 10) {
       clickFX.classList.add("mega-combo");
       activateMegaFX();
       // 25% combo bonus on MEGA streaks
@@ -949,7 +987,9 @@ function clickPacket(event) {
 
     clickFX.textContent = effectText;
     // Match individual click effect color with combo level using theme variables
-    if (clickCombo >= 10) {
+    if (clickCombo >= 20) {
+      clickFX.style.color = "#ff4dff";
+    } else if (clickCombo >= 10) {
       clickFX.style.color = "var(--accent-color)";
     } else if (clickCombo >= 5) {
       clickFX.style.color = "var(--secondary-color)";
@@ -1042,11 +1082,31 @@ function clickPacket(event) {
     }
 
     document.body.appendChild(clickFX);
+    // Clear transient FX when dropping below thresholds
+    if (clickCombo < 20) {
+      if (_ultraFXTimer) {
+        clearTimeout(_ultraFXTimer);
+        _ultraFXTimer = setTimeout(() => {
+          try {
+            document.body.classList.remove("ultra-active");
+            const s = document.getElementById("ultra-sentinel");
+            if (s && s.parentNode) s.parentNode.removeChild(s);
+          } catch {}
+          _ultraFXTimer = null;
+        }, 200);
+      }
+    }
     if (clickCombo < 10) scheduleMegaFXClear();
 
     // Remove element after animation
     const animationDuration =
-      clickCombo >= 10 ? 900 : clickCombo >= 5 ? 1100 : 900;
+      clickCombo >= 20
+        ? 1200
+        : clickCombo >= 10
+          ? 900
+          : clickCombo >= 5
+            ? 1100
+            : 900;
     setTimeout(() => {
       if (clickFX.parentNode) {
         document.body.removeChild(clickFX);
@@ -1064,7 +1124,10 @@ function clickPacket(event) {
   if (state.player.sound) {
     if (crit) {
       playSound("crit");
-      if (clickCombo >= 10) {
+      if (clickCombo >= 20) {
+        setTimeout(() => playSound("crit"), 100);
+        setTimeout(() => playSound("click"), 200);
+      } else if (clickCombo >= 10) {
         setTimeout(() => playSound("crit"), 90);
         setTimeout(() => playSound("click"), 180);
       } else if (clickCombo >= 5) {
@@ -1072,7 +1135,11 @@ function clickPacket(event) {
       }
     } else {
       playSound("click");
-      if (clickCombo >= 10) {
+      if (clickCombo >= 20) {
+        setTimeout(() => playSound("click"), 80);
+        setTimeout(() => playSound("click"), 160);
+        setTimeout(() => playSound("click"), 240);
+      } else if (clickCombo >= 10) {
         setTimeout(() => playSound("click"), 70);
         setTimeout(() => playSound("click"), 140);
       } else if (clickCombo >= 5) {
