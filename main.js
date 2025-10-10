@@ -462,7 +462,8 @@ function renderGame() {
   const clickBtn = renderButton({
     id: "click-btn",
     className: "text-2xl py-4 active:scale-95 transition-transform",
-    label: 'Collect Packets <span class="icon-packet"></span>',
+    label:
+      '<span class="icon-packet"></span> Collect Packets <span class="icon-packet"></span>',
     attrs: { style: "padding-top: 1.15rem; padding-bottom: 1.15rem;" },
   });
 
