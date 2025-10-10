@@ -795,6 +795,7 @@ function renderActiveEvent() {
 // =============== GAME LOGIC ===============
 let _megaFXTimer = null;
 let _ultraFXTimer = null;
+let _animalFXTimer = null;
 function activateMegaFX() {
   try {
     document.body.classList.add("mega-active");
@@ -918,7 +919,58 @@ function clickPacket(event) {
     // Determine effect type based on combo
     let effectText = `+${amount}`;
     let displayedGain = amount;
-    if (clickCombo >= 20) {
+    if (clickCombo >= 30) {
+      clickFX.classList.add("ultra-combo");
+      // ANIMAL streak bonus: +99%
+      const extra = Math.floor(amount * 0.99);
+      state.packets += extra;
+      state.stats.totalPackets += extra;
+      displayedGain += extra;
+      effectText = `ANIMAL!!! +${amount} (+99%)`;
+      // Red neon electric on the button (inline to avoid CSS dependency)
+      const clickBtn = document.getElementById("click-btn");
+      if (clickBtn) {
+        if (typeof clickBtn._prevShadow === "undefined") {
+          clickBtn._prevShadow = clickBtn.style.boxShadow || "";
+        }
+        clickBtn.style.boxShadow =
+          "0 0 0.75rem rgba(255, 48, 64, 0.9), 0 0 1.75rem rgba(255, 48, 64, 0.7), 0 0 2.75rem rgba(255, 96, 128, 0.55)";
+        clickBtn.classList.add("shake-element");
+        setTimeout(() => clickBtn.classList.remove("shake-element"), 320);
+      }
+      // Activate ANIMAL FX (temporary body class + sentinel)
+      try {
+        document.body.classList.add("animal-active");
+        let sentinel = document.getElementById("animal-sentinel");
+        if (!sentinel) {
+          sentinel = document.createElement("div");
+          sentinel.id = "animal-sentinel";
+          sentinel.className = "click-effect ultra-combo";
+          sentinel.style.position = "fixed";
+          sentinel.style.left = "-9999px";
+          sentinel.style.top = "-9999px";
+          sentinel.style.width = "1px";
+          sentinel.style.height = "1px";
+          sentinel.style.opacity = "0";
+          sentinel.style.pointerEvents = "none";
+          document.body.appendChild(sentinel);
+        }
+        if (_animalFXTimer) clearTimeout(_animalFXTimer);
+        _animalFXTimer = setTimeout(() => {
+          try {
+            document.body.classList.remove("animal-active");
+            const s = document.getElementById("animal-sentinel");
+            if (s && s.parentNode) s.parentNode.removeChild(s);
+            const btn = document.getElementById("click-btn");
+            if (btn && typeof btn._prevShadow !== "undefined") {
+              btn.style.boxShadow = btn._prevShadow;
+              delete btn._prevShadow;
+            }
+          } catch {}
+          _animalFXTimer = null;
+        }, 1600);
+      } catch {}
+    } else if (clickCombo >= 20) {
       clickFX.classList.add("ultra-combo");
       // ULTRA streak bonus: +50%
       const extra = Math.floor(amount * 0.5);
@@ -987,7 +1039,9 @@ function clickPacket(event) {
 
     clickFX.textContent = effectText;
     // Match individual click effect color with combo level using theme variables
-    if (clickCombo >= 20) {
+    if (clickCombo >= 30) {
+      clickFX.style.color = "#ff3040";
+    } else if (clickCombo >= 20) {
       clickFX.style.color = "#ff4dff";
     } else if (clickCombo >= 10) {
       clickFX.style.color = "var(--accent-color)";
@@ -1036,19 +1090,38 @@ function clickPacket(event) {
       clickPacket._comboTotal = 0;
     }, COMBO_TIMEOUT + 200);
 
-    // Position above the click button
+    // Position above the click button with horizontal clamping
+    // Append first (off-screen) so width can be measured, then clamp
+    clickFX.style.visibility = "hidden";
+    clickFX.style.left = "-9999px";
+    clickFX.style.top = "0px";
+    document.body.appendChild(clickFX);
+    const vw = Math.max(
+      document.documentElement.clientWidth || 0,
+      window.innerWidth || 0,
+    );
+    const margin = 8;
+    const fxWidth = clickFX.offsetWidth || 0;
+
     const clickBtn = document.getElementById("click-btn");
     if (clickBtn) {
       const rect = clickBtn.getBoundingClientRect();
-      clickFX.style.left = rect.left + rect.width / 2 + "px";
+      const centerX = rect.left + rect.width / 2;
+      const halfW = fxWidth / 2;
+      const clampedCenter = Math.min(
+        vw - margin - halfW,
+        Math.max(margin + halfW, centerX),
+      );
+      clickFX.style.left = clampedCenter + "px";
       clickFX.style.top = rect.top - 20 + "px";
+      clickFX.style.visibility = "";
 
       // Critical hit effect indicator
       if (crit) {
         const critFX = document.createElement("div");
         critFX.className = "click-effect critical";
         critFX.textContent = `CRITICAL ${((state.packets - packetsBefore) / Math.max(1, state.perClick)).toFixed(2).replace(/\.00$/, "")}x! +${(state.packets - packetsBefore).toLocaleString()}`;
-        critFX.style.left = rect.left + rect.width / 2 + "px";
+        critFX.style.left = clampedCenter + "px";
         critFX.style.top = rect.top - 50 + "px";
         document.body.appendChild(critFX);
         setTimeout(() => {
@@ -1061,13 +1134,20 @@ function clickPacket(event) {
         });
       }
     } else {
-      clickFX.style.left = "50%";
+      const centerX = vw / 2;
+      const halfW = fxWidth / 2;
+      const clampedCenter = Math.min(
+        vw - margin - halfW,
+        Math.max(margin + halfW, centerX),
+      );
+      clickFX.style.left = clampedCenter + "px";
       clickFX.style.top = "50%";
+      clickFX.style.visibility = "";
       if (crit) {
         const critFX = document.createElement("div");
         critFX.className = "click-effect critical";
         critFX.textContent = `CRITICAL ${((state.packets - packetsBefore) / Math.max(1, state.perClick)).toFixed(2).replace(/\.00$/, "")}x! +${(state.packets - packetsBefore).toLocaleString()}`;
-        critFX.style.left = "50%";
+        critFX.style.left = clampedCenter + "px";
         critFX.style.top = "45%";
         document.body.appendChild(critFX);
         setTimeout(() => {
@@ -1081,8 +1161,25 @@ function clickPacket(event) {
       }
     }
 
-    document.body.appendChild(clickFX);
-    // Clear transient FX when dropping below thresholds
+    // Clear transient FX when dropping below thresholds (ANIMAL/ULTRA/MEGA)
+    if (clickCombo < 30) {
+      if (_animalFXTimer) {
+        clearTimeout(_animalFXTimer);
+        _animalFXTimer = setTimeout(() => {
+          try {
+            document.body.classList.remove("animal-active");
+            const s = document.getElementById("animal-sentinel");
+            if (s && s.parentNode) s.parentNode.removeChild(s);
+            const btn = document.getElementById("click-btn");
+            if (btn && typeof btn._prevShadow !== "undefined") {
+              btn.style.boxShadow = btn._prevShadow;
+              delete btn._prevShadow;
+            }
+          } catch {}
+          _animalFXTimer = null;
+        }, 200);
+      }
+    }
     if (clickCombo < 20) {
       if (_ultraFXTimer) {
         clearTimeout(_ultraFXTimer);
@@ -1124,7 +1221,12 @@ function clickPacket(event) {
   if (state.player.sound) {
     if (crit) {
       playSound("crit");
-      if (clickCombo >= 20) {
+      if (clickCombo >= 30) {
+        setTimeout(() => playSound("crit"), 60);
+        setTimeout(() => playSound("click"), 120);
+        setTimeout(() => playSound("crit"), 180);
+        setTimeout(() => playSound("click"), 240);
+      } else if (clickCombo >= 20) {
         setTimeout(() => playSound("crit"), 100);
         setTimeout(() => playSound("click"), 200);
       } else if (clickCombo >= 10) {
@@ -1135,7 +1237,13 @@ function clickPacket(event) {
       }
     } else {
       playSound("click");
-      if (clickCombo >= 20) {
+      if (clickCombo >= 30) {
+        setTimeout(() => playSound("click"), 60);
+        setTimeout(() => playSound("click"), 120);
+        setTimeout(() => playSound("click"), 180);
+        setTimeout(() => playSound("click"), 240);
+        setTimeout(() => playSound("click"), 300);
+      } else if (clickCombo >= 20) {
         setTimeout(() => playSound("click"), 80);
         setTimeout(() => playSound("click"), 160);
         setTimeout(() => playSound("click"), 240);
