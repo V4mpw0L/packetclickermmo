@@ -73,7 +73,9 @@ function getParticle() {
   if (!_animalAuraLayer) return null;
   initParticlePool();
   let el =
-    _particlePool.length > 0 ? _particlePool.pop() : document.createElement("div");
+    _particlePool.length > 0
+      ? _particlePool.pop()
+      : document.createElement("div");
   if (!el.parentNode) (_animalAuraLayer || getBody()).appendChild(el);
   _particleInUse.add(el);
   // Reset visual
@@ -171,9 +173,8 @@ export function startAnimalAura(clickCombo = 30) {
       const burstActive =
         typeof _animalCritBurstUntil === "number" &&
         Date.now() < _animalCritBurstUntil;
-      const nearWarmBias = Math.random() < (burstActive ? 0.95 : 0.85);
-      const hue = nearWarmBias ? (Math.random() < 0.6 ? 28 : 8) : 195;
-      const lightness = nearWarmBias ? (burstActive ? 58 : 56) : 62;
+      const hue = Math.random() < 0.5 ? 8 : 28;
+      const lightness = burstActive ? 58 : 56;
       p.style.background = `radial-gradient(circle, rgba(255,200,160,0.85) 0 35%, hsla(${hue}, 100%, ${lightness}%, ${
         burstActive ? 1 : 0.95
       }))`;
@@ -208,7 +209,10 @@ export function startAnimalAura(clickCombo = 30) {
           releaseParticle(p);
         },
         Math.round(
-          420 + Math.min(1, dist / Math.max(1, rect.width)) * 620 + 260 + Math.random() * 160,
+          420 +
+            Math.min(1, dist / Math.max(1, rect.width)) * 620 +
+            260 +
+            Math.random() * 160,
         ),
       );
     }, rateMs);
@@ -300,11 +304,11 @@ export function handleComboEffect(clickCombo, amount, state) {
   };
 
   if (clickCombo >= 30) {
-    effectClass = "ultra-combo animal-combo";
+    effectClass = "animal-combo";
     const extra = Math.floor(amount * 0.99);
     safeAddPackets(extra);
     displayedGain += extra;
-    effectText = `ANIMAL! +${amount} (+99%)`;
+    effectText = `<span style="color:#ff3040">ANIMAL! +${amount} (+99%)</span>`;
 
     if (hasDOM()) {
       try {
@@ -317,7 +321,7 @@ export function handleComboEffect(clickCombo, amount, state) {
             clickBtn._prevShadow = clickBtn.style.boxShadow || "";
           }
           clickBtn.style.boxShadow =
-            "0 0 0.75rem rgba(255, 48, 64, 0.9), 0 0 1.75rem rgba(255, 48, 64, 0.7), 0 0 2.75rem rgba(255, 96, 128, 0.55)";
+            "0 0 0.75rem rgba(255, 48, 64, 0.9), 0 0 1.75rem rgba(255, 48, 32, 0.7), 0 0 2.75rem rgba(255, 96, 0, 0.55)";
           clickBtn.classList.add("shake-element");
           setTimeout(() => clickBtn.classList.remove("shake-element"), 320);
         }
@@ -326,7 +330,7 @@ export function handleComboEffect(clickCombo, amount, state) {
         if (!sentinel) {
           sentinel = document.createElement("div");
           sentinel.id = "animal-sentinel";
-          sentinel.className = "click-effect ultra-combo";
+          sentinel.className = "click-effect animal-combo";
           sentinel.style.position = "fixed";
           sentinel.style.left = "-9999px";
           sentinel.style.top = "-9999px";
@@ -365,7 +369,7 @@ export function handleComboEffect(clickCombo, amount, state) {
     const extra = Math.floor(amount * 0.5);
     safeAddPackets(extra);
     displayedGain += extra;
-    effectText = `ULTRA! +${amount} (+50%)`;
+    effectText = `<span style="color:#ff4dff">ULTRA! +${amount} (+50%)</span>`;
 
     if (hasDOM()) {
       try {

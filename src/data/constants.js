@@ -458,7 +458,7 @@
       {
         id: "daily7",
         name: "Week Warrior",
-        emoji: "📅",
+        emoji: "📦",
         desc: "Claim daily rewards for 7 days",
         req: function (s) {
           return (s && s.dailyRewards && s.dailyRewards.streak) >= 7;

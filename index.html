@@ -28,38 +28,62 @@
             property="og:description"
             content="Cyberpunk idle MMO game: evolve, earn gems, compete, unlock skins and more!"
         />
-        <meta property="og:image" content="src/assets/packet-512.png" />
+        <meta property="og:image" content="src/assets/packet.webp" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://seusite.com/" />
         <!-- Update to your real site -->
         <link
             rel="icon"
-            href="src/assets/packet-32.png"
+            href="src/assets/packet.webp"
             sizes="32x32"
-            type="image/png"
+            type="image/webp"
         />
         <link
             rel="icon"
-            href="src/assets/packet-48.png"
+            href="src/assets/packet.webp"
             sizes="48x48"
-            type="image/png"
+            type="image/webp"
         />
         <link
             rel="icon"
-            href="src/assets/packet-64.png"
+            href="src/assets/packet.webp"
             sizes="64x64"
-            type="image/png"
+            type="image/webp"
         />
         <link
             rel="icon"
-            href="src/assets/packet-512.png"
+            href="src/assets/packet.webp"
             sizes="512x512"
-            type="image/png"
+            type="image/webp"
         />
-        <link rel="apple-touch-icon" href="src/assets/packet-512.png" />
+        <link
+            rel="apple-touch-icon"
+            href="src/assets/packet.webp"
+            sizes="512x512"
+        />
 
         <!-- Custom CSS only - no external dependencies -->
         <link rel="stylesheet" href="style.css" />
+        <style>
+            /* Hide Packets/s pill */
+            #pps-display {
+                display: none !important;
+            }
+
+            /* Menu icons with captions under each icon (uses aria-label) */
+            nav.menu-bar .tab-btn {
+                display: inline-flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.15rem;
+            }
+            nav.menu-bar .tab-btn::after {
+                content: attr(aria-label);
+                font-size: 0.6rem;
+                line-height: 1;
+                opacity: 0.8;
+            }
+        </style>
     </head>
     <body>
         <!-- Top Navigation Bar -->
@@ -89,12 +113,31 @@
                     />
                     <span id="gem-count">0</span>
                 </span>
+                <!-- removed Packets/s pill -->
+                <button
+                    id="open-equipment"
+                    title="Equipment"
+                    aria-label="Open equipment"
+                    onclick="(function(){var b=document.querySelector('.menu-bar .tab-btn[data-tab=equipment]'); if(b){ b.click(); }})();"
+                >
+                    <img
+                        src="src/assets/items/I_Chest01.png"
+                        alt="Equipment"
+                        style="width: 28px; height: 28px; display: inline-block"
+                        aria-hidden="true"
+                    />
+                </button>
                 <button
                     id="open-settings"
                     title="Settings"
                     aria-label="Open settings"
                 >
-                    ⚙️
+                    <img
+                        src="src/assets/settings.webp"
+                        alt="Settings"
+                        style="width: 32px; height: 32px; display: inline-block"
+                        aria-hidden="true"
+                    />
                 </button>
             </div>
         </nav>
@@ -121,6 +164,17 @@
             </button>
             <button
                 class="tab-btn"
+                data-tab="equipment"
+                role="tab"
+                aria-label="Equipment"
+                title="Equipment"
+                style="display: none"
+                aria-hidden="true"
+            >
+                🧰
+            </button>
+            <button
+                class="tab-btn"
                 data-tab="achievements"
                 role="tab"
                 aria-label="Achievements"
@@ -137,6 +191,7 @@
             >
                 🏬
             </button>
+            <!-- Equipment button moved next to Upgrades for better UX ordering -->
             <button
                 class="tab-btn"
                 data-tab="boosts"
@@ -318,11 +373,11 @@
                             )
                             .replace(
                                 />📅 Daily Rewards</g,
-                                ">📅 " + trNoIcon("daily.title") + "<",
+                                "> " + trNoIcon("daily.title") + "<",
                             )
                             .replace(
                                 />Daily Rewards</g,
-                                ">📅 " + trNoIcon("daily.title") + "<",
+                                "> " + trNoIcon("daily.title") + "<",
                             )
                             .replace(
                                 />⚡ Temporary Boosts</g,

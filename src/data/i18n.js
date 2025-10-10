@@ -153,8 +153,7 @@
       settings: {
         title: "Settings",
         sfx: "Game Sound Effects",
-        note:
-          "All progress is saved locally.<br>For mobile, use Store in-app for real gems/ads!",
+        note: "All progress is saved locally.<br>For mobile, use Store in-app for real gems/ads!",
       },
       profile: {
         title: "Edit Profile",
@@ -177,7 +176,7 @@
         stackHint: "Boosts stack with other bonuses for maximum effect!",
       },
       daily: {
-        title: "📅 Daily Rewards",
+        title: "Daily Rewards",
         comeBack: "Come back tomorrow for next reward!",
       },
       events: {
@@ -249,8 +248,7 @@
       settings: {
         title: "Configurações",
         sfx: "Efeitos Sonoros do Jogo",
-        note:
-          "Todo progresso é salvo localmente.<br>No mobile, use a Loja do app para gemas/anúncios reais!",
+        note: "Todo progresso é salvo localmente.<br>No mobile, use a Loja do app para gemas/anúncios reais!",
       },
       profile: {
         title: "Editar Perfil",
@@ -345,8 +343,7 @@
       settings: {
         title: "Настройки",
         sfx: "Звуковые эффекты игры",
-        note:
-          "Весь прогресс сохраняется локально.<br>На мобильных используйте магазин приложения для настоящих гемов/рекламы!",
+        note: "Весь прогресс сохраняется локально.<br>На мобильных используйте магазин приложения для настоящих гемов/рекламы!",
       },
       profile: {
         title: "Редактировать профиль",
@@ -449,7 +446,10 @@
       },
       offlineEarnings: {
         en: { name: "Offline Earnings", desc: "Earn while away" },
-        "pt-br": { name: "Ganhos Offline", desc: "Ganhe enquanto estiver fora" },
+        "pt-br": {
+          name: "Ganhos Offline",
+          desc: "Ganhe enquanto estiver fora",
+        },
         ru: { name: "Доход офлайн", desc: "Заработок в отсутствие" },
       },
       luckyClicks: {
@@ -459,7 +459,10 @@
       },
       megaCrits: {
         en: { name: "Mega Crits", desc: "Crits give 3x instead of 2x" },
-        "pt-br": { name: "Mega Críticos", desc: "Críticos dão 3x em vez de 2x" },
+        "pt-br": {
+          name: "Mega Críticos",
+          desc: "Críticos dão 3x em vez de 2x",
+        },
         ru: { name: "Мега-криты", desc: "Крит 3x вместо 2x" },
       },
     },
@@ -513,7 +516,10 @@
         ru: { name: "Всплеск гемов", desc: "Гемы чаще в течение 60с" },
       },
       upgradeDiscount: {
-        en: { name: "Upgrade Sale!", desc: "50% off all upgrades for 3 minutes" },
+        en: {
+          name: "Upgrade Sale!",
+          desc: "50% off all upgrades for 3 minutes",
+        },
         "pt-br": {
           name: "Promoção de Melhorias!",
           desc: "50% de desconto em todas as melhorias por 3 minutos",
@@ -551,7 +557,8 @@
           if (!it || !it.id || !map[it.id]) continue;
           var loc = map[it.id][l] || map[it.id].en;
           if (loc && loc.name) it.name = loc.name;
-          if (loc && loc.desc && typeof it.desc === "string") it.desc = loc.desc;
+          if (loc && loc.desc && typeof it.desc === "string")
+            it.desc = loc.desc;
         }
       } catch (_) {}
     }
@@ -587,9 +594,15 @@
           g.Packet.data.PRESTIGE_UPGRADES &&
           Array.isArray(g.Packet.data.PRESTIGE_UPGRADES)
         ) {
-          patchArray(g.Packet.data.PRESTIGE_UPGRADES, catalogMap.prestigeUpgrades);
+          patchArray(
+            g.Packet.data.PRESTIGE_UPGRADES,
+            catalogMap.prestigeUpgrades,
+          );
         }
-        if (g.Packet.data.BOOST_SHOP && Array.isArray(g.Packet.data.BOOST_SHOP)) {
+        if (
+          g.Packet.data.BOOST_SHOP &&
+          Array.isArray(g.Packet.data.BOOST_SHOP)
+        ) {
           patchArray(g.Packet.data.BOOST_SHOP, catalogMap.boosts);
         }
         if (

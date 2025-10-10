@@ -38,6 +38,7 @@ import {
   showHudNotify,
   clearHUD,
 } from "./src/ui/hud.mjs";
+import Equipment from "./src/items/equipment.mjs";
 import {
   renderButton,
   renderMenu,
@@ -116,6 +117,9 @@ const state = {
     totalUpgrades: 0,
     sessionStart: Date.now(),
   },
+  // Equipment system
+  inventory: [],
+  equipment: { glove: null, trinket: null },
 };
 
 // Apply theme to document
@@ -353,6 +357,12 @@ function getTabContent(tab) {
       return typeof w.renderThemes === "function"
         ? w.renderThemes()
         : renderThemes();
+    case "equipment":
+      return Equipment && Equipment.renderTab
+        ? Equipment.renderTab(state)
+        : typeof w.renderEquipment === "function"
+          ? w.renderEquipment()
+          : "";
     default:
       return "";
   }
@@ -410,6 +420,8 @@ function updateTopBar() {
   // Keep existing gem counter (in the settings area) in sync
   let el = document.getElementById("gem-count");
   if (el) el.textContent = state.gems;
+
+  // Packets/sec pill disabled per design request
 }
 
 // =============== GAME TAB RENDERING ===============
@@ -437,7 +449,7 @@ function renderGame() {
   }
   if (state.boosts.tripleGems > Date.now()) {
     let remaining = Math.ceil((state.boosts.tripleGems - Date.now()) / 1000);
-    boostStatus += `<div class="text-gem text-xs">💎 3x Gem Rate (${remaining}s)</div>`;
+    boostStatus += `<div class="text-gem text-xs"><span class="icon-packet"></span> 3x Gem Rate (${remaining}s)</div>`;
   }
   if (state.boosts.autoClicker > Date.now()) {
     let remaining = Math.ceil((state.boosts.autoClicker - Date.now()) / 1000);
@@ -455,15 +467,25 @@ function renderGame() {
   if (state.prestige.autoClicker > 0) perSecBase += state.prestige.autoClicker;
   if (state.boosts.autoClicker > Date.now()) perSecBase += 10;
 
-  let effectivePerClick = Math.floor(state.perClick * totalMultiplier);
-  let effectivePerSec = Math.floor(perSecBase * totalMultiplier);
+  const eq =
+    typeof Equipment !== "undefined" && Equipment.computeBonuses
+      ? Equipment.computeBonuses(state)
+      : typeof getEquipmentBonuses === "function"
+        ? getEquipmentBonuses()
+        : { perClick: 0, perSec: 0, critChance: 0 };
+  let effectivePerClick = Math.floor(
+    (state.perClick + (eq.perClick || 0)) * totalMultiplier,
+  );
+  let effectivePerSec = Math.floor(
+    (perSecBase + (eq.perSec || 0)) * totalMultiplier,
+  );
 
   // Use modular renderButton for click button
   const clickBtn = renderButton({
     id: "click-btn",
-    className: "text-2xl py-4 active:scale-95 transition-transform",
+    className: "neon-btn text-2xl py-4 active:scale-95 transition-transform",
     label:
-      '<span class="icon-packet"></span> Collect Packets <span class="icon-packet"></span>',
+      '<span class="finger-icon"></span> Collect Packets <span class="finger-icon"></span>',
     attrs: { style: "padding-top: 1.15rem; padding-bottom: 1.15rem;" },
   });
 
@@ -486,7 +508,7 @@ function renderGame() {
         <span>Packets/Sec: ${effectivePerSec}</span>
       </div>
       <div class="flex justify-between items-center text-neon-yellow text-sm">
-        <span>Crit Chance: ${state.critChance}%</span>
+        <span>Crit Chance: ${Math.min(100, state.critChance + (eq.critChance || 0))}%</span>
         <span>Crit Multiplier: ${state.critMult}x</span>
       </div>
       ${boostStatus}
@@ -682,6 +704,102 @@ function renderShop() {
   `;
 }
 
+// =============== EQUIPMENT TAB ===============
+function renderEquipment() {
+  const eq = (state.equipment = state.equipment || {
+    glove: null,
+    trinket: null,
+  });
+  const inv = Array.isArray(state.inventory)
+    ? state.inventory
+    : (state.inventory = []);
+  const eqSlots = [
+    { id: "glove", name: "Glove" },
+    { id: "trinket", name: "Trinket" },
+  ];
+
+  const slotHtml = eqSlots
+    .map((s) => {
+      const it = eq[s.id];
+      if (!it) {
+        return `<div class="neon-card" style="padding:0.5rem; display:flex; align-items:center; justify-content:space-between;">
+          <div><strong>${s.name}</strong><div class="text-neon-gray text-xs">Empty</div></div>
+          <button class="neon-btn text-xs opacity-75" disabled>Unequip</button>
+        </div>`;
+      }
+      return `<div class="neon-card" style="padding:0.5rem; display:flex; align-items:center; gap:.5rem; justify-content:space-between; border-color:${it.color || rarityColor(it.rarity)};">
+        <div style="display:flex; align-items:center; gap:.5rem;">
+          <img src="${it.icon}" alt="${it.name}" style="width:32px;height:32px;border-radius:6px;border:1px solid ${it.color || rarityColor(it.rarity)};" />
+          <div>
+            <div style="font-weight:800; color:${it.color || rarityColor(it.rarity)};">${it.name} <span style="font-size:.8em; opacity:.9;">(${it.rarityName})</span></div>
+            <div class="text-neon-gray text-xs">+${it.stats.perClick || 0}/click, +${it.stats.perSec || 0}/sec, +${it.stats.critChance || 0}% crit</div>
+          </div>
+        </div>
+        <button class="gem-btn text-xs" data-unequip-slot="${s.id}">Unequip</button>
+      </div>`;
+    })
+    .join("");
+
+  const invCards = inv
+    .map((it, idx) => {
+      return `<div class="neon-card" style="padding:.5rem; border-color:${it.color || rarityColor(it.rarity)};">
+        <div style="display:flex; align-items:center; gap:.5rem;">
+          <img src="${it.icon}" alt="${it.name}" style="width:36px;height:36px;border-radius:6px;border:1px solid ${it.color || rarityColor(it.rarity)};" />
+          <div style="flex:1;">
+            <div style="font-weight:800; color:${it.color || rarityColor(it.rarity)};">${it.name} <span style="font-size:.8em;">(${it.rarityName})</span></div>
+            <div class="text-neon-gray text-xs">+${it.stats.perClick || 0}/click, +${it.stats.perSec || 0}/sec, +${it.stats.critChance || 0}% crit</div>
+          </div>
+          <button class="neon-btn text-xs" data-equip-index="${idx}">Equip</button>
+        </div>
+      </div>`;
+    })
+    .join("");
+
+  return `
+    <div class="neon-card px-3 py-4 mb-2">
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🧰 Equipment</h2>
+      <div class="text-neon-gray text-sm mb-3">Equip items to gain bonuses. Rarity colors: <span style="color:${rarityColor("green")}">Green</span>, <span style="color:${rarityColor("gold")}">Gold</span>, <span style="color:${rarityColor("blue")}">Blue</span>, <span style="color:${rarityColor("pink")}">Pink</span>, <span style="color:${rarityColor("animal")}">Red</span>.</div>
+      <div class="space-y-2">${slotHtml}</div>
+      <div class="text-neon-gray text-sm mt-3 mb-1">Inventory</div>
+      <div class="space-y-2">${invCards || '<div class="text-neon-gray text-xs">No items yet. Keep clicking!</div>'}</div>
+    </div>
+  `;
+}
+
+// Equipment helpers moved to src/items/equipment.mjs
+
+// Replaced by Equipment.computeBonuses(state)
+
+// Replaced by Equipment.equip(state, index, slot)
+
+// Replaced by Equipment.unequip(state, slot)
+
+// Replaced by Equipment.maybeDropOnClick(state, { save, notify })
+
+// RARITIES now provided by Equipment.RARITIES
+
+// Item pool provided by Equipment.ITEM_POOL
+
+// Replaced by Equipment.rollDrop(state, { rarity })
+
+// Replaced by Equipment.rollDrop(state)
+
+// =============== CLICK CURSOR BY COMBO ===============
+function setCursorForCombo(combo) {
+  try {
+    const btn = document.getElementById("click-btn");
+    if (!btn) return;
+    let file = "src/assets/green.webp"; // default
+    if (combo >= 30) file = "src/assets/animal.webp";
+    else if (combo >= 20) file = "src/assets/pink.webp";
+    else if (combo >= 10) file = "src/assets/blue.webp";
+    else if (combo >= 5) file = "src/assets/gold.webp";
+    else file = "src/assets/green.webp";
+    // hotspot x=6 y=0 for pointer
+    btn.style.cursor = `url("${file}") 6 0, pointer`;
+  } catch (_) {}
+}
+
 // =============== LEADERBOARD PANEL ===============
 function renderLeaderboard() {
   if (!state.leaderboardBots || !state.leaderboardBots.length) {
@@ -703,7 +821,7 @@ function renderLeaderboard() {
       <span style="width: 2rem; text-align: right; color: var(--secondary-color); font-weight: bold;">${idx === 0 ? "🥇 " : idx === 1 ? "🥈 " : idx === 2 ? "🥉 " : ""}${idx + 1}.</span>
       <img src="${p.avatar || DEFAULT_AVATAR}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 2rem; height: 2rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "3px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"}; box-shadow: ${idx === 0 ? "0 0 14px rgba(255,215,0,0.6)" : idx === 1 ? "0 0 12px rgba(192,192,192,0.55)" : idx === 2 ? "0 0 12px rgba(205,127,50,0.55)" : "none"};" alt="">
       <span style="font-weight: 800; ${p.name === state.player.name ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary);" : "color: var(--text-primary);"}">${idx === 0 ? '<span class="crown-badge">👑</span>' : ""}${p.name}</span>
-      <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary);">${p.packets.toLocaleString()}</span>
+      <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary);"><span class="icon-packet"></span> ${p.packets.toLocaleString()}</span>
     </li>
   `,
     )
@@ -850,7 +968,7 @@ function renderDaily() {
         </span>
         <span style="display:inline-flex; align-items:center; gap:.25rem; padding:.1rem .4rem; border:1px solid var(--border-color); border-radius:999px; background: rgba(0,0,0,0.25);">
           ${reward.packets}
-          <img src="src/assets/packet-32.png" alt="Packets" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;" aria-hidden="true" />
+          <span class="icon-packet"></span>
         </span>
       </span>
       <span>${claimed ? "✅" : current ? "🎁" : "⏳"}</span>
@@ -859,14 +977,14 @@ function renderDaily() {
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">${window.Packet && Packet.i18n ? "📅 " + Packet.i18n.t("daily.title").replace(/^📅\s*/, "") : "📅 Daily Rewards"}</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.title").replace(/^📅\s*/, "") : "Daily Rewards"}</h2>
       <div class="text-center mb-4">
         <div class="text-lg">Streak: ${streak} days</div>
         ${
           canClaim
             ? `<button id="claim-daily" class="neon-btn mt-2">
             ${window.Packet && Packet.i18n ? Packet.i18n.t("buttons.claimDaily", { n: streak + 1 }) : "Claim Day " + (streak + 1) + " Reward!"}
-            <div class="text-xs">${nextReward.gems}💎 + ${nextReward.packets}<img src="src/assets/packet-32.png" alt="Packets" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true" /></div>
+            <div class="text-xs">${nextReward.gems}💎 + ${nextReward.packets}<span class="icon-packet"></span></div>
           </button>`
             : `<div class="text-neon-gray text-sm mt-2">Come back tomorrow for next reward!</div>`
         }
@@ -1108,6 +1226,16 @@ function clickPacket(event) {
   }
 
   let critChance = state.critChance;
+  // Include equipment crit chance bonus
+  try {
+    if (
+      typeof Equipment !== "undefined" &&
+      typeof Equipment.computeBonuses === "function"
+    ) {
+      const _eqCrit = Equipment.computeBonuses(state).critChance || 0;
+      critChance = Math.min(100, critChance + _eqCrit);
+    }
+  } catch (_) {}
   if (state.boosts.megaCrit > Date.now()) {
     critChance = 50; // 50% crit chance during boost
   }
@@ -1124,8 +1252,16 @@ function clickPacket(event) {
     state.randomEvent.active && state.randomEvent.type === "packetRain"
       ? Number(state.randomEvent.multiplier) || 1
       : 1;
+  const _eqBonus =
+    typeof Equipment !== "undefined" &&
+    typeof Equipment.computeBonuses === "function"
+      ? Equipment.computeBonuses(state)
+      : null;
+  const _basePerClick =
+    state.perClick +
+    (_eqBonus && typeof _eqBonus.perClick === "number" ? _eqBonus.perClick : 0);
   let amount = Math.floor(
-    state.perClick * (crit ? critMultiplier : 1) * bonus * eventClickMult,
+    _basePerClick * (crit ? critMultiplier : 1) * bonus * eventClickMult,
   );
 
   // Lucky clicks chance
@@ -1171,6 +1307,7 @@ function clickPacket(event) {
   lastClickTime = now;
   // Track combo expiry to sync HUD and avatar ring
   _comboExpireAt = now + COMBO_TIMEOUT + 200;
+  setCursorForCombo(clickCombo);
 
   // Modularized combo effect logic
   if (!clickPacket._lastFxTime || Date.now() - clickPacket._lastFxTime > 80) {
@@ -1371,6 +1508,9 @@ function clickPacket(event) {
     renderTab();
   }
   checkAchievements();
+  if (typeof Equipment !== "undefined" && Equipment.maybeDropOnClick) {
+    Equipment.maybeDropOnClick(state, { save, notify: showHudNotify });
+  }
 }
 
 function upgrade(type) {
@@ -1423,7 +1563,20 @@ function idleTick() {
     bonus *= 2;
   }
 
-  let totalPerSec = state.perSec;
+  let totalPerSec =
+    state.perSec +
+    (function () {
+      try {
+        if (
+          typeof Equipment !== "undefined" &&
+          typeof Equipment.computeBonuses === "function"
+        ) {
+          const _eq = Equipment.computeBonuses(state);
+          return typeof _eq.perSec === "number" ? _eq.perSec : 0;
+        }
+      } catch (_) {}
+      return 0;
+    })();
 
   // Auto clicker from prestige
   if (state.prestige.autoClicker > 0) {
@@ -1994,6 +2147,8 @@ function bindTabEvents(tab) {
       btn.onpointerdown = (e) => {
         clickPacket(e);
       };
+      // Ensure cursor matches current combo stage when entering the Game tab
+      setCursorForCombo(typeof clickCombo === "number" ? clickCombo : 0);
     }
 
     let prestigeBtn = document.getElementById("prestige-btn");
@@ -2045,6 +2200,16 @@ function bindTabEvents(tab) {
       btn.onclick = () => buyBoost(btn.getAttribute("data-boost"));
     });
   }
+  if (tab === "equipment") {
+    if (typeof Equipment !== "undefined" && Equipment.bindEvents) {
+      Equipment.bindEvents(document, {
+        state,
+        save,
+        rerender: renderTab,
+        notify: showHudNotify,
+      });
+    }
+  }
   if (tab === "themes") {
     document.querySelectorAll("[data-theme]").forEach((btn) => {
       // Only add event listener if button is not disabled and not already active theme
@@ -2061,6 +2226,9 @@ function bindTabEvents(tab) {
 // =============== INIT ===============
 function init() {
   load();
+  if (typeof Equipment !== "undefined" && Equipment.ensureStateShape) {
+    Equipment.ensureStateShape(state);
+  }
   if (!state.leaderboardBots || !state.leaderboardBots.length) {
     state.leaderboardBots = generateBots(10);
     save();
@@ -2077,6 +2245,7 @@ function init() {
   // Handled by PacketUI.showModal with target check; avoid closing modal on any click
   // document.getElementById("modal-backdrop").onclick = closeModal;
   setInterval(idleTick, 1000);
+  setInterval(updateTopBar, 1000);
   setInterval(save, 10000);
 
   // Apply current theme

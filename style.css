@@ -170,15 +170,57 @@ footer {
 }
 
 /* === ICONS === */
-.icon-packet {
+/* (icon-packet moved; keep single definition to avoid duplicates) */
+
+/* Reusable finger icon that uses the current combo finger image */
+.finger-icon {
     display: inline-block;
-    width: 1.1rem;
-    height: 1.1rem;
-    background-image: url("src/assets/packet-32.png");
+    width: 1.2rem;
+    height: 1.2rem;
+    background-image: var(--finger-img);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     vertical-align: middle;
+}
+
+/* Menu icon captions: show aria-label under each icon (only Achievements and Leaderboard) */
+nav.menu-bar .tab-btn[aria-label="Achievements"],
+nav.menu-bar .tab-btn[aria-label="Leaderboard"] {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+}
+
+nav.menu-bar .tab-btn[aria-label="Achievements"]::after,
+nav.menu-bar .tab-btn[aria-label="Leaderboard"]::after {
+    content: attr(aria-label);
+    display: block;
+    font-size: 0.65rem;
+    line-height: 1;
+    opacity: 0.85;
+    letter-spacing: 0.01em;
+    pointer-events: none;
+    margin-top: 0.1rem;
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Extra bottom padding for longer captions to avoid overlap */
+nav.menu-bar .tab-btn[aria-label="Achievements"],
+nav.menu-bar .tab-btn[aria-label="Leaderboard"] {
+    padding-bottom: 0.5rem;
+}
+
+/* Legacy PNG packet <img> replacements -> new WebP */
+img[src="src/assets/packet-32.png"],
+img[src="src/assets/packet-48.png"],
+img[src="src/assets/packet-64.png"],
+img[src="src/assets/packet-512.png"] {
+    content: url("src/assets/packet.webp");
 }
 
 /* === CARD SYSTEM === */
@@ -437,13 +479,53 @@ body .modal-box .space-y-3 > * + * {
     justify-content: center;
 }
 
+/* Ensure the settings icon maintains a consistent, responsive size */
+#open-settings img {
+    width: clamp(28px, 3.6vw, 32px);
+    height: clamp(28px, 3.6vw, 32px);
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    flex: 0 0 auto;
+}
+
 #open-settings:hover {
     background: rgba(255, 255, 255, 0.1);
     transform: scale(1.1);
 }
 
+/* Equipment quick button (top bar) - match settings style and sizing */
+#open-equipment {
+    font-size: var(--font-size-xl);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--border-radius-sm);
+    transition: all 0.2s ease;
+    min-width: var(--touch-target-sm);
+    min-height: var(--touch-target-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive icon sizing (consistent with settings) */
+#open-equipment img {
+    width: clamp(28px, 3.6vw, 32px);
+    height: clamp(28px, 3.6vw, 32px);
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    flex: 0 0 auto;
+}
+
+#open-equipment:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
 /* Small pill for Packets (matches gem pill), appears inside #vip-badge HTML */
-#packets-bar {
+#packets-bar,
+#pps-display {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
@@ -460,6 +542,14 @@ body .modal-box .space-y-3 > * + * {
         0 1px 3px rgba(0, 0, 0, 0.35);
     min-width: 80px;
     justify-content: center;
+    white-space: nowrap; /* prevent wrap/collapse */
+}
+
+#pps-display .icon-packet {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex: 0 0 auto; /* prevent shrinking in flex container */
+    background-size: contain;
 }
 
 /* Upgrade level badge (JS may set data-level on buttons later) */
@@ -537,11 +627,25 @@ body .modal-box .space-y-3 > * + * {
     border-radius: 999px;
 }
 
+/* Global packet icon utility for HUD/labels */
+.icon-packet {
+    width: 1.1rem;
+    height: 1.1rem;
+    background-image: url("src/assets/packet.webp");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 0;
+    box-shadow: none;
+}
+
 /* Ensure Daily Rewards shows the PNG packet icon properly */
 .space-y-2 .icon-packet {
     width: 1.2rem !important;
     height: 1.2rem !important;
-    background-image: url("src/assets/packet-32.png") !important;
+    background-image: url("src/assets/packet.webp") !important;
     background-size: contain !important;
     background-repeat: no-repeat !important;
     background-position: center !important;
@@ -549,6 +653,33 @@ body .modal-box .space-y-3 > * + * {
     vertical-align: middle;
     border-radius: 0;
     box-shadow: none;
+}
+
+/* Inventory grid: 5 items per row, square cells, no overflow */
+.inv-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding: 0.5rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+.inv-grid > .neon-card {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem;
+}
+.inv-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
 }
 
 /* Prestige: keep main label on one line; if description is inside button, push it visually below */
@@ -1389,7 +1520,8 @@ body.ultra-active #click-btn {
     box-shadow:
         0 0 0.5rem rgba(255, 77, 255, 0.85),
         0 0 1.35rem rgba(255, 77, 255, 0.65),
-        0 0 2.25rem rgba(255, 120, 255, 0.45);
+        0 0 2.25rem rgba(255, 120, 255, 0.45),
+        0 0 0 1.5px var(--border-color) inset;
 }
 
 /* ULTRA lightning overlay */
@@ -1567,6 +1699,8 @@ body.ultra-active #click-btn::before {
     perspective: none;
     transform-style: flat;
     padding: 0.2rem 0.6rem;
+    font-size: clamp(2.9rem, 9.5vw, 4.8rem);
+    color: #ff3040;
     text-shadow: none;
 }
 .click-effect.animal-combo::before,
@@ -1576,16 +1710,7 @@ body.ultra-active #click-btn::before {
 /* removed: animal-combo before overlay */
 /* removed: animal-combo after overlay */
 /* Additional button lightning flash for ANIMAL state */
-body.animal-active #click-btn::before,
-body.animal-active #click-btn::after {
-    /* overlays defined below */
-}
-body.animal-active #click-btn {
-}
 
-body.animal-active #click-btn::after {
-    /* overlay defined below */
-}
 @keyframes animal3DWobble {
     0% {
         transform: translateX(-50%) rotateX(6deg) rotateY(-4deg) translateZ(0);
@@ -1677,7 +1802,8 @@ body.animal-active #click-btn {
         0 0 0.65rem rgba(255, 230, 0, 0.95),
         /* yellow core */ 0 0 1.2rem rgba(255, 165, 0, 0.9),
         /* orange mid */ 0 0 2.2rem rgba(255, 96, 0, 0.75),
-        /* deep orange/red */ 0 0 3.2rem rgba(255, 48, 64, 0.6); /* red outer */
+        /* deep orange/red */ 0 0 3.2rem rgba(255, 48, 64, 0.6),
+        /* red outer */ 0 0 0 1.5px var(--border-color) inset;
 }
 
 body.animal-active #click-btn::after {
@@ -2018,6 +2144,29 @@ body.mega-active #click-btn::before {
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;
     user-select: none;
+
+    /* Finger image variable (used by .finger-icon spans) */
+    --finger-img: url("src/assets/green.webp");
+}
+
+/* Combo-based finger art mapped to existing combo states */
+body:has(.click-effect.combo) #click-btn {
+    /* 5-9 combo -> gold */
+    --finger-img: url("src/assets/gold.webp");
+}
+body:has(.click-effect.mega-combo) #click-btn,
+body.mega-active #click-btn {
+    /* 10-19 combo -> blue */
+    --finger-img: url("src/assets/blue.webp");
+}
+body:has(.click-effect.ultra-combo) #click-btn,
+body.ultra-active #click-btn {
+    /* 20-29 combo -> pink */
+    --finger-img: url("src/assets/pink.webp");
+}
+body.animal-active #click-btn {
+    /* 30+ combo -> animal */
+    --finger-img: url("src/assets/animal.webp");
 }
 
 /* Electric shake (MEGA only, triggered via :has) */
