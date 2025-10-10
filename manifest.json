@@ -1,13 +1,13 @@
 {
   "name": "Packet Clicker",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "short_name": "Packet",
   "start_url": ".",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#161a22",
   "theme_color": "#161a22",
-  "description": "Cyberpunk idle clicker MMO. Evolua, conquiste rankings, compre VIP, skins e gems! Instale como app.",
+  "description": "Packet idle clicker MMO. Evolua, conquiste rankings, compre VIP, skins e gems! Instale como app.",
   "icons": [
     {
       "src": "src/assets/packet-32.png",
