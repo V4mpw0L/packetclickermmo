@@ -1,5 +1,26 @@
 // ==== Packet Clicker: Enhanced Mobile & Visual Effects ====
 
+// Modular imports
+import {
+  startAnimalAura,
+  stopAnimalAura,
+  activateMegaFX,
+  handleComboEffect,
+  animalCritBurst,
+} from "./ui/effects.js";
+import {
+  showComboTotalHUD,
+  hideComboTotalHUD,
+  showHudNotify,
+  clearHUD,
+} from "./ui/hud.js";
+import {
+  renderButton,
+  renderMenu,
+  renderButtonGroup,
+  renderSelect,
+} from "./ui/ui.js";
+
 /* Using global DEFAULT_AVATAR and STORAGE_KEY from constants UMD (src/data/constants.js) */
 
 // Click combo tracking
@@ -366,12 +387,27 @@ function renderGame() {
   let effectivePerClick = Math.floor(state.perClick * totalMultiplier);
   let effectivePerSec = Math.floor(perSecBase * totalMultiplier);
 
+  // Use modular renderButton for click button
+  const clickBtn = renderButton({
+    id: "click-btn",
+    className: "text-2xl py-4 active:scale-95 transition-transform",
+    label: 'Collect Packets <span class="icon-packet"></span>',
+  });
+
+  // Use modular renderButton for prestige button if available
+  const prestigeBtn =
+    state.packets >= 50000
+      ? `<div class="text-center">${renderButton({
+          id: "prestige-btn",
+          className: "text-sm",
+          label: "⭐ Prestige Available",
+        })}</div>`
+      : "";
+
   return `
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
       <h2 class="tab-title">🎮 Game</h2>
-      <button id="click-btn" class="neon-btn text-2xl py-4 active:scale-95 transition-transform">
-        Collect Packets <span class="icon-packet"></span>
-      </button>
+      ${clickBtn}
       <div class="flex justify-between items-center text-neon-green text-sm">
         <span>Packets/Click: ${effectivePerClick}</span>
         <span>Packets/Sec: ${effectivePerSec}</span>
@@ -382,7 +418,7 @@ function renderGame() {
       </div>
       ${boostStatus}
       ${renderActiveEvent()}
-      ${state.packets >= 50000 ? `<div class="text-center"><button id="prestige-btn" class="neon-btn text-sm">⭐ Prestige Available</button></div>` : ""}
+      ${prestigeBtn}
     </div>
     ${adBanner}
   `;
@@ -399,13 +435,16 @@ function renderBoosts() {
     }
   });
 
-  let boostItems = BOOST_SHOP.map((boost) => {
-    return `<button class="gem-btn w-full mb-2" data-boost="${boost.id}">
-      <div class="font-bold">${boost.name}</div>
-      <div class="text-sm opacity-75">${boost.gems} 💎</div>
-      <div class="text-xs text-neon-gray">${boost.desc}</div>
-    </button>`;
-  }).join("");
+  // Use modular renderButton for each boost
+  let boostItems = BOOST_SHOP.map((boost) =>
+    renderButton({
+      className: "gem-btn w-full mb-2",
+      label: `<div class="font-bold">${boost.name}</div>
+        <div class="text-sm opacity-75">${boost.gems} 💎</div>
+        <div class="text-xs text-neon-gray">${boost.desc}</div>`,
+      dataAttr: `data-boost="${boost.id}"`,
+    }),
+  ).join("");
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
@@ -431,14 +470,16 @@ function renderThemes() {
       let isUnlocked = theme.unlocked || state.themes?.[id];
       let canBuy = !isUnlocked && state.gems >= (theme.cost || 0);
 
-      return `<button class="gem-btn w-full mb-2 ${isActive ? "opacity-75" : ""} ${!isUnlocked && !canBuy ? "opacity-50" : ""}"
-                    data-theme="${id}" ${isActive ? "disabled" : ""}>
-        <div class="font-bold">${theme.name} ${isActive ? "(Active)" : ""}</div>
-        ${!isUnlocked ? `<div class="text-sm opacity-75">${theme.cost || 0} 💎</div>` : ""}
-        <div class="text-xs text-neon-gray">
-          Colors: <span style="color: ${theme.colors[0]}">●</span> <span style="color: ${theme.colors[1]}">●</span> <span style="color: ${theme.colors[2]}">●</span>
-        </div>
-      </button>`;
+      return renderButton({
+        className: `gem-btn w-full mb-2 ${isActive ? "opacity-75" : ""} ${!isUnlocked && !canBuy ? "opacity-50" : ""}`,
+        label: `<div class="font-bold">${theme.name} ${isActive ? "(Active)" : ""}</div>
+          ${!isUnlocked ? `<div class="text-sm opacity-75">${theme.cost || 0} 💎</div>` : ""}
+          <div class="text-xs text-neon-gray">
+            Colors: <span style="color: ${theme.colors[0]}">●</span> <span style="color: ${theme.colors[1]}">●</span> <span style="color: ${theme.colors[2]}">●</span>
+          </div>`,
+        dataAttr: `data-theme="${id}"`,
+        disabled: isActive,
+      });
     })
     .join("");
 
@@ -460,9 +501,24 @@ function renderUpgrades() {
   return `
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
       <h2 class="tab-title">🛠️ Upgrades</h2>
-      <button id="upgrade-click" class="upgrade-btn" data-level="Lvl. ${state.upgrades.click}">+1/click — <span>${upgradeCost("click")}</span> <span class="icon-packet"></span></button>
-      <button id="upgrade-idle" class="upgrade-btn" data-level="Lvl. ${state.upgrades.idle}">+1/sec — <span>${upgradeCost("idle")}</span> <span class="icon-packet"></span></button>
-      <button id="upgrade-crit" class="upgrade-btn" data-level="Lvl. ${state.upgrades.crit}">+2% crit — <span>${upgradeCost("crit")}</span> <span class="icon-packet"></span></button>
+      ${renderButton({
+        id: "upgrade-click",
+        className: "upgrade-btn",
+        label: `+1/click — <span>${upgradeCost("click")}</span> <span class="icon-packet"></span>`,
+        dataAttr: `data-level="Lvl. ${state.upgrades.click}"`,
+      })}
+      ${renderButton({
+        id: "upgrade-idle",
+        className: "upgrade-btn",
+        label: `+1/sec — <span>${upgradeCost("idle")}</span> <span class="icon-packet"></span>`,
+        dataAttr: `data-level="Lvl. ${state.upgrades.idle}"`,
+      })}
+      ${renderButton({
+        id: "upgrade-crit",
+        className: "upgrade-btn",
+        label: `+2% crit — <span>${upgradeCost("crit")}</span> <span class="icon-packet"></span>`,
+        dataAttr: `data-level="Lvl. ${state.upgrades.crit}"`,
+      })}
       <div class="text-neon-gray text-xs mt-1">
         Each upgrade increases cost. <span class="text-neon-yellow">Critical Hits</span> give 2x per click!
       </div>
@@ -482,12 +538,7 @@ function upgradeCost(type) {
   }
 }
 
-// =============== HUD NOTIFICATION ===============
-function showHudNotify(msg, icon = "✨") {
-  if (window.PacketUI && typeof PacketUI.showHudNotify === "function") {
-    return PacketUI.showHudNotify(msg, icon);
-  }
-}
+// Using imported HUD showHudNotify from ui/hud.js
 
 // =============== ACHIEVEMENTS PANEL ===============
 function renderAchievements() {
@@ -512,9 +563,12 @@ function renderAchievements() {
 
 // =============== SHOP PANEL ===============
 function renderShop() {
-  let gemStore = GEM_PACKS.map(
-    (p) =>
-      `<button class="gem-btn w-full mb-2" data-gem-pack="${p.id}">Buy ${p.label} - $${p.price.toFixed(2)}</button>`,
+  let gemStore = GEM_PACKS.map((p) =>
+    renderButton({
+      className: "gem-btn w-full mb-2",
+      label: `Buy ${p.label} - $${p.price.toFixed(2)}`,
+      dataAttr: `data-gem-pack="${p.id}"`,
+    }),
   ).join("");
   let items = SHOP_ITEMS.map((item) => {
     let owned =
@@ -522,14 +576,20 @@ function renderShop() {
       (item.type === "skin" && state.shop.skinBought) ||
       (item.type === "noAds" && state.player.noAds);
     let label = owned ? "✓ Owned" : item.label + ` - ${item.gems} 💎`;
-    return `<button class="gem-btn w-full mb-2" data-shop-item="${item.id}" ${owned ? "disabled" : ""}>
-      ${label}
-      <div class="text-xs text-neon-gray">${item.desc}</div>
-    </button>`;
+    return renderButton({
+      className: "gem-btn w-full mb-2",
+      label: `${label}<div class="text-xs text-neon-gray">${item.desc}</div>`,
+      dataAttr: `data-shop-item="${item.id}"`,
+      disabled: owned,
+    });
   }).join("");
   let adBtn =
     !state.player.noAds && state.ads
-      ? `<button id="watch-ad-btn" class="neon-btn w-full mb-2">Watch Ad (simulate)</button>`
+      ? renderButton({
+          id: "watch-ad-btn",
+          className: "neon-btn w-full mb-2",
+          label: "Watch Ad (simulate)",
+        })
       : "";
   return `
     <div class="neon-card px-3 py-4 mb-2">
@@ -793,236 +853,7 @@ function renderActiveEvent() {
 }
 
 // =============== GAME LOGIC ===============
-let _megaFXTimer = null;
-let _ultraFXTimer = null;
-let _animalFXTimer = null;
-let _animalAuraInterval = null;
-let _animalAuraLayer = null;
-let _animalAuraRafId = null;
-let _animalAuraStart = 0;
-let _animalCritBurstUntil = 0;
 
-// Start continuous ANIMAL aura particles around the click button
-function startAnimalAura() {
-  try {
-    // Ensure a dedicated aura layer exists
-    if (!_animalAuraLayer) {
-      _animalAuraLayer = document.getElementById("animal-aura-layer");
-      if (!_animalAuraLayer) {
-        _animalAuraLayer = document.createElement("div");
-        _animalAuraLayer.id = "animal-aura-layer";
-        _animalAuraLayer.style.position = "fixed";
-        _animalAuraLayer.style.inset = "0";
-        _animalAuraLayer.style.pointerEvents = "none";
-        _animalAuraLayer.style.zIndex = "2049";
-        _animalAuraLayer.style.transform = "translate(0,0)";
-        document.body.appendChild(_animalAuraLayer);
-      }
-    }
-
-    // Start parallax drift if not running
-    if (!_animalAuraRafId) {
-      _animalAuraStart = performance.now();
-      const drift = () => {
-        const t = performance.now() - _animalAuraStart;
-        const dx = Math.sin(t / 850) * 6 + Math.sin(t / 2200) * 4;
-        const dy = Math.cos(t / 1100) * 5 + Math.sin(t / 1800) * 3;
-        if (_animalAuraLayer) {
-          _animalAuraLayer.style.transform = `translate(${dx}px, ${dy}px)`;
-        }
-        _animalAuraRafId = requestAnimationFrame(drift);
-      };
-      _animalAuraRafId = requestAnimationFrame(drift);
-    }
-
-    if (_animalAuraInterval) return;
-    const rateMs = 45;
-
-    _animalAuraInterval = setInterval(() => {
-      const btn = document.getElementById("click-btn");
-      if (!btn) return;
-      const rect = btn.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-
-      // Create a tiny particle near the button center with randomized radial motion
-      const p = document.createElement("div");
-      const size = 2.5 + Math.random() * 3.5;
-      p.className = "animal-particle";
-      p.style.position = "fixed";
-      p.style.width = size + "px";
-      p.style.height = size + "px";
-      p.style.left = cx + "px";
-      p.style.top = cy + "px";
-      p.style.pointerEvents = "none";
-      p.style.borderRadius = "50%";
-      // Alternate warm flame and electric cyan particles
-      const growthHint = Math.min(Math.max(clickCombo - 30, 0) / 12, 4.0);
-      const burstActive =
-        typeof _animalCritBurstUntil === "number" &&
-        Date.now() < _animalCritBurstUntil;
-      const nearWarmBias = Math.random() < (burstActive ? 0.95 : 0.85);
-      // Strong warm bias (red/orange); occasional blue electric accents
-      const hue = nearWarmBias ? (Math.random() < 0.6 ? 28 : 8) : 195;
-      const lightness = nearWarmBias ? (burstActive ? 58 : 56) : 62;
-      p.style.background = `radial-gradient(circle, rgba(255,200,160,0.85) 0 35%, hsla(${hue}, 100%, ${lightness}%, ${burstActive ? 1 : 0.95}))`;
-      p.style.boxShadow = `0 0 ${Math.round(10 + Math.random() * 14)}px hsla(${hue}, 100%, ${lightness + 2}%, ${burstActive ? 0.95 : 0.8})`;
-      p.style.zIndex = "2050";
-      p.style.opacity = "1";
-      p.style.transform = "translate(-50%, -50%)";
-      (_animalAuraLayer || document.body).appendChild(p);
-
-      // Random orbit vector with slight upward bias for flame feeling
-      const angle = Math.random() * Math.PI * 2;
-      const growth = 1 + Math.min(Math.max(clickCombo - 30, 0) / 12, 4.0);
-      const dist =
-        (rect.width * 0.25 + Math.random() * rect.width * 0.4) * growth;
-      const dx = Math.cos(angle) * dist;
-      const dy = Math.sin(angle) * dist - (4 + Math.random() * 10);
-
-      requestAnimationFrame(() => {
-        const travel = 520 + Math.min(1, dist / Math.max(1, rect.width)) * 520;
-        p.style.transition = `transform ${Math.round(travel)}ms ease-out, opacity ${Math.round(travel + 40)}ms ease-out, filter ${Math.round(travel + 40)}ms ease-out`;
-        p.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${0.7 + Math.random() * 0.7})`;
-        p.style.opacity = "0";
-        p.style.filter = "blur(0.5px)";
-      });
-
-      setTimeout(
-        () => {
-          if (p && p.parentNode) p.parentNode.removeChild(p);
-        },
-        Math.round(
-          520 +
-            Math.min(1, dist / Math.max(1, rect.width)) * 820 +
-            360 +
-            Math.random() * 260,
-        ),
-      );
-      // Occasionally spawn a long-range flare to a random screen point (more likely during crit burst)
-      if (Math.random() < (burstActive ? 0.7 : 0.35)) {
-        const q = document.createElement("div");
-        const isSuper = Math.random() < 0.28;
-        const qSize =
-          (isSuper ? 6.5 : 3.5) + Math.random() * (isSuper ? 6 : 4.5);
-        q.className = "animal-particle";
-        q.style.position = "fixed";
-        q.style.width = qSize + "px";
-        q.style.height = qSize + "px";
-        q.style.left = cx + "px";
-        q.style.top = cy + "px";
-        q.style.pointerEvents = "none";
-        q.style.borderRadius = "50%";
-        const vw = Math.max(
-          document.documentElement.clientWidth || 0,
-          window.innerWidth || 0,
-        );
-        const vh = Math.max(
-          document.documentElement.clientHeight || 0,
-          window.innerHeight || 0,
-        );
-        const margin = isSuper ? Math.max(vw, vh) * 0.2 : 0;
-        const targetX = Math.random() * (vw + margin * 2) - margin;
-        const targetY = Math.random() * (vh + margin * 2) - margin;
-        // Color modulation by distance: yellow near, orange/red mid, blue electric far
-        const maxD = Math.hypot(vw, vh) + margin;
-        const dRatio = Math.min(
-          1,
-          Math.hypot(targetX - cx, targetY - cy) / Math.max(1, maxD),
-        );
-        const flareHue =
-          dRatio < 0.33
-            ? 52
-            : dRatio < 0.7
-              ? Math.random() < 0.5
-                ? 28
-                : 8
-              : 195;
-        q.style.background = `radial-gradient(circle, rgba(255,200,160,0.9) 0 35%, hsla(${flareHue}, 100%, ${isSuper ? 64 : 58}%, ${isSuper ? 1 : 0.95}))`;
-        q.style.boxShadow = `0 0 ${Math.round((isSuper ? 16 : 10) + Math.random() * (isSuper ? 22 : 16))}px hsla(${flareHue}, 100%, ${isSuper ? 64 : 58}%, ${isSuper ? 0.98 : 0.85})`;
-        q.style.zIndex = "2050";
-        q.style.opacity = "1";
-        q.style.transform = "translate(-50%, -50%)";
-        (_animalAuraLayer || document.body).appendChild(q);
-        requestAnimationFrame(() => {
-          const t =
-            (isSuper ? 1200 : 900) + Math.random() * (isSuper ? 900 : 700);
-          q.style.transition = `transform ${Math.round(t)}ms cubic-bezier(0.22, 0.6, 0.2, 1), opacity ${Math.round(t)}ms ease-out, filter ${Math.round(t)}ms ease-out`;
-          q.style.transform = `translate(calc(-50% + ${targetX - cx}px), calc(-50% + ${targetY - cy}px)) scale(${(isSuper ? 1.2 : 0.8) + Math.random() * (isSuper ? 1.1 : 0.9)})`;
-          q.style.opacity = "0";
-          q.style.filter = "blur(0.6px)";
-          setTimeout(
-            () => {
-              if (q && q.parentNode) q.parentNode.removeChild(q);
-            },
-            Math.round(t + 140),
-          );
-        });
-      }
-    }, rateMs);
-  } catch {}
-}
-
-// Stop continuous ANIMAL aura particles
-function stopAnimalAura() {
-  try {
-    if (_animalAuraInterval) {
-      clearInterval(_animalAuraInterval);
-      _animalAuraInterval = null;
-    }
-    if (_animalAuraRafId) {
-      cancelAnimationFrame(_animalAuraRafId);
-      _animalAuraRafId = null;
-    }
-    if (_animalAuraLayer) {
-      _animalAuraLayer.style.transform = "translate(0,0)";
-      // Keep the layer for reuse; optional: remove if desired
-      // if (_animalAuraLayer.parentNode) _animalAuraLayer.parentNode.removeChild(_animalAuraLayer);
-      // _animalAuraLayer = null;
-    }
-  } catch {}
-}
-function activateMegaFX() {
-  try {
-    document.body.classList.add("mega-active");
-    let sentinel = document.getElementById("mega-sentinel");
-    if (!sentinel) {
-      sentinel = document.createElement("div");
-      sentinel.id = "mega-sentinel";
-      sentinel.className = "click-effect mega-combo";
-      sentinel.style.position = "fixed";
-      sentinel.style.left = "-9999px";
-      sentinel.style.top = "-9999px";
-      sentinel.style.width = "1px";
-      sentinel.style.height = "1px";
-      sentinel.style.opacity = "0";
-      sentinel.style.pointerEvents = "none";
-      document.body.appendChild(sentinel);
-    }
-    if (_megaFXTimer) clearTimeout(_megaFXTimer);
-    _megaFXTimer = setTimeout(() => {
-      try {
-        document.body.classList.remove("mega-active");
-        const s = document.getElementById("mega-sentinel");
-        if (s && s.parentNode) s.parentNode.removeChild(s);
-      } catch {}
-      _megaFXTimer = null;
-    }, 1200);
-  } catch {}
-}
-function scheduleMegaFXClear() {
-  if (_megaFXTimer) {
-    clearTimeout(_megaFXTimer);
-    _megaFXTimer = setTimeout(() => {
-      try {
-        document.body.classList.remove("mega-active");
-        const s = document.getElementById("mega-sentinel");
-        if (s && s.parentNode) s.parentNode.removeChild(s);
-      } catch {}
-      _megaFXTimer = null;
-    }, 200);
-  }
-}
 function clickPacket(event) {
   const packetsBefore = state.packets;
   let bonus = isVIP() ? 1.25 : 1;
@@ -1087,7 +918,7 @@ function clickPacket(event) {
     }
   }
 
-  // Enhanced visual feedback for click with combo system
+  // Combo logic
   const now = Date.now();
   if (now - lastClickTime < COMBO_TIMEOUT) {
     clickCombo++;
@@ -1096,278 +927,48 @@ function clickPacket(event) {
   }
   lastClickTime = now;
 
-  // Enhanced visual feedback for click with combo system
+  // Modularized combo effect logic
   if (!clickPacket._lastFxTime || Date.now() - clickPacket._lastFxTime > 80) {
     clickPacket._lastFxTime = Date.now();
-    let clickFX = document.createElement("div");
-    clickFX.className = "click-effect";
 
-    // Determine effect type based on combo
-    let effectText = `+${amount}`;
-    let displayedGain = amount;
-    if (clickCombo >= 30) {
-      clickFX.classList.add("ultra-combo", "animal-combo");
-      // ANIMAL streak bonus: +99%
-      const extra = Math.floor(amount * 0.99);
-      state.packets += extra;
-      state.stats.totalPackets += extra;
-      displayedGain += extra;
-      effectText = `ANIMAL! +${amount} (+99%)`;
-      // shake is applied to inner text layer to keep centering intact
-      clickFX.style.filter = "none";
-      // Red neon electric on the button (inline to avoid CSS dependency)
-      const clickBtn = document.getElementById("click-btn");
-      if (clickBtn) {
-        if (typeof clickBtn._prevShadow === "undefined") {
-          clickBtn._prevShadow = clickBtn.style.boxShadow || "";
-        }
-        clickBtn.style.boxShadow =
-          "0 0 0.75rem rgba(255, 48, 64, 0.9), 0 0 1.75rem rgba(255, 48, 64, 0.7), 0 0 2.75rem rgba(255, 96, 128, 0.55)";
-        clickBtn.classList.add("shake-element");
-        setTimeout(() => clickBtn.classList.remove("shake-element"), 320);
-      }
-      // Activate ANIMAL FX (temporary body class + sentinel)
-      try {
-        document.body.classList.add("animal-active");
-        let sentinel = document.getElementById("animal-sentinel");
-        if (!sentinel) {
-          sentinel = document.createElement("div");
-          sentinel.id = "animal-sentinel";
-          sentinel.className = "click-effect ultra-combo";
-          sentinel.style.position = "fixed";
-          sentinel.style.left = "-9999px";
-          sentinel.style.top = "-9999px";
-          sentinel.style.width = "1px";
-          sentinel.style.height = "1px";
-          sentinel.style.opacity = "0";
-          sentinel.style.pointerEvents = "none";
-          document.body.appendChild(sentinel);
-        }
-        // Start continuous aura while ANIMAL is active
-        startAnimalAura();
+    // Use modular effect handler
+    const { effectText, displayedGain, effectClass } = handleComboEffect(
+      clickCombo,
+      amount,
+      state,
+    );
 
-        if (_animalFXTimer) clearTimeout(_animalFXTimer);
-        _animalFXTimer = setTimeout(() => {
-          try {
-            document.body.classList.remove("animal-active");
-            const s = document.getElementById("animal-sentinel");
-            if (s && s.parentNode) s.parentNode.removeChild(s);
-            const btn = document.getElementById("click-btn");
-            if (btn && typeof btn._prevShadow !== "undefined") {
-              btn.style.boxShadow = btn._prevShadow;
-              delete btn._prevShadow;
-            }
-            // Stop continuous aura when ANIMAL ends
-            stopAnimalAura();
-          } catch {}
-          _animalFXTimer = null;
-        }, 1600);
-      } catch {}
-    } else if (clickCombo >= 20) {
-      clickFX.classList.add("ultra-combo");
-      // ULTRA streak bonus: +50%
-      const extra = Math.floor(amount * 0.5);
-      state.packets += extra;
-      state.stats.totalPackets += extra;
-      displayedGain += extra;
-      effectText = `ULTRA! +${amount} (+50%)`;
-      // Stronger shake and ULTRA FX
-      // ULTRA shake handled via CSS (body.ultra-active); avoid .shake-element to prevent conflicts
-      // Activate ULTRA FX (temporary body class + sentinel)
-      try {
-        document.body.classList.add("ultra-active");
-        let sentinel = document.getElementById("ultra-sentinel");
-        if (!sentinel) {
-          sentinel = document.createElement("div");
-          sentinel.id = "ultra-sentinel";
-          sentinel.className = "click-effect ultra-combo";
-          sentinel.style.position = "fixed";
-          sentinel.style.left = "-9999px";
-          sentinel.style.top = "-9999px";
-          sentinel.style.width = "1px";
-          sentinel.style.height = "1px";
-          sentinel.style.opacity = "0";
-          sentinel.style.pointerEvents = "none";
-          document.body.appendChild(sentinel);
-        }
-        if (_ultraFXTimer) clearTimeout(_ultraFXTimer);
-        _ultraFXTimer = setTimeout(() => {
-          try {
-            document.body.classList.remove("ultra-active");
-            const s = document.getElementById("ultra-sentinel");
-            if (s && s.parentNode) s.parentNode.removeChild(s);
-          } catch {}
-          _ultraFXTimer = null;
-        }, 1400);
-      } catch {}
-    } else if (clickCombo >= 10) {
-      clickFX.classList.add("mega-combo");
-      activateMegaFX();
-      // 25% combo bonus on MEGA streaks
-      const extra = Math.floor(amount * 0.25);
-      state.packets += extra;
-      state.stats.totalPackets += extra;
-      displayedGain += extra;
-      effectText = `MEGA! +${amount} (+25%)`;
-      // Shake the click button
-      const clickBtn = document.getElementById("click-btn");
-      if (clickBtn) {
-        clickBtn.classList.add("shake-element");
-        setTimeout(() => clickBtn.classList.remove("shake-element"), 220);
-      }
-    } else if (clickCombo >= 5) {
-      clickFX.classList.add("combo");
-      // 10% combo bonus on streaks
-      const extra = Math.floor(amount * 0.1);
-      state.packets += extra;
-      state.stats.totalPackets += extra;
-      displayedGain += extra;
-      effectText = `${clickCombo}x +${amount} (+10%)`;
-      const clickBtn = document.getElementById("click-btn");
-      if (clickBtn) {
-        clickBtn.classList.add("shake-element");
-        setTimeout(() => clickBtn.classList.remove("shake-element"), 160);
-      }
-    }
-
-    if (clickFX.classList.contains("animal-combo")) {
-      // Wrap text so it paints above lightning layers
-      clickFX.innerHTML = `<span class="animal-text-layer" style="position:relative; z-index:10; display:inline-block;">${effectText}</span>`;
-      // Apply shake to inner span so outer transform(-50%) remains for perfect centering
-      const innerLayer = clickFX.querySelector(".animal-text-layer");
-      if (innerLayer)
-        innerLayer.style.animation = "shakeCombo 0.16s ease-in-out infinite";
-
-      // Particle burst (flame/lightning) around ANIMAL text; scheduled so position is finalized
-      setTimeout(() => {
-        try {
-          const r = clickFX.getBoundingClientRect();
-          const cx = r.left + r.width / 2;
-          const cy = r.top + r.height / 2;
-          const COUNT = 14;
-
-          for (let i = 0; i < COUNT; i++) {
-            const p = document.createElement("div");
-            p.className = "animal-particle";
-            const size = 3 + Math.random() * 4;
-            p.style.position = "fixed";
-            p.style.width = size + "px";
-            p.style.height = size + "px";
-            p.style.left = cx + "px";
-            p.style.top = cy + "px";
-            p.style.pointerEvents = "none";
-            p.style.borderRadius = "50%";
-            // Alternate warm flame and electric cyan particles
-            const hue = Math.random() < 0.5 ? 8 : 195; // red/orange vs. cyan/blue
-            p.style.background = `radial-gradient(circle, rgba(255,255,255,0.95) 0 45%, hsla(${hue}, 100%, 60%, 0.95) 60% 100%)`;
-            p.style.boxShadow = `0 0 ${Math.round(6 + Math.random() * 10)}px hsla(${hue}, 100%, 60%, 0.75)`;
-            p.style.zIndex = "2050";
-            p.style.opacity = "1";
-            p.style.transform = "translate(-50%, -50%)";
-            document.body.appendChild(p);
-
-            const angle = Math.random() * Math.PI * 2;
-            const dist = 22 + Math.random() * 46;
-            // Slight upward bias for flame-y feeling
-            const dx = Math.cos(angle) * dist;
-            const dy = Math.sin(angle) * dist - (10 + Math.random() * 12);
-
-            requestAnimationFrame(() => {
-              p.style.transition =
-                "transform 520ms ease-out, opacity 560ms ease-out, filter 560ms ease-out";
-              p.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${0.6 + Math.random() * 0.8})`;
-              p.style.opacity = "0";
-              p.style.filter = "blur(0.5px)";
-            });
-
-            setTimeout(
-              () => {
-                if (p && p.parentNode) p.parentNode.removeChild(p);
-              },
-              700 + Math.random() * 250,
-            );
-          }
-        } catch {}
-      }, 0);
-    } else if (
-      clickFX.classList.contains("ultra-combo") ||
-      clickFX.classList.contains("mega-combo") ||
-      clickFX.classList.contains("combo")
-    ) {
-      // Wrap inner text so shakes don't shift the outer centering
-      clickFX.innerHTML = `<span class="combo-text-layer" style="position:relative; z-index:10; display:inline-block;">${effectText}</span>`;
-      const inner = clickFX.querySelector(".combo-text-layer");
-      if (inner) {
-        const dur = clickFX.classList.contains("ultra-combo")
-          ? "0.18s"
-          : clickFX.classList.contains("mega-combo")
-            ? "0.20s"
-            : "0.24s";
-        inner.style.animation = `shakeCombo ${dur} ease-in-out infinite`;
-      }
-      // Prevent outer element animation from affecting centering
-      clickFX.style.animation = "none";
-    } else {
-      clickFX.textContent = effectText;
-    }
-    // Match individual click effect color with combo level using theme variables
-    if (clickCombo >= 30) {
-      clickFX.style.color = "#ff3040";
-    } else if (clickCombo >= 20) {
-      clickFX.style.color = "#ff4dff";
-    } else if (clickCombo >= 10) {
-      clickFX.style.color = "var(--accent-color)";
-    } else if (clickCombo >= 5) {
-      clickFX.style.color = "var(--secondary-color)";
-    } else {
-      clickFX.style.color = "var(--primary-color)";
-    }
     // Update stacked combo HUD
     if (clickCombo === 1) {
       clickPacket._comboTotal = 0;
     }
     clickPacket._comboTotal = (clickPacket._comboTotal || 0) + displayedGain;
-    let hud = document.getElementById("combo-total-hud");
-    if (!hud) {
-      hud = document.createElement("div");
-      hud.id = "combo-total-hud";
-      hud.style.position = "fixed";
-      hud.style.top = "12%";
-      hud.style.left = "50%";
-      hud.style.transform = "translate(-50%, 0)";
-      hud.style.padding = "8px 12px";
-      hud.style.border = "2px solid var(--primary-color)";
-      hud.style.borderRadius = "12px";
-      hud.style.fontWeight = "bold";
-      hud.style.color = "var(--primary-color)";
-      hud.style.background =
-        "linear-gradient(135deg, var(--bg-secondary), var(--bg-card))";
-      hud.style.boxShadow =
-        "0 4px 20px var(--shadow-primary), 0 0 0 1px rgba(255,255,255,0.1) inset";
-      hud.style.zIndex = "1001";
-      hud.style.pointerEvents = "none";
-      document.body.appendChild(hud);
-    }
-    hud.innerHTML = `Total +${(clickPacket._comboTotal || 0).toLocaleString()} <span class="icon-packet"></span>`;
-    hud.style.transition = "transform 120ms ease";
-    hud.style.transform = "translate(-50%, -6px) scale(1.06)";
-    setTimeout(() => {
-      const h = document.getElementById("combo-total-hud");
-      if (h) h.style.transform = "translate(-50%, 0) scale(1)";
-    }, 130);
+
+    // Show combo total HUD (modular)
+    let color = null;
+    if (clickCombo >= 30) color = "#ff3040";
+    else if (clickCombo >= 20) color = "#ff4dff";
+    else if (clickCombo >= 10) color = "var(--accent-color)";
+    else if (clickCombo >= 5) color = "var(--secondary-color)";
+    showComboTotalHUD(clickPacket._comboTotal, color);
+
+    // Hide combo HUD after timeout
     if (clickPacket._comboHideTimer) clearTimeout(clickPacket._comboHideTimer);
     clickPacket._comboHideTimer = setTimeout(() => {
-      const h = document.getElementById("combo-total-hud");
-      if (h) h.remove();
+      hideComboTotalHUD();
       clickPacket._comboTotal = 0;
     }, COMBO_TIMEOUT + 200);
 
-    // Position above the click button with horizontal clamping
-    // Append first (off-screen) so width can be measured, then clamp
+    // Show floating effect
+    let clickFX = document.createElement("div");
+    clickFX.className = "click-effect" + (effectClass ? " " + effectClass : "");
+    clickFX.innerHTML = effectText;
     clickFX.style.visibility = "hidden";
     clickFX.style.left = "-9999px";
     clickFX.style.top = "0px";
     document.body.appendChild(clickFX);
+
+    // Position above the click button with horizontal clamping
     const vw = Math.max(
       document.documentElement.clientWidth || 0,
       window.innerWidth || 0,
@@ -1392,7 +993,14 @@ function clickPacket(event) {
       if (crit) {
         const critFX = document.createElement("div");
         critFX.className = "click-effect critical";
-        critFX.textContent = `CRITICAL ${((state.packets - packetsBefore) / Math.max(1, state.perClick)).toFixed(2).replace(/\.00$/, "")}x! +${(state.packets - packetsBefore).toLocaleString()}`;
+        critFX.textContent = `CRITICAL ${(
+          (state.packets - packetsBefore) /
+          Math.max(1, state.perClick)
+        )
+          .toFixed(2)
+          .replace(/\.00$/, "")}x! +${(
+          state.packets - packetsBefore
+        ).toLocaleString()}`;
         critFX.style.left = clampedCenter + "px";
         critFX.style.top = rect.top - 50 + "px";
         document.body.appendChild(critFX);
@@ -1418,7 +1026,14 @@ function clickPacket(event) {
       if (crit) {
         const critFX = document.createElement("div");
         critFX.className = "click-effect critical";
-        critFX.textContent = `CRITICAL ${((state.packets - packetsBefore) / Math.max(1, state.perClick)).toFixed(2).replace(/\.00$/, "")}x! +${(state.packets - packetsBefore).toLocaleString()}`;
+        critFX.textContent = `CRITICAL ${(
+          (state.packets - packetsBefore) /
+          Math.max(1, state.perClick)
+        )
+          .toFixed(2)
+          .replace(/\.00$/, "")}x! +${(
+          state.packets - packetsBefore
+        ).toLocaleString()}`;
         critFX.style.left = clampedCenter + "px";
         critFX.style.top = "45%";
         document.body.appendChild(critFX);
@@ -1432,42 +1047,6 @@ function clickPacket(event) {
         });
       }
     }
-
-    // Clear transient FX when dropping below thresholds (ANIMAL/ULTRA/MEGA)
-    if (clickCombo < 30) {
-      if (_animalFXTimer) {
-        clearTimeout(_animalFXTimer);
-        _animalFXTimer = setTimeout(() => {
-          try {
-            document.body.classList.remove("animal-active");
-            const s = document.getElementById("animal-sentinel");
-            if (s && s.parentNode) s.parentNode.removeChild(s);
-            const btn = document.getElementById("click-btn");
-            if (btn && typeof btn._prevShadow !== "undefined") {
-              btn.style.boxShadow = btn._prevShadow;
-              delete btn._prevShadow;
-            }
-            // Stop aura when dropping below ANIMAL threshold
-            stopAnimalAura();
-          } catch {}
-          _animalFXTimer = null;
-        }, 200);
-      }
-    }
-    if (clickCombo < 20) {
-      if (_ultraFXTimer) {
-        clearTimeout(_ultraFXTimer);
-        _ultraFXTimer = setTimeout(() => {
-          try {
-            document.body.classList.remove("ultra-active");
-            const s = document.getElementById("ultra-sentinel");
-            if (s && s.parentNode) s.parentNode.removeChild(s);
-          } catch {}
-          _ultraFXTimer = null;
-        }, 200);
-      }
-    }
-    if (clickCombo < 10) scheduleMegaFXClear();
 
     // Remove element after animation
     const animationDuration =
@@ -1484,20 +1063,17 @@ function clickPacket(event) {
       }
     }, animationDuration);
 
-    // Remove effect after animation
     clickFX.addEventListener("animationend", () => {
       if (clickFX.parentNode) {
         clickFX.remove();
       }
     });
   }
+
   // Restore instant responsiveness with escalating SFX
   if (state.player.sound) {
     if (crit) {
       playSound("crit");
-      if (clickCombo >= 30) {
-        _animalCritBurstUntil = Date.now() + 800;
-      }
       if (clickCombo >= 30) {
         setTimeout(() => playSound("crit"), 60);
         setTimeout(() => playSound("click"), 120);
@@ -1515,6 +1091,7 @@ function clickPacket(event) {
     } else {
       playSound("click");
       if (clickCombo >= 30) {
+        animalCritBurst();
         setTimeout(() => playSound("click"), 60);
         setTimeout(() => playSound("click"), 120);
         setTimeout(() => playSound("click"), 180);

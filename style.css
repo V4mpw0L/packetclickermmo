@@ -316,6 +316,20 @@ footer {
         align-self: center;
         justify-self: center;
     }
+    #combo-total-hud,
+    .combo-total-hud {
+        top: 7%;
+        font-size: clamp(1rem, 4vw, 1.2rem);
+        min-width: 90px;
+        padding: 0.25em 0.7em;
+    }
+    .neon-btn,
+    .upgrade-btn,
+    .gem-btn {
+        font-size: clamp(0.95rem, 3vw, 1.1rem);
+        padding: 0.5em 0.7em;
+        min-width: 90px;
+    }
 }
 
 #gem-display {
@@ -1244,6 +1258,12 @@ footer {
 }
 
 /* === CLICK EFFECTS === */
+/* =========================
+   EFFECTS & COMBO FX SECTION
+   ========================= */
+/* =========================
+   EFFECTS & COMBO FX SECTION
+   ========================= */
 .click-effect {
     position: fixed;
     font-size: clamp(1.2rem, 4vw, 1.8rem);
@@ -1260,6 +1280,11 @@ footer {
     white-space: normal;
     word-break: break-word;
     background: transparent !important;
+    min-width: 2.5em;
+    min-height: 1.5em;
+    padding: 0.1em 0.5em;
+    border-radius: 0.5em;
+    box-sizing: border-box;
 }
 
 .click-effect.combo {
@@ -2036,14 +2061,18 @@ body.mega-active #click-btn::before {
     outline: none !important;
 }
 
-#combo-total-hud {
+/* =========================
+   HUD SECTION (RESPONSIVE)
+   ========================= */
+#combo-total-hud,
+.combo-total-hud {
     position: fixed;
     top: 12%;
     left: 50%;
     transform: translate(-50%, 0);
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: clamp(0.25rem, 1vw, 0.5rem) clamp(0.5rem, 2vw, 1.2rem);
     border: 2px solid var(--primary-color);
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-lg, 12px);
     font-weight: bold;
     color: var(--primary-color);
     background: linear-gradient(
@@ -2056,7 +2085,9 @@ body.mega-active #click-btn::before {
         0 0 0 1px rgba(255, 255, 255, 0.08) inset;
     z-index: 1001;
     pointer-events: none;
-    max-width: 90vw;
+    max-width: 92vw;
+    min-width: 120px;
+    min-height: 2.2em;
     backdrop-filter: blur(8px);
     opacity: 0.98;
     transition:
@@ -2064,6 +2095,11 @@ body.mega-active #click-btn::before {
         opacity 160ms ease,
         box-shadow 320ms ease;
     animation: comboGlow 2.2s ease-in-out infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+    gap: 0.5em;
 }
 
 @keyframes comboGlow {
