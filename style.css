@@ -623,6 +623,15 @@ body {
 .gem-btn .text-xs {
     display: block;
     line-height: 1.2;
+    text-shadow:
+        0 1px 4px rgba(0, 0, 0, 0.6),
+        0 0 2px rgba(0, 0, 0, 0.4);
+}
+.neon-btn .text-xs,
+.upgrade-btn .text-xs {
+    text-shadow:
+        0 1px 4px rgba(0, 0, 0, 0.6),
+        0 0 2px rgba(0, 0, 0, 0.4);
 }
 
 .neon-btn::before,
@@ -731,6 +740,9 @@ h3 {
 }
 .text-neon-gray {
     color: var(--text-secondary) !important;
+    text-shadow:
+        0 1px 4px rgba(0, 0, 0, 0.6),
+        0 0 2px rgba(0, 0, 0, 0.4);
 }
 .text-gem {
     color: #ffd700 !important;

@@ -326,19 +326,45 @@ function renderGame() {
   let boostStatus = "";
   let totalMultiplier = 1;
 
+  // Active boosts
   if (state.boosts.doublePackets > Date.now()) {
     let remaining = Math.ceil((state.boosts.doublePackets - Date.now()) / 1000);
     boostStatus += `<div class="text-green-400 text-xs">🚀 2x Packets (${remaining}s)</div>`;
     totalMultiplier *= 2;
   }
+  if (state.boosts.quadrupleClick > Date.now()) {
+    let remaining = Math.ceil(
+      (state.boosts.quadrupleClick - Date.now()) / 1000,
+    );
+    boostStatus += `<div class="text-green-400 text-xs">🖱️ 4x Click Power (${remaining}s)</div>`;
+    totalMultiplier *= 4;
+  }
+  if (state.boosts.megaCrit > Date.now()) {
+    let remaining = Math.ceil((state.boosts.megaCrit - Date.now()) / 1000);
+    boostStatus += `<div class="text-neon-yellow text-xs">✨ 50% Crit (${remaining}s)</div>`;
+  }
+  if (state.boosts.tripleGems > Date.now()) {
+    let remaining = Math.ceil((state.boosts.tripleGems - Date.now()) / 1000);
+    boostStatus += `<div class="text-gem text-xs">💎 3x Gem Rate (${remaining}s)</div>`;
+  }
+  if (state.boosts.autoClicker > Date.now()) {
+    let remaining = Math.ceil((state.boosts.autoClicker - Date.now()) / 1000);
+    boostStatus += `<div class="text-neon-green text-xs">🤖 +10/s Auto Clicker (${remaining}s)</div>`;
+  }
 
+  // Prestige multiplier
   if (state.prestige.level > 0) {
     totalMultiplier *= 1 + state.prestige.level * 0.1;
     boostStatus += `<div class="text-purple-400 text-xs">⭐ Prestige Bonus: +${state.prestige.level * 10}%</div>`;
   }
 
+  // Effective rates incl. boosts (match idleTick and clickPacket)
+  let perSecBase = state.perSec;
+  if (state.prestige.autoClicker > 0) perSecBase += state.prestige.autoClicker;
+  if (state.boosts.autoClicker > Date.now()) perSecBase += 10;
+
   let effectivePerClick = Math.floor(state.perClick * totalMultiplier);
-  let effectivePerSec = Math.floor(state.perSec * totalMultiplier);
+  let effectivePerSec = Math.floor(perSecBase * totalMultiplier);
 
   return `
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
@@ -821,6 +847,9 @@ function clickPacket(event) {
   // Apply active boosts
   if (state.boosts.doublePackets > Date.now()) {
     bonus *= 2;
+  }
+  if (state.boosts.quadrupleClick > Date.now()) {
+    bonus *= 4;
   }
 
   let critChance = state.critChance;
