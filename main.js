@@ -667,7 +667,11 @@ function renderShop() {
 
 // =============== LEADERBOARD PANEL ===============
 function renderLeaderboard() {
-  let bots = generateBots(8);
+  if (!state.leaderboardBots || !state.leaderboardBots.length) {
+    state.leaderboardBots = generateBots(10);
+    save();
+  }
+  let bots = state.leaderboardBots.slice();
   bots.push({
     name: state.player.name,
     packets: state.packets,
@@ -690,7 +694,7 @@ function renderLeaderboard() {
   return `<div class="neon-card" style="padding: 1rem 0.5rem;">
     <h2 class="tab-title">🏆 Leaderboard</h2>
     <ul id="leaderboard" style="list-style: none; margin: 0; padding: 0;">${html}</ul>
-    <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center; margin-top: 0.75rem;">Bots are randomly generated. Your score is real!</div>
+    <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center; margin-top: 0.75rem;">Scores update over time. Your score is real!</div>
   </div>`;
 }
 
@@ -1364,6 +1368,25 @@ function idleTick() {
     if (activeTab === "game") renderTab();
     checkAchievements();
   }
+
+  // Simulate ongoing progress for leaderboard bots to feel more "real"
+  try {
+    if (state.leaderboardBots && state.leaderboardBots.length) {
+      const playerRate = Math.max(
+        1,
+        Math.floor(state.perSec + state.perClick * 0.25),
+      );
+      state.leaderboardBots = state.leaderboardBots.map((b, i) => {
+        const variance = 0.6 + Math.random() * 0.9; // 0.6x..1.5x of player baseline
+        const burst =
+          Math.random() < 0.02
+            ? Math.floor(playerRate * (3 + Math.random() * 7))
+            : 0; // rare burst
+        const delta = Math.max(0, Math.floor(playerRate * variance)) + burst;
+        return { ...b, packets: Math.max(100, b.packets + delta) };
+      });
+    }
+  } catch (_) {}
 }
 
 function isVIP() {
@@ -1607,22 +1630,46 @@ function showAdBanner() {
 // =============== BOTS / LEADERBOARD ===============
 function randomName() {
   const names = [
-    "BitWiz",
-    "ZeroCool",
-    "Glitcher",
-    "Nyx",
-    "CyberBat",
-    "Hexa",
-    "GhostShell",
-    "V4mpw0L",
-    "Cipher",
-    "Spectre",
-    "Echo",
-    "Trace",
-    "Pix3l",
-    "Nexus",
-    "Havoc",
-    "BotNet",
+    "xX_Shadow_Xx",
+    "NoScope42",
+    "L33T_H4X0R",
+    "Nova_7",
+    "RogueByte",
+    "PingLord",
+    "AFK_Goblin",
+    "DDoS_Dragon",
+    "ClutchM0de",
+    "ToxicKitten",
+    "GhostFrag",
+    "LagWizard",
+    "PacketPwn",
+    "Hex_Reaper",
+    "WiFi_Warlord",
+    "NullViper",
+    "TryHardTim",
+    "SudoSlayer",
+    "1TapLegend",
+    "Peekab00",
+    "EZ_Clapper",
+    "AltF4Pro",
+    "Cr1tDealer",
+    "Headshot_99",
+    "TurboTurtle",
+    "AimBotAnna",
+    "SneakyPanda",
+    "QwertyNinja",
+    "NeoPacket",
+    "FpsGremlin",
+    "SaltFactory",
+    "Byte_Bandit",
+    "Proxy_Pal",
+    "LagSwitch99",
+    "GLHF_Guy",
+    "NoRecoil911",
+    "Cl4nless",
+    "KDA_Farmer",
+    "YoloSnack",
+    "PacketPirate",
   ];
   return names[Math.floor(Math.random() * names.length)];
 }
@@ -1642,10 +1689,11 @@ function generateBots(n = 6) {
     const jitter = Math.floor(
       Math.random() * Math.max(400, Math.floor(p * 0.08)),
     ); // small random spread
+    const nick = randomName();
     bots.push({
-      name: randomName(),
+      name: nick,
       packets: base + jitter,
-      avatar: `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${randomName()}`,
+      avatar: `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${encodeURIComponent(nick)}`,
     });
   }
 
@@ -1906,6 +1954,10 @@ function bindTabEvents(tab) {
 // =============== INIT ===============
 function init() {
   load();
+  if (!state.leaderboardBots || !state.leaderboardBots.length) {
+    state.leaderboardBots = generateBots(10);
+    save();
+  }
   // Expose state/save globally so UI helpers can persist theme changes
   window.state = state;
   window.save = save;
