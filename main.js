@@ -802,7 +802,7 @@ let _animalAuraInterval = null;
 function startAnimalAura() {
   try {
     if (_animalAuraInterval) return;
-    const rateMs = 90;
+    const rateMs = 45;
 
     _animalAuraInterval = setInterval(() => {
       const btn = document.getElementById("click-btn");
@@ -823,7 +823,19 @@ function startAnimalAura() {
       p.style.pointerEvents = "none";
       p.style.borderRadius = "50%";
       // Alternate warm flame and electric cyan particles
-      const hue = Math.random() < 0.7 ? (Math.random() < 0.6 ? 48 : 28) : 195; // warm bias
+      const growthHint = Math.min(Math.max(clickCombo - 30, 0) / 12, 4.0);
+      const hue =
+        growthHint > 2.0
+          ? Math.random() < 0.4
+            ? 195
+            : Math.random() < 0.5
+              ? 28
+              : 8
+          : Math.random() < 0.75
+            ? Math.random() < 0.7
+              ? 50
+              : 28
+            : 195; // warm near, more blue as combo grows
       p.style.background = `radial-gradient(circle, rgba(255,255,255,0.95) 0 45%, hsla(${hue}, 100%, 60%, 0.95) 60% 100%)`;
       p.style.boxShadow = `0 0 ${Math.round(6 + Math.random() * 10)}px hsla(${hue}, 100%, 60%, 0.75)`;
       p.style.zIndex = "2050";
@@ -833,7 +845,7 @@ function startAnimalAura() {
 
       // Random orbit vector with slight upward bias for flame feeling
       const angle = Math.random() * Math.PI * 2;
-      const growth = 1 + Math.min(Math.max(clickCombo - 30, 0) / 15, 2.5);
+      const growth = 1 + Math.min(Math.max(clickCombo - 30, 0) / 12, 4.0);
       const dist =
         (rect.width * 0.25 + Math.random() * rect.width * 0.4) * growth;
       const dx = Math.cos(angle) * dist;
@@ -851,8 +863,69 @@ function startAnimalAura() {
         () => {
           if (p && p.parentNode) p.parentNode.removeChild(p);
         },
-        Math.round(travel + 300 + Math.random() * 180),
+        Math.round(
+          520 +
+            Math.min(1, dist / Math.max(1, rect.width)) * 820 +
+            360 +
+            Math.random() * 260,
+        ),
       );
+      // Occasionally spawn a long-range flare to a random screen point
+      if (Math.random() < 0.22) {
+        const q = document.createElement("div");
+        const qSize = 3.5 + Math.random() * 4.5;
+        q.className = "animal-particle";
+        q.style.position = "fixed";
+        q.style.width = qSize + "px";
+        q.style.height = qSize + "px";
+        q.style.left = cx + "px";
+        q.style.top = cy + "px";
+        q.style.pointerEvents = "none";
+        q.style.borderRadius = "50%";
+        const vw = Math.max(
+          document.documentElement.clientWidth || 0,
+          window.innerWidth || 0,
+        );
+        const vh = Math.max(
+          document.documentElement.clientHeight || 0,
+          window.innerHeight || 0,
+        );
+        const targetX = Math.random() * vw;
+        const targetY = Math.random() * vh * (Math.random() < 0.6 ? 0.9 : 1); // sometimes go further down
+        // Color modulation by distance: yellow near, orange/red mid, blue electric far
+        const maxD = Math.hypot(vw, vh);
+        const dRatio = Math.min(
+          1,
+          Math.hypot(targetX - cx, targetY - cy) / Math.max(1, maxD),
+        );
+        const flareHue =
+          dRatio < 0.33
+            ? 52
+            : dRatio < 0.7
+              ? Math.random() < 0.5
+                ? 28
+                : 8
+              : 195;
+        q.style.background = `radial-gradient(circle, rgba(255,255,255,0.95) 0 45%, hsla(${flareHue}, 100%, 60%, 0.95) 60% 100%)`;
+        q.style.boxShadow = `0 0 ${Math.round(8 + Math.random() * 14)}px hsla(${flareHue}, 100%, 60%, 0.8)`;
+        q.style.zIndex = "2050";
+        q.style.opacity = "1";
+        q.style.transform = "translate(-50%, -50%)";
+        document.body.appendChild(q);
+        requestAnimationFrame(() => {
+          const t = 900 + Math.random() * 700;
+          q.style.transition = `transform ${Math.round(t)}ms cubic-bezier(0.22, 0.6, 0.2, 1), opacity ${Math.round(t)}ms ease-out, filter ${Math.round(t)}ms ease-out`;
+          q.style.transform = `translate(calc(-50% + ${targetX - cx}px), calc(-50% + ${targetY - cy}px)) scale(${0.8 + Math.random() * 0.9})`;
+          q.style.opacity = "0";
+          q.style.filter = "blur(0.6px)";
+          setTimeout(
+            () => {
+              if (q && q.parentNode) q.parentNode.removeChild(q);
+            },
+            Math.round(t + 120),
+          );
+        });
+      }
     }, rateMs);
   } catch {}
 }
