@@ -150,6 +150,8 @@ export const ITEM_POOL = [
  */
 export function ensureStateShape(state) {
   if (!state || typeof state !== "object") return state;
+
+  // Ensure basic containers
   if (!Array.isArray(state.inventory)) state.inventory = [];
   if (!state.equipment || typeof state.equipment !== "object") {
     state.equipment = {};
@@ -157,6 +159,41 @@ export function ensureStateShape(state) {
   for (const slot of SLOTS) {
     if (!(slot.id in state.equipment)) state.equipment[slot.id] = null;
   }
+
+  // Migration: normalize quantities and merge duplicates by name+rarity
+  try {
+    const inv = Array.isArray(state.inventory) ? state.inventory : [];
+    const grouped = [];
+    const index = new Map(); // key = name::rarity
+
+    for (const it of inv) {
+      if (!it || typeof it !== "object") continue;
+      const name = String(it.name || "");
+      const rarity = String(it.rarity || "green");
+      const key = name + "::" + rarity;
+      const qty = Math.max(1, Number(it.q || 1));
+
+      if (index.has(key)) {
+        const gi = index.get(key);
+        grouped[gi].q = Math.max(1, Number(grouped[gi].q || 1)) + qty;
+      } else {
+        const copy = Object.assign({}, it);
+        copy.name = name;
+        copy.rarity = rarity;
+        copy.q = qty;
+        grouped.push(copy);
+        index.set(key, grouped.length - 1);
+      }
+    }
+
+    state.inventory = grouped;
+  } catch {
+    // non-fatal migration
+  }
+
+  // Normalize capacity default
+  if (typeof state._invCapacity !== "number") state._invCapacity = 100;
+
   return state;
 }
 
@@ -266,9 +303,9 @@ export function awardDrop(state, item, opts = {}) {
         ? window.showHudNotify
         : null;
 
-  // Stack by id + rarity (same item goes x1, x2, x3 in one slot)
+  // Stack by name + rarity (same item goes x1, x2, x3 in one slot)
   const existing = inv.find(
-    (it) => it && it.id === item.id && it.rarity === item.rarity,
+    (it) => it && it.name === item.name && it.rarity === item.rarity,
   );
 
   if (existing) {

@@ -1729,10 +1729,10 @@ body.ultra-active #click-btn::before {
     color: #ff3040;
     /* Fallback neon glow if inner span is missing (red-focused, no black outline) */
     text-shadow:
-        0 0 2px rgba(255, 255, 255, 0.9),
-        0 0 7px rgba(255, 96, 112, 0.9),
-        0 0 12px rgba(255, 64, 80, 0.8),
-        0 0 16px rgba(255, 32, 48, 0.7);
+        0 0 1px rgba(255, 170, 96, 0.85),
+        0 0 5px rgba(255, 96, 64, 0.85),
+        0 0 9px rgba(255, 56, 48, 0.75),
+        0 0 12px rgba(255, 32, 40, 0.7);
 }
 .click-effect.animal-combo::before,
 .click-effect.animal-combo::after {
@@ -1820,13 +1820,13 @@ body.animal-active .click-effect.ultra-combo {
 .click-effect.animal-combo .animal-text-layer {
     /* Red neon layered glow (no black outline) */
     text-shadow:
-        0 0 1px rgba(255, 255, 255, 0.95),
-        0 0 6px rgba(255, 120, 136, 0.9),
-        0 0 10px rgba(255, 80, 96, 0.85),
-        0 0 14px rgba(255, 48, 64, 0.8),
-        0 0 18px rgba(255, 32, 48, 0.7);
-    filter: drop-shadow(0 0 6px rgba(255, 72, 92, 0.5))
-        drop-shadow(0 0 12px rgba(255, 48, 64, 0.45));
+        0 0 1px rgba(255, 170, 96, 0.9),
+        0 0 4px rgba(255, 120, 96, 0.9),
+        0 0 8px rgba(255, 72, 64, 0.85),
+        0 0 11px rgba(255, 48, 56, 0.8),
+        0 0 14px rgba(232, 24, 40, 0.7);
+    filter: drop-shadow(0 0 4px rgba(255, 120, 80, 0.45))
+        drop-shadow(0 0 9px rgba(255, 48, 56, 0.4));
 }
 body.animal-active #click-btn {
     animation: animalElectricShake 0.2s ease-in-out infinite;
