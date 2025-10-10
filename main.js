@@ -794,7 +794,15 @@ function renderPrestige() {
       <div class="mb-3" style="text-align:center;">
         <div class="text-neon-gray" style="font-size:.9rem; margin-bottom:.25rem;">Progress to next prestige</div>
         <div style="position:relative; height:12px; border-radius:999px; background:#22313f; border:1px solid var(--border-color); overflow:hidden; box-shadow: inset 0 1px 6px rgba(0,0,0,.5);">
-          <div id="prestige-progress-fill" style="height:100%; width: ${Math.min(100, (state.packets / 50000) * 100).toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); box-shadow: 0 0 10px var(--shadow-primary);"></div>
+          <style>
+            @keyframes prestigeReadyPulse {
+              0% { box-shadow: 0 0 6px var(--secondary-color); }
+              50% { box-shadow: 0 0 14px var(--primary-color); }
+              100% { box-shadow: 0 0 6px var(--secondary-color); }
+            }
+            #prestige-progress-fill.prestige-glow { animation: prestigeReadyPulse 1.6s ease-in-out infinite; }
+          </style>
+          <div id="prestige-progress-fill" class="${state.packets >= 50000 ? "prestige-glow" : ""}" style="height:100%; width: ${Math.min(100, (state.packets / 50000) * 100).toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); box-shadow: 0 0 10px var(--shadow-primary);"></div>
         </div>
         <div id="prestige-progress-label" class="text-neon-gray" style="font-size:.8rem; margin-top:.25rem;">${state.packets.toLocaleString()} / 50,000</div>
       </div>
@@ -1460,14 +1468,19 @@ function idleTick() {
       try {
         const pct = Math.min(100, (state.packets / 50000) * 100).toFixed(1);
         const fill = document.getElementById("prestige-progress-fill");
-        if (fill) fill.style.width = pct + "%";
+        const __eligible = state.packets >= 50000;
+        if (fill) {
+          fill.style.width = pct + "%";
+          if (__eligible) fill.classList.add("prestige-glow");
+          else fill.classList.remove("prestige-glow");
+        }
         const label = document.getElementById("prestige-progress-label");
         if (label)
           label.textContent = `${state.packets.toLocaleString()} / 50,000`;
 
         // If threshold crossed, re-render CTA section
         const wasEligible = before >= 50000;
-        const isEligible = state.packets >= 50000;
+        const isEligible = __eligible;
         if (wasEligible !== isEligible) {
           renderTab();
         }
