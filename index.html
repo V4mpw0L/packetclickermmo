@@ -246,13 +246,15 @@
                         box-shadow: 0 2px 10px var(--shadow-primary);
                     "
                 >
-                    <span>Version</span><strong id="app-version">0.0.3</strong>
+                    <span>Version</span><strong id="app-version">0.0.4</strong>
                 </span>
             </div>
         </footer>
 
         <!-- Constants (UMD) -->
         <script src="src/data/constants.js"></script>
+        <!-- I18N (UMD) -->
+        <script src="src/data/i18n.js"></script>
         <!-- Storage (UMD) -->
         <script src="src/utils/storage.js"></script>
         <!-- Modular helpers (non-invasive) -->
@@ -279,6 +281,244 @@
 
         <!-- Main Game Logic -->
         <script src="main.js"></script>
+        <!-- I18N wiring and language pickers -->
+        <script>
+            (function () {
+                // Helper to translate dynamic HTML from render* functions
+                function tr(k, p) {
+                    try {
+                        return window.Packet && window.Packet.i18n
+                            ? window.Packet.i18n.t(k, p)
+                            : k;
+                    } catch (_) {
+                        return k;
+                    }
+                }
+                function translateHtml(html) {
+                    try {
+                        return String(html)
+                            .replace(
+                                />🎮 Game</g,
+                                ">🎮 " + tr("tabs.game") + "<",
+                            )
+                            .replace(
+                                />🛠️ Upgrades</g,
+                                ">🛠️ " + tr("tabs.upgrades") + "<",
+                            )
+                            .replace(
+                                />📅 Daily Rewards</g,
+                                ">📅 " + tr("daily.title") + "<",
+                            )
+                            .replace(
+                                />⚡ Temporary Boosts</g,
+                                ">⚡ " + tr("boosts.title") + "<",
+                            )
+                            .replace(
+                                />⭐ Prestige</g,
+                                ">⭐ " + tr("prestige.title") + "<",
+                            )
+                            .replace(/Collect Packets/g, tr("buttons.collect"))
+                            .replace(
+                                /Packets\/Click:/g,
+                                tr("labels.packetsPerClick") + ":",
+                            )
+                            .replace(
+                                /Packets\/Sec:/g,
+                                tr("labels.packetsPerSec") + ":",
+                            )
+                            .replace(
+                                /Crit Chance:/g,
+                                tr("labels.critChance") + ":",
+                            )
+                            .replace(
+                                /Crit Multiplier:/g,
+                                tr("labels.critMultiplier") + ":",
+                            )
+                            .replace(
+                                /Available Boosts/g,
+                                tr("boosts.available"),
+                            )
+                            .replace(
+                                /Boosts stack with other bonuses for maximum effect!/g,
+                                tr("boosts.stackHint"),
+                            )
+                            .replace(
+                                /Need 50,000 packets to prestige/g,
+                                tr("prestige.need"),
+                            )
+                            .replace(
+                                /Reset progress for permanent bonuses/g,
+                                tr("prestige.resetHint"),
+                            );
+                    } catch (_) {
+                        return html;
+                    }
+                }
+                function applyLang() {
+                    try {
+                        if (window.Packet && window.Packet.i18n) {
+                            window.Packet.i18n.applyLanguageToData();
+                        }
+                    } catch (_) {}
+                    try {
+                        typeof updateTopBar === "function" && updateTopBar();
+                    } catch (_) {}
+                    try {
+                        typeof renderTab === "function" && renderTab();
+                    } catch (_) {}
+                    // Footer label
+                    try {
+                        var badge = document.getElementById("version-badge");
+                        if (badge) {
+                            var s = badge.querySelector("span");
+                            if (s && window.Packet && window.Packet.i18n) {
+                                s.textContent =
+                                    window.Packet.i18n.t("labels.version");
+                            }
+                        }
+                    } catch (_) {}
+                }
+                // Wrap render functions to translate their HTML output
+                (function wrapRenders() {
+                    var names = [
+                        "renderGame",
+                        "renderUpgrades",
+                        "renderAchievements",
+                        "renderShop",
+                        "renderLeaderboard",
+                        "renderPrestige",
+                        "renderDaily",
+                        "renderBoosts",
+                        "renderThemes",
+                    ];
+                    names.forEach(function (n) {
+                        if (typeof window[n] === "function") {
+                            var _orig = window[n];
+                            window[n] = function () {
+                                var html = _orig.apply(this, arguments);
+                                return translateHtml(html);
+                            };
+                        }
+                    });
+                })();
+
+                // Inject language select into Settings modal
+                (function patchSettings() {
+                    if (typeof window.showSettings !== "function") return;
+                    var _orig = window.showSettings;
+                    window.showSettings = function () {
+                        _orig();
+                        setTimeout(function () {
+                            try {
+                                var box = document.querySelector(".modal-box");
+                                if (!box || box.querySelector("#lang-select"))
+                                    return;
+                                var title =
+                                    window.Packet && window.Packet.i18n
+                                        ? window.Packet.i18n.t("settings.title")
+                                        : "Settings";
+                                // Replace modal title if needed
+                                var h = box.querySelector("h2,h3,h1");
+                                if (h && title) h.textContent = title;
+
+                                var wrap = document.createElement("label");
+                                wrap.className = "flex items-center mb-2";
+                                wrap.innerHTML =
+                                    '<span class="mr-2">Language</span>' +
+                                    '<select id="lang-select" class="w-full p-2 bg-gray-700 rounded border border-neon-cyan">' +
+                                    '<option value="en">English</option>' +
+                                    '<option value="pt-br">Português (Brasil)</option>' +
+                                    '<option value="ru">Русский</option>' +
+                                    "</select>";
+                                var before =
+                                    box.querySelector("#edit-profile-inside") ||
+                                    box.firstChild;
+                                box.insertBefore(wrap, before);
+
+                                var sel = wrap.querySelector("#lang-select");
+                                try {
+                                    sel.value =
+                                        (window.Packet &&
+                                            window.Packet.i18n &&
+                                            window.Packet.i18n.getLanguage()) ||
+                                        "en";
+                                } catch (_) {}
+                                sel.onchange = function () {
+                                    if (window.Packet && window.Packet.i18n) {
+                                        window.Packet.i18n.setLanguage(
+                                            this.value,
+                                        );
+                                        applyLang();
+                                    }
+                                };
+                            } catch (_) {}
+                        }, 0);
+                    };
+                })();
+
+                // Inject language select into Edit Profile modal and persist on Save
+                (function patchEditProfile() {
+                    if (typeof window.showEditProfile !== "function") return;
+                    var _orig = window.showEditProfile;
+                    window.showEditProfile = function () {
+                        _orig();
+                        setTimeout(function () {
+                            try {
+                                var form =
+                                    document.getElementById("profile-form");
+                                if (!form || form.querySelector("#lang-select"))
+                                    return;
+                                var field = document.createElement("label");
+                                field.className = "block mb-3";
+                                field.innerHTML =
+                                    '<span class="block mb-1 font-semibold">Language:</span>' +
+                                    '<select id="lang-select" class="w-full p-2 bg-gray-700 rounded border border-neon-cyan">' +
+                                    '<option value="en">English</option>' +
+                                    '<option value="pt-br">Português (Brasil)</option>' +
+                                    '<option value="ru">Русский</option>' +
+                                    "</select>";
+                                var avatarBlock = form.querySelector(".mb-4");
+                                form.insertBefore(field, avatarBlock);
+
+                                var sel = field.querySelector("#lang-select");
+                                try {
+                                    sel.value =
+                                        (window.Packet &&
+                                            window.Packet.i18n &&
+                                            window.Packet.i18n.getLanguage()) ||
+                                        "en";
+                                } catch (_) {}
+                                form.addEventListener(
+                                    "submit",
+                                    function () {
+                                        try {
+                                            if (
+                                                window.Packet &&
+                                                window.Packet.i18n
+                                            ) {
+                                                window.Packet.i18n.setLanguage(
+                                                    sel.value,
+                                                );
+                                                setTimeout(applyLang, 0);
+                                            }
+                                        } catch (_) {}
+                                    },
+                                    { once: true },
+                                );
+                            } catch (_) {}
+                        }, 0);
+                    };
+                })();
+
+                // React on language changes
+                window.addEventListener("packet:i18n:change", function () {
+                    applyLang();
+                });
+
+                // Initial apply (if stored lang is not English)
+                applyLang();
+            })();
+        </script>
 
         <!-- PWA: Register Service Worker -->
         <script>
