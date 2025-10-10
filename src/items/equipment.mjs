@@ -351,7 +351,7 @@ function rarityStyles(rarityId) {
   const r = rarityById(rarityId);
   return {
     color: r.color,
-    border: r.border,
+    border: `1.5px solid ${r.color}`,
     glow: `0 0 10px ${r.color}55`,
   };
 }
@@ -409,10 +409,10 @@ export function renderTab(state) {
       const st = rarityStyles(it.rarity);
       const absIndex = start + i;
       return `
-          <div class="neon-card" style="padding:.35rem; border-color:${st.color}; box-shadow:${st.glow}; display:flex; align-items:center; justify-content:center; width:100%; max-width:100%; margin:0; aspect-ratio:1/1;">
-            <button class="neon-btn" data-open-item-index="${absIndex}" style="width:100%; height:100%; background: transparent; border:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.25rem; padding:.25rem;">
-              <div style="position:relative; display:inline-block; width:64%; height:64%;">
-                <img src="${it.icon}" alt="${it.name}" style="width:100%;height:100%;border-radius:6px;border:${st.border};box-shadow:${st.glow}; object-fit:cover;" />
+          <div class="neon-card" style="padding:.3rem; border-color:${st.color}; box-shadow:${st.glow}; display:flex; align-items:center; justify-content:center; width:100%; max-width:100%; margin:0; aspect-ratio:1/1;">
+            <button class="neon-btn" data-open-item-index="${absIndex}" style="width:100%; height:100%; background: transparent; border:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.2rem; padding:.2rem;">
+              <div style="position:relative; display:inline-block; width:72%; height:72%;">
+                <img src="${it.icon}" alt="${it.name}" style="width:100%;height:100%;border-radius:6px;border:${st.border};box-shadow:${st.glow}; box-sizing:border-box; object-fit:cover;" />
                 <span style="position:absolute; bottom:2px; right:2px; background: rgba(0,0,0,0.6); border:1px solid var(--border-color); border-radius:10px; padding:0 6px; font-size:.7rem; font-weight:800; color:${st.color};">x${it.q || 1}</span>
               </div>
               <div style="font-size:.7rem; font-weight:700; color:${st.color}; text-align:center; line-height:1;">${it.rarityName}</div>
@@ -425,8 +425,8 @@ export function renderTab(state) {
   const placeholderCells = Array.from({ length: placeholderCount })
     .map(
       () => `
-          <div class="neon-card" style="padding:.35rem; border-color:#2a3a46; box-shadow: none; display:flex; align-items:center; justify-content:center; width:100%; max-width:100%; margin:0; aspect-ratio:1/1; background: linear-gradient(135deg, #1a222a, #202a35);">
-            <div style="width:64%; height:64%; border:1.5px dashed var(--border-color); border-radius:6px; opacity:.35;"></div>
+          <div class="neon-card" style="padding:.3rem; border-color:#2a3a46; box-shadow: none; display:flex; align-items:center; justify-content:center; width:100%; max-width:100%; margin:0; aspect-ratio:1/1; background: linear-gradient(135deg, #1a222a, #202a35);">
+            <div style="width:72%; height:72%; border:1.5px dashed var(--border-color); border-radius:6px; box-sizing:border-box; opacity:.35;"></div>
           </div>`,
     )
     .join("");

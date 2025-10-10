@@ -308,7 +308,7 @@ export function handleComboEffect(clickCombo, amount, state) {
     const extra = Math.floor(amount * 0.99);
     safeAddPackets(extra);
     displayedGain += extra;
-    effectText = `<span style="color:#ff3040">ANIMAL! +${amount} (+99%)</span>`;
+    effectText = `<span class="animal-text-layer" style="color:#ff3040">ANIMAL! +${amount} (+99%)</span>`;
 
     if (hasDOM()) {
       try {

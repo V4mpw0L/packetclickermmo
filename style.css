@@ -681,6 +681,11 @@ body .modal-box .space-y-3 > * + * {
     object-fit: cover;
     border-radius: 6px;
 }
+/* Ensure item inner square matches empty placeholder inner square exactly */
+.inv-grid [data-open-item-index] > div:first-child {
+    width: 72% !important;
+    height: 72% !important;
+}
 
 /* Prestige: keep main label on one line; if description is inside button, push it visually below */
 #do-prestige {
@@ -1701,7 +1706,12 @@ body.ultra-active #click-btn::before {
     padding: 0.2rem 0.6rem;
     font-size: clamp(2.9rem, 9.5vw, 4.8rem);
     color: #ff3040;
-    text-shadow: none;
+    /* Fallback neon glow if inner span is missing (red-focused, no black outline) */
+    text-shadow:
+        0 0 2px rgba(255, 255, 255, 0.9),
+        0 0 11px rgba(255, 96, 112, 0.9),
+        0 0 18px rgba(255, 64, 80, 0.8),
+        0 0 26px rgba(255, 32, 48, 0.7);
 }
 .click-effect.animal-combo::before,
 .click-effect.animal-combo::after {
@@ -1787,14 +1797,15 @@ body.animal-active .click-effect.ultra-combo {
 }
 /* Layered glow strictly on the inner text layer for readability */
 .click-effect.animal-combo .animal-text-layer {
+    /* Red neon layered glow (no black outline) */
     text-shadow:
         0 0 1px rgba(255, 255, 255, 0.95),
-        0 0 6px rgba(255, 255, 224, 0.9),
-        0 -1px 10px rgba(255, 230, 0, 0.85),
-        0 -2px 14px rgba(255, 165, 0, 0.8),
-        0 -3px 18px rgba(255, 120, 0, 0.7),
-        0 -4px 24px rgba(255, 80, 0, 0.6),
-        0 -6px 30px rgba(255, 48, 64, 0.55);
+        0 0 8px rgba(255, 120, 136, 0.9),
+        0 0 14px rgba(255, 80, 96, 0.85),
+        0 0 20px rgba(255, 48, 64, 0.8),
+        0 0 28px rgba(255, 32, 48, 0.7);
+    filter: drop-shadow(0 0 10px rgba(255, 72, 92, 0.5))
+        drop-shadow(0 0 18px rgba(255, 48, 64, 0.45));
 }
 body.animal-active #click-btn {
     animation: animalElectricShake 0.2s ease-in-out infinite;
