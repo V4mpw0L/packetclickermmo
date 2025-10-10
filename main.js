@@ -684,7 +684,7 @@ function renderLeaderboard() {
       (p, idx) => `
     <li style="display: flex; gap: 0.75rem; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #273742;">
       <span style="width: 2rem; text-align: right; color: var(--secondary-color); font-weight: bold;">${idx + 1}.</span>
-      <img src="${p.avatar || DEFAULT_AVATAR}" style="width: 2rem; height: 2rem; border-radius: 50%; border: 1px solid var(--primary-color);" alt="">
+      <img src="${p.avatar || DEFAULT_AVATAR}" style="width: 2rem; height: 2rem; border-radius: 50%; border: 2px solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"};" alt="">
       <span style="font-weight: 800; ${p.name === state.player.name ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary);" : "color: var(--text-primary);"}">${p.name}</span>
       <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary);">${p.packets.toLocaleString()}</span>
     </li>
@@ -1497,7 +1497,7 @@ function playSound(type) {
     // Prefer HTMLAudio pool for click SFX (low-latency file playback)
     if (type === "click") {
       const POOL_SIZE = 6;
-      const src = "src/assets/hit.mp3";
+      const src = "src/assets/hit.wav";
       const g = window;
 
       if (!g._hitPool) {
