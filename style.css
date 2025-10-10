@@ -466,8 +466,12 @@ body .modal-box .space-y-3 > * + * {
 
 #open-settings {
     font-size: var(--font-size-xl);
-    background: none;
-    border: none;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.25),
+        rgba(0, 0, 0, 0.05)
+    );
+    border: 1.5px solid var(--border-color);
     cursor: pointer;
     padding: var(--spacing-xs);
     border-radius: var(--border-radius-sm);
@@ -477,6 +481,9 @@ body .modal-box .space-y-3 > * + * {
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow:
+        0 2px 10px var(--shadow-primary) inset,
+        0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
 /* Ensure the settings icon maintains a consistent, responsive size */
@@ -496,8 +503,12 @@ body .modal-box .space-y-3 > * + * {
 /* Equipment quick button (top bar) - match settings style and sizing */
 #open-equipment {
     font-size: var(--font-size-xl);
-    background: none;
-    border: none;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.25),
+        rgba(0, 0, 0, 0.05)
+    );
+    border: 1.5px solid var(--border-color);
     cursor: pointer;
     padding: var(--spacing-xs);
     border-radius: var(--border-radius-sm);
@@ -507,6 +518,9 @@ body .modal-box .space-y-3 > * + * {
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow:
+        0 2px 10px var(--shadow-primary) inset,
+        0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
 /* Responsive icon sizing (consistent with settings) */
@@ -1709,9 +1723,9 @@ body.ultra-active #click-btn::before {
     /* Fallback neon glow if inner span is missing (red-focused, no black outline) */
     text-shadow:
         0 0 2px rgba(255, 255, 255, 0.9),
-        0 0 11px rgba(255, 96, 112, 0.9),
-        0 0 18px rgba(255, 64, 80, 0.8),
-        0 0 26px rgba(255, 32, 48, 0.7);
+        0 0 7px rgba(255, 96, 112, 0.9),
+        0 0 12px rgba(255, 64, 80, 0.8),
+        0 0 16px rgba(255, 32, 48, 0.7);
 }
 .click-effect.animal-combo::before,
 .click-effect.animal-combo::after {
@@ -1800,12 +1814,12 @@ body.animal-active .click-effect.ultra-combo {
     /* Red neon layered glow (no black outline) */
     text-shadow:
         0 0 1px rgba(255, 255, 255, 0.95),
-        0 0 8px rgba(255, 120, 136, 0.9),
-        0 0 14px rgba(255, 80, 96, 0.85),
-        0 0 20px rgba(255, 48, 64, 0.8),
-        0 0 28px rgba(255, 32, 48, 0.7);
-    filter: drop-shadow(0 0 10px rgba(255, 72, 92, 0.5))
-        drop-shadow(0 0 18px rgba(255, 48, 64, 0.45));
+        0 0 6px rgba(255, 120, 136, 0.9),
+        0 0 10px rgba(255, 80, 96, 0.85),
+        0 0 14px rgba(255, 48, 64, 0.8),
+        0 0 18px rgba(255, 32, 48, 0.7);
+    filter: drop-shadow(0 0 6px rgba(255, 72, 92, 0.5))
+        drop-shadow(0 0 12px rgba(255, 48, 64, 0.45));
 }
 body.animal-active #click-btn {
     animation: animalElectricShake 0.2s ease-in-out infinite;

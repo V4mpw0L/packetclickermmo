@@ -253,15 +253,46 @@ export function awardDrop(state, item, opts = {}) {
   ensureStateShape(state);
   if (!item || typeof item !== "object") return false;
 
-  // Stack by id + rarity
-  const existing = (state.inventory || []).find(
+  const inv = Array.isArray(state.inventory)
+    ? state.inventory
+    : (state.inventory = []);
+  const capacity = Number(state._invCapacity || 100);
+
+  // Build notifier early (HUD or provided)
+  const notify =
+    typeof opts.notify === "function"
+      ? opts.notify
+      : hasDOM() && typeof window.showHudNotify === "function"
+        ? window.showHudNotify
+        : null;
+
+  // Stack by id + rarity (same item goes x1, x2, x3 in one slot)
+  const existing = inv.find(
     (it) => it && it.id === item.id && it.rarity === item.rarity,
   );
+
   if (existing) {
+    // Always allow stacking even when capacity is "full" (doesn't consume a new slot)
     existing.q = Number(existing.q || 1) + 1;
   } else {
+    // Enforce capacity for new stacks
+    if (inv.length >= capacity) {
+      // Inventory full: block the drop and notify
+      if (hasDOM() && typeof window.showModal === "function") {
+        window.showModal(
+          "Inventory Full",
+          `<div class="neon-card" style="padding:.75rem;">
+            <div class="text-neon-gray mb-2">Your inventory is full (${inv.length}/${capacity}).</div>
+            <div class="text-sm">Sell items or expand capacity to collect new drops.</div>
+          </div>`,
+        );
+      } else if (notify) {
+        notify("Inventory full!", "❗");
+      }
+      return false;
+    }
     item.q = 1;
-    state.inventory.push(item);
+    inv.push(item);
   }
 
   if (typeof opts.save === "function") {
@@ -269,12 +300,6 @@ export function awardDrop(state, item, opts = {}) {
       opts.save();
     } catch {}
   }
-  const notify =
-    typeof opts.notify === "function"
-      ? opts.notify
-      : hasDOM() && typeof window.showHudNotify === "function"
-        ? window.showHudNotify
-        : null;
 
   // Rich bordered toast for drops
   showDropToast(item, notify);
@@ -300,9 +325,14 @@ export function maybeDropOnClick(state, opts = {}) {
 
   if (roll < baseRate || pityHit) {
     const item = rollDrop(state);
-    awardDrop(state, item, opts);
-    state._dropClicks = 0;
-    return item;
+    const ok = awardDrop(state, item, opts);
+    if (ok) {
+      state._dropClicks = 0; // reset pity only when successfully awarded
+      return item;
+    } else {
+      // Inventory full — awardDrop already notified; do not reset pity
+      return null;
+    }
   }
   return null;
 }
