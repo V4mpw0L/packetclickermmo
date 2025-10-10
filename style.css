@@ -181,6 +181,57 @@ footer {
     position: relative;
 }
 
+/* Modal-specific sizing to prevent overflow on mobile and tighten inner cards */
+body .modal-box {
+    max-width: min(92vw, 36rem);
+    width: auto;
+    margin: 0 auto;
+    padding: clamp(0.75rem, 2.5vw, 1rem) clamp(0.75rem, 3vw, 1.25rem);
+    box-sizing: border-box;
+}
+
+body .modal-box .neon-card {
+    width: auto;
+    max-width: 100%;
+    padding: var(--spacing-sm);
+    margin: 0.5rem auto;
+    border-radius: var(--border-radius-md);
+}
+
+/* Ensure form controls fit the modal width */
+body .modal-box select,
+body .modal-box input[type="text"],
+body .modal-box button.neon-btn {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Improve select appearance in modal */
+body .modal-box select {
+    background: #374151;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem 0.6rem;
+    color: var(--text-primary, #e6f9f3);
+}
+
+/* Slightly reduce spacing inside modal stacks */
+body .modal-box .space-y-3 > * + * {
+    margin-top: 0.5rem;
+}
+
+@media (max-width: 480px) {
+    body .modal-box {
+        max-width: 94vw;
+        padding: clamp(0.65rem, 2.5vw, 0.9rem) clamp(0.65rem, 3vw, 1rem);
+    }
+    body .modal-box .neon-card {
+        padding: calc(var(--spacing-sm) - 2px);
+        margin: 0.4rem auto;
+    }
+}
+
 .neon-card:hover {
     transform: translateY(-2px);
     box-shadow:

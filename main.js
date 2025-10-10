@@ -778,14 +778,7 @@ function showEditProfile() {
          <span class="block mb-2 font-semibold">Avatar:</span>
          <div class="flex flex-wrap gap-2 justify-center">${avatarList}</div>
        </div>
-       <label class="block mb-3">
-         <span class="block mb-1 font-semibold">Language:</span>
-         <select id="lang-select" class="w-full p-2 bg-gray-700 rounded border border-neon-cyan">
-           <option value="en">English</option>
-           <option value="pt-br">Português (Brasil)</option>
-           <option value="ru">Русский</option>
-         </select>
-       </label>
+
        <button type="submit" class="neon-btn w-full">Save</button>
      </form>
   `,
@@ -807,22 +800,6 @@ function showEditProfile() {
         ?.getAttribute("data-seed") || "Hacker";
     if (newName) state.player.name = newName.slice(0, 14);
     state.player.avatar = `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${encodeURIComponent(selected)}`;
-
-    // Apply language if available
-    try {
-      const sel = document.getElementById("lang-select");
-      if (
-        sel &&
-        window.Packet &&
-        Packet.i18n &&
-        typeof Packet.i18n.setLanguage === "function"
-      ) {
-        Packet.i18n.setLanguage(sel.value);
-        if (typeof Packet.i18n.applyLanguageToData === "function") {
-          Packet.i18n.applyLanguageToData();
-        }
-      }
-    } catch (_) {}
 
     save();
     updateTopBar();
