@@ -796,6 +796,76 @@ function renderActiveEvent() {
 let _megaFXTimer = null;
 let _ultraFXTimer = null;
 let _animalFXTimer = null;
+let _animalAuraInterval = null;
+
+// Start continuous ANIMAL aura particles around the click button
+function startAnimalAura() {
+  try {
+    if (_animalAuraInterval) return;
+    const rateMs = 90;
+
+    _animalAuraInterval = setInterval(() => {
+      const btn = document.getElementById("click-btn");
+      if (!btn) return;
+      const rect = btn.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+
+      // Create a tiny particle near the button center with randomized radial motion
+      const p = document.createElement("div");
+      const size = 2.5 + Math.random() * 3.5;
+      p.className = "animal-particle";
+      p.style.position = "fixed";
+      p.style.width = size + "px";
+      p.style.height = size + "px";
+      p.style.left = cx + "px";
+      p.style.top = cy + "px";
+      p.style.pointerEvents = "none";
+      p.style.borderRadius = "50%";
+      // Alternate warm flame and electric cyan particles
+      const hue = Math.random() < 0.7 ? (Math.random() < 0.6 ? 48 : 28) : 195; // warm bias
+      p.style.background = `radial-gradient(circle, rgba(255,255,255,0.95) 0 45%, hsla(${hue}, 100%, 60%, 0.95) 60% 100%)`;
+      p.style.boxShadow = `0 0 ${Math.round(6 + Math.random() * 10)}px hsla(${hue}, 100%, 60%, 0.75)`;
+      p.style.zIndex = "2050";
+      p.style.opacity = "1";
+      p.style.transform = "translate(-50%, -50%)";
+      document.body.appendChild(p);
+
+      // Random orbit vector with slight upward bias for flame feeling
+      const angle = Math.random() * Math.PI * 2;
+      const growth = 1 + Math.min(Math.max(clickCombo - 30, 0) / 15, 2.5);
+      const dist =
+        (rect.width * 0.25 + Math.random() * rect.width * 0.4) * growth;
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist - (4 + Math.random() * 10);
+
+      requestAnimationFrame(() => {
+        const travel = 520 + Math.min(1, dist / Math.max(1, rect.width)) * 520;
+        p.style.transition = `transform ${Math.round(travel)}ms ease-out, opacity ${Math.round(travel + 40)}ms ease-out, filter ${Math.round(travel + 40)}ms ease-out`;
+        p.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${0.7 + Math.random() * 0.7})`;
+        p.style.opacity = "0";
+        p.style.filter = "blur(0.5px)";
+      });
+
+      setTimeout(
+        () => {
+          if (p && p.parentNode) p.parentNode.removeChild(p);
+        },
+        Math.round(travel + 300 + Math.random() * 180),
+      );
+    }, rateMs);
+  } catch {}
+}
+
+// Stop continuous ANIMAL aura particles
+function stopAnimalAura() {
+  try {
+    if (_animalAuraInterval) {
+      clearInterval(_animalAuraInterval);
+      _animalAuraInterval = null;
+    }
+  } catch {}
+}
 function activateMegaFX() {
   try {
     document.body.classList.add("mega-active");
@@ -957,6 +1027,9 @@ function clickPacket(event) {
           sentinel.style.pointerEvents = "none";
           document.body.appendChild(sentinel);
         }
+        // Start continuous aura while ANIMAL is active
+        startAnimalAura();
+
         if (_animalFXTimer) clearTimeout(_animalFXTimer);
         _animalFXTimer = setTimeout(() => {
           try {
@@ -968,6 +1041,8 @@ function clickPacket(event) {
               btn.style.boxShadow = btn._prevShadow;
               delete btn._prevShadow;
             }
+            // Stop continuous aura when ANIMAL ends
+            stopAnimalAura();
           } catch {}
           _animalFXTimer = null;
         }, 1600);
@@ -1256,6 +1331,8 @@ function clickPacket(event) {
               btn.style.boxShadow = btn._prevShadow;
               delete btn._prevShadow;
             }
+            // Stop aura when dropping below ANIMAL threshold
+            stopAnimalAura();
           } catch {}
           _animalFXTimer = null;
         }, 200);
