@@ -1484,13 +1484,13 @@ body.ultra-active #click-btn::before {
 /* Additional button lightning flash for ANIMAL state */
 body.animal-active #click-btn::before,
 body.animal-active #click-btn::after {
-    content: none !important;
+    /* overlays defined below */
 }
 body.animal-active #click-btn {
 }
 
 body.animal-active #click-btn::after {
-    content: none;
+    /* overlay defined below */
 }
 @keyframes animal3DWobble {
     0% {
@@ -1580,9 +1580,10 @@ body.animal-active .click-effect.ultra-combo {
 body.animal-active #click-btn {
     animation: animalElectricShake 0.2s ease-in-out infinite;
     box-shadow:
-        0 0 0.85rem rgba(255, 48, 64, 0.95),
-        0 0 1.85rem rgba(255, 48, 64, 0.8),
-        0 0 3rem rgba(255, 96, 128, 0.6);
+        0 0 0.65rem rgba(255, 230, 0, 0.95),
+        /* yellow core */ 0 0 1.2rem rgba(255, 165, 0, 0.9),
+        /* orange mid */ 0 0 2.2rem rgba(255, 96, 0, 0.75),
+        /* deep orange/red */ 0 0 3.2rem rgba(255, 48, 64, 0.6); /* red outer */
 }
 
 body.animal-active #click-btn::after {
@@ -1592,14 +1593,15 @@ body.animal-active #click-btn::after {
     border-radius: 18px;
     pointer-events: none;
     background:
-        radial-gradient(closest-side, rgba(255, 255, 255, 0.5), transparent 60%)
+        radial-gradient(closest-side, rgba(255, 255, 224, 0.6), transparent 60%)
             center/105% 105% no-repeat,
         conic-gradient(
             from 0deg,
-            rgba(255, 48, 64, 0.98),
-            rgba(255, 160, 0, 0.95),
-            rgba(255, 64, 96, 0.98),
-            rgba(255, 48, 64, 0.98)
+            rgba(255, 230, 0, 0.98),
+            rgba(255, 165, 0, 0.96),
+            rgba(255, 96, 0, 0.9),
+            rgba(255, 48, 64, 0.88),
+            rgba(255, 230, 0, 0.98)
         );
     mix-blend-mode: screen;
     filter: blur(9px) saturate(1.35);
@@ -1640,9 +1642,9 @@ body.animal-active #click-btn::before {
             transparent 61%
         );
     box-shadow:
-        0 0 16px rgba(255, 48, 64, 1),
-        0 0 36px rgba(255, 48, 64, 0.75),
-        0 0 70px rgba(255, 48, 64, 0.5);
+        0 0 14px rgba(255, 230, 0, 0.95),
+        0 0 30px rgba(255, 165, 0, 0.85),
+        0 0 60px rgba(255, 96, 0, 0.65);
     mix-blend-mode: screen;
     filter: saturate(1.45);
     opacity: 1;
