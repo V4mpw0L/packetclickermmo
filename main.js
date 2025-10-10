@@ -684,8 +684,8 @@ function renderLeaderboard() {
       (p, idx) => `
     <li style="display: flex; gap: 0.75rem; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #273742;">
       <span style="width: 2rem; text-align: right; color: var(--secondary-color); font-weight: bold;">${idx + 1}.</span>
-      <img src="${p.avatar || DEFAULT_AVATAR}" style="width: 2rem; height: 2rem; border-radius: 50%; border: 2px solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"};" alt="">
-      <span style="font-weight: 800; ${p.name === state.player.name ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary);" : "color: var(--text-primary);"}">${p.name}</span>
+      <img src="${p.avatar || DEFAULT_AVATAR}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 2rem; height: 2rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "3px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"}; box-shadow: ${idx === 0 ? "0 0 14px rgba(255,215,0,0.6)" : idx === 1 ? "0 0 12px rgba(192,192,192,0.55)" : idx === 2 ? "0 0 12px rgba(205,127,50,0.55)" : "none"};" alt="">
+      <span style="font-weight: 800; ${p.name === state.player.name ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary);" : "color: var(--text-primary);"}">${idx === 0 ? '<span class="crown-badge">👑</span>' : ""}${p.name}</span>
       <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary);">${p.packets.toLocaleString()}</span>
     </li>
   `,
@@ -693,6 +693,24 @@ function renderLeaderboard() {
     .join("");
   return `<div class="neon-card" style="padding: 1rem 0.5rem;">
     <h2 class="tab-title">🏆 Leaderboard</h2>
+    <style>
+      @keyframes medalPulse {
+        0% { box-shadow: 0 0 8px rgba(255,215,0,0.35), 0 0 0 0 rgba(255,215,0,0.0); }
+        100% { box-shadow: 0 0 14px rgba(255,215,0,0.7), 0 0 12px rgba(255,215,0,0.35); }
+      }
+      @keyframes medalPulseSilver {
+        0% { box-shadow: 0 0 8px rgba(192,192,192,0.3); }
+        100% { box-shadow: 0 0 14px rgba(192,192,192,0.65); }
+      }
+      @keyframes medalPulseBronze {
+        0% { box-shadow: 0 0 8px rgba(205,127,50,0.3); }
+        100% { box-shadow: 0 0 14px rgba(205,127,50,0.65); }
+      }
+      .medal-gold { animation: medalPulse 1.8s ease-in-out infinite alternate; }
+      .medal-silver { animation: medalPulseSilver 2s ease-in-out infinite alternate; }
+      .medal-bronze { animation: medalPulseBronze 2.2s ease-in-out infinite alternate; }
+      .crown-badge { margin-right: 0.25rem; filter: drop-shadow(0 0 4px rgba(255,215,0,0.8)); }
+    </style>
     <ul id="leaderboard" style="list-style: none; margin: 0; padding: 0;">${html}</ul>
     <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center; margin-top: 0.75rem;">Scores update over time. Your score is real!</div>
   </div>`;
@@ -1535,33 +1553,15 @@ function playSound(type) {
       }
 
       a.play().catch(() => {
-        // Fallback to oscillator if playback fails (permissions, etc.)
-        try {
-          const AudioCtx = window.AudioContext || window.webkitAudioContext;
-          if (!AudioCtx) return;
-          const ctx = (window._audioCtx ||= new AudioCtx());
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = "square";
-          osc.frequency.setValueAtTime(880, ctx.currentTime);
-          gain.gain.setValueAtTime(0, ctx.currentTime);
-          gain.gain.linearRampToValueAtTime(0.14, ctx.currentTime + 0.006);
-          gain.gain.exponentialRampToValueAtTime(
-            0.0001,
-            ctx.currentTime + 0.035,
-          );
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.045);
-        } catch {}
+        // No fallback – avoid any beep when audio playback is blocked
       });
 
       return;
     }
 
-    // For other SFX, use oscillator synth
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    // Disable non-click beeps
+    return;
+    // const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return;
 
     // Reuse a single audio context for all SFX
