@@ -683,7 +683,7 @@ function renderLeaderboard() {
     .map(
       (p, idx) => `
     <li style="display: flex; gap: 0.75rem; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #273742;">
-      <span style="width: 2rem; text-align: right; color: var(--secondary-color); font-weight: bold;">${idx + 1}.</span>
+      <span style="width: 2rem; text-align: right; color: var(--secondary-color); font-weight: bold;">${idx === 0 ? "🥇 " : idx === 1 ? "🥈 " : idx === 2 ? "🥉 " : ""}${idx + 1}.</span>
       <img src="${p.avatar || DEFAULT_AVATAR}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 2rem; height: 2rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "3px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"}; box-shadow: ${idx === 0 ? "0 0 14px rgba(255,215,0,0.6)" : idx === 1 ? "0 0 12px rgba(192,192,192,0.55)" : idx === 2 ? "0 0 12px rgba(205,127,50,0.55)" : "none"};" alt="">
       <span style="font-weight: 800; ${p.name === state.player.name ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary);" : "color: var(--text-primary);"}">${idx === 0 ? '<span class="crown-badge">👑</span>' : ""}${p.name}</span>
       <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary);">${p.packets.toLocaleString()}</span>
@@ -709,8 +709,36 @@ function renderLeaderboard() {
       .medal-gold { animation: medalPulse 1.8s ease-in-out infinite alternate; }
       .medal-silver { animation: medalPulseSilver 2s ease-in-out infinite alternate; }
       .medal-bronze { animation: medalPulseBronze 2.2s ease-in-out infinite alternate; }
-      .crown-badge { margin-right: 0.25rem; filter: drop-shadow(0 0 4px rgba(255,215,0,0.8)); }
+      .crown-badge { margin-right: 0.25rem; filter: drop-shadow(0 0 4px rgba(255,215,0,0.8)); font-size: 1.15em; }
     </style>
+    ${(() => {
+      const t = bots.slice(0, 3);
+      return `
+      <div class="podium-wrap" style="display:flex; justify-content:center; gap:1rem; align-items:flex-end; margin: 0.75rem 0 0.75rem 0;">
+        <div class="podium-item" style="display:flex; flex-direction:column; align-items:center;">
+          <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #c0c0c0; box-shadow:0 0 12px rgba(192,192,192,0.55); overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);">
+            <img src="${(t[1] && t[1].avatar) || DEFAULT_AVATAR}" alt="" style="width:100%; height:100%; object-fit:cover;" />
+          </div>
+          <div style="width:64px; height:36px; background:linear-gradient(180deg, #3b4a5a, #2a3947); border:2px solid #c0c0c0; border-top-left-radius:8px; border-top-right-radius:8px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:800;">2</div>
+          <div style="margin-top:0.15rem; font-size:1.1rem;">🥈</div>
+        </div>
+        <div class="podium-item" style="display:flex; flex-direction:column; align-items:center; transform: translateY(-8px);">
+          <div style="display:flex; align-items:center; justify-content:center; width:84px; height:84px; border-radius:50%; border:4px solid #ffd700; box-shadow:0 0 16px rgba(255,215,0,0.75); overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.22), transparent);">
+            <img src="${(t[0] && t[0].avatar) || DEFAULT_AVATAR}" alt="" style="width:100%; height:100%; object-fit:cover;" />
+          </div>
+          <div style="width:84px; height:52px; background:linear-gradient(180deg, #435a2a, #344a1f); border:3px solid #ffd700; border-top-left-radius:10px; border-top-right-radius:10px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:900; color:#ffec8a; text-shadow:0 1px 2px rgba(0,0,0,0.4);">1</div>
+          <div style="margin-top:0.15rem; font-size:1.1rem;">👑 🥇</div>
+        </div>
+        <div class="podium-item" style="display:flex; flex-direction:column; align-items:center;">
+          <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #cd7f32; box-shadow:0 0 12px rgba(205,127,50,0.55); overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);">
+            <img src="${(t[2] && t[2].avatar) || DEFAULT_AVATAR}" alt="" style="width:100%; height:100%; object-fit:cover;" />
+          </div>
+          <div style="width:64px; height:28px; background:linear-gradient(180deg, #4d3925, #3b2a1b); border:2px solid #cd7f32; border-top-left-radius:8px; border-top-right-radius:8px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:800;">3</div>
+          <div style="margin-top:0.15rem; font-size:1.1rem;">🥉</div>
+        </div>
+      </div>
+    `;
+    })()}
     <ul id="leaderboard" style="list-style: none; margin: 0; padding: 0;">${html}</ul>
     <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center; margin-top: 0.75rem;">Scores update over time. Your score is real!</div>
   </div>`;
