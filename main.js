@@ -794,9 +794,9 @@ function renderPrestige() {
       <div class="mb-3" style="text-align:center;">
         <div class="text-neon-gray" style="font-size:.9rem; margin-bottom:.25rem;">Progress to next prestige</div>
         <div style="position:relative; height:12px; border-radius:999px; background:#22313f; border:1px solid var(--border-color); overflow:hidden; box-shadow: inset 0 1px 6px rgba(0,0,0,.5);">
-          <div style="height:100%; width: ${Math.min(100, (state.packets / 50000) * 100).toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); box-shadow: 0 0 10px var(--shadow-primary);"></div>
+          <div id="prestige-progress-fill" style="height:100%; width: ${Math.min(100, (state.packets / 50000) * 100).toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); box-shadow: 0 0 10px var(--shadow-primary);"></div>
         </div>
-        <div class="text-neon-gray" style="font-size:.8rem; margin-top:.25rem;">${state.packets.toLocaleString()} / 50,000</div>
+        <div id="prestige-progress-label" class="text-neon-gray" style="font-size:.8rem; margin-top:.25rem;">${state.packets.toLocaleString()} / 50,000</div>
       </div>
 
       ${
@@ -1448,12 +1448,34 @@ function idleTick() {
       state.randomEvent.active && state.randomEvent.type === "packetRain"
         ? Number(state.randomEvent.multiplier) || 1
         : 1;
+    const before = state.packets;
     let gain = Math.floor(totalPerSec * bonus * eventIdleMult);
     state.packets += gain;
     state.stats.totalPackets += gain;
     save();
     updateTopBar();
-    if (activeTab === "game") renderTab();
+
+    // Live-update Prestige progress if that tab is open
+    if (activeTab === "prestige") {
+      try {
+        const pct = Math.min(100, (state.packets / 50000) * 100).toFixed(1);
+        const fill = document.getElementById("prestige-progress-fill");
+        if (fill) fill.style.width = pct + "%";
+        const label = document.getElementById("prestige-progress-label");
+        if (label)
+          label.textContent = `${state.packets.toLocaleString()} / 50,000`;
+
+        // If threshold crossed, re-render CTA section
+        const wasEligible = before >= 50000;
+        const isEligible = state.packets >= 50000;
+        if (wasEligible !== isEligible) {
+          renderTab();
+        }
+      } catch (_) {}
+    } else if (activeTab === "game") {
+      renderTab();
+    }
+
     checkAchievements();
   }
 
