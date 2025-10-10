@@ -355,6 +355,50 @@
                     }
                 }
                 function applyLang() {
+                    // Update navbar/tab button aria-labels and titles
+                    function updateNavLabels() {
+                        try {
+                            var map = {
+                                game: "tabs.game",
+                                upgrades: "tabs.upgrades",
+                                achievements: "tabs.achievements",
+                                shop: "tabs.shop",
+                                boosts: "tabs.boosts",
+                                themes: "tabs.themes",
+                                prestige: "tabs.prestige",
+                                daily: "daily.title",
+                                leaderboard: "tabs.leaderboard",
+                            };
+                            var i18n = window.Packet && window.Packet.i18n;
+                            var buttons =
+                                document.querySelectorAll(".menu-bar .tab-btn");
+                            buttons.forEach(function (btn) {
+                                var tab = btn.getAttribute("data-tab");
+                                if (!tab || !map[tab] || !i18n) return;
+                                var label = i18n.t(map[tab]);
+                                btn.setAttribute("aria-label", label);
+                                btn.setAttribute("title", label);
+                            });
+                            // Settings gear title/aria
+                            var settings =
+                                document.getElementById("open-settings");
+                            if (settings && i18n) {
+                                var st = i18n.t("settings.title");
+                                settings.setAttribute("title", st);
+                                settings.setAttribute("aria-label", st);
+                            }
+                            // Tablist aria-label for screen readers
+                            var tablist = document.querySelector(
+                                'nav.menu-bar[role="tablist"]',
+                            );
+                            if (tablist && i18n) {
+                                tablist.setAttribute(
+                                    "aria-label",
+                                    i18n.t("tabs.game") + " sections",
+                                );
+                            }
+                        } catch (_) {}
+                    }
                     try {
                         if (window.Packet && window.Packet.i18n) {
                             window.Packet.i18n.applyLanguageToData();
@@ -377,6 +421,8 @@
                             }
                         }
                     } catch (_) {}
+                    // Finally update navbar labels/titles
+                    updateNavLabels();
                 }
                 // Wrap render functions to translate their HTML output
                 (function wrapRenders() {
