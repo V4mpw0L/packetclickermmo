@@ -51,6 +51,9 @@ import {
 let clickCombo = 0;
 let lastClickTime = 0;
 /* Using global COMBO_TIMEOUT from constants UMD */
+// Track combo expiry to sync avatar border ring with combo HUD
+let _comboExpireAt = 0;
+let _avatarRingTimer = null;
 
 const state = {
   player: {
@@ -355,7 +358,11 @@ function updateTopBar() {
       else if (clickCombo >= 10) comboColor = "var(--accent-color)";
       else if (clickCombo >= 5) comboColor = "var(--secondary-color)";
     }
-    if (typeof clickCombo === "number" && clickCombo >= 5) {
+    const comboActive =
+      typeof clickCombo === "number" &&
+      clickCombo >= 5 &&
+      Date.now() <= (_comboExpireAt || 0);
+    if (comboActive) {
       if (typeof _avatarEl._baseShadow === "undefined") {
         _avatarEl._baseShadow = _avatarEl.style.boxShadow || "";
       }
@@ -1061,6 +1068,21 @@ function clickPacket(event) {
     clickCombo = 1;
   }
   lastClickTime = now;
+  // Track combo expiry to sync HUD and avatar ring
+  _comboExpireAt = now + COMBO_TIMEOUT + 200;
+  if (_avatarRingTimer) clearTimeout(_avatarRingTimer);
+  _avatarRingTimer = setTimeout(() => {
+    // Force-clear avatar ring when combo times out (mirrors HUD hide)
+    const el = document.getElementById("avatar");
+    if (el && Date.now() >= _comboExpireAt) {
+      if (typeof el._baseShadow !== "undefined") {
+        el.style.boxShadow = el._baseShadow;
+        delete el._baseShadow;
+      } else {
+        el.style.boxShadow = "";
+      }
+    }
+  }, COMBO_TIMEOUT + 200);
 
   // Modularized combo effect logic
   if (!clickPacket._lastFxTime || Date.now() - clickPacket._lastFxTime > 80) {
