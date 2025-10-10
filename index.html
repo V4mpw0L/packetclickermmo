@@ -294,6 +294,17 @@
                         return k;
                     }
                 }
+                function trNoIcon(k, p) {
+                    try {
+                        var s = tr(k, p);
+                        return s
+                            .replace(/^📅\s*/, "")
+                            .replace(/^⚡\s*/, "")
+                            .replace(/^⭐\s*/, "");
+                    } catch (_) {
+                        return tr(k, p);
+                    }
+                }
                 function translateHtml(html) {
                     try {
                         return String(html)
@@ -307,19 +318,19 @@
                             )
                             .replace(
                                 />📅 Daily Rewards</g,
-                                ">📅 " + tr("daily.title") + "<",
+                                ">📅 " + trNoIcon("daily.title") + "<",
                             )
                             .replace(
                                 />Daily Rewards</g,
-                                ">" + tr("daily.title") + "<",
+                                ">📅 " + trNoIcon("daily.title") + "<",
                             )
                             .replace(
                                 />⚡ Temporary Boosts</g,
-                                ">⚡ " + tr("boosts.title") + "<",
+                                ">⚡ " + trNoIcon("boosts.title") + "<",
                             )
                             .replace(
                                 />⭐ Prestige</g,
-                                ">⭐ " + tr("prestige.title") + "<",
+                                ">⭐ " + trNoIcon("prestige.title") + "<",
                             )
                             .replace(
                                 />🎨 Visual Themes</g,

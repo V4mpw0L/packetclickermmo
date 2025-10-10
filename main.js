@@ -477,7 +477,7 @@ function renderGame() {
 
   return `
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
-      <h2 class="tab-title">🎮 Game</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🎮 Game</h2>
       ${clickBtn}
       <div class="flex justify-between items-center text-neon-green text-sm">
         <span>Packets/Click: ${effectivePerClick}</span>
@@ -524,7 +524,7 @@ function renderBoosts() {
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title">⚡ Temporary Boosts</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">⚡ Temporary Boosts</h2>
 
       ${activeBoosts ? `<div class="mb-4">${activeBoosts}</div>` : ""}
 
@@ -561,7 +561,7 @@ function renderThemes() {
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title">🎨 Visual Themes</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🎨 Visual Themes</h2>
 
       <div class="text-sm text-neon-gray mb-4 text-center">
         Customize your game's appearance
@@ -576,7 +576,7 @@ function renderThemes() {
 function renderUpgrades() {
   return `
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
-      <h2 class="tab-title">🛠️ Upgrades</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🛠️ Upgrades</h2>
       ${renderButton({
         id: "upgrade-click",
         className: "upgrade-btn",
@@ -631,7 +631,7 @@ function renderAchievements() {
   }).join("");
   return `
     <div class="neon-card px-3 py-5">
-      <h2 class="tab-title">🎯 Achievements</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🎯 Achievements</h2>
       <ul id="achievement-list" class="flex flex-col gap-2 mt-4">${achList}</ul>
     </div>
   `;
@@ -669,7 +669,7 @@ function renderShop() {
       : "";
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title">🏬 Shop</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🏬 Shop</h2>
       <div class="flex flex-col gap-2 mt-4">
         ${gemStore}
         <div class="text-neon-gray text-xs text-center my-2">-- Special Items --</div>
@@ -707,7 +707,7 @@ function renderLeaderboard() {
     )
     .join("");
   return `<div class="neon-card" style="padding: 1rem 0.5rem;">
-    <h2 class="tab-title">🏆 Leaderboard</h2>
+    <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🏆 Leaderboard</h2>
     <style>
       @keyframes medalPulse {
         0% { box-shadow: 0 0 8px rgba(255,215,0,0.35), 0 0 0 0 rgba(255,215,0,0.0); }
@@ -781,7 +781,7 @@ function renderPrestige() {
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title">⭐ Prestige</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">⭐ Prestige</h2>
       <div class="text-center mb-4">
         <div class="text-lg">Level ${state.prestige.level}</div>
         <div class="text-sm text-neon-gray">Data Shards: ${state.prestige.dataShards} 🔷</div>
@@ -835,7 +835,7 @@ function renderDaily() {
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">${(window.Packet && Packet.i18n ? Packet.i18n.t("daily.title") : "Daily Rewards").replace(/^📅\s*/, "")}</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">${window.Packet && Packet.i18n ? "📅 " + Packet.i18n.t("daily.title").replace(/^📅\s*/, "") : "📅 Daily Rewards"}</h2>
       <div class="text-center mb-4">
         <div class="text-lg">Streak: ${streak} days</div>
         ${
