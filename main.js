@@ -817,28 +817,31 @@ function renderDaily() {
     let claimed = index < streak;
     let current = index === streak && canClaim;
 
-    return `<div class="flex items-center justify-between p-2 border rounded ${
-      claimed
-        ? "bg-green-900 border-green-600"
-        : current
-          ? "bg-yellow-900 border-yellow-600"
-          : "bg-gray-800 border-gray-600"
-    }">
-      <span>Day ${reward.day}</span>
-      <span>${reward.gems}💎 + ${reward.packets}<img src="src/assets/packet-32.png" alt="Packets" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true" /></span>
+    return `<div class="reward-row" style="display:flex; align-items:center; justify-content:space-between; padding: 0.5rem 0.75rem; border: 1px solid ${claimed ? "#3ba86b" : current ? "#d5b85a" : "#2e3a47"}; border-radius: 10px; background: linear-gradient(100deg, ${claimed ? "rgba(20,60,40,.5)" : current ? "rgba(60,50,20,.5)" : "rgba(28,36,46,.6)"} , rgba(0,0,0,0.15)); box-shadow: 0 1px 10px rgba(0,0,0,0.25) inset;">
+      <span style="font-weight:700; color:${claimed ? "#8ef1b2" : current ? "#ffe08a" : "var(--text-secondary)"};">Day ${reward.day}</span>
+      <span style="display:inline-flex; align-items:center; gap:.4rem; color:var(--text-primary);">
+        <span style="display:inline-flex; align-items:center; gap:.25rem; padding:.1rem .4rem; border:1px solid var(--border-color); border-radius:999px; background: rgba(0,0,0,0.25);">
+          ${reward.gems}
+          <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;" aria-hidden="true" />
+        </span>
+        <span style="display:inline-flex; align-items:center; gap:.25rem; padding:.1rem .4rem; border:1px solid var(--border-color); border-radius:999px; background: rgba(0,0,0,0.25);">
+          ${reward.packets}
+          <img src="src/assets/packet-32.png" alt="Packets" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;" aria-hidden="true" />
+        </span>
+      </span>
       <span>${claimed ? "✅" : current ? "🎁" : "⏳"}</span>
     </div>`;
   }).join("");
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title">📅 Daily Rewards</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">${(window.Packet && Packet.i18n ? Packet.i18n.t("daily.title") : "Daily Rewards").replace(/^📅\s*/, "")}</h2>
       <div class="text-center mb-4">
         <div class="text-lg">Streak: ${streak} days</div>
         ${
           canClaim
             ? `<button id="claim-daily" class="neon-btn mt-2">
-            Claim Day ${streak + 1} Reward!
+            ${window.Packet && Packet.i18n ? Packet.i18n.t("buttons.claimDaily", { n: streak + 1 }) : "Claim Day " + (streak + 1) + " Reward!"}
             <div class="text-xs">${nextReward.gems}💎 + ${nextReward.packets}<img src="src/assets/packet-32.png" alt="Packets" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true" /></div>
           </button>`
             : `<div class="text-neon-gray text-sm mt-2">Come back tomorrow for next reward!</div>`

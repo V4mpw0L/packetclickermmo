@@ -310,6 +310,10 @@
                                 ">📅 " + tr("daily.title") + "<",
                             )
                             .replace(
+                                />Daily Rewards</g,
+                                ">" + tr("daily.title") + "<",
+                            )
+                            .replace(
                                 />⚡ Temporary Boosts</g,
                                 ">⚡ " + tr("boosts.title") + "<",
                             )
@@ -341,6 +345,10 @@
                             .replace(
                                 /Ad Banner \(Remove in Shop\)/g,
                                 tr("labels.adBanner"),
+                            )
+                            .replace(
+                                /Come back tomorrow for next reward!/g,
+                                tr("daily.comeBack"),
                             )
                             .replace(/Collect Packets/g, tr("buttons.collect"))
                             .replace(
