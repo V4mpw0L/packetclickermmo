@@ -520,22 +520,23 @@ export function renderTab(state) {
   return `
     <div class="neon-card px-3 py-4 mb-2">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🧰 Equipment</h2>
-      <div class="text-neon-gray text-sm mb-3">Equip items to gain bonuses. Rarity colors:
-        <span style="color:${rarityById("green").color}">Green</span>,
-        <span style="color:${rarityById("gold").color}">Gold</span>,
-        <span style="color:${rarityById("blue").color}">Blue</span>,
-        <span style="color:${rarityById("pink").color}">Pink</span>,
-        <span style="color:${rarityById("animal").color}">Red</span>.
+      <div class="text-neon-gray text-sm mb-3" style="text-align:center; margin:.5rem auto 1rem; padding:.35rem .75rem; border:1px solid var(--border-color); border-radius:999px; width:fit-content; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">
+        Equip items to gain bonuses ·
+        <span style="color:${rarityById("green").color}">Green</span> ·
+        <span style="color:${rarityById("gold").color}">Gold</span> ·
+        <span style="color:${rarityById("blue").color}">Blue</span> ·
+        <span style="color:${rarityById("pink").color}">Pink</span> ·
+        <span style="color:${rarityById("animal").color}">Red</span>
       </div>
       <div class="space-y-2">${slotCards}</div>
-      <div class="text-neon-gray text-sm mt-3 mb-1" style="display:flex; align-items:center; gap:.5rem;">
-        <span>Inventory</span>
-        <span class="text-xs" style="opacity:.85;">${Math.min(totalItems, capacity)}/${capacity}</span>
+      <div class="text-neon-gray text-sm mt-3 mb-1" style="display:flex; align-items:center; justify-content:center; gap:.5rem;">
+        <span style="font-weight:800;">Inventory</span>
+        <span class="text-xs" style="opacity:.9; padding:.15rem .55rem; border:1px solid var(--border-color); border-radius:999px; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">${Math.min(totalItems, capacity)}/${capacity}</span>
       </div>
       <div style="position:relative; height:10px; border-radius:999px; background:#22313f; border:1px solid var(--border-color); overflow:hidden; box-shadow: inset 0 1px 6px rgba(0,0,0,.5); margin-bottom:.25rem;">
         <div style="height:100%; width:${percent}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));"></div>
       </div>
-      <div class="text-neon-gray text-xs" style="text-align:center; margin-bottom:.5rem;">${percent}%</div>
+      <div class="text-neon-gray text-xs" style="text-align:center; margin:.15rem 0 .5rem; letter-spacing:.02em; font-weight:700;">${percent}%</div>
       ${invCards}
     </div>
   `;

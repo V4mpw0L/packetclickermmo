@@ -39,6 +39,7 @@ import {
   clearHUD,
 } from "./src/ui/hud.mjs";
 import Equipment from "./src/items/equipment.mjs";
+import Leaderboard from "./src/leaderboard/firebase.mjs";
 import {
   renderButton,
   renderMenu,
@@ -802,16 +803,45 @@ function setCursorForCombo(combo) {
 
 // =============== LEADERBOARD PANEL ===============
 function renderLeaderboard() {
-  if (!state.leaderboardBots || !state.leaderboardBots.length) {
-    state.leaderboardBots = generateBots(10);
-    save();
+  // Prefer live rows from Firebase when available; fallback to local bots
+  let bots = [];
+  if (Array.isArray(state.leaderboardLive) && state.leaderboardLive.length) {
+    bots = state.leaderboardLive.slice();
+    // Ensure current player row is up-to-date locally (handles snapshot lag)
+    try {
+      const meId =
+        typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId
+          ? Leaderboard.getDeviceId()
+          : state.player.name;
+      const idx = bots.findIndex(
+        (b) => b && (b.id === meId || b.name === state.player.name),
+      );
+      const meRow = {
+        name: state.player.name,
+        packets: state.packets,
+        avatar: state.player.avatar,
+      };
+      if (idx >= 0) bots[idx] = Object.assign({}, bots[idx], meRow);
+      else bots.push(meRow);
+    } catch (_) {
+      bots.push({
+        name: state.player.name,
+        packets: state.packets,
+        avatar: state.player.avatar,
+      });
+    }
+  } else {
+    if (!state.leaderboardBots || !state.leaderboardBots.length) {
+      state.leaderboardBots = generateBots(10);
+      save();
+    }
+    bots = state.leaderboardBots.slice();
+    bots.push({
+      name: state.player.name,
+      packets: state.packets,
+      avatar: state.player.avatar,
+    });
   }
-  let bots = state.leaderboardBots.slice();
-  bots.push({
-    name: state.player.name,
-    packets: state.packets,
-    avatar: state.player.avatar,
-  });
   bots.sort((a, b) => b.packets - a.packets);
   let html = bots
     .slice(0, 10)
@@ -2229,9 +2259,45 @@ function init() {
   if (typeof Equipment !== "undefined" && Equipment.ensureStateShape) {
     Equipment.ensureStateShape(state);
   }
-  if (!state.leaderboardBots || !state.leaderboardBots.length) {
-    state.leaderboardBots = generateBots(10);
-    save();
+  // Initialize Firebase leaderboard if config is present; fallback to local bots
+  try {
+    if (typeof window !== "undefined" && window.FIREBASE_CONFIG) {
+      // Init once
+      Leaderboard.init(
+        Object.assign(
+          { collection: "leaderboard_test" },
+          window.FIREBASE_CONFIG,
+        ),
+      );
+      // Live subscription
+      try {
+        Leaderboard.subscribe(function (rows) {
+          state.leaderboardLive = Array.isArray(rows) ? rows : [];
+          if (typeof renderTab === "function") renderTab();
+        });
+      } catch (_) {}
+      // Periodic, throttled submit (module also throttles internally)
+      try {
+        if (window.__lbTimer) clearInterval(window.__lbTimer);
+        window.__lbTimer = setInterval(function () {
+          Leaderboard.submit({
+            name: state.player.name,
+            avatar: state.player.avatar,
+            packets: state.packets,
+          });
+        }, 15000);
+      } catch (_) {}
+    } else {
+      if (!state.leaderboardBots || !state.leaderboardBots.length) {
+        state.leaderboardBots = generateBots(10);
+        save();
+      }
+    }
+  } catch (_) {
+    if (!state.leaderboardBots || !state.leaderboardBots.length) {
+      state.leaderboardBots = generateBots(10);
+      save();
+    }
   }
   // Expose state/save globally so UI helpers can persist theme changes
   window.state = state;

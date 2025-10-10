@@ -700,6 +700,22 @@ body .modal-box .space-y-3 > * + * {
     width: 72% !important;
     height: 72% !important;
 }
+/* Make inventory grid buttons fully transparent (no gradient or overlay) */
+.inv-grid .neon-btn {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+.inv-grid .neon-btn::before,
+.inv-grid .neon-btn::after {
+    content: none !important;
+    display: none !important;
+}
+.inv-grid .neon-btn:hover {
+    background: transparent !important;
+    box-shadow: none !important;
+}
 
 /* Prestige: keep main label on one line; if description is inside button, push it visually below */
 #do-prestige {

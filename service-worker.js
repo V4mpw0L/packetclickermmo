@@ -39,6 +39,7 @@ const ASSETS_TO_CACHE = [
   "src/ui/hud.mjs",
   "src/ui/render.mjs",
   "src/effects/effects.mjs",
+  "src/leaderboard/firebase.mjs",
 
   // App icons and images
   "src/assets/gem.png",

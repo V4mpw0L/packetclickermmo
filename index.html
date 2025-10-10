@@ -256,6 +256,27 @@
 
         <!-- HUD notification (injected by JS) -->
 
+        <!-- Firebase Leaderboard config (optional)
+             Fill with your Firebase project credentials to enable live leaderboards during testing.
+             Safe defaults: empty object keeps local leaderboard only.
+             Example:
+             window.FIREBASE_CONFIG = {
+               apiKey: "AIzaSy...",
+               authDomain: "your-app.firebaseapp.com",
+               projectId: "your-app",
+               appId: "1:123456789:web:abcdef",
+             };
+             This is used by src/leaderboard/firebase.mjs. -->
+        <script>
+            window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
+                // Leave empty for local-only leaderboard testing. Provide keys to enable Firebase.
+                apiKey: "",
+                authDomain: "",
+                projectId: "",
+                appId: "",
+            };
+        </script>
+
         <footer role="contentinfo">
             <div
                 style="
