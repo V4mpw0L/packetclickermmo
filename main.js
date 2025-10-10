@@ -920,13 +920,15 @@ function clickPacket(event) {
     let effectText = `+${amount}`;
     let displayedGain = amount;
     if (clickCombo >= 30) {
-      clickFX.classList.add("ultra-combo");
+      clickFX.classList.add("ultra-combo", "animal-combo");
       // ANIMAL streak bonus: +99%
       const extra = Math.floor(amount * 0.99);
       state.packets += extra;
       state.stats.totalPackets += extra;
       displayedGain += extra;
-      effectText = `ANIMAL!!! +${amount} (+99%)`;
+      effectText = `ANIMAL! +${amount} (+99%)`;
+      // shake is applied to inner text layer to keep centering intact
+      clickFX.style.filter = "none";
       // Red neon electric on the button (inline to avoid CSS dependency)
       const clickBtn = document.getElementById("click-btn");
       if (clickBtn) {
@@ -1037,7 +1039,86 @@ function clickPacket(event) {
       }
     }
 
-    clickFX.textContent = effectText;
+    if (clickFX.classList.contains("animal-combo")) {
+      // Wrap text so it paints above lightning layers
+      clickFX.innerHTML = `<span class="animal-text-layer" style="position:relative; z-index:10; display:inline-block;">${effectText}</span>`;
+      // Apply shake to inner span so outer transform(-50%) remains for perfect centering
+      const innerLayer = clickFX.querySelector(".animal-text-layer");
+      if (innerLayer)
+        innerLayer.style.animation = "shakeCombo 0.16s ease-in-out infinite";
+
+      // Particle burst (flame/lightning) around ANIMAL text; scheduled so position is finalized
+      setTimeout(() => {
+        try {
+          const r = clickFX.getBoundingClientRect();
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          const COUNT = 14;
+
+          for (let i = 0; i < COUNT; i++) {
+            const p = document.createElement("div");
+            p.className = "animal-particle";
+            const size = 3 + Math.random() * 4;
+            p.style.position = "fixed";
+            p.style.width = size + "px";
+            p.style.height = size + "px";
+            p.style.left = cx + "px";
+            p.style.top = cy + "px";
+            p.style.pointerEvents = "none";
+            p.style.borderRadius = "50%";
+            // Alternate warm flame and electric cyan particles
+            const hue = Math.random() < 0.5 ? 8 : 195; // red/orange vs. cyan/blue
+            p.style.background = `radial-gradient(circle, rgba(255,255,255,0.95) 0 45%, hsla(${hue}, 100%, 60%, 0.95) 60% 100%)`;
+            p.style.boxShadow = `0 0 ${Math.round(6 + Math.random() * 10)}px hsla(${hue}, 100%, 60%, 0.75)`;
+            p.style.zIndex = "2050";
+            p.style.opacity = "1";
+            p.style.transform = "translate(-50%, -50%)";
+            document.body.appendChild(p);
+
+            const angle = Math.random() * Math.PI * 2;
+            const dist = 22 + Math.random() * 46;
+            // Slight upward bias for flame-y feeling
+            const dx = Math.cos(angle) * dist;
+            const dy = Math.sin(angle) * dist - (10 + Math.random() * 12);
+
+            requestAnimationFrame(() => {
+              p.style.transition =
+                "transform 520ms ease-out, opacity 560ms ease-out, filter 560ms ease-out";
+              p.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${0.6 + Math.random() * 0.8})`;
+              p.style.opacity = "0";
+              p.style.filter = "blur(0.5px)";
+            });
+
+            setTimeout(
+              () => {
+                if (p && p.parentNode) p.parentNode.removeChild(p);
+              },
+              700 + Math.random() * 250,
+            );
+          }
+        } catch {}
+      }, 0);
+    } else if (
+      clickFX.classList.contains("ultra-combo") ||
+      clickFX.classList.contains("mega-combo") ||
+      clickFX.classList.contains("combo")
+    ) {
+      // Wrap inner text so shakes don't shift the outer centering
+      clickFX.innerHTML = `<span class="combo-text-layer" style="position:relative; z-index:10; display:inline-block;">${effectText}</span>`;
+      const inner = clickFX.querySelector(".combo-text-layer");
+      if (inner) {
+        const dur = clickFX.classList.contains("ultra-combo")
+          ? "0.18s"
+          : clickFX.classList.contains("mega-combo")
+            ? "0.20s"
+            : "0.24s";
+        inner.style.animation = `shakeCombo ${dur} ease-in-out infinite`;
+      }
+      // Prevent outer element animation from affecting centering
+      clickFX.style.animation = "none";
+    } else {
+      clickFX.textContent = effectText;
+    }
     // Match individual click effect color with combo level using theme variables
     if (clickCombo >= 30) {
       clickFX.style.color = "#ff3040";

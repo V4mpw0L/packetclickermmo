@@ -1259,6 +1259,7 @@ footer {
     max-width: min(92vw, 48rem);
     white-space: normal;
     word-break: break-word;
+    background: transparent !important;
 }
 
 .click-effect.combo {
@@ -1290,7 +1291,7 @@ footer {
 /* Stronger button shake and glow during ULTRA */
 body:has(.click-effect.ultra-combo) #click-btn,
 body.ultra-active #click-btn {
-    animation: ultraElectricShake 0.28s ease-in-out 3;
+    animation: ultraElectricShake 0.28s ease-in-out infinite;
     box-shadow:
         0 0 0.5rem rgba(255, 77, 255, 0.85),
         0 0 1.35rem rgba(255, 77, 255, 0.65),
@@ -1464,17 +1465,120 @@ body.ultra-active #click-btn::before {
 }
 
 /* ANIMAL!!! combo: maximum red neon lightning and strongest shake */
-/* Adjust ANIMAL click-effect sizing/color */
-body.animal-active .click-effect.ultra-combo {
-    font-size: clamp(2.7rem, 9vw, 4.4rem);
-    color: #ff3040;
-    text-shadow:
-        0 0 16px rgba(255, 48, 64, 0.9),
-        0 0 36px rgba(255, 48, 64, 0.6),
-        2px 2px 6px rgba(0, 0, 0, 0.85);
+/* Lightning 3D outline for ANIMAL text */
+.click-effect.animal-combo {
+    z-index: 2100;
+    position: fixed;
+    isolation: isolate;
+    perspective: none;
+    transform-style: flat;
+    padding: 0.2rem 0.6rem;
+    text-shadow: none;
+}
+.click-effect.animal-combo::before,
+.click-effect.animal-combo::after {
+    content: none;
+}
+/* removed: animal-combo before overlay */
+/* removed: animal-combo after overlay */
+/* Additional button lightning flash for ANIMAL state */
+body.animal-active #click-btn::before,
+body.animal-active #click-btn::after {
+    content: none !important;
 }
 body.animal-active #click-btn {
-    animation: animalElectricShake 0.22s ease-in-out 4;
+}
+
+body.animal-active #click-btn::after {
+    content: none;
+}
+@keyframes animal3DWobble {
+    0% {
+        transform: translateX(-50%) rotateX(6deg) rotateY(-4deg) translateZ(0);
+    }
+    50% {
+        transform: translateX(-50%) rotateX(-4deg) rotateY(6deg) translateZ(4px);
+    }
+    100% {
+        transform: translateX(-50%) rotateX(6deg) rotateY(-4deg) translateZ(0);
+    }
+}
+@keyframes animalGlowPulse {
+    0% {
+        filter: saturate(1.2) brightness(1);
+    }
+    50% {
+        filter: saturate(1.4) brightness(1.15);
+    }
+    100% {
+        filter: saturate(1.2) brightness(1);
+    }
+}
+@keyframes animalOutlineSpin {
+    0% {
+        transform: translateZ(-1px) rotate(0deg);
+    }
+    100% {
+        transform: translateZ(-1px) rotate(360deg);
+    }
+}
+@keyframes animalFlicker {
+    0%,
+    100% {
+        opacity: 0.95;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+@keyframes animalStrikes {
+    0% {
+        background-position:
+            0 0,
+            0 0,
+            0 0;
+    }
+    100% {
+        background-position:
+            0 0,
+            40px 24px,
+            -36px -28px;
+    }
+}
+@keyframes animalButtonFlash {
+    0%,
+    100% {
+        filter: brightness(1) saturate(1.3);
+    }
+    30% {
+        filter: brightness(1.25) saturate(1.45);
+    }
+    60% {
+        filter: brightness(1.4) saturate(1.6);
+    }
+}
+/* Adjust ANIMAL click-effect sizing/color */
+body.animal-active .click-effect.ultra-combo {
+    font-size: clamp(2.9rem, 9.5vw, 4.8rem);
+    color: #ff3040;
+    text-shadow:
+        0 0 18px rgba(255, 48, 64, 0.95),
+        0 0 40px rgba(255, 48, 64, 0.65),
+        2px 2px 6px rgba(0, 0, 0, 0.9);
+}
+/* Layered glow strictly on the inner text layer for readability */
+.click-effect.animal-combo .animal-text-layer {
+    text-shadow:
+        0 0 1px rgba(255, 255, 255, 0.95),
+        0 0 6px rgba(255, 255, 224, 0.9),
+        0 -1px 10px rgba(255, 230, 0, 0.85),
+        0 -2px 14px rgba(255, 165, 0, 0.8),
+        0 -3px 18px rgba(255, 120, 0, 0.7),
+        0 -4px 24px rgba(255, 80, 0, 0.6),
+        0 -6px 30px rgba(255, 48, 64, 0.55);
+}
+body.animal-active #click-btn {
+    animation: animalElectricShake 0.2s ease-in-out infinite;
     box-shadow:
         0 0 0.85rem rgba(255, 48, 64, 0.95),
         0 0 1.85rem rgba(255, 48, 64, 0.8),
@@ -1673,13 +1777,7 @@ body.animal-active #click-btn::before {
     }
 }
 
-/* Disable base shake on click button unless MEGA combo is active */
-body:not(:has(.click-effect.mega-combo)):not(.mega-active):not(
-        .ultra-active
-    ):not(.animal-active)
-    #click-btn.shake-element {
-    animation: none !important;
-}
+/* Allow base shake during combo; suppression removed */
 
 /* MEGA combo electric effects on click button */
 body:has(.click-effect.mega-combo) #click-btn,
