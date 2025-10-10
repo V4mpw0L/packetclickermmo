@@ -1,5 +1,29 @@
 // ==== Packet Clicker: Enhanced Mobile & Visual Effects ====
 
+// Expose key functions to window for i18n wrappers and settings language injection
+if (typeof window !== "undefined") {
+  try {
+    Object.assign(window, {
+      renderGame,
+      renderUpgrades,
+      renderAchievements,
+      renderShop,
+      renderLeaderboard,
+      renderPrestige,
+      renderDaily,
+      renderBoosts,
+      renderThemes,
+      showSettings,
+      showEditProfile,
+      updateTopBar,
+      setTab,
+      renderTab,
+    });
+  } catch (e) {
+    // no-op
+  }
+}
+
 // Modular imports
 import {
   startAnimalAura,
@@ -7,19 +31,19 @@ import {
   activateMegaFX,
   handleComboEffect,
   animalCritBurst,
-} from "./ui/effects.js";
+} from "./src/effects/effects.mjs";
 import {
   showComboTotalHUD,
   hideComboTotalHUD,
   showHudNotify,
   clearHUD,
-} from "./ui/hud.js";
+} from "./src/ui/hud.mjs";
 import {
   renderButton,
   renderMenu,
   renderButtonGroup,
   renderSelect,
-} from "./ui/ui.js";
+} from "./src/ui/render.mjs";
 
 /* Using global DEFAULT_AVATAR and STORAGE_KEY from constants UMD (src/data/constants.js) */
 
@@ -754,6 +778,14 @@ function showEditProfile() {
          <span class="block mb-2 font-semibold">Avatar:</span>
          <div class="flex flex-wrap gap-2 justify-center">${avatarList}</div>
        </div>
+       <label class="block mb-3">
+         <span class="block mb-1 font-semibold">Language:</span>
+         <select id="lang-select" class="w-full p-2 bg-gray-700 rounded border border-neon-cyan">
+           <option value="en">English</option>
+           <option value="pt-br">Português (Brasil)</option>
+           <option value="ru">Русский</option>
+         </select>
+       </label>
        <button type="submit" class="neon-btn w-full">Save</button>
      </form>
   `,
@@ -775,10 +807,30 @@ function showEditProfile() {
         ?.getAttribute("data-seed") || "Hacker";
     if (newName) state.player.name = newName.slice(0, 14);
     state.player.avatar = `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${encodeURIComponent(selected)}`;
+
+    // Apply language if available
+    try {
+      const sel = document.getElementById("lang-select");
+      if (
+        sel &&
+        window.Packet &&
+        Packet.i18n &&
+        typeof Packet.i18n.setLanguage === "function"
+      ) {
+        Packet.i18n.setLanguage(sel.value);
+        if (typeof Packet.i18n.applyLanguageToData === "function") {
+          Packet.i18n.applyLanguageToData();
+        }
+      }
+    } catch (_) {}
+
     save();
     updateTopBar();
     closeModal();
     showHudNotify("Profile updated!", "👤");
+    try {
+      renderTab();
+    } catch (_) {}
   };
 }
 
@@ -787,21 +839,84 @@ function showSettings() {
   showModal(
     "Settings",
     `
-     <label class="flex items-center mb-2">
-       <input type="checkbox" id="setting-sound" ${state.player.sound ? "checked" : ""}/>
-       <span class="ml-2">Game Sound Effects</span>
-     </label>
-     <button id="edit-profile-inside" class="neon-btn w-full mb-3">Edit Profile</button>
-     <div class="text-xs text-neon-gray mt-1">All progress is saved locally.<br>For mobile, use Store in-app for real gems/ads!</div>
-  `,
+      <div class="space-y-3">
+        <div class="neon-card" style="padding: 0.75rem;">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" id="setting-sound" ${state.player.sound ? "checked" : ""}/>
+            <span>Game Sound Effects</span>
+          </label>
+        </div>
+
+        <div class="neon-card" style="padding: 0.75rem;">
+          <label class="block mb-1 font-semibold">Language</label>
+          <select id="lang-select" class="w-full p-2 bg-gray-700 rounded border border-neon-cyan">
+            <option value="en">English</option>
+            <option value="pt-br">Português (Brasil)</option>
+            <option value="ru">Русский</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <button id="settings-save-btn" class="neon-btn w-full">Save Settings</button>
+          <button id="edit-profile-inside" class="neon-btn w-full">Edit Profile</button>
+        </div>
+
+        <div class="text-xs text-neon-gray mt-1 text-center">
+          All progress is saved locally.<br>For mobile, use Store in-app for real gems/ads!
+        </div>
+      </div>
+    `,
   );
-  document.getElementById("setting-sound").onchange = function () {
-    state.player.sound = this.checked;
-    save();
-  };
+
+  // Initialize language select to current language (no immediate apply)
+  try {
+    const sel = document.getElementById("lang-select");
+    if (
+      sel &&
+      window.Packet &&
+      Packet.i18n &&
+      typeof Packet.i18n.getLanguage === "function"
+    ) {
+      sel.value = Packet.i18n.getLanguage() || "en";
+    }
+  } catch (_) {}
+
+  // Apply all settings on Save
+  const saveBtn = document.getElementById("settings-save-btn");
+  if (saveBtn) {
+    saveBtn.onclick = function () {
+      try {
+        // Sound toggle
+        const soundEl = document.getElementById("setting-sound");
+        state.player.sound = !!(soundEl && soundEl.checked);
+
+        // Language
+        const langEl = document.getElementById("lang-select");
+        if (
+          langEl &&
+          window.Packet &&
+          Packet.i18n &&
+          typeof Packet.i18n.setLanguage === "function"
+        ) {
+          Packet.i18n.setLanguage(langEl.value);
+          if (typeof Packet.i18n.applyLanguageToData === "function") {
+            Packet.i18n.applyLanguageToData();
+          }
+        }
+
+        // Persist and refresh UI
+        save();
+        updateTopBar();
+        renderTab();
+        showHudNotify("Settings saved!", "⚙️");
+      } catch (_) {}
+    };
+  }
+
+  // Edit Profile button
   document.getElementById("edit-profile-inside").onclick = function () {
     closeModal();
-    setTimeout(showEditProfile, 180);
+    setTimeout(() => window.showEditProfile(), 180);
   };
 }
 
@@ -826,7 +941,12 @@ function triggerRandomEvent() {
       if (event.type === "bonusPackets") {
         let bonus = Math.floor(state.perSec * 60); // 1 minute worth
         state.packets += bonus;
-        showModal(event.name, `${event.desc}<br>You gained ${bonus} packets!`);
+        showModal(
+          event.name,
+          window.Packet && Packet.i18n
+            ? Packet.i18n.t("events.bonusPackets.desc", { n: bonus })
+            : `You gained ${bonus} packets!`,
+        );
         state.randomEvent.active = false;
       } else {
         showModal(event.name, event.desc);
@@ -884,7 +1004,13 @@ function clickPacket(event) {
     critMultiplier = 2 + state.prestige.megaCrits * 0.2; // Up to 3x
   }
 
-  let amount = Math.floor(state.perClick * (crit ? critMultiplier : 1) * bonus);
+  const eventClickMult =
+    state.randomEvent.active && state.randomEvent.type === "packetRain"
+      ? Number(state.randomEvent.multiplier) || 1
+      : 1;
+  let amount = Math.floor(
+    state.perClick * (crit ? critMultiplier : 1) * bonus * eventClickMult,
+  );
 
   // Lucky clicks chance
   if (state.prestige.luckyClicks > 0) {
@@ -906,7 +1032,8 @@ function clickPacket(event) {
     gemMultiplier = 3;
   }
   if (state.randomEvent.active && state.randomEvent.type === "gemRush") {
-    gemMultiplier *= 10;
+    const evMult = Number(state.randomEvent.multiplier) || 10;
+    gemMultiplier *= evMult;
   }
 
   if (state.prestige.gemFind > 0) {
@@ -1199,7 +1326,11 @@ function idleTick() {
   }
 
   if (totalPerSec > 0) {
-    let gain = Math.floor(totalPerSec * bonus);
+    const eventIdleMult =
+      state.randomEvent.active && state.randomEvent.type === "packetRain"
+        ? Number(state.randomEvent.multiplier) || 1
+        : 1;
+    let gain = Math.floor(totalPerSec * bonus * eventIdleMult);
     state.packets += gain;
     state.stats.totalPackets += gain;
     save();
@@ -1755,7 +1886,8 @@ function init() {
   document.querySelectorAll(".tab-btn").forEach((btn) => {
     btn.onclick = () => setTab(btn.dataset.tab);
   });
-  document.getElementById("open-settings").onclick = showSettings;
+  document.getElementById("open-settings").onclick = () =>
+    window.showSettings();
   // Handled by PacketUI.showModal with target check; avoid closing modal on any click
   // document.getElementById("modal-backdrop").onclick = closeModal;
   setInterval(idleTick, 1000);
