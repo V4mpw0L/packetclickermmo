@@ -560,7 +560,7 @@ function renderLeaderboard() {
     <li style="display: flex; gap: 0.75rem; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #273742;">
       <span style="width: 2rem; text-align: right; color: var(--secondary-color); font-weight: bold;">${idx + 1}.</span>
       <img src="${p.avatar || DEFAULT_AVATAR}" style="width: 2rem; height: 2rem; border-radius: 50%; border: 1px solid var(--primary-color);" alt="">
-      <span style="font-weight: 600; color: ${p.name === state.player.name ? "var(--primary-color)" : "var(--text-primary)"};">${p.name === state.player.name ? "You" : p.name}</span>
+      <span style="font-weight: 800; ${p.name === state.player.name ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary); text-transform: uppercase;" : "color: var(--text-primary);"}">${p.name === state.player.name ? "YOU" : p.name}</span>
       <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary);">${p.packets.toLocaleString()}</span>
     </li>
   `,
@@ -1385,14 +1385,14 @@ function generateBots(n = 6) {
 
   for (let i = 0; i < n; i++) {
     // Scale difficulty with player progress:
-    // - Most bots sit around 40%–120% of player's packets
-    // - Top 40% of bots get an extra challenge bias
-    const variance = 0.4 + Math.random() * 0.8; // 0.4x .. 1.2x
+    // - Most bots sit around 70%–130% of player's packets (tighter spread)
+    // - Top 50% of bots get a stronger challenge bias
+    const variance = 0.7 + Math.random() * 0.6; // 0.7x .. 1.3x
     const challengeBias =
-      i < Math.ceil(n * 0.4) ? 1.2 + Math.random() * 0.8 : 1; // +20%..+100% for tougher bots
-    const base = Math.max(100, Math.floor(p * variance * challengeBias));
+      i < Math.ceil(n * 0.5) ? 1.4 + Math.random() * 0.9 : 1.05; // +40%..+130% (others slightly above)
+    const base = Math.max(250, Math.floor(p * variance * challengeBias));
     const jitter = Math.floor(
-      Math.random() * Math.max(200, Math.floor(p * 0.05)),
+      Math.random() * Math.max(400, Math.floor(p * 0.08)),
     ); // small random spread
     bots.push({
       name: randomName(),
@@ -1401,12 +1401,12 @@ function generateBots(n = 6) {
     });
   }
 
-  // Ensure at least one bot is slightly above the player to keep it challenging
+  // Ensure at least one bot is notably above the player to keep it challenging
   if (bots.length) {
     const idx = Math.floor(Math.random() * bots.length);
     bots[idx].packets = Math.max(
       bots[idx].packets,
-      Math.floor(p * (1.1 + Math.random() * 0.4)), // 1.1x .. 1.5x
+      Math.floor(p * (1.3 + Math.random() * 0.7)), // 1.3x .. 2.0x
     );
   }
 
