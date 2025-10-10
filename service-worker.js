@@ -1,4 +1,4 @@
-// Derive VERSION from constants UMD when available; fallback to 0.0.4
+// Derive VERSION from constants UMD when available; fallback to 0.0.5
 const VERSION = (() => {
   try {
     // Load constants to access Packet.data.APP_VERSION if available
@@ -17,7 +17,7 @@ const VERSION = (() => {
   } catch (e) {
     // ignore, fall back below
   }
-  return "0.0.4";
+  return "0.0.5";
 })();
 
 const CACHE_NAME = "packet-clicker-cache-v" + VERSION;
@@ -25,13 +25,22 @@ const ASSETS_TO_CACHE = [
   "./",
   "index.html",
   "main.js",
-  "src/data/constants.js",
-  "src/ui/ui.js",
-  "src/logic/bootstrap.js",
-  "src/utils/storage.js",
   "style.css",
   "manifest.json",
 
+  // Core data and utilities
+  "src/data/constants.js",
+  "src/data/i18n.js",
+  "src/utils/storage.js",
+  "src/logic/bootstrap.js",
+
+  // UI helpers (UMD) and new ES modules
+  "src/ui/ui.js",
+  "src/ui/hud.mjs",
+  "src/ui/render.mjs",
+  "src/effects/effects.mjs",
+
+  // App icons and images
   "src/assets/gem.png",
   "src/assets/packet-32.png",
   "src/assets/packet-48.png",

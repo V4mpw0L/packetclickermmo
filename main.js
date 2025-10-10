@@ -344,7 +344,33 @@ function getTabContent(tab) {
 // ======= TOP BAR UPDATE & ALIGNMENT =======
 function updateTopBar() {
   document.getElementById("player-name").textContent = state.player.name;
-  document.getElementById("avatar").src = state.player.avatar;
+  const _avatarEl = document.getElementById("avatar");
+  if (_avatarEl) {
+    _avatarEl.src = state.player.avatar;
+    // Dynamic avatar border ring based on current combo color (mirrors combo HUD colors)
+    let comboColor = "var(--primary-color)";
+    if (typeof clickCombo === "number") {
+      if (clickCombo >= 30) comboColor = "#ff3040";
+      else if (clickCombo >= 20) comboColor = "#ff4dff";
+      else if (clickCombo >= 10) comboColor = "var(--accent-color)";
+      else if (clickCombo >= 5) comboColor = "var(--secondary-color)";
+    }
+    if (typeof clickCombo === "number" && clickCombo >= 5) {
+      if (typeof _avatarEl._baseShadow === "undefined") {
+        _avatarEl._baseShadow = _avatarEl.style.boxShadow || "";
+      }
+      // 2px ring in combo color + keep subtle base glow
+      _avatarEl.style.boxShadow = `0 0 0 2px ${comboColor}, 0 0 0 3px #1de9b611, 0 2px 8px #c4ebea33`;
+    } else {
+      // Reset to original when combo ends
+      if (typeof _avatarEl._baseShadow !== "undefined") {
+        _avatarEl.style.boxShadow = _avatarEl._baseShadow;
+        delete _avatarEl._baseShadow;
+      } else {
+        _avatarEl.style.boxShadow = "";
+      }
+    }
+  }
   let badge = document.getElementById("vip-badge");
 
   // Pills to show under the name (centered by CSS)
@@ -460,15 +486,20 @@ function renderBoosts() {
   });
 
   // Use modular renderButton for each boost
-  let boostItems = BOOST_SHOP.map((boost) =>
-    renderButton({
-      className: "gem-btn w-full mb-2",
-      label: `<div class="font-bold">${boost.name}</div>
+  let boostItems = BOOST_SHOP.map((boost) => {
+    const until = state.boosts[boost.id] || 0;
+    const active = until > Date.now();
+    const remaining = active ? Math.ceil((until - Date.now()) / 1000) : 0;
+    const label = `<div class="font-bold">${boost.name}</div>
         <div class="text-sm opacity-75">${boost.gems} 💎</div>
-        <div class="text-xs text-neon-gray">${boost.desc}</div>`,
+        <div class="text-xs text-neon-gray">${boost.desc}${active ? ` — active (${remaining}s)` : ""}</div>`;
+    return renderButton({
+      className: `gem-btn w-full mb-2 ${active ? "opacity-50" : ""}`,
+      label,
       dataAttr: `data-boost="${boost.id}"`,
-    }),
-  ).join("");
+      disabled: active,
+    });
+  }).join("");
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
@@ -1837,6 +1868,7 @@ function bindTabEvents(tab) {
   }
   if (tab === "boosts") {
     document.querySelectorAll("[data-boost]").forEach((btn) => {
+      if (btn.disabled) return;
       btn.onclick = () => buyBoost(btn.getAttribute("data-boost"));
     });
   }
