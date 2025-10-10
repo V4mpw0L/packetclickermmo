@@ -144,6 +144,12 @@ body {
 }
 
 /* === LAYOUT CONTAINERS === */
+.tab-title {
+    text-align: center;
+    background: linear-gradient(90deg, #c4ebea33, transparent);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+}
 #tab-content {
     display: flex;
     flex-direction: column;

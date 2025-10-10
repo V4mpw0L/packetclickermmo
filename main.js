@@ -782,25 +782,39 @@ function renderPrestige() {
   return `
     <div class="neon-card px-3 py-4 mb-2">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">⭐ Prestige</h2>
-      <div class="text-center mb-4">
-        <div class="text-lg">Level ${state.prestige.level}</div>
-        <div class="text-sm text-neon-gray">Data Shards: ${state.prestige.dataShards} 🔷</div>
+      <div class="text-center mb-4" style="display:flex; flex-direction:column; align-items:center; gap:.35rem;">
+        <div class="text-lg" style="font-weight:900;">Level ${state.prestige.level}</div>
+        <div class="text-sm text-neon-gray">
+          <span style="display:inline-flex; align-items:center; gap:.35rem; padding:.2rem .55rem; border:1px solid var(--border-color); border-radius:999px; background:linear-gradient(135deg, rgba(0,0,0,.25), rgba(0,0,0,.05)); box-shadow:0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,.35);">
+            ${state.prestige.dataShards} 🔷
+          </span>
+        </div>
+      </div>
+
+      <div class="mb-3" style="text-align:center;">
+        <div class="text-neon-gray" style="font-size:.9rem; margin-bottom:.25rem;">Progress to next prestige</div>
+        <div style="position:relative; height:12px; border-radius:999px; background:#22313f; border:1px solid var(--border-color); overflow:hidden; box-shadow: inset 0 1px 6px rgba(0,0,0,.5);">
+          <div style="height:100%; width: ${Math.min(100, (state.packets / 50000) * 100).toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); box-shadow: 0 0 10px var(--shadow-primary);"></div>
+        </div>
+        <div class="text-neon-gray" style="font-size:.8rem; margin-top:.25rem;">${state.packets.toLocaleString()} / 50,000</div>
       </div>
 
       ${
         canPrestige
-          ? `<button id="do-prestige" class="neon-btn w-full mb-2" style="white-space: normal; display: flex; flex-direction: column; align-items: center; gap: 0.15rem;">
-          <span>Prestige Now! (+${shardGain} 🔷)</span>
-          <span class="text-neon-gray" style="font-size: 0.75rem; position: static; transform: none; left: auto; width: auto; pointer-events: auto; opacity: 0.9; display: block; line-height: 1.2; white-space: normal; margin-top: 0.1rem;">Reset progress for permanent bonuses</span>
+          ? `<button id="do-prestige" class="neon-btn w-full mb-2" style="white-space: normal; display: flex; flex-direction: column; align-items: center; gap: 0.2rem;">
+          <span>⭐ Prestige Now! (+${shardGain} 🔷)</span>
+          <span class="text-neon-gray" style="font-size: 0.8rem; opacity: 0.9; line-height: 1.2;">Reset progress for permanent bonuses</span>
         </button>`
-          : `<div class="text-center text-neon-gray mb-4">
+          : `<div class="text-center text-neon-gray mb-4" style="font-size:.9rem;">
           Need 50,000 packets to prestige<br>
           Current: ${state.packets.toLocaleString()}
         </div>`
       }
 
-      <div class="mb-2"><span class="text-neon-yellow font-bold">Prestige Upgrades</span></div>
-      ${upgrades}
+      <div class="mb-2" style="text-align:center;"><span class="text-neon-yellow font-bold">Prestige Upgrades</span></div>
+      <div class="prestige-upgrades" style="display:grid; grid-template-columns: 1fr; gap:.5rem;">
+        ${upgrades}
+      </div>
     </div>
   `;
 }

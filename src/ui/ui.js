@@ -10,6 +10,20 @@
 (function (global) {
   "use strict";
 
+  // Ensure tab titles are centered across the app
+  try {
+    if (
+      typeof document !== "undefined" &&
+      document &&
+      !document.getElementById("pc-title-center-style")
+    ) {
+      var st = document.createElement("style");
+      st.id = "pc-title-center-style";
+      st.textContent = ".tab-title{ text-align:center; }";
+      if (document.head) document.head.appendChild(st);
+    }
+  } catch (_) {}
+
   // Utility: safe DOM query
   function $(sel) {
     return typeof document !== "undefined" ? document.querySelector(sel) : null;
@@ -135,7 +149,7 @@
     modal.setAttribute("aria-modal", "true");
     modal.setAttribute("tabindex", "-1");
 
-    modal.innerHTML = `<h2 id="modal-title" class="text-neon-cyan mb-2 text-lg">${title}</h2>
+    modal.innerHTML = `<h2 id="modal-title" class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm); text-align: center;">${title}</h2>
       <div>${html}</div>
       <button id="modal-close-btn" class="mt-5 neon-btn w-full">Close</button>
     `;
