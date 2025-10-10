@@ -1541,6 +1541,73 @@ function closeModal() {
 function playSound(type) {
   if (!state.player.sound) return;
   try {
+    // Prefer HTMLAudio pool for click SFX (low-latency file playback)
+    if (type === "click") {
+      const POOL_SIZE = 6;
+      const src = "src/assets/hit.mp3";
+      const g = window;
+
+      if (!g._hitPool) {
+        g._hitPool = Array.from({ length: POOL_SIZE }, () => {
+          const a = new Audio(src);
+          a.preload = "auto";
+          a.crossOrigin = "anonymous";
+          a.volume = 0.75;
+          return a;
+        });
+        g._hitPoolIndex = 0;
+      }
+
+      // Find a free audio element in the pool
+      let a = null;
+      for (let i = 0; i < g._hitPool.length; i++) {
+        const candidate = g._hitPool[(g._hitPoolIndex + i) % g._hitPool.length];
+        if (candidate.paused || candidate.ended) {
+          a = candidate;
+          g._hitPoolIndex = (g._hitPoolIndex + i + 1) % g._hitPool.length;
+          break;
+        }
+      }
+
+      if (!a) {
+        // Reclaim the current index element if all are busy
+        a = g._hitPool[g._hitPoolIndex];
+        g._hitPoolIndex = (g._hitPoolIndex + 1) % g._hitPool.length;
+        try {
+          a.pause();
+        } catch {}
+        a.currentTime = 0;
+      } else {
+        a.currentTime = 0;
+      }
+
+      a.play().catch(() => {
+        // Fallback to oscillator if playback fails (permissions, etc.)
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          const ctx = (window._audioCtx ||= new AudioCtx());
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "square";
+          osc.frequency.setValueAtTime(880, ctx.currentTime);
+          gain.gain.setValueAtTime(0, ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.14, ctx.currentTime + 0.006);
+          gain.gain.exponentialRampToValueAtTime(
+            0.0001,
+            ctx.currentTime + 0.035,
+          );
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.045);
+        } catch {}
+      });
+
+      return;
+    }
+
+    // For other SFX, use oscillator synth
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return;
 
@@ -1553,11 +1620,6 @@ function playSound(type) {
     let wave = "square";
 
     switch (type) {
-      case "click":
-        freq = 880;
-        dur = 0.035;
-        wave = "square";
-        break;
       case "crit":
         freq = 240;
         dur = 0.12;
