@@ -317,6 +317,31 @@
                                 />⭐ Prestige</g,
                                 ">⭐ " + tr("prestige.title") + "<",
                             )
+                            .replace(
+                                />🎨 Visual Themes</g,
+                                ">🎨 " + tr("tabs.themes") + "<",
+                            )
+                            .replace(
+                                />🏆 Leaderboard</g,
+                                ">🏆 " + tr("tabs.leaderboard") + "<",
+                            )
+                            .replace(
+                                />🎯 Achievements</g,
+                                ">🎯 " + tr("tabs.achievements") + "<",
+                            )
+                            .replace(
+                                />🏬 Shop</g,
+                                ">🏬 " + tr("tabs.shop") + "<",
+                            )
+                            .replace(
+                                /⭐ Prestige Available/g,
+                                tr("buttons.prestigeAvailable"),
+                            )
+                            .replace(/Save Settings/g, tr("buttons.save"))
+                            .replace(
+                                /Ad Banner \(Remove in Shop\)/g,
+                                tr("labels.adBanner"),
+                            )
                             .replace(/Collect Packets/g, tr("buttons.collect"))
                             .replace(
                                 /Packets\/Click:/g,
@@ -355,6 +380,9 @@
                     }
                 }
                 function applyLang() {
+                    try {
+                        wrapRenders();
+                    } catch (_) {}
                     // Update navbar/tab button aria-labels and titles
                     function updateNavLabels() {
                         try {
@@ -424,8 +452,10 @@
                     // Finally update navbar labels/titles
                     updateNavLabels();
                 }
-                // Wrap render functions to translate their HTML output
-                (function wrapRenders() {
+                // Wrap render functions to translate their HTML output (robust, retries until main.js loaded)
+                var __i18nWrapped = false;
+                function wrapRenders() {
+                    if (__i18nWrapped) return true;
                     var names = [
                         "renderGame",
                         "renderUpgrades",
@@ -437,15 +467,38 @@
                         "renderBoosts",
                         "renderThemes",
                     ];
+                    var found = 0;
                     names.forEach(function (n) {
-                        if (typeof window[n] === "function") {
+                        if (
+                            typeof window[n] === "function" &&
+                            !window[n].__i18nWrapped
+                        ) {
                             var _orig = window[n];
-                            window[n] = function () {
+                            var wrapped = function () {
                                 var html = _orig.apply(this, arguments);
                                 return translateHtml(html);
                             };
+                            wrapped.__i18nWrapped = true;
+                            window[n] = wrapped;
+                            found++;
                         }
                     });
+                    if (found > 0) {
+                        __i18nWrapped = true;
+                        return true;
+                    }
+                    return false;
+                }
+                // Try now, on load, and retry a few times after parse (modules are deferred)
+                wrapRenders();
+                window.addEventListener("load", function () {
+                    wrapRenders();
+                });
+                (function retryWrap() {
+                    var attempts = 0;
+                    var id = setInterval(function () {
+                        if (wrapRenders() || attempts++ > 60) clearInterval(id);
+                    }, 100);
                 })();
 
                 // Inject language select into Settings modal

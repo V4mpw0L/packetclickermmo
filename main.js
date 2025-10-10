@@ -319,25 +319,40 @@ function renderTab() {
 }
 
 function getTabContent(tab) {
+  const w = typeof window !== "undefined" ? window : {};
   switch (tab) {
     case "game":
-      return renderGame();
+      return typeof w.renderGame === "function" ? w.renderGame() : renderGame();
     case "upgrades":
-      return renderUpgrades();
+      return typeof w.renderUpgrades === "function"
+        ? w.renderUpgrades()
+        : renderUpgrades();
     case "achievements":
-      return renderAchievements();
+      return typeof w.renderAchievements === "function"
+        ? w.renderAchievements()
+        : renderAchievements();
     case "shop":
-      return renderShop();
+      return typeof w.renderShop === "function" ? w.renderShop() : renderShop();
     case "leaderboard":
-      return renderLeaderboard();
+      return typeof w.renderLeaderboard === "function"
+        ? w.renderLeaderboard()
+        : renderLeaderboard();
     case "prestige":
-      return renderPrestige();
+      return typeof w.renderPrestige === "function"
+        ? w.renderPrestige()
+        : renderPrestige();
     case "daily":
-      return renderDaily();
+      return typeof w.renderDaily === "function"
+        ? w.renderDaily()
+        : renderDaily();
     case "boosts":
-      return renderBoosts();
+      return typeof w.renderBoosts === "function"
+        ? w.renderBoosts()
+        : renderBoosts();
     case "themes":
-      return renderThemes();
+      return typeof w.renderThemes === "function"
+        ? w.renderThemes()
+        : renderThemes();
     default:
       return "";
   }
@@ -970,6 +985,16 @@ function showSettings() {
 
         // Persist and refresh UI
         save();
+        // Force-apply language to DOM immediately (best effort)
+        try {
+          if (
+            window.Packet &&
+            Packet.i18n &&
+            typeof Packet.i18n.translateDom === "function"
+          ) {
+            Packet.i18n.translateDom(document.body);
+          }
+        } catch (_) {}
         updateTopBar();
         renderTab();
         showHudNotify("Settings saved!", "⚙️");
@@ -2015,6 +2040,14 @@ function init() {
   }
 
   renderTab();
+  try {
+    if (window.Packet && Packet.i18n) {
+      Packet.i18n.applyLanguageToData();
+      if (typeof Packet.i18n.translateDom === "function") {
+        Packet.i18n.translateDom(document.body);
+      }
+    }
+  } catch (_) {}
   checkAchievements();
 
   // Additional mobile zoom prevention
