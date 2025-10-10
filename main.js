@@ -53,7 +53,6 @@ let lastClickTime = 0;
 /* Using global COMBO_TIMEOUT from constants UMD */
 // Track combo expiry to sync avatar border ring with combo HUD
 let _comboExpireAt = 0;
-let _avatarRingTimer = null;
 
 const state = {
   player: {
@@ -1070,19 +1069,6 @@ function clickPacket(event) {
   lastClickTime = now;
   // Track combo expiry to sync HUD and avatar ring
   _comboExpireAt = now + COMBO_TIMEOUT + 200;
-  if (_avatarRingTimer) clearTimeout(_avatarRingTimer);
-  _avatarRingTimer = setTimeout(() => {
-    // Force-clear avatar ring when combo times out (mirrors HUD hide)
-    const el = document.getElementById("avatar");
-    if (el && Date.now() >= _comboExpireAt) {
-      if (typeof el._baseShadow !== "undefined") {
-        el.style.boxShadow = el._baseShadow;
-        delete el._baseShadow;
-      } else {
-        el.style.boxShadow = "";
-      }
-    }
-  }, COMBO_TIMEOUT + 200);
 
   // Modularized combo effect logic
   if (!clickPacket._lastFxTime || Date.now() - clickPacket._lastFxTime > 80) {
@@ -1112,8 +1098,18 @@ function clickPacket(event) {
     // Hide combo HUD after timeout
     if (clickPacket._comboHideTimer) clearTimeout(clickPacket._comboHideTimer);
     clickPacket._comboHideTimer = setTimeout(() => {
-      hideComboTotalHUD();
+      hideComboTotalHUD(0);
       clickPacket._comboTotal = 0;
+      _comboExpireAt = 0;
+      const el = document.getElementById("avatar");
+      if (el) {
+        if (typeof el._baseShadow !== "undefined") {
+          el.style.boxShadow = el._baseShadow;
+          delete el._baseShadow;
+        } else {
+          el.style.boxShadow = "";
+        }
+      }
     }, COMBO_TIMEOUT + 200);
 
     // Show floating effect

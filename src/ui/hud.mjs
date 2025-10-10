@@ -59,7 +59,10 @@ export function showComboTotalHUD(total, color = null) {
     document.body.appendChild(hud);
   }
 
-  const c = color || getComputedStyle(hud).getPropertyValue("color") || "var(--primary-color)";
+  const c =
+    color ||
+    getComputedStyle(hud).getPropertyValue("color") ||
+    "var(--primary-color)";
   hud.style.color = c;
   hud.style.borderColor = c;
 
@@ -85,10 +88,18 @@ export function showComboTotalHUD(total, color = null) {
 export function hideComboTotalHUD(timeoutMs = 2200) {
   if (typeof document === "undefined") return;
   if (_comboHideTimer) clearTimeout(_comboHideTimer);
-  _comboHideTimer = setTimeout(() => {
+
+  const remove = () => {
     const h = document.getElementById(HUD_IDS.comboTotal);
     if (h && h.parentNode) h.parentNode.removeChild(h);
-  }, timeoutMs);
+  };
+
+  if (timeoutMs <= 0) {
+    remove();
+    return;
+  }
+
+  _comboHideTimer = setTimeout(remove, timeoutMs);
 }
 
 /**
@@ -140,7 +151,9 @@ export function showHudNotify(msg, icon = "✨", duration = 1800) {
   hud.style.backdropFilter = "blur(6px)";
   hud.style.opacity = "0";
   hud.style.transition = "opacity 160ms ease, transform 160ms ease";
-  hud.innerHTML = icon ? `<span style="margin-right:0.5em;">${icon}</span>${msg}` : msg;
+  hud.innerHTML = icon
+    ? `<span style="margin-right:0.5em;">${icon}</span>${msg}`
+    : msg;
 
   document.body.appendChild(hud);
 
@@ -151,15 +164,18 @@ export function showHudNotify(msg, icon = "✨", duration = 1800) {
   });
 
   if (_notifyHideTimer) clearTimeout(_notifyHideTimer);
-  _notifyHideTimer = setTimeout(() => {
-    try {
-      hud.style.opacity = "0";
-      hud.style.transform = "translate(-50%, 0)";
-      setTimeout(() => {
-        if (hud && hud.parentNode) hud.parentNode.removeChild(hud);
-      }, 220);
-    } catch (_) {}
-  }, Math.max(600, Number(duration) || 1800));
+  _notifyHideTimer = setTimeout(
+    () => {
+      try {
+        hud.style.opacity = "0";
+        hud.style.transform = "translate(-50%, 0)";
+        setTimeout(() => {
+          if (hud && hud.parentNode) hud.parentNode.removeChild(hud);
+        }, 220);
+      } catch (_) {}
+    },
+    Math.max(600, Number(duration) || 1800),
+  );
 }
 
 /**
