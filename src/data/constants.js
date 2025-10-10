@@ -31,6 +31,7 @@
       BOOST_SHOP: data.BOOST_SHOP,
       THEMES: data.THEMES,
       RANDOM_EVENTS: data.RANDOM_EVENTS,
+      VERSION: data.APP_VERSION,
       EXPANDED_SHOP_ITEMS: data.EXPANDED_SHOP_ITEMS,
       SHOP_ITEMS: data.SHOP_ITEMS,
       ACHIEVEMENTS: data.ACHIEVEMENTS,
@@ -54,6 +55,7 @@
     var STORAGE_KEY = "packet_clicker_save_v3";
     var DEFAULT_AVATAR =
       "https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker";
+    var APP_VERSION = "0.0.3";
 
     // Interaction tuning
     var COMBO_TIMEOUT = 1000; // ms to maintain click combo
@@ -468,6 +470,7 @@
     return {
       STORAGE_KEY: STORAGE_KEY,
       DEFAULT_AVATAR: DEFAULT_AVATAR,
+      APP_VERSION: APP_VERSION,
       COMBO_TIMEOUT: COMBO_TIMEOUT,
       GEM_PACKS: GEM_PACKS,
       DAILY_REWARDS: DAILY_REWARDS,

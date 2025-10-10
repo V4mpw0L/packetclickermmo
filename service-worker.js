@@ -1,5 +1,26 @@
-const CACHE_NAME = "packet-clicker-cache-v0.0.2";
-const VERSION = "0.0.2";
+// Derive VERSION from constants UMD when available; fallback to 0.0.3
+const VERSION = (() => {
+  try {
+    // Load constants to access Packet.data.APP_VERSION if available
+    importScripts("src/data/constants.js");
+    if (
+      self &&
+      self.Packet &&
+      self.Packet.data &&
+      self.Packet.data.APP_VERSION
+    ) {
+      return self.Packet.data.APP_VERSION;
+    }
+    if (typeof self.APP_VERSION === "string") {
+      return self.APP_VERSION;
+    }
+  } catch (e) {
+    // ignore, fall back below
+  }
+  return "0.0.3";
+})();
+
+const CACHE_NAME = "packet-clicker-cache-v" + VERSION;
 const ASSETS_TO_CACHE = [
   "./",
   "index.html",
