@@ -463,6 +463,7 @@ function renderGame() {
     id: "click-btn",
     className: "text-2xl py-4 active:scale-95 transition-transform",
     label: 'Collect Packets <span class="icon-packet"></span>',
+    attrs: { style: "padding-top: 1.15rem; padding-bottom: 1.15rem;" },
   });
 
   // Use modular renderButton for prestige button if available

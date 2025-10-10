@@ -73,10 +73,7 @@ function attrsToString(attrs = {}, dataset = {}, dataAttr = "") {
  * Minimal attribute value escaper.
  */
 function escapeAttr(s) {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/"/g, "&quot;")
-    .replace(/</g, "&lt;");
+  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 }
 
 /* ------------------------------- Renderers -------------------------------- */
@@ -111,7 +108,11 @@ export function renderButton({
     type,
     ...(disabled ? { disabled: true } : {}),
   };
-  const allAttrs = attrsToString(baseAttrs, dataset, dataAttr);
+  const allAttrs = attrsToString(
+    { ...baseAttrs, ...(attrs || {}) },
+    dataset,
+    dataAttr,
+  );
   return `<button${allAttrs}>${label || ""}</button>`;
 }
 
@@ -133,13 +134,19 @@ export function renderMenu(items = [], wrapperClass = "menu-bar") {
         dataset = null,
         attrs = null,
       } = item;
-      const cls = hasButtonClass(className) ? className : `tab-btn ${className || ""}`.trim();
+      const cls = hasButtonClass(className)
+        ? className
+        : `tab-btn ${className || ""}`.trim();
       const baseAttrs = {
         ...(id ? { id } : {}),
         class: cls,
         ...(disabled ? { disabled: true } : {}),
       };
-      const allAttrs = attrsToString(baseAttrs, dataset, dataAttr);
+      const allAttrs = attrsToString(
+        { ...baseAttrs, ...(attrs || {}) },
+        dataset,
+        dataAttr,
+      );
       return `<button${allAttrs}>${label || ""}</button>`;
     })
     .join("");
@@ -153,7 +160,10 @@ export function renderMenu(items = [], wrapperClass = "menu-bar") {
  * @param {string} [opts.className='button-group'] - Wrapper classes
  * @returns {string}
  */
-export function renderButtonGroup(buttons = [], { className = "button-group" } = {}) {
+export function renderButtonGroup(
+  buttons = [],
+  { className = "button-group" } = {},
+) {
   return `<div class="${className}">${buttons.map((b) => renderButton(b)).join("")}</div>`;
 }
 
@@ -182,7 +192,11 @@ export function renderSelect({
     ...(id ? { id } : {}),
     ...(className ? { class: className } : {}),
   };
-  const allAttrs = attrsToString(baseAttrs, dataset, dataAttr);
+  const allAttrs = attrsToString(
+    { ...baseAttrs, ...(attrs || {}) },
+    dataset,
+    dataAttr,
+  );
 
   const html = (options || [])
     .map((opt = {}) => {
