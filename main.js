@@ -797,10 +797,44 @@ let _megaFXTimer = null;
 let _ultraFXTimer = null;
 let _animalFXTimer = null;
 let _animalAuraInterval = null;
+let _animalAuraLayer = null;
+let _animalAuraRafId = null;
+let _animalAuraStart = 0;
+let _animalCritBurstUntil = 0;
 
 // Start continuous ANIMAL aura particles around the click button
 function startAnimalAura() {
   try {
+    // Ensure a dedicated aura layer exists
+    if (!_animalAuraLayer) {
+      _animalAuraLayer = document.getElementById("animal-aura-layer");
+      if (!_animalAuraLayer) {
+        _animalAuraLayer = document.createElement("div");
+        _animalAuraLayer.id = "animal-aura-layer";
+        _animalAuraLayer.style.position = "fixed";
+        _animalAuraLayer.style.inset = "0";
+        _animalAuraLayer.style.pointerEvents = "none";
+        _animalAuraLayer.style.zIndex = "2049";
+        _animalAuraLayer.style.transform = "translate(0,0)";
+        document.body.appendChild(_animalAuraLayer);
+      }
+    }
+
+    // Start parallax drift if not running
+    if (!_animalAuraRafId) {
+      _animalAuraStart = performance.now();
+      const drift = () => {
+        const t = performance.now() - _animalAuraStart;
+        const dx = Math.sin(t / 850) * 6 + Math.sin(t / 2200) * 4;
+        const dy = Math.cos(t / 1100) * 5 + Math.sin(t / 1800) * 3;
+        if (_animalAuraLayer) {
+          _animalAuraLayer.style.transform = `translate(${dx}px, ${dy}px)`;
+        }
+        _animalAuraRafId = requestAnimationFrame(drift);
+      };
+      _animalAuraRafId = requestAnimationFrame(drift);
+    }
+
     if (_animalAuraInterval) return;
     const rateMs = 45;
 
@@ -824,24 +858,19 @@ function startAnimalAura() {
       p.style.borderRadius = "50%";
       // Alternate warm flame and electric cyan particles
       const growthHint = Math.min(Math.max(clickCombo - 30, 0) / 12, 4.0);
-      const hue =
-        growthHint > 2.0
-          ? Math.random() < 0.4
-            ? 195
-            : Math.random() < 0.5
-              ? 28
-              : 8
-          : Math.random() < 0.75
-            ? Math.random() < 0.7
-              ? 50
-              : 28
-            : 195; // warm near, more blue as combo grows
-      p.style.background = `radial-gradient(circle, rgba(255,255,255,0.95) 0 45%, hsla(${hue}, 100%, 60%, 0.95) 60% 100%)`;
-      p.style.boxShadow = `0 0 ${Math.round(6 + Math.random() * 10)}px hsla(${hue}, 100%, 60%, 0.75)`;
+      const burstActive =
+        typeof _animalCritBurstUntil === "number" &&
+        Date.now() < _animalCritBurstUntil;
+      const nearWarmBias = Math.random() < (burstActive ? 0.95 : 0.85);
+      // Strong warm bias (red/orange); occasional blue electric accents
+      const hue = nearWarmBias ? (Math.random() < 0.6 ? 28 : 8) : 195;
+      const lightness = nearWarmBias ? (burstActive ? 58 : 56) : 62;
+      p.style.background = `radial-gradient(circle, rgba(255,200,160,0.85) 0 35%, hsla(${hue}, 100%, ${lightness}%, ${burstActive ? 1 : 0.95}))`;
+      p.style.boxShadow = `0 0 ${Math.round(10 + Math.random() * 14)}px hsla(${hue}, 100%, ${lightness + 2}%, ${burstActive ? 0.95 : 0.8})`;
       p.style.zIndex = "2050";
       p.style.opacity = "1";
       p.style.transform = "translate(-50%, -50%)";
-      document.body.appendChild(p);
+      (_animalAuraLayer || document.body).appendChild(p);
 
       // Random orbit vector with slight upward bias for flame feeling
       const angle = Math.random() * Math.PI * 2;
@@ -870,10 +899,12 @@ function startAnimalAura() {
             Math.random() * 260,
         ),
       );
-      // Occasionally spawn a long-range flare to a random screen point
-      if (Math.random() < 0.22) {
+      // Occasionally spawn a long-range flare to a random screen point (more likely during crit burst)
+      if (Math.random() < (burstActive ? 0.7 : 0.35)) {
         const q = document.createElement("div");
-        const qSize = 3.5 + Math.random() * 4.5;
+        const isSuper = Math.random() < 0.28;
+        const qSize =
+          (isSuper ? 6.5 : 3.5) + Math.random() * (isSuper ? 6 : 4.5);
         q.className = "animal-particle";
         q.style.position = "fixed";
         q.style.width = qSize + "px";
@@ -890,10 +921,11 @@ function startAnimalAura() {
           document.documentElement.clientHeight || 0,
           window.innerHeight || 0,
         );
-        const targetX = Math.random() * vw;
-        const targetY = Math.random() * vh * (Math.random() < 0.6 ? 0.9 : 1); // sometimes go further down
+        const margin = isSuper ? Math.max(vw, vh) * 0.2 : 0;
+        const targetX = Math.random() * (vw + margin * 2) - margin;
+        const targetY = Math.random() * (vh + margin * 2) - margin;
         // Color modulation by distance: yellow near, orange/red mid, blue electric far
-        const maxD = Math.hypot(vw, vh);
+        const maxD = Math.hypot(vw, vh) + margin;
         const dRatio = Math.min(
           1,
           Math.hypot(targetX - cx, targetY - cy) / Math.max(1, maxD),
@@ -906,23 +938,24 @@ function startAnimalAura() {
                 ? 28
                 : 8
               : 195;
-        q.style.background = `radial-gradient(circle, rgba(255,255,255,0.95) 0 45%, hsla(${flareHue}, 100%, 60%, 0.95) 60% 100%)`;
-        q.style.boxShadow = `0 0 ${Math.round(8 + Math.random() * 14)}px hsla(${flareHue}, 100%, 60%, 0.8)`;
+        q.style.background = `radial-gradient(circle, rgba(255,200,160,0.9) 0 35%, hsla(${flareHue}, 100%, ${isSuper ? 64 : 58}%, ${isSuper ? 1 : 0.95}))`;
+        q.style.boxShadow = `0 0 ${Math.round((isSuper ? 16 : 10) + Math.random() * (isSuper ? 22 : 16))}px hsla(${flareHue}, 100%, ${isSuper ? 64 : 58}%, ${isSuper ? 0.98 : 0.85})`;
         q.style.zIndex = "2050";
         q.style.opacity = "1";
         q.style.transform = "translate(-50%, -50%)";
-        document.body.appendChild(q);
+        (_animalAuraLayer || document.body).appendChild(q);
         requestAnimationFrame(() => {
-          const t = 900 + Math.random() * 700;
+          const t =
+            (isSuper ? 1200 : 900) + Math.random() * (isSuper ? 900 : 700);
           q.style.transition = `transform ${Math.round(t)}ms cubic-bezier(0.22, 0.6, 0.2, 1), opacity ${Math.round(t)}ms ease-out, filter ${Math.round(t)}ms ease-out`;
-          q.style.transform = `translate(calc(-50% + ${targetX - cx}px), calc(-50% + ${targetY - cy}px)) scale(${0.8 + Math.random() * 0.9})`;
+          q.style.transform = `translate(calc(-50% + ${targetX - cx}px), calc(-50% + ${targetY - cy}px)) scale(${(isSuper ? 1.2 : 0.8) + Math.random() * (isSuper ? 1.1 : 0.9)})`;
           q.style.opacity = "0";
           q.style.filter = "blur(0.6px)";
           setTimeout(
             () => {
               if (q && q.parentNode) q.parentNode.removeChild(q);
             },
-            Math.round(t + 120),
+            Math.round(t + 140),
           );
         });
       }
@@ -936,6 +969,16 @@ function stopAnimalAura() {
     if (_animalAuraInterval) {
       clearInterval(_animalAuraInterval);
       _animalAuraInterval = null;
+    }
+    if (_animalAuraRafId) {
+      cancelAnimationFrame(_animalAuraRafId);
+      _animalAuraRafId = null;
+    }
+    if (_animalAuraLayer) {
+      _animalAuraLayer.style.transform = "translate(0,0)";
+      // Keep the layer for reuse; optional: remove if desired
+      // if (_animalAuraLayer.parentNode) _animalAuraLayer.parentNode.removeChild(_animalAuraLayer);
+      // _animalAuraLayer = null;
     }
   } catch {}
 }
@@ -1452,6 +1495,9 @@ function clickPacket(event) {
   if (state.player.sound) {
     if (crit) {
       playSound("crit");
+      if (clickCombo >= 30) {
+        _animalCritBurstUntil = Date.now() + 800;
+      }
       if (clickCombo >= 30) {
         setTimeout(() => playSound("crit"), 60);
         setTimeout(() => playSound("click"), 120);
