@@ -1028,6 +1028,10 @@ function renderDaily() {
 // =============== AVATARS ===============
 function showEditProfile() {
   let avatars = getUnlockedAvatars();
+  const isCustomAvatar =
+    typeof state.player.avatar === "string" &&
+    (state.player.avatar.startsWith("data:") ||
+      !state.player.avatar.includes("dicebear.com"));
   let currentSeed =
     state.player.avatar.split("seed=")[1]?.split("&")[0] || "Hacker";
   let avatarList = avatars
@@ -1051,13 +1055,25 @@ function showEditProfile() {
        </label>
        <div class="mb-4">
          <span class="block mb-2 font-semibold">Avatar:</span>
-         <div class="flex flex-wrap gap-2 justify-center">${avatarList}</div>
+         <div class="flex flex-wrap gap-2 justify-center">${avatarList}
+           <div id="custom-avatar-tile" class="avatar-choice${isCustomAvatar ? " selected" : ""}" data-seed="__custom__" style="${isCustomAvatar ? "" : "display:none;"}">
+             <img id="custom-avatar-img" src="${isCustomAvatar ? state.player.avatar : ""}" alt="Custom" />
+             <div class="avatar-name">Custom</div>
+           </div>
+         </div>
+         <div class="flex gap-2 justify-center mt-2">
+           <input type="file" id="avatar-upload" accept="image/*" style="display:none">
+           <button type="button" id="avatar-upload-btn" class="neon-btn">Upload Picture</button>
+         </div>
        </div>
 
        <button type="submit" class="neon-btn w-full">Save</button>
      </form>
   `,
   );
+
+  let uploadedAvatarDataUrl = null;
+
   document.querySelectorAll(".avatar-choice").forEach((el) => {
     el.onclick = () => {
       document
@@ -1066,17 +1082,52 @@ function showEditProfile() {
       el.classList.add("selected");
     };
   });
+  const uploadBtn = document.getElementById("avatar-upload-btn");
+  const fileInput = document.getElementById("avatar-upload");
+  const customTile = document.getElementById("custom-avatar-tile");
+  const customImg = document.getElementById("custom-avatar-img");
+  if (uploadBtn && fileInput) {
+    uploadBtn.onclick = function () {
+      fileInput.click();
+    };
+    fileInput.onchange = function () {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (ev) {
+        uploadedAvatarDataUrl = String(ev.target && ev.target.result) || null;
+        if (uploadedAvatarDataUrl && customTile && customImg) {
+          customImg.src = uploadedAvatarDataUrl;
+          customTile.style.display = "";
+          document
+            .querySelectorAll(".avatar-choice")
+            .forEach((e) => e.classList.remove("selected"));
+          customTile.classList.add("selected");
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+  }
   document.getElementById("profile-form").onsubmit = function (e) {
     e.preventDefault();
     let newName = document.getElementById("profile-name").value.trim();
-    let selected =
-      document
-        .querySelector(".avatar-choice.selected")
-        ?.getAttribute("data-seed") || "Hacker";
+    let selectedEl = document.querySelector(".avatar-choice.selected");
+    let selected = selectedEl ? selectedEl.getAttribute("data-seed") : "Hacker";
     if (newName) state.player.name = newName.slice(0, 14);
-    state.player.avatar = `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${encodeURIComponent(selected)}`;
+
+    if (uploadedAvatarDataUrl || selected === "__custom__") {
+      state.player.avatar =
+        uploadedAvatarDataUrl ||
+        (customImg ? customImg.src : state.player.avatar);
+    } else {
+      state.player.avatar = `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${encodeURIComponent(selected)}`;
+    }
 
     save();
+    try {
+      window.VERSION = "0.0.10";
+    } catch (_) {}
+
     updateTopBar();
     closeModal();
     showHudNotify("Profile updated!", "👤");
@@ -1158,6 +1209,9 @@ function showSettings() {
 
         // Persist and refresh UI
         save();
+        try {
+          window.VERSION = "0.0.10";
+        } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {
           if (
