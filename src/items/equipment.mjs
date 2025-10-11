@@ -53,8 +53,10 @@ function pickWeighted(list, weightKey = "weight") {
  * Slots are intentionally simple. We can add more (helmet, chest, etc.) later.
  */
 export const SLOTS = [
-  { id: "glove", name: "Glove" },
-  { id: "trinket", name: "Trinket" },
+  { id: "slot1", name: "Slot 1" },
+  { id: "slot2", name: "Slot 2" },
+  { id: "slot3", name: "Slot 3" },
+  { id: "slot4", name: "Slot 4" },
 ];
 
 /**
@@ -104,6 +106,7 @@ export const RARITIES = [
  * You can expand freely; the generator picks randomly here.
  */
 export const ITEM_POOL = [
+  // Existing starters
   {
     id: "data-ring",
     name: "Data Ring",
@@ -140,6 +143,427 @@ export const ITEM_POOL = [
     slot: "trinket",
     icon: "src/assets/items/I_Torch01.png",
   },
+
+  // New items (about 50)
+  {
+    id: "silver-ring",
+    name: "Silver Ring",
+    slot: "trinket",
+    icon: "src/assets/items/Ac_Ring02.png",
+  },
+  {
+    id: "medal-of-honor",
+    name: "Medal of Honor",
+    slot: "trinket",
+    icon: "src/assets/items/Ac_Medal01.png",
+  },
+  {
+    id: "medal-of-speed",
+    name: "Medal of Speed",
+    slot: "trinket",
+    icon: "src/assets/items/Ac_Medal02.png",
+  },
+  {
+    id: "medal-of-bravery",
+    name: "Medal of Bravery",
+    slot: "trinket",
+    icon: "src/assets/items/Ac_Medal03.png",
+  },
+  {
+    id: "medal-of-focus",
+    name: "Medal of Focus",
+    slot: "trinket",
+    icon: "src/assets/items/Ac_Medal04.png",
+  },
+  {
+    id: "necklace-emerald",
+    name: "Emerald Necklace",
+    slot: "trinket",
+    icon: "src/assets/items/Ac_Necklace03.png",
+  },
+  {
+    id: "necklace-sapphire",
+    name: "Sapphire Necklace",
+    slot: "trinket",
+    icon: "src/assets/items/Ac_Necklace06.png",
+  },
+  {
+    id: "necklace-ruby",
+    name: "Ruby Necklace",
+    slot: "trinket",
+    icon: "src/assets/items/Ac_Necklace08.png",
+  },
+
+  {
+    id: "iron-boots",
+    name: "Iron Boots",
+    slot: "glove",
+    icon: "src/assets/items/A_Shoes02.png",
+  },
+  {
+    id: "swift-shoes",
+    name: "Swift Shoes",
+    slot: "glove",
+    icon: "src/assets/items/A_Shoes03.png",
+  },
+  {
+    id: "shadow-shoes",
+    name: "Shadow Shoes",
+    slot: "glove",
+    icon: "src/assets/items/A_Shoes04.png",
+  },
+  {
+    id: "hunter-shoes",
+    name: "Hunter Shoes",
+    slot: "glove",
+    icon: "src/assets/items/A_Shoes05.png",
+  },
+  {
+    id: "windwalkers",
+    name: "Windwalkers",
+    slot: "glove",
+    icon: "src/assets/items/A_Shoes06.png",
+  },
+  {
+    id: "stormrunners",
+    name: "Stormrunners",
+    slot: "glove",
+    icon: "src/assets/items/A_Shoes07.png",
+  },
+
+  {
+    id: "leather-armor",
+    name: "Leather Armor",
+    slot: "glove",
+    icon: "src/assets/items/A_Armour01.png",
+  },
+  {
+    id: "chain-armor",
+    name: "Chain Armor",
+    slot: "glove",
+    icon: "src/assets/items/A_Armour02.png",
+  },
+  {
+    id: "steel-armor",
+    name: "Steel Armor",
+    slot: "glove",
+    icon: "src/assets/items/A_Armour03.png",
+  },
+  {
+    id: "heavy-armor",
+    name: "Heavy Armor",
+    slot: "glove",
+    icon: "src/assets/items/A_Armor04.png",
+  },
+  {
+    id: "brilliant-armor",
+    name: "Brilliant Armor",
+    slot: "glove",
+    icon: "src/assets/items/A_Armor05.png",
+  },
+
+  {
+    id: "top-hat",
+    name: "Top Hat",
+    slot: "trinket",
+    icon: "src/assets/items/C_Hat01.png",
+  },
+  {
+    id: "wanderer-hat",
+    name: "Wanderer Hat",
+    slot: "trinket",
+    icon: "src/assets/items/C_Hat02.png",
+  },
+  {
+    id: "forest-helm",
+    name: "Forest Helm",
+    slot: "trinket",
+    icon: "src/assets/items/C_Elm01.png",
+  },
+  {
+    id: "bronze-helm",
+    name: "Bronze Helm",
+    slot: "trinket",
+    icon: "src/assets/items/C_Elm03.png",
+  },
+  {
+    id: "steel-helm",
+    name: "Steel Helm",
+    slot: "trinket",
+    icon: "src/assets/items/C_Elm04.png",
+  },
+
+  {
+    id: "agate-gem",
+    name: "Agate Gem",
+    slot: "trinket",
+    icon: "src/assets/items/I_Agate.png",
+  },
+  {
+    id: "amethyst-gem",
+    name: "Amethyst Gem",
+    slot: "trinket",
+    icon: "src/assets/items/I_Amethist.png",
+  },
+  {
+    id: "jade-gem",
+    name: "Jade Gem",
+    slot: "trinket",
+    icon: "src/assets/items/I_Jade.png",
+  },
+  {
+    id: "opal-gem",
+    name: "Opal Gem",
+    slot: "trinket",
+    icon: "src/assets/items/I_Opal.png",
+  },
+  {
+    id: "ruby-gem",
+    name: "Ruby Gem",
+    slot: "trinket",
+    icon: "src/assets/items/I_Ruby.png",
+  },
+  {
+    id: "sapphire-gem",
+    name: "Sapphire Gem",
+    slot: "trinket",
+    icon: "src/assets/items/I_Sapphire.png",
+  },
+
+  {
+    id: "gold-coin",
+    name: "Gold Coin",
+    slot: "trinket",
+    icon: "src/assets/items/I_GoldCoin.png",
+  },
+  {
+    id: "silver-coin",
+    name: "Silver Coin",
+    slot: "trinket",
+    icon: "src/assets/items/I_SilverCoin.png",
+  },
+  {
+    id: "bronze-coin",
+    name: "Bronze Coin",
+    slot: "trinket",
+    icon: "src/assets/items/I_BronzeCoin.png",
+  },
+  {
+    id: "gold-bar",
+    name: "Gold Bar",
+    slot: "trinket",
+    icon: "src/assets/items/I_GoldBar.png",
+  },
+  {
+    id: "silver-bar",
+    name: "Silver Bar",
+    slot: "trinket",
+    icon: "src/assets/items/I_SilverBar.png",
+  },
+  {
+    id: "bronze-bar",
+    name: "Bronze Bar",
+    slot: "trinket",
+    icon: "src/assets/items/I_BronzeBar.png",
+  },
+
+  {
+    id: "lucky-rabbit-paw",
+    name: "Lucky Rabbit Paw",
+    slot: "trinket",
+    icon: "src/assets/items/I_RabbitPaw.png",
+  },
+  {
+    id: "wolf-fur",
+    name: "Wolf Fur",
+    slot: "trinket",
+    icon: "src/assets/items/I_WolfFur.png",
+  },
+  {
+    id: "fox-tail",
+    name: "Fox Tail",
+    slot: "trinket",
+    icon: "src/assets/items/I_FoxTail.png",
+  },
+  {
+    id: "bat-wing",
+    name: "Bat Wing",
+    slot: "trinket",
+    icon: "src/assets/items/I_BatWing.png",
+  },
+  {
+    id: "fang-charm",
+    name: "Fang Charm",
+    slot: "trinket",
+    icon: "src/assets/items/I_Fang.png",
+  },
+  {
+    id: "feather-charm",
+    name: "Feather Charm",
+    slot: "trinket",
+    icon: "src/assets/items/I_Feather01.png",
+  },
+
+  {
+    id: "wooden-rod",
+    name: "Wooden Rod",
+    slot: "glove",
+    icon: "src/assets/items/E_Wood01.png",
+  },
+  {
+    id: "oak-rod",
+    name: "Oak Rod",
+    slot: "glove",
+    icon: "src/assets/items/E_Wood02.png",
+  },
+  {
+    id: "metal-chunk",
+    name: "Metal Chunk",
+    slot: "trinket",
+    icon: "src/assets/items/E_Metal02.png",
+  },
+  {
+    id: "metal-ingot",
+    name: "Metal Ingot",
+    slot: "trinket",
+    icon: "src/assets/items/E_Metal05.png",
+  },
+
+  {
+    id: "dagger-iv",
+    name: "Dagger IV",
+    slot: "glove",
+    icon: "src/assets/items/S_Dagger05.png",
+  },
+  {
+    id: "axe-iii",
+    name: "Axe III",
+    slot: "glove",
+    icon: "src/assets/items/S_Axe03.png",
+  },
+  {
+    id: "bow-v",
+    name: "Bow V",
+    slot: "glove",
+    icon: "src/assets/items/S_Bow05.png",
+  },
+  {
+    id: "staff-iv",
+    name: "Staff IV",
+    slot: "glove",
+    icon: "src/assets/items/W_Staff04.png",
+  },
+  {
+    id: "mace-iii",
+    name: "Mace III",
+    slot: "glove",
+    icon: "src/assets/items/W_Mace003.png",
+  },
+  {
+    id: "spear-ii",
+    name: "Spear II",
+    slot: "glove",
+    icon: "src/assets/items/W_Spear002.png",
+  },
+  {
+    id: "sword-x",
+    name: "Sword X",
+    slot: "glove",
+    icon: "src/assets/items/W_Sword010.png",
+  },
+
+  {
+    id: "torch-ii",
+    name: "Torch II",
+    slot: "trinket",
+    icon: "src/assets/items/I_Torch02.png",
+  },
+  {
+    id: "ancient-scroll",
+    name: "Ancient Scroll",
+    slot: "trinket",
+    icon: "src/assets/items/I_Scroll.png",
+  },
+  {
+    id: "mystic-scroll",
+    name: "Mystic Scroll",
+    slot: "trinket",
+    icon: "src/assets/items/I_Scroll02.png",
+  },
+  {
+    id: "map-fragment",
+    name: "Map Fragment",
+    slot: "trinket",
+    icon: "src/assets/items/I_Map.png",
+  },
+  {
+    id: "telescope",
+    name: "Telescope",
+    slot: "trinket",
+    icon: "src/assets/items/I_Telescope.png",
+  },
+  {
+    id: "mirror-charm",
+    name: "Mirror Charm",
+    slot: "trinket",
+    icon: "src/assets/items/I_Mirror.png",
+  },
+
+  {
+    id: "book-of-secrets",
+    name: "Book of Secrets",
+    slot: "trinket",
+    icon: "src/assets/items/W_Book03.png",
+  },
+  {
+    id: "book-of-winds",
+    name: "Book of Winds",
+    slot: "trinket",
+    icon: "src/assets/items/W_Book05.png",
+  },
+  {
+    id: "book-of-flames",
+    name: "Book of Flames",
+    slot: "trinket",
+    icon: "src/assets/items/W_Book07.png",
+  },
+
+  {
+    id: "golden-sword",
+    name: "Golden Sword",
+    slot: "glove",
+    icon: "src/assets/items/W_Gold_Sword.png",
+  },
+  {
+    id: "golden-axe",
+    name: "Golden Axe",
+    slot: "glove",
+    icon: "src/assets/items/W_Gold_Axe.png",
+  },
+  {
+    id: "golden-dagger",
+    name: "Golden Dagger",
+    slot: "glove",
+    icon: "src/assets/items/W_Gold_Dagger.png",
+  },
+  {
+    id: "golden-spear",
+    name: "Golden Spear",
+    slot: "glove",
+    icon: "src/assets/items/W_Gold_Spear.png",
+  },
+  {
+    id: "golden-bow",
+    name: "Golden Bow",
+    slot: "glove",
+    icon: "src/assets/items/W_Gold_Bow.png",
+  },
+  {
+    id: "golden-mace",
+    name: "Golden Mace",
+    slot: "glove",
+    icon: "src/assets/items/W_Gold_Mace.png",
+  },
 ];
 
 /* ----------------------------- State scaffolds ---------------------------- */
@@ -156,8 +580,30 @@ export function ensureStateShape(state) {
   if (!state.equipment || typeof state.equipment !== "object") {
     state.equipment = {};
   }
-  for (const slot of SLOTS) {
-    if (!(slot.id in state.equipment)) state.equipment[slot.id] = null;
+
+  // Migrate legacy glove/trinket into generic slots
+  try {
+    const legacy = [];
+    if (state.equipment.glove) legacy.push(state.equipment.glove);
+    if (state.equipment.trinket) legacy.push(state.equipment.trinket);
+    delete state.equipment.glove;
+    delete state.equipment.trinket;
+
+    // Ensure 4 generic slots
+    for (const slot of SLOTS) {
+      if (!(slot.id in state.equipment)) state.equipment[slot.id] = null;
+    }
+    // Place legacy items into first free slots
+    for (const it of legacy) {
+      const target = SLOTS.find((s) => state.equipment[s.id] == null);
+      if (target) state.equipment[target.id] = it;
+      else state.inventory.push(it);
+    }
+  } catch {
+    // non-fatal migration
+    for (const slot of SLOTS) {
+      if (!(slot.id in state.equipment)) state.equipment[slot.id] = null;
+    }
   }
 
   // Migration: normalize quantities and merge duplicates by name+rarity
@@ -382,7 +828,7 @@ export function equip(state, index, slot) {
   if (!Array.isArray(inv)) return false;
   if (index < 0 || index >= inv.length) return false;
   const toEquip = inv[index];
-  if (!toEquip || toEquip.slot !== slot) return false;
+  if (!toEquip || !(slot in state.equipment)) return false;
 
   const prev = state.equipment[slot] || null;
 
@@ -426,20 +872,30 @@ function rarityStyles(rarityId) {
 function slotHeaderHTML(item, slotName) {
   if (!item) {
     return `
-      <div><strong>${slotName}</strong><div class="text-neon-gray text-xs">Empty</div></div>
-      <button class="neon-btn text-xs opacity-75" disabled>Unequip</button>
+      <div style="display:flex; align-items:center; gap:.5rem; flex:1; min-width:0;">
+        <div style="width:36px;height:36px;border-radius:6px;border:1.5px dashed var(--border-color); opacity:.35;"></div>
+        <div style="min-width:0;">
+          <div style="font-weight:800;">${slotName}</div>
+          <div class="text-neon-gray text-xs">Empty</div>
+        </div>
+      </div>
     `;
   }
   const st = rarityStyles(item.rarity);
   return `
-    <div style="display:flex; align-items:center; gap:.5rem;">
-      <img src="${item.icon}" alt="${item.name}" style="width:38px;height:38px;border-radius:6px;border:${st.border};box-shadow:${st.glow};" />
-      <div>
-        <div style="font-weight:800; color:${st.color};">${item.name} <span style="font-size:.8em; opacity:.95; color:${st.color};">(${item.rarityName})</span></div>
-        <div class="text-neon-gray text-xs">+${item.stats.perClick || 0}/click, +${item.stats.perSec || 0}/sec, +${item.stats.critChance || 0}% crit</div>
+    <div style="display:flex; align-items:center; gap:.5rem; flex:1; min-width:0;">
+      <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:6px;border:${st.border};box-shadow:${st.glow};" />
+      <div style="min-width:0;">
+        <div class="eq-name" style="font-weight:800; color:${st.color}; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space:normal; line-height:1.1;">${item.name}</div>
+        <div class="eq-rarity text-xs" style="opacity:.9; color:${st.color}; line-height:1; margin-top:.05rem;">${item.rarityName}</div>
+        <div class="eq-chips text-xs" style="display:flex; gap:.25rem; flex-wrap:wrap; align-items:center; margin-top:.15rem; white-space:normal; overflow:visible;">
+          <span style="padding:.08rem .35rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-size:.72rem;">+${item.stats.perClick || 0}/click</span>
+          <span style="padding:.08rem .35rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-size:.72rem;">+${item.stats.perSec || 0}/sec</span>
+          <span style="padding:.08rem .35rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-size:.72rem;">+${item.stats.critChance || 0}%</span>
+        </div>
       </div>
     </div>
-    <button class="gem-btn text-xs" data-unequip-slot>Unequip</button>
+    <button data-unequip-slot aria-label="Unequip" title="Unequip" class="eq-x-btn">✖</button>
   `;
 }
 
@@ -453,7 +909,7 @@ export function renderTab(state) {
     const it = state.equipment[s.id];
     const st = it ? rarityStyles(it.rarity) : null;
     return `
-      <div class="neon-card" data-eq-slot="${s.id}" style="padding:0.6rem; display:flex; align-items:center; justify-content:space-between; width:100%; max-width:100%; margin:0; ${st ? `border-color:${st.color};` : "background: linear-gradient(135deg, #1a222a, #202a35); border-color: #334455; filter: grayscale(0.25);"}">
+      <div class="neon-card" data-eq-slot="${s.id}" style="width:100%; max-width:100%; margin:0; ${st ? `border-color:${st.color};` : "background: linear-gradient(135deg, #1a222a, #202a35); border-color: #334455; filter: grayscale(0.25);"}">
         ${slotHeaderHTML(it, s.name)}
       </div>
     `;
@@ -528,7 +984,7 @@ export function renderTab(state) {
         <span style="color:${rarityById("pink").color}">Pink</span> ·
         <span style="color:${rarityById("animal").color}">Red</span>
       </div>
-      <div class="space-y-2">${slotCards}</div>
+      <div class="eq-grid" style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem;">${slotCards}</div>
       <div class="text-neon-gray text-sm mt-3 mb-1" style="display:flex; align-items:center; justify-content:center; gap:.5rem; margin-top:.6rem;">
         <span style="font-weight:800;">Inventory</span>
         <span class="text-xs" style="opacity:.9; padding:.15rem .55rem; border:1px solid var(--border-color); border-radius:999px; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">${Math.min(totalItems, capacity)}/${capacity}</span>
@@ -575,6 +1031,9 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
       const price = priceMap[item.rarity] || 10;
 
       const st = rarityStyles(item.rarity);
+      const slotOptions = SLOTS.map(
+        (s) => `<option value="${s.id}">${s.name}</option>`,
+      ).join("");
       const html = `
         <div class="neon-card" style="padding:.75rem; border-color:${st.color}; box-shadow:${st.glow};">
           <div style="display:flex; gap:.6rem; align-items:center;">
@@ -584,12 +1043,18 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
               <div class="text-sm" style="display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.25rem;">
                 <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25);">+${item.stats.perClick || 0}/click</span>
                 <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25);">+${item.stats.perSec || 0}/sec</span>
-                <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25);">+${item.stats.critChance || 0}% crit</span>
+                <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25);">+${item.stats.critChance || 0}%</span>
               </div>
               <div class="text-xs" style="margin-top:.25rem; color:var(--text-primary);">Qty: <span style="padding:.05rem .4rem; border:1px solid var(--border-color); border-radius:999px; background:rgba(0,0,0,.25); font-weight:800; color:${st.color};">${item.q || 1}</span></div>
             </div>
           </div>
-          <div class="button-group" style="display:flex; gap:.5rem; margin-top:.75rem;">
+          <div class="text-xs" style="margin-top:.6rem; display:flex; align-items:center; gap:.35rem;">
+            <span style="opacity:.9;">Equip to:</span>
+            <select id="equip-slot-select" style="padding:.2rem .55rem; border-radius:8px; background: linear-gradient(135deg, rgba(0,0,0,.25), rgba(0,0,0,.05)); border:1px solid var(--border-color); font-weight:800; font-size:.85rem; color:var(--text-primary);">
+              ${slotOptions}
+            </select>
+          </div>
+          <div class="button-group" style="display:flex; gap:.5rem; margin-top:.6rem;">
             <button class="neon-btn w-full" id="equip-item-btn" data-index="${idx}">Equip</button>
             <button class="gem-btn w-full" id="sell-item-btn" data-index="${idx}">Sell for ${price} <span class="icon-packet"></span></button>
           </div>
@@ -607,7 +1072,10 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
               const i = parseInt(eq.getAttribute("data-index") || "-1", 10);
               const it = (state.inventory || [])[i];
               if (!it) return;
-              if (equip(state, i, it.slot)) {
+              const sel = document.getElementById("equip-slot-select");
+              const targetSlot =
+                sel && sel.value ? sel.value : SLOTS[0] && SLOTS[0].id;
+              if (equip(state, i, targetSlot)) {
                 if (typeof save === "function") save();
                 if (typeof rerender === "function") rerender();
                 if (typeof window.closeModal === "function")
@@ -725,7 +1193,14 @@ function showDropToast(item, fallbackNotify) {
       <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:6px;border:${st.border};box-shadow:${st.glow}" />
       <div>
         <div style="font-weight:900; color:${st.color};">+ ${item.rarityName} Drop</div>
-        <div class="text-neon-gray text-xs">${item.name} — +${item.stats.perClick}/click, +${item.stats.perSec}/sec, +${item.stats.critChance}% crit</div>
+        <div class="text-neon-gray text-xs" style="margin-top:.1rem;">
+          ${item.name}
+          <div class="text-sm" style="display:flex; gap:.35rem; flex-wrap:wrap; margin-top:.2rem;">
+            <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-size:.75rem;">+${item.stats.perClick || 0}/click</span>
+            <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-size:.75rem;">+${item.stats.perSec || 0}/sec</span>
+            <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-size:.75rem;">+${item.stats.critChance || 0}%</span>
+          </div>
+        </div>
       </div>
     </div>
   `;
@@ -734,7 +1209,7 @@ function showDropToast(item, fallbackNotify) {
   setTimeout(() => {
     toast.classList.remove("active");
     setTimeout(() => toast.remove(), 260);
-  }, 2000);
+  }, 2200);
 }
 
 /* --------------------------- Public API aggregate ------------------------- */

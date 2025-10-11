@@ -327,6 +327,7 @@ body .modal-box .space-y-3 > * + * {
     top: env(safe-area-inset-top, 0px);
     z-index: 100;
     backdrop-filter: saturate(120%) blur(6px);
+    overflow: hidden;
 }
 
 .top-bar .user-info {
@@ -355,6 +356,8 @@ body .modal-box .space-y-3 > * + * {
     flex-shrink: 0;
     grid-area: settings;
     justify-self: end;
+    flex: 0 0 auto;
+    min-width: max-content;
 }
 .top-bar .controls #gem-display {
     display: none;
@@ -497,7 +500,7 @@ body .modal-box .space-y-3 > * + * {
 
 #open-settings:hover {
     background: rgba(255, 255, 255, 0.1);
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 /* Equipment quick button (top bar) - match settings style and sizing */
@@ -534,7 +537,196 @@ body .modal-box .space-y-3 > * + * {
 
 #open-equipment:hover {
     background: rgba(255, 255, 255, 0.1);
-    transform: scale(1.1);
+    transform: scale(1.05);
+}
+
+/* Clip any glow/overflow inside slot cards and allow left content to shrink
+   Also switch equipped layout to compact: content left, unequip X top-right.
+   Fixed-size tiles for consistent grid layout. */
+.neon-card[data-eq-slot] {
+    position: relative;
+    overflow: hidden;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    /* reserve space so content doesn't collide with the X button */
+    padding: 0.6rem 2.75rem 0.6rem 0.6rem !important;
+    /* fixed-size tile height */
+    height: 124px;
+    min-height: 124px;
+    max-height: 124px;
+    border-radius: var(--border-radius-md);
+}
+
+/* Arrange the left content (icon + text) in a small grid for stability */
+.neon-card[data-eq-slot] > div:first-child {
+    display: grid !important;
+    grid-template-columns: 36px 1fr;
+    column-gap: 0.5rem;
+    align-items: center;
+    min-width: 0;
+}
+
+/* Ensure inner text wrapper can truncate gracefully */
+.neon-card[data-eq-slot] > div:first-child > div {
+    min-width: 0;
+}
+
+/* Equipped tile text: name can wrap to two lines; chips wrap to next row if needed */
+.neon-card[data-eq-slot] .eq-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    line-height: 1.1;
+    margin-top: 0.15rem;
+    margin-right: 0.25rem;
+}
+
+/* spacing under rarity to separate from chips */
+.neon-card[data-eq-slot] .eq-rarity {
+    margin-bottom: 0.12rem;
+}
+
+.neon-card[data-eq-slot] .eq-chips {
+    display: flex;
+    flex-wrap: nowrap; /* keep one line */
+    align-items: center;
+    column-gap: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.neon-card[data-eq-slot] .eq-chips > span {
+    font-size: 0.66rem;
+    padding: 0.06rem 0.3rem;
+    flex: 0 0 auto;
+    min-width: fit-content; /* prevent chip breaking */
+}
+
+.neon-card[data-eq-slot] .eq-chips > span:last-child {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Place Unequip button at the top-right corner inside the card */
+.neon-card[data-eq-slot] [data-unequip-slot] {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 2;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    font-size: 12px;
+    line-height: 1;
+    line-height: 1;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    background: linear-gradient(135deg, #4b1a1a, #8a1f1f);
+    border: 1px solid #ff4d4d;
+    color: #ffd6d6;
+    box-shadow:
+        0 0 6px rgba(255, 77, 77, 0.3),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* Remove gem-btn decorative layers on the X button */
+.neon-card[data-eq-slot] [data-unequip-slot]::before,
+.neon-card[data-eq-slot] [data-unequip-slot]::after {
+    content: none !important;
+}
+
+/* Keep X tiny and crisp on hover */
+.neon-card[data-eq-slot] [data-unequip-slot]:hover {
+    transform: none;
+    filter: brightness(1.05);
+}
+
+/* Improve Equip slot picker visuals inside modal */
+/* X unequip button (class-based) — mirrors [data-unequip-slot] */
+.neon-card[data-eq-slot] .eq-x-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 2;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    font-size: 12px;
+    line-height: 1;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    background: linear-gradient(135deg, #4b1a1a, #8a1f1f);
+    border: 1px solid #ff4d4d;
+    color: #ffd6d6;
+    box-shadow:
+        0 0 6px rgba(255, 77, 77, 0.3),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.neon-card[data-eq-slot] .eq-x-btn::before,
+.neon-card[data-eq-slot] .eq-x-btn::after {
+    content: none !important;
+}
+.neon-card[data-eq-slot] .eq-x-btn:hover {
+    transform: none;
+    filter: brightness(1.05);
+}
+.modal-box #equip-slot-select {
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.25),
+        rgba(0, 0, 0, 0.05)
+    );
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+.modal-box #equip-slot-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(101, 255, 218, 0.2);
+}
+
+/* Ensure Unequip button stays inside its card */
+.neon-card[data-eq-slot] [data-unequip-slot] {
+    padding: 0.2rem 0.5rem;
+    border-radius: 8px;
+    line-height: 1.1;
+    white-space: nowrap;
+    max-width: 92px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    align-self: center;
+    margin-left: auto;
+}
+
+/* Stabilize gem count digits */
+#gem-count {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings:
+        "tnum" 1,
+        "zero" 1;
+}
+
+@media (max-width: 480px) {
+    .neon-card[data-eq-slot] [data-unequip-slot] {
+        max-width: 84px;
+        font-size: 0.7rem;
+    }
 }
 
 /* Small pill for Packets (matches gem pill), appears inside #vip-badge HTML */
@@ -554,9 +746,13 @@ body .modal-box .space-y-3 > * + * {
     box-shadow:
         0 2px 10px var(--shadow-primary) inset,
         0 1px 3px rgba(0, 0, 0, 0.35);
-    min-width: 80px;
+    min-width: 120px;
     justify-content: center;
     white-space: nowrap; /* prevent wrap/collapse */
+    font-variant-numeric: tabular-nums;
+    font-feature-settings:
+        "tnum" 1,
+        "zero" 1;
 }
 
 #pps-display .icon-packet {

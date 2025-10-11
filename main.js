@@ -120,7 +120,7 @@ const state = {
   },
   // Equipment system
   inventory: [],
-  equipment: { glove: null, trinket: null },
+  equipment: { slot1: null, slot2: null, slot3: null, slot4: null },
 };
 
 // Apply theme to document
@@ -708,15 +708,19 @@ function renderShop() {
 // =============== EQUIPMENT TAB ===============
 function renderEquipment() {
   const eq = (state.equipment = state.equipment || {
-    glove: null,
-    trinket: null,
+    slot1: null,
+    slot2: null,
+    slot3: null,
+    slot4: null,
   });
   const inv = Array.isArray(state.inventory)
     ? state.inventory
     : (state.inventory = []);
   const eqSlots = [
-    { id: "glove", name: "Glove" },
-    { id: "trinket", name: "Trinket" },
+    { id: "slot1", name: "Slot 1" },
+    { id: "slot2", name: "Slot 2" },
+    { id: "slot3", name: "Slot 3" },
+    { id: "slot4", name: "Slot 4" },
   ];
 
   const slotHtml = eqSlots
