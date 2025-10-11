@@ -1236,13 +1236,13 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
       const item = (state.inventory || [])[idx];
       if (!item) return;
 
-      // Simple rarity-based sell price
+      // Simple rarity-based sell price (doubled for better rewards)
       const priceMap = {
-        green: 25,
-        gold: 100,
-        blue: 500,
-        pink: 2500,
-        animal: 10000,
+        green: 50,
+        gold: 200,
+        blue: 1000,
+        pink: 5000,
+        animal: 20000,
       };
       const price = priceMap[item.rarity] || 10;
 

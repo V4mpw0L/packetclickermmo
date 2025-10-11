@@ -1583,37 +1583,37 @@ function clickPacket(event) {
     if (crit) {
       playSound("crit");
       if (clickCombo >= 120) {
+        setTimeout(() => playSound("crit"), 40);
+        setTimeout(() => playSound("click"), 80);
+        setTimeout(() => playSound("crit"), 120);
+        setTimeout(() => playSound("click"), 160);
+      } else if (clickCombo >= 50) {
+        setTimeout(() => playSound("crit"), 50);
+        setTimeout(() => playSound("click"), 100);
+      } else if (clickCombo >= 15) {
         setTimeout(() => playSound("crit"), 60);
         setTimeout(() => playSound("click"), 120);
-        setTimeout(() => playSound("crit"), 180);
-        setTimeout(() => playSound("click"), 240);
-      } else if (clickCombo >= 50) {
-        setTimeout(() => playSound("crit"), 100);
-        setTimeout(() => playSound("click"), 200);
-      } else if (clickCombo >= 15) {
-        setTimeout(() => playSound("crit"), 90);
-        setTimeout(() => playSound("click"), 180);
       } else if (clickCombo >= 5) {
-        setTimeout(() => playSound("crit"), 80);
+        setTimeout(() => playSound("crit"), 40);
       }
     } else {
       playSound("click");
       if (clickCombo >= 120) {
         animalCritBurst();
-        setTimeout(() => playSound("click"), 60);
-        setTimeout(() => playSound("click"), 120);
-        setTimeout(() => playSound("click"), 180);
-        setTimeout(() => playSound("click"), 240);
-        setTimeout(() => playSound("click"), 300);
-      } else if (clickCombo >= 50) {
+        setTimeout(() => playSound("click"), 40);
         setTimeout(() => playSound("click"), 80);
+        setTimeout(() => playSound("click"), 120);
         setTimeout(() => playSound("click"), 160);
-        setTimeout(() => playSound("click"), 240);
-      } else if (clickCombo >= 15) {
-        setTimeout(() => playSound("click"), 70);
-        setTimeout(() => playSound("click"), 140);
-      } else if (clickCombo >= 5) {
+        setTimeout(() => playSound("click"), 200);
+      } else if (clickCombo >= 50) {
         setTimeout(() => playSound("click"), 50);
+        setTimeout(() => playSound("click"), 100);
+        setTimeout(() => playSound("click"), 150);
+      } else if (clickCombo >= 15) {
+        setTimeout(() => playSound("click"), 40);
+        setTimeout(() => playSound("click"), 80);
+      } else if (clickCombo >= 5) {
+        setTimeout(() => playSound("click"), 30);
       }
     }
   }
@@ -1888,9 +1888,9 @@ function closeModal() {
 function playSound(type) {
   if (!state.player.sound) return;
   try {
-    // Prefer HTMLAudio pool for click SFX (low-latency file playback)
-    if (type === "click") {
-      const POOL_SIZE = 6;
+    // Improved HTMLAudio pool for click SFX with better responsiveness
+    if (type === "click" || type === "crit") {
+      const POOL_SIZE = 12; // Increased pool size for better performance
       const src = "src/assets/hit.wav";
       const g = window;
 
@@ -1899,38 +1899,29 @@ function playSound(type) {
           const a = new Audio(src);
           a.preload = "auto";
           a.crossOrigin = "anonymous";
-          a.volume = 0.75;
+          a.volume = type === "crit" ? 0.85 : 0.75;
+          // Pre-load to reduce latency
+          a.load();
           return a;
         });
         g._hitPoolIndex = 0;
       }
 
-      // Find a free audio element in the pool
-      let a = null;
-      for (let i = 0; i < g._hitPool.length; i++) {
-        const candidate = g._hitPool[(g._hitPoolIndex + i) % g._hitPool.length];
-        if (candidate.paused || candidate.ended) {
-          a = candidate;
-          g._hitPoolIndex = (g._hitPoolIndex + i + 1) % g._hitPool.length;
-          break;
-        }
-      }
+      // Always use round-robin to prevent conflicts
+      const a = g._hitPool[g._hitPoolIndex];
+      g._hitPoolIndex = (g._hitPoolIndex + 1) % g._hitPool.length;
 
-      if (!a) {
-        // Reclaim the current index element if all are busy
-        a = g._hitPool[g._hitPoolIndex];
-        g._hitPoolIndex = (g._hitPoolIndex + 1) % g._hitPool.length;
-        try {
-          a.pause();
-        } catch {}
+      // Reset and play immediately
+      try {
+        a.pause();
         a.currentTime = 0;
-      } else {
-        a.currentTime = 0;
+        a.volume = type === "crit" ? 0.85 : 0.75;
+        a.play().catch(() => {
+          // Silently handle blocked audio
+        });
+      } catch (e) {
+        // Ignore audio errors to prevent crashes
       }
-
-      a.play().catch(() => {
-        // No fallback – avoid any beep when audio playback is blocked
-      });
 
       return;
     }
