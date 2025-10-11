@@ -406,8 +406,8 @@ function updateTopBar() {
   let badge = document.getElementById("vip-badge");
 
   // Pills to show under the name (centered by CSS)
-  let packets = `<span class="ml-2 text-neon-green font-bold" id="packets-bar" style="font-size:1em;display:inline-block;min-width:65px;text-align:right;"><span class="icon-packet"></span> ${state.packets.toLocaleString()}</span>`;
-  let gemPill = `<span class="ml-2 text-neon-green font-bold" style="font-size:1em;display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .5rem;border:1px solid var(--border-color);border-radius:999px;background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));box-shadow:0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,0.35);"><img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/><span>${state.gems}</span></span>`;
+  let packets = `<span class="ml-2 text-neon-green font-bold" id="packets-bar" style="font-size:1em;display:inline-block;min-width:65px;text-align:right;"><span class="icon-packet"></span> ${state.packets.toLocaleString("en-US")}</span>`;
+  let gemPill = `<span class="ml-2 text-neon-green font-bold" style="font-size:1em;display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .5rem;border:1px solid var(--border-color);border-radius:999px;background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));box-shadow:0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,0.35);"><img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/><span>${state.gems.toLocaleString("en-US")}</span></span>`;
 
   if (isVIP()) {
     let ms = state.player.vipUntil - Date.now();
@@ -420,7 +420,7 @@ function updateTopBar() {
 
   // Keep existing gem counter (in the settings area) in sync
   let el = document.getElementById("gem-count");
-  if (el) el.textContent = state.gems;
+  if (el) el.textContent = state.gems.toLocaleString("en-US");
 
   // Packets/sec pill disabled per design request
 }
@@ -574,7 +574,7 @@ function renderThemes() {
       return renderButton({
         className: `gem-btn w-full mb-2 ${isActive ? "opacity-75" : ""} ${!isUnlocked && !canBuy ? "opacity-50" : ""}`,
         label: `<div class="font-bold">${theme.name} ${isActive ? "(Active)" : ""}</div>
-          ${!isUnlocked ? `<div class="text-sm opacity-75">${theme.cost || 0} 💎</div>` : ""}
+          ${!isUnlocked ? `<div class="text-sm opacity-75">${(theme.cost || 0).toLocaleString("en-US")} 💎</div>` : ""}
           <div class="text-xs text-neon-gray">
             Colors: <span style="color: ${theme.colors[0]}">●</span> <span style="color: ${theme.colors[1]}">●</span> <span style="color: ${theme.colors[2]}">●</span>
           </div>`,
@@ -605,19 +605,19 @@ function renderUpgrades() {
       ${renderButton({
         id: "upgrade-click",
         className: "upgrade-btn",
-        label: `+1/click — <span>${upgradeCost("click")}</span> <span class="icon-packet"></span>`,
+        label: `+1/click — <span>${upgradeCost("click").toLocaleString("en-US")}</span> <span class="icon-packet"></span>`,
         dataAttr: `data-level="Lvl. ${state.upgrades.click}"`,
       })}
       ${renderButton({
         id: "upgrade-idle",
         className: "upgrade-btn",
-        label: `+1/sec — <span>${upgradeCost("idle")}</span> <span class="icon-packet"></span>`,
+        label: `+1/sec — <span>${upgradeCost("idle").toLocaleString("en-US")}</span> <span class="icon-packet"></span>`,
         dataAttr: `data-level="Lvl. ${state.upgrades.idle}"`,
       })}
       ${renderButton({
         id: "upgrade-crit",
         className: "upgrade-btn",
-        label: `+2% crit — <span>${upgradeCost("crit")}</span> <span class="icon-packet"></span>`,
+        label: `+2% crit — <span>${upgradeCost("crit").toLocaleString("en-US")}</span> <span class="icon-packet"></span>`,
         dataAttr: `data-level="Lvl. ${state.upgrades.crit}"`,
       })}
       <div class="text-neon-gray text-xs mt-1">
@@ -851,7 +851,7 @@ function renderLeaderboard() {
       <span style="width: 2rem; text-align: right; color: var(--secondary-color); font-weight: bold;">${idx === 0 ? "🥇 " : idx === 1 ? "🥈 " : idx === 2 ? "🥉 " : ""}${idx + 1}.</span>
       <img src="${p.avatar || DEFAULT_AVATAR}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 2rem; height: 2rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "3px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"}; box-shadow: ${idx === 0 ? "0 0 14px rgba(255,215,0,0.6)" : idx === 1 ? "0 0 12px rgba(192,192,192,0.55)" : idx === 2 ? "0 0 12px rgba(205,127,50,0.55)" : "none"};" alt="">
       <span style="font-weight: 800; ${p.name === state.player.name ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary);" : "color: var(--text-primary);"}">${idx === 0 ? '<span class="crown-badge">👑</span>' : ""}${p.name}</span>
-      <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary);"><span class="icon-packet"></span> ${p.packets.toLocaleString()}</span>
+      <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary);"><span class="icon-packet"></span> ${p.packets.toLocaleString("en-US")}</span>
     </li>
   `,
     )
@@ -954,7 +954,7 @@ function renderPrestige() {
           </style>
           <div id="prestige-progress-fill" class="${state.packets >= 50000 ? "prestige-glow" : ""}" style="height:100%; width: ${Math.min(100, (state.packets / 50000) * 100).toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); box-shadow: 0 0 10px var(--shadow-primary);"></div>
         </div>
-        <div id="prestige-progress-label" class="text-neon-gray" style="font-size:.8rem; margin-top:.25rem;">${state.packets.toLocaleString()} / 50,000</div>
+        <div id="prestige-progress-label" class="text-neon-gray" style="font-size:.8rem; margin-top:.25rem;">${state.packets.toLocaleString("en-US")} / 50,000</div>
       </div>
 
       ${
@@ -965,7 +965,7 @@ function renderPrestige() {
         </button>`
           : `<div class="text-center text-neon-gray mb-4" style="font-size:.9rem;">
           Need 50,000 packets to prestige<br>
-          Current: ${state.packets.toLocaleString()}
+          Current: ${state.packets.toLocaleString("en-US")}
         </div>`
       }
 
@@ -993,11 +993,11 @@ function renderDaily() {
       <span style="font-weight:700; color:${claimed ? "#8ef1b2" : current ? "#ffe08a" : "var(--text-secondary)"};">Day ${reward.day}</span>
       <span style="display:inline-flex; align-items:center; gap:.4rem; color:var(--text-primary);">
         <span style="display:inline-flex; align-items:center; gap:.25rem; padding:.1rem .4rem; border:1px solid var(--border-color); border-radius:999px; background: rgba(0,0,0,0.25);">
-          ${reward.gems}
+          ${reward.gems.toLocaleString("en-US")}
           <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;" aria-hidden="true" />
         </span>
         <span style="display:inline-flex; align-items:center; gap:.25rem; padding:.1rem .4rem; border:1px solid var(--border-color); border-radius:999px; background: rgba(0,0,0,0.25);">
-          ${reward.packets}
+          ${reward.packets.toLocaleString("en-US")}
           <span class="icon-packet"></span>
         </span>
       </span>
@@ -1209,7 +1209,7 @@ function triggerRandomEvent() {
           event.name,
           window.Packet && Packet.i18n
             ? Packet.i18n.t("events.bonusPackets.desc", { n: bonus })
-            : `You gained ${bonus} packets!`,
+            : `You gained ${bonus.toLocaleString("en-US")} packets!`,
         );
         state.randomEvent.active = false;
       } else {
@@ -1422,7 +1422,7 @@ function clickPacket(event) {
           .toFixed(2)
           .replace(/\.00$/, "")}x! +${(
           state.packets - packetsBefore
-        ).toLocaleString()}`;
+        ).toLocaleString("en-US")}`;
         critFX.style.left = clampedCenter + "px";
         critFX.style.top = rect.top - 50 + "px";
         document.body.appendChild(critFX);
@@ -1455,7 +1455,7 @@ function clickPacket(event) {
           .toFixed(2)
           .replace(/\.00$/, "")}x! +${(
           state.packets - packetsBefore
-        ).toLocaleString()}`;
+        ).toLocaleString("en-US")}`;
         critFX.style.left = clampedCenter + "px";
         critFX.style.top = "45%";
         document.body.appendChild(critFX);
@@ -1661,7 +1661,7 @@ function idleTick() {
         }
         const label = document.getElementById("prestige-progress-label");
         if (label)
-          label.textContent = `${state.packets.toLocaleString()} / 50,000`;
+          label.textContent = `${state.packets.toLocaleString("en-US")} / 50,000`;
 
         // If threshold crossed, re-render CTA section
         const wasEligible = before >= 50000;
@@ -2131,7 +2131,7 @@ function claimDailyReward() {
 
   showModal(
     "Daily Reward!",
-    `You received ${reward.gems} 💎 and ${reward.packets} <span class="icon-packet"></span>!<br>Streak: ${state.dailyRewards.streak} days`,
+    `You received ${reward.gems.toLocaleString("en-US")} 💎 and ${reward.packets.toLocaleString("en-US")} <span class="icon-packet"></span>!<br>Streak: ${state.dailyRewards.streak} days`,
   );
   showHudNotify(`Day ${state.dailyRewards.streak} claimed!`, "📅");
 
