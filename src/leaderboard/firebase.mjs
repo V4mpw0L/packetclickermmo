@@ -53,7 +53,7 @@ const DEFAULT_CONFIG = {
   storageBucket: "packetclicker.firebasestorage.app",
   messagingSenderId: "321149831631",
   appId: "1:321149831631:web:c58bec15f05d204982eaba",
-  collection: "leaderboard_test",
+  collection: "leaderboard",
 };
 
 // Internal module cache
@@ -208,6 +208,10 @@ async function init(config) {
     if (typeof _config.collection === "string" && _config.collection.trim()) {
       _collection = _config.collection.trim();
     }
+    console.log("[Leaderboard] init", {
+      projectId: _config && _config.projectId,
+      collection: _collection,
+    });
     // Defer actually loading Firebase until first use (write/sub), but try once here
     try {
       await lazyFirebase();
@@ -273,6 +277,13 @@ async function flushWrite() {
       updatedAt: serverTimestamp(),
     };
     await setDoc(ref, payload, { merge: true });
+    if (!_lastWriteMs) {
+      console.log("[Leaderboard] first write ok", {
+        id: docData.id,
+        packets: docData.packets,
+        collection: _collection,
+      });
+    }
     _lastWriteMs = nowTs();
     _lastSentPackets = docData.packets;
 
@@ -408,7 +419,7 @@ function teardown() {
 export const RULES_DEV = `rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /leaderboard_test/{docId} {
+    match /leaderboard/{docId} {
       allow read: if true;
       allow write: if
         request.time < timestamp.date(2026, 1, 1) &&
@@ -431,7 +442,7 @@ service cloud.firestore {
 export const RULES_WHITELIST = `rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /leaderboard_test/{docId} {
+    match /leaderboard/{docId} {
       allow read: if true;
       allow write: if
         docId in ['DEV_ID_Tiago','DEV_ID_Dizao'] &&
