@@ -564,6 +564,220 @@ export const ITEM_POOL = [
     slot: "glove",
     icon: "src/assets/items/W_Gold_Mace.png",
   },
+
+  // Additional Items (31 new items to complete 100 total)
+
+  // More Necklaces & Accessories
+  {
+    id: "necklace-pearl",
+    name: "Pearl Necklace",
+    slot: "trinket",
+    icon: "src/assets/items/Ac_Necklace01.png",
+  },
+  {
+    id: "necklace-silver",
+    name: "Silver Necklace",
+    slot: "trinket",
+    icon: "src/assets/items/Ac_Necklace02.png",
+  },
+  {
+    id: "necklace-bronze",
+    name: "Bronze Necklace",
+    slot: "trinket",
+    icon: "src/assets/items/Ac_Necklace04.png",
+  },
+  {
+    id: "necklace-mystic",
+    name: "Mystic Necklace",
+    slot: "trinket",
+    icon: "src/assets/items/Ac_Necklace05.png",
+  },
+  {
+    id: "necklace-ancient",
+    name: "Ancient Necklace",
+    slot: "trinket",
+    icon: "src/assets/items/Ac_Necklace07.png",
+  },
+
+  // More Clothing & Armor
+  {
+    id: "noble-garb",
+    name: "Noble Garb",
+    slot: "glove",
+    icon: "src/assets/items/A_Clothing01.png",
+  },
+  {
+    id: "royal-robe",
+    name: "Royal Robe",
+    slot: "glove",
+    icon: "src/assets/items/A_Clothing02.png",
+  },
+
+  // Crystal Items
+  {
+    id: "crystal-shard",
+    name: "Crystal Shard",
+    slot: "trinket",
+    icon: "src/assets/items/I_Crystal01.png",
+  },
+  {
+    id: "ice-crystal",
+    name: "Ice Crystal",
+    slot: "trinket",
+    icon: "src/assets/items/I_Crystal02.png",
+  },
+  {
+    id: "fire-crystal",
+    name: "Fire Crystal",
+    slot: "trinket",
+    icon: "src/assets/items/I_Crystal03.png",
+  },
+
+  // Potions & Bottles
+  {
+    id: "health-potion",
+    name: "Health Potion",
+    slot: "trinket",
+    icon: "src/assets/items/P_Red01.png",
+  },
+  {
+    id: "mana-potion",
+    name: "Mana Potion",
+    slot: "trinket",
+    icon: "src/assets/items/P_Blue01.png",
+  },
+  {
+    id: "speed-elixir",
+    name: "Speed Elixir",
+    slot: "trinket",
+    icon: "src/assets/items/P_Green01.png",
+  },
+  {
+    id: "power-brew",
+    name: "Power Brew",
+    slot: "trinket",
+    icon: "src/assets/items/P_Orange01.png",
+  },
+
+  // Keys & Treasures
+  {
+    id: "golden-key",
+    name: "Golden Key",
+    slot: "trinket",
+    icon: "src/assets/items/I_Key01.png",
+  },
+  {
+    id: "ancient-key",
+    name: "Ancient Key",
+    slot: "trinket",
+    icon: "src/assets/items/I_Key02.png",
+  },
+  {
+    id: "master-key",
+    name: "Master Key",
+    slot: "trinket",
+    icon: "src/assets/items/I_Key03.png",
+  },
+  {
+    id: "treasure-chest",
+    name: "Treasure Chest",
+    slot: "trinket",
+    icon: "src/assets/items/I_Chest01.png",
+  },
+
+  // More Weapons
+  {
+    id: "iron-sword",
+    name: "Iron Sword",
+    slot: "glove",
+    icon: "src/assets/items/W_Sword002.png",
+  },
+  {
+    id: "steel-blade",
+    name: "Steel Blade",
+    slot: "glove",
+    icon: "src/assets/items/W_Sword003.png",
+  },
+  {
+    id: "crystal-dagger",
+    name: "Crystal Dagger",
+    slot: "glove",
+    icon: "src/assets/items/W_Dagger002.png",
+  },
+  {
+    id: "hunter-bow",
+    name: "Hunter Bow",
+    slot: "glove",
+    icon: "src/assets/items/W_Bow01.png",
+  },
+  {
+    id: "war-axe",
+    name: "War Axe",
+    slot: "glove",
+    icon: "src/assets/items/W_Axe001.png",
+  },
+  {
+    id: "battle-mace",
+    name: "Battle Mace",
+    slot: "glove",
+    icon: "src/assets/items/W_Mace001.png",
+  },
+
+  // Nature & Animal Items
+  {
+    id: "leaf-essence",
+    name: "Leaf Essence",
+    slot: "trinket",
+    icon: "src/assets/items/I_Leaf.png",
+  },
+  {
+    id: "snail-shell",
+    name: "Snail Shell",
+    slot: "trinket",
+    icon: "src/assets/items/I_SnailShell.png",
+  },
+  {
+    id: "scorpion-claw",
+    name: "Scorpion Claw",
+    slot: "trinket",
+    icon: "src/assets/items/I_ScorpionClaw.png",
+  },
+
+  // Elemental Items
+  {
+    id: "coal-chunk",
+    name: "Coal Chunk",
+    slot: "trinket",
+    icon: "src/assets/items/I_Coal.png",
+  },
+  {
+    id: "iron-ball",
+    name: "Iron Ball",
+    slot: "trinket",
+    icon: "src/assets/items/I_IronBall.png",
+  },
+
+  // More Books
+  {
+    id: "spell-tome",
+    name: "Spell Tome",
+    slot: "trinket",
+    icon: "src/assets/items/W_Book01.png",
+  },
+  {
+    id: "wisdom-book",
+    name: "Book of Wisdom",
+    slot: "trinket",
+    icon: "src/assets/items/W_Book02.png",
+  },
+
+  // Utility Items
+  {
+    id: "mystic-clock",
+    name: "Mystic Clock",
+    slot: "trinket",
+    icon: "src/assets/items/I_Clock.png",
+  },
 ];
 
 /* ----------------------------- State scaffolds ---------------------------- */
