@@ -303,7 +303,7 @@ export function handleComboEffect(clickCombo, amount, state) {
     }
   };
 
-  if (clickCombo >= 30) {
+  if (clickCombo >= 120) {
     effectClass = "animal-combo";
     const extra = Math.floor(amount * 0.99);
     safeAddPackets(extra);
@@ -364,7 +364,7 @@ export function handleComboEffect(clickCombo, amount, state) {
         // ignore DOM errors
       }
     }
-  } else if (clickCombo >= 20) {
+  } else if (clickCombo >= 50) {
     effectClass = "ultra-combo";
     const extra = Math.floor(amount * 0.5);
     safeAddPackets(extra);
@@ -405,7 +405,7 @@ export function handleComboEffect(clickCombo, amount, state) {
         // ignore
       }
     }
-  } else if (clickCombo >= 10) {
+  } else if (clickCombo >= 15) {
     effectClass = "mega-combo";
     activateMegaFX();
     const extra = Math.floor(amount * 0.25);

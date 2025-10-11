@@ -378,9 +378,9 @@ function updateTopBar() {
     // Dynamic avatar border ring based on current combo color (mirrors combo HUD colors)
     let comboColor = "var(--primary-color)";
     if (typeof clickCombo === "number") {
-      if (clickCombo >= 30) comboColor = "#ff3040";
-      else if (clickCombo >= 20) comboColor = "#ff4dff";
-      else if (clickCombo >= 10) comboColor = "var(--accent-color)";
+      if (clickCombo >= 120) comboColor = "#ff3040";
+      else if (clickCombo >= 50) comboColor = "#ff4dff";
+      else if (clickCombo >= 15) comboColor = "var(--accent-color)";
       else if (clickCombo >= 5) comboColor = "var(--secondary-color)";
     }
     const comboActive =
@@ -795,9 +795,9 @@ function setCursorForCombo(combo) {
     const btn = document.getElementById("click-btn");
     if (!btn) return;
     let file = "src/assets/green.webp"; // default
-    if (combo >= 30) file = "src/assets/animal.webp";
-    else if (combo >= 20) file = "src/assets/pink.webp";
-    else if (combo >= 10) file = "src/assets/blue.webp";
+    if (combo >= 120) file = "src/assets/animal.webp";
+    else if (combo >= 50) file = "src/assets/pink.webp";
+    else if (combo >= 15) file = "src/assets/blue.webp";
     else if (combo >= 5) file = "src/assets/gold.webp";
     else file = "src/assets/green.webp";
     // hotspot x=6 y=0 for pointer
@@ -1444,9 +1444,9 @@ function clickPacket(event) {
 
     // Show combo total HUD (modular)
     let color = null;
-    if (clickCombo >= 30) color = "#ff3040";
-    else if (clickCombo >= 20) color = "#ff4dff";
-    else if (clickCombo >= 10) color = "var(--accent-color)";
+    if (clickCombo >= 120) color = "#ff3040";
+    else if (clickCombo >= 50) color = "#ff4dff";
+    else if (clickCombo >= 15) color = "var(--accent-color)";
     else if (clickCombo >= 5) color = "var(--secondary-color)";
     showComboTotalHUD(clickPacket._comboTotal, color);
 
@@ -1558,9 +1558,9 @@ function clickPacket(event) {
 
     // Remove element after animation
     const animationDuration =
-      clickCombo >= 20
+      clickCombo >= 50
         ? 1200
-        : clickCombo >= 10
+        : clickCombo >= 15
           ? 900
           : clickCombo >= 5
             ? 1100
@@ -1582,15 +1582,15 @@ function clickPacket(event) {
   if (state.player.sound) {
     if (crit) {
       playSound("crit");
-      if (clickCombo >= 30) {
+      if (clickCombo >= 120) {
         setTimeout(() => playSound("crit"), 60);
         setTimeout(() => playSound("click"), 120);
         setTimeout(() => playSound("crit"), 180);
         setTimeout(() => playSound("click"), 240);
-      } else if (clickCombo >= 20) {
+      } else if (clickCombo >= 50) {
         setTimeout(() => playSound("crit"), 100);
         setTimeout(() => playSound("click"), 200);
-      } else if (clickCombo >= 10) {
+      } else if (clickCombo >= 15) {
         setTimeout(() => playSound("crit"), 90);
         setTimeout(() => playSound("click"), 180);
       } else if (clickCombo >= 5) {
@@ -1598,18 +1598,18 @@ function clickPacket(event) {
       }
     } else {
       playSound("click");
-      if (clickCombo >= 30) {
+      if (clickCombo >= 120) {
         animalCritBurst();
         setTimeout(() => playSound("click"), 60);
         setTimeout(() => playSound("click"), 120);
         setTimeout(() => playSound("click"), 180);
         setTimeout(() => playSound("click"), 240);
         setTimeout(() => playSound("click"), 300);
-      } else if (clickCombo >= 20) {
+      } else if (clickCombo >= 50) {
         setTimeout(() => playSound("click"), 80);
         setTimeout(() => playSound("click"), 160);
         setTimeout(() => playSound("click"), 240);
-      } else if (clickCombo >= 10) {
+      } else if (clickCombo >= 15) {
         setTimeout(() => playSound("click"), 70);
         setTimeout(() => playSound("click"), 140);
       } else if (clickCombo >= 5) {
