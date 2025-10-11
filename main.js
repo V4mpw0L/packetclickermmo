@@ -2259,41 +2259,48 @@ function init() {
   if (typeof Equipment !== "undefined" && Equipment.ensureStateShape) {
     Equipment.ensureStateShape(state);
   }
-  // Initialize Firebase leaderboard if config is present; fallback to local bots
+  // Initialize Firebase leaderboard (uses module defaults); fallback to local bots on error
   try {
-    if (typeof window !== "undefined" && window.FIREBASE_CONFIG) {
-      // Init once
-      Leaderboard.init(
-        Object.assign(
-          { collection: "leaderboard_test" },
-          window.FIREBASE_CONFIG,
-        ),
-      );
-      // Live subscription
-      try {
-        Leaderboard.subscribe(function (rows) {
-          state.leaderboardLive = Array.isArray(rows) ? rows : [];
-          if (typeof renderTab === "function") renderTab();
-        });
-      } catch (_) {}
-      // Periodic, throttled submit (module also throttles internally)
-      try {
-        if (window.__lbTimer) clearInterval(window.__lbTimer);
-        window.__lbTimer = setInterval(function () {
-          Leaderboard.submit({
-            name: state.player.name,
-            avatar: state.player.avatar,
-            packets: state.packets,
-          });
-        }, 15000);
-      } catch (_) {}
-    } else {
-      if (!state.leaderboardBots || !state.leaderboardBots.length) {
-        state.leaderboardBots = generateBots(10);
-        save();
-      }
-    }
+    // Init unconditionally; module merges defaults and handles dynamic import
+    Leaderboard.init({ collection: "leaderboard_test" });
+
+    // Live subscription (keeps UI in sync across devices)
+    Leaderboard.subscribe(function (rows) {
+      state.leaderboardLive = Array.isArray(rows) ? rows : [];
+      if (typeof renderTab === "function") renderTab();
+    });
+
+    // Periodic, throttled submit (module also throttles internally)
+    if (window.__lbTimer) clearInterval(window.__lbTimer);
+
+    const __lbSafeSubmit = function () {
+      if (
+        typeof navigator !== "undefined" &&
+        navigator &&
+        navigator.onLine === false
+      )
+        return;
+      Leaderboard.submit({
+        name: state.player.name,
+        avatar: state.player.avatar,
+        packets: state.packets,
+      });
+    };
+
+    // Immediate submit once after init so other devices see us quickly
+    __lbSafeSubmit();
+
+    // Keep in sync periodically (module throttles internally)
+    window.__lbTimer = setInterval(function () {
+      __lbSafeSubmit();
+    }, 15000);
+
+    // React to connectivity changes
+    try {
+      window.addEventListener("online", __lbSafeSubmit);
+    } catch (_) {}
   } catch (_) {
+    // Fallback to local bots if Firebase is unavailable
     if (!state.leaderboardBots || !state.leaderboardBots.length) {
       state.leaderboardBots = generateBots(10);
       save();
