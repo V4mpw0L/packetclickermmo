@@ -55,7 +55,7 @@
     var STORAGE_KEY = "packet_clicker_save_v3";
     var DEFAULT_AVATAR =
       "https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker";
-    var APP_VERSION = "0.0.11";
+    var APP_VERSION = "0.0.12";
 
     // Interaction tuning
     var COMBO_TIMEOUT = 1000; // ms to maintain click combo

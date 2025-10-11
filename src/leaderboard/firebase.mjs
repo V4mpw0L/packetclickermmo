@@ -195,6 +195,46 @@ async function lazyFirebase() {
   return { _app, _db };
 }
 
+/* --------------------------- Firebase Storage (optional) ---------------------------- */
+// Lazy-load Storage SDK only when needed (avatar data URLs)
+async function getStorageApi() {
+  try {
+    if (lazyFirebase.st) return lazyFirebase.st;
+    const st = await import(`${CDN_BASE}/firebase-storage.js`);
+    const { getStorage, ref, uploadString, getDownloadURL } = st;
+    lazyFirebase.st = { getStorage, ref, uploadString, getDownloadURL };
+    return lazyFirebase.st;
+  } catch (e) {
+    console.warn("[Leaderboard] storage module unavailable:", e);
+    throw e;
+  }
+}
+
+/**
+ * If avatar is a data URL, upload to Firebase Storage and return a https URL.
+ * Returns a sanitized https URL or empty string on failure.
+ */
+async function maybeUploadAvatar(id, avatar) {
+  try {
+    const raw = String(avatar || "");
+    if (!raw.startsWith("data:")) {
+      return sanitizeAvatar(raw);
+    }
+    // Ensure Firebase is initialized
+    await lazyFirebase();
+    const st = await getStorageApi();
+    const storage = st.getStorage(_app);
+    const safeId = String(id || deviceId()).replace(/[^a-zA-Z0-9_.-]/g, "_");
+    const r = st.ref(storage, `avatars/${safeId}.png`);
+    await st.uploadString(r, raw, "data_url");
+    const url = await st.getDownloadURL(r);
+    return sanitizeAvatar(url);
+  } catch (e) {
+    console.warn("[Leaderboard] avatar upload failed:", e);
+    return "";
+  }
+}
+
 /* ------------------------------ Public API -------------------------------- */
 
 async function init(config) {
@@ -270,10 +310,25 @@ async function flushWrite() {
     const { doc, setDoc, serverTimestamp } = lazyFirebase.fs;
 
     const ref = doc(_db, _collection, docData.id);
+
+    // Ensure avatar is a resolvable https URL; upload if we received a data URL
+    let avatarUrl = sanitizeAvatar(docData.avatar);
+    try {
+      if (
+        (!avatarUrl || avatarUrl === "") &&
+        typeof docData.avatar === "string" &&
+        docData.avatar.startsWith("data:")
+      ) {
+        avatarUrl = await maybeUploadAvatar(docData.id, docData.avatar);
+      }
+    } catch (_) {
+      // ignore upload errors; fallback to empty/sanitized
+    }
+
     const payload = {
       name: docData.name,
       packets: docData.packets,
-      avatar: docData.avatar,
+      avatar: avatarUrl,
       updatedAt: serverTimestamp(),
     };
     await setDoc(ref, payload, { merge: true });
@@ -457,6 +512,23 @@ service cloud.firestore {
     }
   }
 }`;
+
+/**
+ * Optional Firebase Storage rules helper for avatar uploads
+ */
+export const RULES_STORAGE = `rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /avatars/{allPaths=**} {
+      allow read: if true;
+      allow write: if
+        request.time < timestamp.date(2026, 1, 1) &&
+        request.resource.size < 3 * 1024 * 1024 &&
+        request.resource.contentType.matches('image/.*');
+    }
+  }
+}
+`;
 
 const Leaderboard = {
   init,
@@ -700,6 +772,50 @@ const Leaderboard = {
   } catch {}
 })();
 
+/**
+ * Global Firestore error silencer (dev) to prevent console flooding from internal assertions.
+ * Filters only known noisy messages; real errors still surface.
+ */
+(function () {
+  try {
+    const shouldSilence = (m) =>
+      typeof m === "string" &&
+      /FIRESTORE.*INTERNAL ASSERTION FAILED|Unexpected state/i.test(m);
+    if (typeof window !== "undefined") {
+      window.addEventListener(
+        "error",
+        function (e) {
+          try {
+            const msg =
+              (e && (e.message || (e.error && e.error.message))) || "";
+            if (shouldSilence(msg)) {
+              e.stopImmediatePropagation();
+              e.preventDefault();
+              return false;
+            }
+          } catch {}
+        },
+        { capture: true },
+      );
+      window.addEventListener(
+        "unhandledrejection",
+        function (e) {
+          try {
+            const msg =
+              (e && e.reason && (e.reason.message || String(e.reason))) || "";
+            if (shouldSilence(msg)) {
+              e.stopImmediatePropagation();
+              e.preventDefault();
+              return false;
+            }
+          } catch {}
+        },
+        { capture: true },
+      );
+    }
+  } catch {}
+})();
 Leaderboard.rulesDev = RULES_DEV;
 Leaderboard.rulesWhitelist = RULES_WHITELIST;
+Leaderboard.rulesStorage = RULES_STORAGE;
 export default Leaderboard;

@@ -1100,6 +1100,19 @@ function showEditProfile() {
       const reader = new FileReader();
       reader.onload = function (ev) {
         uploadedAvatarDataUrl = String(ev.target && ev.target.result) || null;
+        // Enforce ~256KB max for uploaded avatars (prevent huge data URLs)
+        try {
+          var __data = uploadedAvatarDataUrl || "";
+          var __idx = __data.indexOf(",") + 1;
+          var __b64len = __idx > 0 ? __data.length - __idx : 0;
+          var __bytes = Math.ceil((__b64len * 3) / 4);
+          if (__bytes > 262144) {
+            uploadedAvatarDataUrl = null;
+            try {
+              showHudNotify("Image too large (max 256KB)", "⚠️");
+            } catch (_) {}
+          }
+        } catch (_) {}
         if (uploadedAvatarDataUrl && customTile && customImg) {
           customImg.src = uploadedAvatarDataUrl;
           customTile.style.display = "";
@@ -1128,6 +1141,19 @@ function showEditProfile() {
     }
 
     save();
+    // Push profile changes (including avatar) to leaderboard immediately
+    try {
+      if (typeof Leaderboard !== "undefined" && Leaderboard.submit) {
+        Leaderboard.submit(
+          {
+            name: state.player.name,
+            avatar: state.player.avatar,
+            packets: state.packets,
+          },
+          { throttleMs: 0 },
+        );
+      }
+    } catch (_) {}
     try {
       window.VERSION = "0.0.10";
     } catch (_) {}
@@ -2310,6 +2336,22 @@ function bindTabEvents(tab) {
 
 // =============== INIT ===============
 function init() {
+  // Dev switch: disable leaderboard completely if window.DISABLE_LEADERBOARD === true
+  if (typeof window !== "undefined" && window.DISABLE_LEADERBOARD === true) {
+    try {
+      window.Leaderboard = window.Leaderboard || {};
+      window.Leaderboard.init = function () {};
+      window.Leaderboard.subscribe = function () {
+        return function () {};
+      };
+      window.Leaderboard.submit = function () {};
+      window.Leaderboard.unsubscribe = function () {};
+      window.Leaderboard.teardown = function () {};
+      window.Leaderboard.getDeviceId = function () {
+        return "dev_disabled";
+      };
+    } catch (_) {}
+  }
   load();
   if (typeof Equipment !== "undefined" && Equipment.ensureStateShape) {
     Equipment.ensureStateShape(state);

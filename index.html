@@ -295,6 +295,8 @@
                         dev: "rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /leaderboard/{docId} {\n      allow read: if true;\n      allow write: if\n        request.time < timestamp.date(2026, 1, 1) &&\n        request.resource.data.keys().hasOnly(['name','packets','avatar','updatedAt']) &&\n        request.resource.data.name is string &&\n        request.resource.data.name.size() > 0 &&\n        request.resource.data.name.size() <= 24 &&\n        request.resource.data.packets is int &&\n        request.resource.data.packets >= 0 &&\n        request.resource.data.packets <= 1000000000 &&\n        (!('avatar' in request.resource.data) || (request.resource.data.avatar is string && request.resource.data.avatar.size() <= 256));\n    }\n  }\n}",
                         whitelist:
                             "rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /leaderboard/{docId} {\n      allow read: if true;\n      allow write: if\n        docId in ['DEV_ID_Tiago','DEV_ID_Dizao'] &&\n        request.resource.data.keys().hasOnly(['name','packets','avatar','updatedAt']) &&\n        request.resource.data.name is string &&\n        request.resource.data.name.size() > 0 &&\n        request.resource.data.name.size() <= 24 &&\n        request.resource.data.packets is int &&\n        request.resource.data.packets >= 0 &&\n        request.resource.data.packets <= 1000000000 &&\n        (!('avatar' in request.resource.data) || (request.resource.data.avatar is string && request.resource.data.avatar.size() <= 256));\n    }\n  }\n}",
+                        storage:
+                            "rules_version = '2';\nservice firebase.storage {\n  match /b/{bucket}/o {\n    match /avatars/{allPaths=**} {\n      allow read: if true;\n      allow write: if\n        request.time < timestamp.date(2026, 1, 1) &&\n        request.resource.size < 3 * 1024 * 1024 &&\n        request.resource.contentType.matches('image/.*');\n    }\n  }\n}",
                     };
                     // Also log the device id so it's easy to copy from console
                     (function () {
@@ -316,7 +318,7 @@
                             id || "(not available yet)",
                         );
                         console.log(
-                            "Copy Firestore rules with window.LeaderboardRules.dev or .whitelist",
+                            "Copy rules with window.LeaderboardRules.dev (Firestore), .whitelist (Firestore), or .storage (Storage)",
                         );
                     })();
                 } catch (e) {}

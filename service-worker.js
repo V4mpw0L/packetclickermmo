@@ -114,6 +114,11 @@ self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
   const req = event.request;
+  const url = new URL(req.url);
+  // Do not intercept or cache cross-origin requests (e.g., Firestore/WebChannel, Google APIs)
+  if (url.origin !== self.location.origin) {
+    return;
+  }
   const isHTML =
     req.mode === "navigate" ||
     (req.headers.get("accept") || "").includes("text/html");
