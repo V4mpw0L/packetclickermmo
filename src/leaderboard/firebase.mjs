@@ -40,6 +40,21 @@
  */
 
 const CDN_BASE = "https://www.gstatic.com/firebasejs/10.12.2";
+/**
+ * Default Firebase config for Packet Clicker Leaderboard.
+ * Overridden by window.FIREBASE_CONFIG or by init(config).
+ * Keep secrets server-side in production. This is for test/dev ranking only.
+ */
+const DEFAULT_CONFIG = {
+  apiKey: "AIzaSyA6KOXoqPl2khvvdb-I9GCStFt68PCPpYM",
+  authDomain: "packetclicker.firebaseapp.com",
+  databaseURL: "https://packetclicker-default-rtdb.firebaseio.com",
+  projectId: "packetclicker",
+  storageBucket: "packetclicker.firebasestorage.app",
+  messagingSenderId: "321149831631",
+  appId: "1:321149831631:web:c58bec15f05d204982eaba",
+  collection: "leaderboard_test",
+};
 
 // Internal module cache
 let _app = null;
@@ -101,7 +116,11 @@ function deviceId() {
   try {
     let id = localStorage.getItem(DEVICE_KEY);
     if (!id) {
-      id = "dev_" + Math.random().toString(36).slice(2) + "_" + Date.now().toString(36);
+      id =
+        "dev_" +
+        Math.random().toString(36).slice(2) +
+        "_" +
+        Date.now().toString(36);
       localStorage.setItem(DEVICE_KEY, id);
     }
     return id;
@@ -116,10 +135,16 @@ function deviceId() {
 async function lazyFirebase() {
   if (_app && _db) return { _app, _db };
   // If Firebase already on window (compat), do not attempt dynamic import
-  if (typeof window !== "undefined" && window.firebase && window.firebase.firestore) {
+  if (
+    typeof window !== "undefined" &&
+    window.firebase &&
+    window.firebase.firestore
+  ) {
     // v8 compat
     try {
-      _app = window.firebase.app ? window.firebase.app() : window.firebase.initializeApp(_config || {});
+      _app = window.firebase.app
+        ? window.firebase.app()
+        : window.firebase.initializeApp(_config || {});
       _db = window.firebase.firestore();
       _ready = true;
       return { _app, _db };
@@ -145,7 +170,17 @@ async function lazyFirebase() {
   } = fs;
 
   // Attach helpers for later
-  lazyFirebase.fs = { getFirestore, doc, setDoc, serverTimestamp, onSnapshot, query, orderBy, limit, collection };
+  lazyFirebase.fs = {
+    getFirestore,
+    doc,
+    setDoc,
+    serverTimestamp,
+    onSnapshot,
+    query,
+    orderBy,
+    limit,
+    collection,
+  };
 
   if (!getApps().length) {
     if (!_config || !(_config.projectId && _config.apiKey)) {
@@ -164,7 +199,12 @@ async function lazyFirebase() {
 
 async function init(config) {
   try {
-    _config = Object.assign({}, config || {});
+    // Merge priority: DEFAULT_CONFIG <- window.FIREBASE_CONFIG <- init(config)
+    const winCfg =
+      typeof window !== "undefined" && window.FIREBASE_CONFIG
+        ? window.FIREBASE_CONFIG
+        : {};
+    _config = Object.assign({}, DEFAULT_CONFIG, winCfg || {}, config || {});
     if (typeof _config.collection === "string" && _config.collection.trim()) {
       _collection = _config.collection.trim();
     }
@@ -199,7 +239,10 @@ function submit({ name, packets, avatar } = {}, { throttleMs = 20000 } = {}) {
       updatedAt: nowTs(),
     };
     // Skip if packets hasn't changed (avoid spam)
-    if (docData.packets === _lastSentPackets && nowTs() - _lastWriteMs < throttleMs) {
+    if (
+      docData.packets === _lastSentPackets &&
+      nowTs() - _lastWriteMs < throttleMs
+    ) {
       return;
     }
     _pendingDoc = docData;
@@ -238,7 +281,10 @@ async function flushWrite() {
   } catch (e) {
     console.warn("[Leaderboard] write failed; using backoff:", e);
     // Exponential backoff up to 5 minutes
-    _backoffMs = Math.max(2000, Math.min(_backoffMs ? _backoffMs * 2 : 5000, 5 * 60 * 1000));
+    _backoffMs = Math.max(
+      2000,
+      Math.min(_backoffMs ? _backoffMs * 2 : 5000, 5 * 60 * 1000),
+    );
     // Requeue last doc
     _pendingDoc = _pendingDoc || docData;
     // Re-arm timer
@@ -262,7 +308,11 @@ function subscribe(callback, opts = {}) {
     try {
       const { _db } = await lazyFirebase();
       const { collection, query, orderBy, limit, onSnapshot } = lazyFirebase.fs;
-      const q = query(collection(_db, _collection), orderBy("packets", "desc"), limit(limitN));
+      const q = query(
+        collection(_db, _collection),
+        orderBy("packets", "desc"),
+        limit(limitN),
+      );
 
       _unsubscribe = onSnapshot(
         q,
@@ -275,7 +325,9 @@ function subscribe(callback, opts = {}) {
               name: sanitizeName(d.name),
               packets: clamp(d.packets, 0, Number.MAX_SAFE_INTEGER),
               avatar: sanitizeAvatar(d.avatar),
-              updatedAt: d.updatedAt?.toMillis ? d.updatedAt.toMillis() : nowTs(),
+              updatedAt: d.updatedAt?.toMillis
+                ? d.updatedAt.toMillis()
+                : nowTs(),
             });
           });
           cb(rows);
@@ -349,6 +401,51 @@ function teardown() {
 }
 
 /* --------------------------------- Export --------------------------------- */
+/**
+ * Firestore rules (copy/paste into Firebase console)
+ * Option A: Time-bounded dev rules with field validation (public read)
+ */
+export const RULES_DEV = `rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /leaderboard_test/{docId} {
+      allow read: if true;
+      allow write: if
+        request.time < timestamp.date(2026, 1, 1) &&
+        request.resource.data.keys().hasOnly(['name','packets','avatar','updatedAt']) &&
+        request.resource.data.name is string &&
+        request.resource.data.name.size() > 0 &&
+        request.resource.data.name.size() <= 24 &&
+        request.resource.data.packets is int &&
+        request.resource.data.packets >= 0 &&
+        request.resource.data.packets <= 1000000000 &&
+        (!('avatar' in request.resource.data) || (request.resource.data.avatar is string && request.resource.data.avatar.size() <= 256));
+    }
+  }
+}`;
+
+/**
+ * Option B: Whitelist specific tester devices (replace with your device IDs)
+ * Get IDs in console: Leaderboard.getDeviceId()
+ */
+export const RULES_WHITELIST = `rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /leaderboard_test/{docId} {
+      allow read: if true;
+      allow write: if
+        docId in ['DEV_ID_Tiago','DEV_ID_Dizao'] &&
+        request.resource.data.keys().hasOnly(['name','packets','avatar','updatedAt']) &&
+        request.resource.data.name is string &&
+        request.resource.data.name.size() > 0 &&
+        request.resource.data.name.size() <= 24 &&
+        request.resource.data.packets is int &&
+        request.resource.data.packets >= 0 &&
+        request.resource.data.packets <= 1000000000 &&
+        (!('avatar' in request.resource.data) || (request.resource.data.avatar is string && request.resource.data.avatar.size() <= 256));
+    }
+  }
+}`;
 
 const Leaderboard = {
   init,
@@ -360,4 +457,6 @@ const Leaderboard = {
   getDeviceId: deviceId,
 };
 
+Leaderboard.rulesDev = RULES_DEV;
+Leaderboard.rulesWhitelist = RULES_WHITELIST;
 export default Leaderboard;
