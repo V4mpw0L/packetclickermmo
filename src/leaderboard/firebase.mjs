@@ -481,9 +481,16 @@ const Leaderboard = {
     let __subBackoff = 0;
     let __uid = null;
     let __lb_lastSentName = null;
+    let __liveUnsub = null;
+    let __isSubscribing = false;
 
     async function __ensureAuth() {
       try {
+        const allow =
+          (typeof window !== "undefined" &&
+            window.FIREBASE_ENABLE_ANON === true) ||
+          (_config && _config.enableAnonAuth === true);
+        if (!allow) return;
         const { _app } = await lazyFirebase();
         const fa = await import(`${CDN_BASE}/firebase-auth.js`);
         const { getAuth, signInAnonymously, onAuthStateChanged } = fa;
@@ -528,6 +535,8 @@ const Leaderboard = {
     }
 
     function __startSubscribe(cb, opts) {
+      if (__isSubscribing) return () => {};
+      __isSubscribing = true;
       // Ensure any existing native subscription is fully torn down
       try {
         __origUnsubscribe?.();
@@ -535,6 +544,8 @@ const Leaderboard = {
       try {
         unsubscribe();
       } catch {}
+      __liveUnsub = null;
+      __origUnsubscribe = null;
 
       // Show local fallback immediately while connecting
       startFallback(cb, (opts && opts.limit) || 50);
@@ -556,9 +567,8 @@ const Leaderboard = {
             limit(clamp((opts && opts.limit) || 50, 1, 200)),
           );
 
-          __origUnsubscribe = onSnapshot(
+          __liveUnsub = onSnapshot(
             q,
-            { includeMetadataChanges: true },
             (snap) => {
               const rows = [];
               snap.forEach((doc) => {
@@ -588,18 +598,22 @@ const Leaderboard = {
               );
               startFallback(cb, (opts && opts.limit) || 50);
               clearTimeout(__resubTimer);
+              __isSubscribing = false;
               __resubTimer = setTimeout(
                 () => __startSubscribe(cb, opts),
                 __subBackoff,
               );
             },
           );
+          __origUnsubscribe = __liveUnsub;
+          __isSubscribing = false;
         } catch (e) {
           __subBackoff = Math.max(
             2000,
             Math.min(__subBackoff ? __subBackoff * 2 : 5000, 60000),
           );
           clearTimeout(__resubTimer);
+          __isSubscribing = false;
           __resubTimer = setTimeout(
             () => __startSubscribe(cb, opts),
             __subBackoff,
@@ -611,13 +625,15 @@ const Leaderboard = {
       return () => {
         clearTimeout(__resubTimer);
         try {
-          __origUnsubscribe?.();
+          (__liveUnsub || __origUnsubscribe)?.();
         } catch {}
+        __liveUnsub = null;
         __origUnsubscribe = null;
         __lastCb = null;
         __lastOpts = null;
+        __isSubscribing = false;
         try {
-          startFallback(() => {}, 1);
+          stopFallback();
         } catch {}
       };
     }
@@ -634,6 +650,7 @@ const Leaderboard = {
 
     function __resubscribe() {
       if (!__lastCb) return;
+      if (__liveUnsub || __isSubscribing) return;
       return __startSubscribe(__lastCb, __lastOpts);
     }
 
@@ -665,12 +682,17 @@ const Leaderboard = {
       if (typeof window !== "undefined") {
         window.addEventListener("online", () => {
           try {
-            __resubscribe();
+            if (!__liveUnsub && !__isSubscribing) __resubscribe();
           } catch {}
         });
         window.addEventListener("visibilitychange", () => {
           try {
-            if (document.visibilityState === "visible") __resubscribe();
+            if (
+              document.visibilityState === "visible" &&
+              !__liveUnsub &&
+              !__isSubscribing
+            )
+              __resubscribe();
           } catch {}
         });
       }

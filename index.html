@@ -323,6 +323,7 @@
             })();
         </script>
         <script>
+            // Firebase config for live leaderboard (safe for dev; do not ship secrets for production)
             window.FIREBASE_CONFIG = {
                 apiKey: "AIzaSyA6KOXoqPl2khvvdb-I9GCStFt68PCPpYM",
                 authDomain: "packetclicker.firebaseapp.com",
@@ -333,6 +334,11 @@
                 messagingSenderId: "321149831631",
                 appId: "1:321149831631:web:c58bec15f05d204982eaba",
             };
+            // Optional Firebase anonymous auth toggle.
+            // Keep disabled by default to avoid Identity Toolkit errors if Auth isn't configured.
+            // To enable later, set window.FIREBASE_ENABLE_ANON = true before main.js loads,
+            // or pass { enableAnonAuth: true } to Leaderboard.init().
+            window.FIREBASE_ENABLE_ANON = false;
         </script>
 
         <footer role="contentinfo">
