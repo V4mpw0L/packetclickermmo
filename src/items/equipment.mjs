@@ -869,33 +869,35 @@ function rarityStyles(rarityId) {
   };
 }
 
-function slotHeaderHTML(item, slotName) {
+function slotHeaderHTML(item, slotName, slotId) {
   if (!item) {
     return `
-      <div style="display:flex; align-items:center; gap:.5rem; flex:1; min-width:0;">
-        <div style="width:36px;height:36px;border-radius:6px;border:1.5px dashed var(--border-color); opacity:.35;"></div>
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.4rem; flex:1; min-width:0; padding:.8rem; text-align:center;">
+        <div style="width:36px;height:36px;border-radius:8px;border:1.5px dashed var(--border-color); opacity:.4; display:flex; align-items:center; justify-content:center;">
+          <span style="font-size:1.2rem; opacity:.3;">📦</span>
+        </div>
         <div style="min-width:0;">
-          <div style="font-weight:800;">${slotName}</div>
-          <div class="text-neon-gray text-xs">Empty</div>
+          <div style="font-weight:700; font-size:.9rem;">${slotName}</div>
+          <div class="text-neon-gray text-xs" style="opacity:.7;">Empty</div>
         </div>
       </div>
     `;
   }
   const st = rarityStyles(item.rarity);
   return `
-    <div style="display:flex; align-items:center; gap:.5rem; flex:1; min-width:0;">
-      <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:6px;border:${st.border};box-shadow:${st.glow};" />
-      <div style="min-width:0;">
-        <div class="eq-name" style="font-weight:800; color:${st.color}; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space:normal; line-height:1.1;">${item.name}</div>
-        <div class="eq-rarity text-xs" style="opacity:.9; color:${st.color}; line-height:1; margin-top:.05rem;">${item.rarityName}</div>
-        <div class="eq-chips text-xs" style="display:flex; gap:.25rem; flex-wrap:wrap; align-items:center; margin-top:.15rem; white-space:normal; overflow:visible;">
-          <span style="padding:.08rem .35rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-size:.72rem;">+${item.stats.perClick || 0}/click</span>
-          <span style="padding:.08rem .35rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-size:.72rem;">+${item.stats.perSec || 0}/sec</span>
-          <span style="padding:.08rem .35rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-size:.72rem;">+${item.stats.critChance || 0}%</span>
+    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.4rem; flex:1; min-width:0; padding:.8rem; position:relative; text-align:center;">
+      <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:8px;border:${st.border};box-shadow:${st.glow}; object-fit:cover; flex-shrink:0;" />
+      <div style="flex:1; min-width:0; width:100%;">
+        <div style="font-weight:800; color:${st.color}; line-height:1.1; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:.2rem;">${item.name}</div>
+        <div class="text-xs" style="opacity:.85; color:${st.color}; line-height:1; margin-bottom:.3rem;">${item.rarityName}</div>
+        <div style="display:flex; gap:.3rem; flex-wrap:nowrap; align-items:center; justify-content:center;">
+          <span style="padding:.06rem .35rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.perClick || 0}/click</span>
+          <span style="padding:.06rem .35rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.perSec || 0}/sec</span>
+          <span style="padding:.06rem .35rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.critChance || 0}% crit</span>
         </div>
       </div>
+      <button data-unequip-slot="${slotId}" aria-label="Unequip" title="Unequip" style="position:absolute; top:6px; right:6px; width:22px; height:22px; padding:0; font-size:13px; line-height:1; border-radius:50%; background:#ff4757; border:1px solid #ff3742; color:white; cursor:pointer; z-index:2; display:flex; align-items:center; justify-content:center; font-weight:bold;">✕</button>
     </div>
-    <button data-unequip-slot aria-label="Unequip" title="Unequip" class="eq-x-btn">✖</button>
   `;
 }
 
@@ -909,8 +911,8 @@ export function renderTab(state) {
     const it = state.equipment[s.id];
     const st = it ? rarityStyles(it.rarity) : null;
     return `
-      <div class="neon-card" data-eq-slot="${s.id}" style="width:100%; max-width:100%; margin:0; ${st ? `border-color:${st.color};` : "background: linear-gradient(135deg, #1a222a, #202a35); border-color: #334455; filter: grayscale(0.25);"}">
-        ${slotHeaderHTML(it, s.name)}
+      <div class="neon-card" data-eq-slot="${s.id}" style="width:100%; max-width:100%; margin:0; height:auto; min-height:85px; ${st ? `border-color:${st.color};` : "background: linear-gradient(135deg, #1a222a, #202a35); border-color: #334455; filter: grayscale(0.25);"} position:relative;">
+        ${slotHeaderHTML(it, s.name, s.id)}
       </div>
     `;
   }).join("");
@@ -984,8 +986,8 @@ export function renderTab(state) {
         <span style="color:${rarityById("pink").color}">Pink</span> ·
         <span style="color:${rarityById("animal").color}">Red</span>
       </div>
-      <div class="eq-grid" style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem;">${slotCards}</div>
-      <div class="text-neon-gray text-sm mt-3 mb-1" style="display:flex; align-items:center; justify-content:center; gap:.5rem; margin-top:.6rem;">
+      <div class="eq-list" style="display:grid; grid-template-columns: 1fr; gap: .35rem;">${slotCards}</div>
+      <div class="text-neon-gray text-sm mt-3 mb-1" style="display:flex; align-items:center; justify-content:center; gap:.5rem; margin-top:1rem;">
         <span style="font-weight:800;">Inventory</span>
         <span class="text-xs" style="opacity:.9; padding:.15rem .55rem; border:1px solid var(--border-color); border-radius:999px; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">${Math.min(totalItems, capacity)}/${capacity}</span>
       </div>
