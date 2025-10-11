@@ -986,7 +986,7 @@ export function renderTab(state) {
         <span style="color:${rarityById("pink").color}">Pink</span> ·
         <span style="color:${rarityById("animal").color}">Red</span>
       </div>
-      <div class="eq-list" style="display:grid; grid-template-columns: 1fr; gap: .35rem;">${slotCards}</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 0.5rem; width: 100%; box-sizing: border-box;">${slotCards}</div>
       <div class="text-neon-gray text-sm mt-3 mb-1" style="display:flex; align-items:center; justify-content:center; gap:.5rem; margin-top:1rem;">
         <span style="font-weight:800;">Inventory</span>
         <span class="text-xs" style="opacity:.9; padding:.15rem .55rem; border:1px solid var(--border-color); border-radius:999px; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">${Math.min(totalItems, capacity)}/${capacity}</span>

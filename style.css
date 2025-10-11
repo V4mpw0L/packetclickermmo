@@ -559,10 +559,23 @@ body .modal-box .space-y-3 > * + * {
     border-radius: var(--border-radius-md);
 }
 
+/* 2x2 Grid layout styles */
+.eq-list {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5rem !important;
+}
+
 /* Mobile responsive adjustments for equipment slots */
 @media (max-width: 480px) {
     .neon-card[data-eq-slot] {
         min-height: 75px;
+    }
+
+    /* Stack equipment slots vertically on mobile */
+    .eq-list {
+        grid-template-columns: 1fr !important;
+        gap: 0.35rem !important;
     }
 
     /* Make stat chips smaller on mobile */
@@ -584,6 +597,17 @@ body .modal-box .space-y-3 > * + * {
         font-size: 11px !important;
         top: 4px !important;
         right: 4px !important;
+    }
+}
+
+/* Medium screens - keep 2x2 but adjust spacing */
+@media (max-width: 768px) and (min-width: 481px) {
+    .eq-list {
+        gap: 0.4rem !important;
+    }
+
+    .neon-card[data-eq-slot] {
+        min-height: 80px;
     }
 }
 
