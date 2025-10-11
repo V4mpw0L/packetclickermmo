@@ -435,7 +435,7 @@ function slotHeaderHTML(item, slotName) {
     <div style="display:flex; align-items:center; gap:.5rem;">
       <img src="${item.icon}" alt="${item.name}" style="width:38px;height:38px;border-radius:6px;border:${st.border};box-shadow:${st.glow};" />
       <div>
-        <div style="font-weight:800; color:${st.color};">${item.name} <span style="font-size:.8em; opacity:.9;">(${item.rarityName})</span></div>
+        <div style="font-weight:800; color:${st.color};">${item.name} <span style="font-size:.8em; opacity:.95; color:${st.color};">(${item.rarityName})</span></div>
         <div class="text-neon-gray text-xs">+${item.stats.perClick || 0}/click, +${item.stats.perSec || 0}/sec, +${item.stats.critChance || 0}% crit</div>
       </div>
     </div>
@@ -529,7 +529,7 @@ export function renderTab(state) {
         <span style="color:${rarityById("animal").color}">Red</span>
       </div>
       <div class="space-y-2">${slotCards}</div>
-      <div class="text-neon-gray text-sm mt-3 mb-1" style="display:flex; align-items:center; justify-content:center; gap:.5rem;">
+      <div class="text-neon-gray text-sm mt-3 mb-1" style="display:flex; align-items:center; justify-content:center; gap:.5rem; margin-top:.6rem;">
         <span style="font-weight:800;">Inventory</span>
         <span class="text-xs" style="opacity:.9; padding:.15rem .55rem; border:1px solid var(--border-color); border-radius:999px; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">${Math.min(totalItems, capacity)}/${capacity}</span>
       </div>
@@ -580,9 +580,13 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
           <div style="display:flex; gap:.6rem; align-items:center;">
             <img src="${item.icon}" alt="${item.name}" style="width:64px;height:64px;border-radius:8px; object-fit:cover;" />
             <div>
-              <div style="font-weight:900; color:${st.color};">${item.name} <span style="font-size:.85em; opacity:.9;">(${item.rarityName})</span></div>
-              <div class="text-neon-gray text-sm">+${item.stats.perClick || 0}/click, +${item.stats.perSec || 0}/sec, +${item.stats.critChance || 0}% crit</div>
-              <div class="text-neon-gray text-xs">Qty: ${item.q || 1}</div>
+              <div style="font-weight:900; color:${st.color};">${item.name} <span style="font-size:.85em; opacity:.95; color:${st.color};">(${item.rarityName})</span></div>
+              <div class="text-sm" style="display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.25rem;">
+                <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25);">+${item.stats.perClick || 0}/click</span>
+                <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25);">+${item.stats.perSec || 0}/sec</span>
+                <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25);">+${item.stats.critChance || 0}% crit</span>
+              </div>
+              <div class="text-xs" style="margin-top:.25rem; color:var(--text-primary);">Qty: <span style="padding:.05rem .4rem; border:1px solid var(--border-color); border-radius:999px; background:rgba(0,0,0,.25); font-weight:800; color:${st.color};">${item.q || 1}</span></div>
             </div>
           </div>
           <div class="button-group" style="display:flex; gap:.5rem; margin-top:.75rem;">
