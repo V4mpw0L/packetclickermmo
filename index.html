@@ -259,14 +259,69 @@
         <!-- Firebase Leaderboard config (optional)
              Fill with your Firebase project credentials to enable live leaderboards during testing.
              Safe defaults: empty object keeps local leaderboard only.
-             Example:
+
+             Example (paste into a <script> tag before main.js to enable live board):
              window.FIREBASE_CONFIG = {
                apiKey: "AIzaSy...",
                authDomain: "your-app.firebaseapp.com",
                projectId: "your-app",
                appId: "1:123456789:web:abcdef",
+               collection: "leaderboard"
              };
-             This is used by src/leaderboard/firebase.mjs. -->
+
+             For quick testing, you can also print your device id and copy Firestore rules.
+             The snippet below prints your device id on the page and exposes a rules helper in the console.
+
+             Document snippet example (dev only):
+             <script>
+               (function () {
+                 var KEY = "pc_device_id_v1";
+                 try {
+                   var id = localStorage.getItem(KEY);
+                   if (!id) {
+                     id = "dev_" + Math.random().toString(36).slice(2) + "_" + Date.now().toString(36);
+                     localStorage.setItem(KEY, id);
+                   }
+                   document.write('<div style="font-size:12px;color:#9aa; text-align:center; margin:.25rem 0;">DeviceId: ' + id + '</div>');
+                 } catch (e) {}
+               })();
+             </script>
+        -->
+        <script>
+            // Expose Firestore rules helper in console (window.LeaderboardRules)
+            (function () {
+                try {
+                    window.LeaderboardRules = {
+                        dev: "rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /leaderboard/{docId} {\n      allow read: if true;\n      allow write: if\n        request.time < timestamp.date(2026, 1, 1) &&\n        request.resource.data.keys().hasOnly(['name','packets','avatar','updatedAt']) &&\n        request.resource.data.name is string &&\n        request.resource.data.name.size() > 0 &&\n        request.resource.data.name.size() <= 24 &&\n        request.resource.data.packets is int &&\n        request.resource.data.packets >= 0 &&\n        request.resource.data.packets <= 1000000000 &&\n        (!('avatar' in request.resource.data) || (request.resource.data.avatar is string && request.resource.data.avatar.size() <= 256));\n    }\n  }\n}",
+                        whitelist:
+                            "rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /leaderboard/{docId} {\n      allow read: if true;\n      allow write: if\n        docId in ['DEV_ID_Tiago','DEV_ID_Dizao'] &&\n        request.resource.data.keys().hasOnly(['name','packets','avatar','updatedAt']) &&\n        request.resource.data.name is string &&\n        request.resource.data.name.size() > 0 &&\n        request.resource.data.name.size() <= 24 &&\n        request.resource.data.packets is int &&\n        request.resource.data.packets >= 0 &&\n        request.resource.data.packets <= 1000000000 &&\n        (!('avatar' in request.resource.data) || (request.resource.data.avatar is string && request.resource.data.avatar.size() <= 256));\n    }\n  }\n}",
+                    };
+                    // Also log the device id so it's easy to copy from console
+                    (function () {
+                        var KEY = "pc_device_id_v1";
+                        var id = null;
+                        try {
+                            id = localStorage.getItem(KEY);
+                            if (!id) {
+                                id =
+                                    "dev_" +
+                                    Math.random().toString(36).slice(2) +
+                                    "_" +
+                                    Date.now().toString(36);
+                                localStorage.setItem(KEY, id);
+                            }
+                        } catch (e) {}
+                        console.log(
+                            "[Leaderboard] DeviceId:",
+                            id || "(not available yet)",
+                        );
+                        console.log(
+                            "Copy Firestore rules with window.LeaderboardRules.dev or .whitelist",
+                        );
+                    })();
+                } catch (e) {}
+            })();
+        </script>
         <script>
             window.FIREBASE_CONFIG = {
                 apiKey: "AIzaSyA6KOXoqPl2khvvdb-I9GCStFt68PCPpYM",

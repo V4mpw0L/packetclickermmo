@@ -813,10 +813,9 @@ function renderLeaderboard() {
         typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId
           ? Leaderboard.getDeviceId()
           : state.player.name;
-      const idx = bots.findIndex(
-        (b) => b && (b.id === meId || b.name === state.player.name),
-      );
+      const idx = bots.findIndex((b) => b && b.id === meId);
       const meRow = {
+        id: meId,
         name: state.player.name,
         packets: state.packets,
         avatar: state.player.avatar,
@@ -825,6 +824,7 @@ function renderLeaderboard() {
       else bots.push(meRow);
     } catch (_) {
       bots.push({
+        id: meId,
         name: state.player.name,
         packets: state.packets,
         avatar: state.player.avatar,
@@ -834,6 +834,10 @@ function renderLeaderboard() {
     // No live data yet; show current player only
     bots = [
       {
+        id:
+          typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId
+            ? Leaderboard.getDeviceId()
+            : state.player.name,
         name: state.player.name,
         packets: state.packets,
         avatar: state.player.avatar,
@@ -848,7 +852,7 @@ function renderLeaderboard() {
     <li style="display: flex; gap: 0.75rem; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #273742;">
       <span style="width: 2rem; text-align: right; color: var(--secondary-color); font-weight: bold;">${idx === 0 ? "🥇 " : idx === 1 ? "🥈 " : idx === 2 ? "🥉 " : ""}${idx + 1}.</span>
       <img src="${p.avatar || DEFAULT_AVATAR}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 2rem; height: 2rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "3px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"}; box-shadow: ${idx === 0 ? "0 0 14px rgba(255,215,0,0.6)" : idx === 1 ? "0 0 12px rgba(192,192,192,0.55)" : idx === 2 ? "0 0 12px rgba(205,127,50,0.55)" : "none"};" alt="">
-      <span style="font-weight: 800; ${p.name === state.player.name ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary);" : "color: var(--text-primary);"}">${idx === 0 ? '<span class="crown-badge">👑</span>' : ""}${p.name}</span>
+      <span style="font-weight: 800; ${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary);" : "color: var(--text-primary);"}">${idx === 0 ? '<span class="crown-badge">👑</span>' : ""}${p.name}</span>
       <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary);"><span class="icon-packet"></span> ${p.packets.toLocaleString("en-US")}</span>
     </li>
   `,

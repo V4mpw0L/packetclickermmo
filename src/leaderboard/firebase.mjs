@@ -468,6 +468,216 @@ const Leaderboard = {
   getDeviceId: deviceId,
 };
 
+// Runtime enhancements: subscribe wrapper with dedupe + resubscribe, submit wrapper to force name changes, and identity helper.
+(function enhanceLeaderboard() {
+  try {
+    let __origSubscribe = Leaderboard.subscribe || subscribe;
+    let __origUnsubscribe = Leaderboard.unsubscribe || unsubscribe;
+    let __origSubmit = Leaderboard.submit || submit;
+
+    let __lastCb = null;
+    let __lastOpts = null;
+    let __resubTimer = null;
+    let __subBackoff = 0;
+    let __uid = null;
+    let __lb_lastSentName = null;
+
+    async function __ensureAuth() {
+      try {
+        const { _app } = await lazyFirebase();
+        const fa = await import(`${CDN_BASE}/firebase-auth.js`);
+        const { getAuth, signInAnonymously, onAuthStateChanged } = fa;
+        const auth = getAuth(_app);
+        if (!auth.currentUser) {
+          await signInAnonymously(auth).catch(() => {});
+        }
+        __uid = (auth.currentUser && auth.currentUser.uid) || __uid;
+        try {
+          onAuthStateChanged(auth, (u) => {
+            __uid = (u && u.uid) || null;
+          });
+        } catch {}
+      } catch {}
+    }
+
+    function __dedupeRows(rows) {
+      try {
+        const myId = deviceId();
+        const w = typeof window !== "undefined" ? window : {};
+        const myName = sanitizeName(w.state?.player?.name || "");
+        const counts = Object.create(null);
+        rows.forEach((r) => {
+          const n = r && r.name ? String(r.name) : "";
+          counts[n] = (counts[n] || 0) + 1;
+        });
+        return rows.map((r) => {
+          if (!r || !r.name) return r;
+          const n = String(r.name);
+          if (counts[n] > 1) {
+            const tag = String(r.id || "").slice(-4);
+            // Keep my own name unsuffixed if possible; suffix others deterministically
+            if (r.id !== myId || (myName && n !== myName)) {
+              return Object.assign({}, r, { name: n + "#" + tag });
+            }
+          }
+          return r;
+        });
+      } catch {
+        return rows;
+      }
+    }
+
+    function __startSubscribe(cb, opts) {
+      // Ensure any existing native subscription is fully torn down
+      try {
+        __origUnsubscribe?.();
+      } catch {}
+      try {
+        unsubscribe();
+      } catch {}
+
+      // Show local fallback immediately while connecting
+      startFallback(cb, (opts && opts.limit) || 50);
+
+      (async () => {
+        await __ensureAuth();
+        try {
+          const { _db } = await lazyFirebase();
+          const { collection, query, orderBy, limit, onSnapshot } =
+            lazyFirebase.fs;
+
+          const q = query(
+            collection(
+              _db,
+              (__lastOpts && __lastOpts.collection) ||
+                (typeof _collection === "string" ? _collection : "leaderboard"),
+            ),
+            orderBy("packets", "desc"),
+            limit(clamp((opts && opts.limit) || 50, 1, 200)),
+          );
+
+          __origUnsubscribe = onSnapshot(
+            q,
+            { includeMetadataChanges: true },
+            (snap) => {
+              const rows = [];
+              snap.forEach((doc) => {
+                const d = doc.data() || {};
+                rows.push({
+                  id: doc.id,
+                  name: sanitizeName(d.name),
+                  packets: clamp(d.packets, 0, Number.MAX_SAFE_INTEGER),
+                  avatar: sanitizeAvatar(d.avatar),
+                  updatedAt: d.updatedAt?.toMillis
+                    ? d.updatedAt.toMillis()
+                    : nowTs(),
+                });
+              });
+              const out = __dedupeRows(rows);
+              stopFallback();
+              __subBackoff = 0;
+              try {
+                cb(out);
+              } catch {}
+            },
+            (err) => {
+              console.warn("[Leaderboard] live subscribe error:", err);
+              __subBackoff = Math.max(
+                2000,
+                Math.min(__subBackoff ? __subBackoff * 2 : 5000, 60000),
+              );
+              startFallback(cb, (opts && opts.limit) || 50);
+              clearTimeout(__resubTimer);
+              __resubTimer = setTimeout(
+                () => __startSubscribe(cb, opts),
+                __subBackoff,
+              );
+            },
+          );
+        } catch (e) {
+          __subBackoff = Math.max(
+            2000,
+            Math.min(__subBackoff ? __subBackoff * 2 : 5000, 60000),
+          );
+          clearTimeout(__resubTimer);
+          __resubTimer = setTimeout(
+            () => __startSubscribe(cb, opts),
+            __subBackoff,
+          );
+        }
+      })();
+
+      // Unified unsubscribe for the wrapped subscription
+      return () => {
+        clearTimeout(__resubTimer);
+        try {
+          __origUnsubscribe?.();
+        } catch {}
+        __origUnsubscribe = null;
+        __lastCb = null;
+        __lastOpts = null;
+        try {
+          startFallback(() => {}, 1);
+        } catch {}
+      };
+    }
+
+    function __subscribe(cb, opts) {
+      __lastCb = typeof cb === "function" ? cb : () => {};
+      __lastOpts = opts || {};
+      return __startSubscribe(function (rows) {
+        try {
+          __lastCb(__dedupeRows(rows));
+        } catch {}
+      }, __lastOpts);
+    }
+
+    function __resubscribe() {
+      if (!__lastCb) return;
+      return __startSubscribe(__lastCb, __lastOpts);
+    }
+
+    function __submit(data, opts) {
+      try {
+        const nm = sanitizeName(data?.name);
+        if (nm && nm !== __lb_lastSentName) {
+          __lb_lastSentName = nm;
+          // Force immediate write when name changed to avoid stale cache issues
+          return (Leaderboard.submit = __origSubmit)(
+            data,
+            Object.assign({}, opts || {}, { throttleMs: 0 }),
+          );
+        }
+      } catch {}
+      return (Leaderboard.submit = __origSubmit)(data, opts);
+    }
+
+    // Attach enhanced APIs
+    Leaderboard.subscribe = __subscribe;
+    Leaderboard.resubscribe = __resubscribe;
+    Leaderboard.getIdentity = function () {
+      return { id: deviceId(), uid: __uid || null };
+    };
+    Leaderboard.getDeviceId = deviceId;
+    Leaderboard.submit = __submit;
+
+    try {
+      if (typeof window !== "undefined") {
+        window.addEventListener("online", () => {
+          try {
+            __resubscribe();
+          } catch {}
+        });
+        window.addEventListener("visibilitychange", () => {
+          try {
+            if (document.visibilityState === "visible") __resubscribe();
+          } catch {}
+        });
+      }
+    } catch {}
+  } catch {}
+})();
+
 Leaderboard.rulesDev = RULES_DEV;
 Leaderboard.rulesWhitelist = RULES_WHITELIST;
 export default Leaderboard;
