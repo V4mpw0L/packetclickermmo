@@ -392,7 +392,12 @@ function getTabContent(tab) {
 
 // ======= TOP BAR UPDATE & ALIGNMENT =======
 function updateTopBar() {
-  document.getElementById("player-name").textContent = state.player.name;
+  const playerNameEl = document.getElementById("player-name");
+  if (isVIP()) {
+    playerNameEl.innerHTML = `<img src="src/assets/vip.png" alt="VIP" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;" aria-hidden="true"/>${state.player.name}`;
+  } else {
+    playerNameEl.textContent = state.player.name;
+  }
   const _avatarEl = document.getElementById("avatar");
   if (_avatarEl) {
     _avatarEl.src = state.player.avatar;
@@ -435,7 +440,10 @@ function updateTopBar() {
     let days = Math.floor(ms / (1000 * 60 * 60 * 24));
     let hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
     // Optimize VIP text length to prevent layout issues
-    let vipText = days > 0 ? `👑 VIP ${days}d` : `👑 VIP ${hours}h`;
+    let vipText =
+      days > 0
+        ? `<img src="src/assets/vip.png" alt="VIP" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;" aria-hidden="true"/>VIP ${days}d`
+        : `<img src="src/assets/vip.png" alt="VIP" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;" aria-hidden="true"/>VIP ${hours}h`;
     badge.innerHTML = `<span class="font-bold text-yellow-400 ml-2" style="margin-right:8px;display:inline-block;">${vipText}</span> ${gemPill} ${packets}`;
   } else {
     badge.innerHTML = `${gemPill} ${packets}`;
@@ -874,7 +882,7 @@ function renderShop() {
       return renderButton({
         className: `shop-vip-btn w-full mb-2 ${owned ? "shop-owned" : ""}`,
         label: `<div class="shop-item-content">
-        <div class="shop-item-icon">👑</div>
+        <div class="shop-item-icon"><img src="src/assets/vip.png" alt="VIP" style="height:1.5rem;width:1.5rem;" aria-hidden="true"/></div>
         <div class="shop-item-info">
           <div class="shop-item-name">${item.label}</div>
           <div class="shop-item-desc">${item.desc}</div>
@@ -996,7 +1004,7 @@ function renderShop() {
         vipItems
           ? `<div class="shop-section">
         <div class="shop-section-header">
-          <h3 class="shop-section-title">👑 VIP Membership</h3>
+          <h3 class="shop-section-title">VIP Membership</h3>
           <div class="shop-section-subtitle">Exclusive benefits & bonuses</div>
         </div>
         <div class="shop-grid">
@@ -3085,7 +3093,12 @@ function setPlayerName() {
   if (playerName && playerName !== "" && playerName !== "Player") {
     state.player.name = playerName;
     save();
-    document.getElementById("player-name").textContent = state.player.name;
+    const playerNameEl = document.getElementById("player-name");
+    if (isVIP()) {
+      playerNameEl.innerHTML = `<img src="src/assets/vip.png" alt="VIP" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;" aria-hidden="true"/>${state.player.name}`;
+    } else {
+      playerNameEl.textContent = state.player.name;
+    }
     closeModal();
     localStorage.setItem("packet_clicker_name_prompted", "true");
     window.__NAME_PROMPT_LOCK__ = false;
