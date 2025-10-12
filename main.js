@@ -1280,7 +1280,7 @@ function renderDaily() {
           canClaim
             ? `<button id="claim-daily" class="neon-btn mt-2">
             ${window.Packet && Packet.i18n ? Packet.i18n.t("buttons.claimDaily", { n: streak + 1 }) : "Claim Day " + (streak + 1) + " Reward!"}
-            <div class="text-xs">${nextReward.gems}💎 + ${nextReward.packets}<span class="icon-packet"></span></div>
+            <div class="text-xs">${nextReward.gems}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> + ${nextReward.packets}<span class="icon-packet"></span></div>
           </button>`
             : `<div class="text-neon-gray text-sm mt-2">Come back tomorrow for next reward!</div>`
         }
@@ -1706,7 +1706,10 @@ function clickPacket(event) {
     if (Math.random() * 100 < gemChance) {
       let gemsFound = Math.floor(Math.random() * 3) + 1; // 1-3 gems
       state.gems += gemsFound;
-      showHudNotify(`+${gemsFound} 💎 (Found!)`, "✨");
+      showHudNotify(
+        `+${gemsFound} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> (Found!)`,
+        "✨",
+      );
     }
   }
 
@@ -2139,7 +2142,10 @@ function idleTick() {
     let gemChance = state.prestige.gemMagnet * 0.1; // 0.1% per level per second
     if (Math.random() * 1000 < gemChance) {
       state.gems++;
-      showHudNotify("+1 💎 (Magnet!)", "🧲");
+      showHudNotify(
+        '+1 <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> (Magnet!)',
+        "🧲",
+      );
     }
   }
 
@@ -2230,7 +2236,10 @@ function buyGemPack(packId) {
   updateTopBar();
   renderTab();
   checkAchievements();
-  showHudNotify(`+${pack.gems} 💎 (test)`, "💎");
+  showHudNotify(
+    `+${pack.gems} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> (test)`,
+    '<img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/>',
+  );
 }
 
 function buyShopItem(itemId) {
@@ -2273,7 +2282,10 @@ function watchAd() {
   updateTopBar();
   renderTab();
   checkAchievements();
-  showHudNotify("+1 💎 (Ad)", "📺");
+  showHudNotify(
+    '+1 <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> (Ad)',
+    "📺",
+  );
 }
 
 // =============== ACHIEVEMENTS CHECKER ===============
@@ -2286,9 +2298,12 @@ function checkAchievements() {
         updateTopBar();
         showModal(
           "Achievement!",
-          `You unlocked <b>${ach.name}</b>!<br>${ach.desc}<br>+${ach.gem} 💎`,
+          `You unlocked <b>${ach.name}</b>!<br>${ach.desc}<br>+${ach.gem} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/>`,
         );
-        showHudNotify(`Achievement: ${ach.name} +${ach.gem} 💎`, ach.emoji);
+        showHudNotify(
+          `Achievement: ${ach.name} +${ach.gem} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/>`,
+          ach.emoji,
+        );
       } else {
         showModal(
           "Achievement!",
@@ -2604,7 +2619,10 @@ function buyTheme(themeId) {
 
   // If not unlocked, try to buy it
   if (state.gems < (theme.cost || 0)) {
-    showHudNotify(`Not enough gems! Need ${theme.cost} 💎`, "❌");
+    showHudNotify(
+      `Not enough gems! Need ${theme.cost} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/>`,
+      "❌",
+    );
     return;
   }
 
@@ -2646,7 +2664,7 @@ function claimDailyReward() {
 
   showModal(
     "Daily Reward!",
-    `You received ${reward.gems.toLocaleString("en-US")} 💎 and ${reward.packets.toLocaleString("en-US")} <span class="icon-packet"></span>!<br>Streak: ${state.dailyRewards.streak} days`,
+    `You received ${reward.gems.toLocaleString("en-US")} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> and ${reward.packets.toLocaleString("en-US")} <span class="icon-packet"></span>!<br>Streak: ${state.dailyRewards.streak} days`,
   );
   showHudNotify(`Day ${state.dailyRewards.streak} claimed!`, "📅");
 
