@@ -1320,7 +1320,7 @@ export function renderTab(state) {
             <button class="neon-btn" data-open-item-index="${absIndex}" style="width:100%; height:100%; background: transparent; border:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.2rem; padding:.2rem;">
               <div style="position:relative; display:inline-block; width:72%; height:72%;">
                 <img src="${it.icon}" alt="${it.name}" style="width:100%;height:100%;border-radius:6px; box-sizing:border-box; object-fit:cover;" />
-                <span style="position:absolute; bottom:2px; right:2px; background: rgba(0,0,0,0.6); border:1px solid var(--border-color); border-radius:10px; padding:0 6px; font-size:.7rem; font-weight:800; color:${st.color};">x${it.q || 1}</span>
+                <span style="position:absolute; bottom:2px; right:2px; background: rgba(0,0,0,0.6); border:1px solid var(--border-color); border-radius:10px; padding:0 6px; font-size:.7rem; font-weight:800; ${it.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">x${it.q || 1}</span>
               </div>
               <div style="font-size:.7rem; font-weight:700; color:${st.color}; text-align:center; line-height:1; ${it.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : ""}">${it.rarityName}</div>
             </button>
@@ -1506,17 +1506,17 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
       // Create different modals based on whether slots are available
       const html = emptySlot
         ? `
-        <div class="neon-card" style="padding:.75rem; border-color:${st.color}; box-shadow:${st.glow};">
+        <div class="neon-card" style="padding:.75rem; ${item.rarity === "celestial" ? "border: 2px solid transparent; border-image: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1; animation: celestialRainbow 3s linear infinite;" : `border-color:${st.color};`} box-shadow:${st.glow};">
           <div style="display:flex; gap:.6rem; align-items:center;">
             <img src="${item.icon}" alt="${item.name}" style="width:64px;height:64px;border-radius:8px; object-fit:cover;" />
             <div>
-              <div style="font-weight:900; color:${st.color};">${item.name} <span style="font-size:.85em; opacity:.95; color:${st.color};">(${item.rarityName})</span></div>
+              <div style="font-weight:900; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">${item.name} <span style="font-size:.85em; opacity:.95; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">(${item.rarityName})</span></div>
               <div class="text-sm" style="display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.25rem;">
                 <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25);">+${item.stats.perClick || 0}/click</span>
                 <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25);">+${item.stats.perSec || 0}/sec</span>
                 <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25);">+${item.stats.critChance || 0}%</span>
               </div>
-              <div class="text-xs" style="margin-top:.25rem; color:var(--text-primary);">Qty: <span style="padding:.05rem .4rem; border:1px solid var(--border-color); border-radius:999px; background:rgba(0,0,0,.25); font-weight:800; color:${st.color};">${item.q || 1}</span></div>
+              <div class="text-xs" style="margin-top:.25rem; color:var(--text-primary);">Qty: <span style="padding:.05rem .4rem; border:1px solid var(--border-color); border-radius:999px; background:rgba(0,0,0,.25); font-weight:800; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">${item.q || 1}</span></div>
             </div>
           </div>
           <div class="text-xs" style="margin-top:.6rem; padding:.4rem .6rem; background:rgba(101,255,218,.1); border:1px solid rgba(101,255,218,.3); border-radius:8px; color:#65ffda; text-align:center;">
@@ -1529,17 +1529,17 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
         </div>
       `
         : `
-        <div class="neon-card" style="padding:.75rem; border-color:${st.color}; box-shadow:${st.glow};">
+        <div class="neon-card" style="padding:.75rem; ${item.rarity === "celestial" ? "border: 2px solid transparent; border-image: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1; animation: celestialRainbow 3s linear infinite;" : `border-color:${st.color};`} box-shadow:${st.glow};">
           <div style="display:flex; gap:.6rem; align-items:center;">
             <img src="${item.icon}" alt="${item.name}" style="width:64px;height:64px;border-radius:8px; object-fit:cover;" />
             <div>
-              <div style="font-weight:900; color:${st.color};">${item.name} <span style="font-size:.85em; opacity:.95; color:${st.color};">(${item.rarityName})</span></div>
+              <div style="font-weight:900; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">${item.name} <span style="font-size:.85em; opacity:.95; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">(${item.rarityName})</span></div>
               <div class="text-sm" style="display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.25rem;">
                 <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25);">+${item.stats.perClick || 0}/click</span>
                 <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25);">+${item.stats.perSec || 0}/sec</span>
                 <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25);">+${item.stats.critChance || 0}%</span>
               </div>
-              <div class="text-xs" style="margin-top:.25rem; color:var(--text-primary);">Qty: <span style="padding:.05rem .4rem; border:1px solid var(--border-color); border-radius:999px; background:rgba(0,0,0,.25); font-weight:800; color:${st.color};">${item.q || 1}</span></div>
+              <div class="text-xs" style="margin-top:.25rem; color:var(--text-primary);">Qty: <span style="padding:.05rem .4rem; border:1px solid var(--border-color); border-radius:999px; background:rgba(0,0,0,.25); font-weight:800; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">${item.q || 1}</span></div>
             </div>
           </div>
           <div class="text-xs" style="margin-top:.6rem; padding:.4rem .6rem; background:rgba(255,152,0,.1); border:1px solid rgba(255,152,0,.3); border-radius:8px; color:#ff9800; text-align:center;">

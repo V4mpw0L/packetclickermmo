@@ -15,9 +15,11 @@
 - **Animated Borders** - Dynamic rainbow gradients that rotate around item borders
 - **Rainbow Text Animation** - Celestial rarity names animate with matching rainbow colors and glow
 - **Equipment Header Rainbow** - "Celestial" text in equipment section features full rainbow animation
+- **Item Modal Rainbow** - Celestial item names, rarity text, quantity numbers, and modal borders all rainbow animated
+- **Inventory Rainbow** - Celestial quantity numbers (x1, x2, etc.) now feature rainbow animation
 - **Color Cycling** - Smooth transitions through pink, green, purple, and orange hues
 - **Enhanced Glow** - Celestial items feature stronger glow effects matching their border colors
-- **Inventory Integration** - Rainbow effects work seamlessly in equipment slots and inventory grid
+- **100% Coverage** - Rainbow effects now work perfectly across ALL UI locations and elements
 
 ### 🎮 **Developer Commands**
 - **Console Command** - Use `spawnCelestial()` in browser console to instantly spawn a celestial item
@@ -27,7 +29,7 @@
 - **Celestial Support** - "Sell All" now includes Celestial rarity option with full rainbow effects
 - **Animated Background** - Celestial sell button features rainbow background animation
 - **Rainbow Border** - Matching rainbow border animation for visual consistency
-- **Complete Coverage** - All 6 rarity tiers now supported in bulk selling interface
+- **Perfect Integration** - All 6 rarity tiers now supported with complete visual consistency
 
 ## Version 0.0.20 - Firebase Integration & UI Stability Enhancement
 *Released: January 2025*
