@@ -358,8 +358,12 @@ body .modal-box .space-y-3 > * + * {
     justify-self: end;
     flex: 0 0 auto;
     min-width: max-content;
-    margin-right: 1rem;
-    padding-right: 0.5rem;
+    margin-right: 2rem !important;
+    padding-right: 1rem !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+    position: relative;
+    right: 0.5rem !important;
 }
 .top-bar .controls #gem-display {
     display: none;
