@@ -344,7 +344,7 @@ body .modal-box .space-y-3 > * + * {
     top: env(safe-area-inset-top, 0px);
     z-index: 100;
     backdrop-filter: saturate(120%) blur(6px);
-    overflow: hidden;
+    overflow: visible;
 }
 
 .top-bar .user-info {

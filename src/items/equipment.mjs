@@ -1262,12 +1262,12 @@ function slotHeaderHTML(item, slotName, slotId) {
     <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.4rem; flex:1; min-width:0; padding:.8rem; position:relative; text-align:center;">
       <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:8px;${imgBorderStyle}box-shadow:${st.glow}; object-fit:cover; flex-shrink:0; ${imgAnimationStyle}" />
       <div style="flex:1; min-width:0; width:100%;">
-        <div style="font-weight:800; color:${st.color}; line-height:1.1; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:.2rem;">${item.name}</div>
+        <div style="font-weight:800; ${item.rarity === "celestial" ? "animation: celestialTextOnly 3s linear infinite;" : `color:${st.color};`} line-height:1.1; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:.2rem;">${item.name}</div>
         <div class="text-xs" style="opacity:.85; color:${st.color}; line-height:1; margin-bottom:.3rem; ${item.rarity === "celestial" ? "animation: celestialTextOnly 3s linear infinite;" : ""}">${item.rarityName}</div>
         <div style="display:flex; gap:.3rem; flex-wrap:nowrap; align-items:center; justify-content:center;">
-          <span style="padding:.06rem .35rem; ${item.rarity === "celestial" ? "border: 1px solid #ff0080; box-shadow: 0 0 4px rgba(255,0,128,0.6); animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.perClick || 0}/click</span>
-          <span style="padding:.06rem .35rem; ${item.rarity === "celestial" ? "border: 1px solid #ff0080; box-shadow: 0 0 4px rgba(255,0,128,0.6); animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.perSec || 0}/sec</span>
-          <span style="padding:.06rem .35rem; ${item.rarity === "celestial" ? "border: 1px solid #ff0080; box-shadow: 0 0 4px rgba(255,0,128,0.6); animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.critChance || 0}% crit</span>
+          <span style="padding:.06rem .35rem; border: 1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.perClick || 0}/click</span>
+          <span style="padding:.06rem .35rem; border: 1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.perSec || 0}/sec</span>
+          <span style="padding:.06rem .35rem; border: 1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.critChance || 0}% crit</span>
         </div>
       </div>
       <button data-unequip-slot="${slotId}" aria-label="Unequip" title="Unequip" style="position:absolute; top:6px; right:6px; width:22px; height:22px; padding:0; font-size:13px; line-height:1; border-radius:50%; background:#ff4757; border:1px solid #ff3742; color:white; cursor:pointer; z-index:2; display:flex; align-items:center; justify-content:center; font-weight:bold;">✕</button>
@@ -1287,8 +1287,14 @@ export function renderTab(state) {
   const slotCards = SLOTS.map((s) => {
     const it = state.equipment[s.id];
     const st = it ? rarityStyles(it.rarity) : null;
+    const borderStyle = st
+      ? it?.rarity === "celestial"
+        ? `border: ${st.border}; border-image: ${st.borderImage}; animation: ${st.animation};`
+        : `border-color:${st.color};`
+      : "background: linear-gradient(135deg, #1a222a, #202a35); border-color: #334455; filter: grayscale(0.25);";
+
     return `
-      <div class="neon-card" data-eq-slot="${s.id}" style="width:100%; max-width:100%; margin:0; height:auto; min-height:85px; ${st ? `border-color:${st.color};` : "background: linear-gradient(135deg, #1a222a, #202a35); border-color: #334455; filter: grayscale(0.25);"} position:relative;">
+      <div class="neon-card" data-eq-slot="${s.id}" style="width:100%; max-width:100%; margin:0; height:auto; min-height:85px; ${borderStyle} position:relative;">
         ${slotHeaderHTML(it, s.name, s.id)}
       </div>
     `;
