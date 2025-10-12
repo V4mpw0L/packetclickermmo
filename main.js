@@ -1931,6 +1931,129 @@ function upgrade(type) {
   showHudNotify("Upgrade purchased!", "🛠️");
 }
 
+// Comprehensive save migration function to update old saves
+function migrateSaveToCurrentVersion(state) {
+  console.log("[Migration] Checking save compatibility with version 0.0.17");
+
+  // Ensure all prestige upgrades exist
+  if (!state.prestige) state.prestige = {};
+  const prestigeDefaults = {
+    level: 0,
+    dataShards: 0,
+    totalPrestigeClicks: 0,
+    autoClicker: 0,
+    packetBoost: 0,
+    gemFind: 0,
+    critBoost: 0,
+    offlineEarnings: 0,
+    luckyClicks: 0,
+    megaCrits: 0,
+    gemMagnet: 0,
+  };
+  Object.keys(prestigeDefaults).forEach((key) => {
+    if (typeof state.prestige[key] !== "number") {
+      state.prestige[key] = prestigeDefaults[key];
+    }
+  });
+
+  // Ensure all boost types exist
+  if (!state.boosts) state.boosts = {};
+  const boostDefaults = {
+    doublePackets: 0,
+    tripleGems: 0,
+    quadrupleClick: 0,
+    megaCrit: 0,
+    autoClicker: 0,
+  };
+  Object.keys(boostDefaults).forEach((key) => {
+    if (typeof state.boosts[key] !== "number") {
+      state.boosts[key] = boostDefaults[key];
+    }
+  });
+
+  // Ensure random event system exists
+  if (!state.randomEvent || typeof state.randomEvent !== "object") {
+    state.randomEvent = {
+      active: false,
+      type: null,
+      endTime: 0,
+      multiplier: 1,
+    };
+  }
+
+  // Ensure daily rewards system exists
+  if (!state.dailyRewards || typeof state.dailyRewards !== "object") {
+    state.dailyRewards = {
+      lastClaim: 0,
+      streak: 0,
+    };
+  }
+
+  // Ensure themes system exists
+  if (!state.themes || typeof state.themes !== "object") {
+    state.themes = {};
+  }
+  if (typeof state.theme !== "string") {
+    state.theme = "cyberpunk";
+  }
+
+  // Ensure stats tracking exists
+  if (!state.stats || typeof state.stats !== "object") {
+    state.stats = {
+      totalClicks: 0,
+      totalPackets: 0,
+      totalUpgrades: 0,
+      sessionStart: Date.now(),
+    };
+  }
+
+  // Ensure player properties exist
+  if (!state.player || typeof state.player !== "object") {
+    state.player = {};
+  }
+  if (typeof state.player.name !== "string") state.player.name = "Player";
+  if (typeof state.player.avatar !== "string") {
+    state.player.avatar =
+      "https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker";
+  }
+  if (typeof state.player.sound !== "boolean") state.player.sound = true;
+  if (typeof state.player.vipUntil !== "number") state.player.vipUntil = 0;
+  if (typeof state.player.noAds !== "boolean") state.player.noAds = false;
+
+  // Ensure shop properties exist
+  if (!state.shop || typeof state.shop !== "object") {
+    state.shop = {};
+  }
+  if (typeof state.shop.skinBought !== "boolean") state.shop.skinBought = false;
+
+  // Ensure core game values are properly set
+  if (typeof state.packets !== "number") state.packets = 0;
+  if (typeof state.gems !== "number") state.gems = 0;
+  if (typeof state.perClick !== "number") state.perClick = 1;
+  if (typeof state.perSec !== "number") state.perSec = 0;
+  if (typeof state.critChance !== "number") state.critChance = 0;
+  if (typeof state.critMult !== "number") state.critMult = 2;
+
+  // Ensure upgrades exist
+  if (!state.upgrades || typeof state.upgrades !== "object") {
+    state.upgrades = { click: 0, idle: 0, crit: 0 };
+  }
+  if (typeof state.upgrades.click !== "number") state.upgrades.click = 0;
+  if (typeof state.upgrades.idle !== "number") state.upgrades.idle = 0;
+  if (typeof state.upgrades.crit !== "number") state.upgrades.crit = 0;
+
+  // Ensure achievements array exists
+  if (!Array.isArray(state.achievements)) state.achievements = [];
+
+  // Ensure ads setting exists
+  if (typeof state.ads !== "boolean") state.ads = true;
+
+  // Equipment system migration is handled by Equipment.ensureStateShape()
+
+  console.log("[Migration] Save updated to version 0.0.17 compatibility");
+  return state;
+}
+
 function idleTick() {
   let bonus = isVIP() ? 1.25 : 1;
 
@@ -2621,6 +2744,10 @@ function init() {
     } catch (_) {}
   }
   load();
+
+  // Comprehensive save migration - ensure ALL new features are added to old saves
+  migrateSaveToCurrentVersion(state);
+
   if (typeof Equipment !== "undefined" && Equipment.ensureStateShape) {
     Equipment.ensureStateShape(state);
   }

@@ -308,6 +308,15 @@
       merged.upgrades.idle = Math.max(0, Number(merged.upgrades.idle) || 0);
       merged.upgrades.crit = Math.max(0, Number(merged.upgrades.crit) || 0);
 
+      // Ensure all equipment/inventory properties exist for v0.0.17+
+      if (!Array.isArray(merged.inventory)) merged.inventory = [];
+      if (!merged.equipment || typeof merged.equipment !== "object") {
+        merged.equipment = {};
+      }
+      if (typeof merged._invCapacity !== "number") merged._invCapacity = 100;
+      if (typeof merged._invPage !== "number") merged._invPage = 0;
+      if (typeof merged._dropClicks !== "number") merged._dropClicks = 0;
+
       return merged;
     }
 
