@@ -1171,6 +1171,9 @@ function slotHeaderHTML(item, slotName, slotId) {
 export function renderTab(state) {
   ensureStateShape(state);
 
+  // Calculate total equipment stats
+  const totalStats = computeBonuses(state);
+
   const slotCards = SLOTS.map((s) => {
     const it = state.equipment[s.id];
     const st = it ? rarityStyles(it.rarity) : null;
@@ -1258,6 +1261,16 @@ export function renderTab(state) {
         <span style="color:${rarityById("animal").color}">Red</span>
       </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 0.5rem; width: 100%; box-sizing: border-box;">${slotCards}</div>
+
+      <div style="background: linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1)); border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 0.75rem; margin: 1rem 0; text-align: center;">
+        <div class="text-neon-gray text-xs mb-2" style="font-weight: 600; opacity: 0.8;">⚡ TOTAL EQUIPMENT BONUSES ⚡</div>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; flex-wrap: wrap;">
+          <span style="padding: 0.2rem 0.5rem; border: 1px solid var(--border-color); border-radius: 999px; color: #65ffda; background: rgba(0,0,0,0.25); font-weight: 600; font-size: 0.85rem; min-width: 70px;">+${totalStats.perClick || 0} Click</span>
+          <span style="padding: 0.2rem 0.5rem; border: 1px solid var(--border-color); border-radius: 999px; color: #ffe08a; background: rgba(0,0,0,0.25); font-weight: 600; font-size: 0.85rem; min-width: 70px;">+${totalStats.perSec || 0} Sec</span>
+          <span style="padding: 0.2rem 0.5rem; border: 1px solid var(--border-color); border-radius: 999px; color: #ff88ff; background: rgba(0,0,0,0.25); font-weight: 600; font-size: 0.85rem; min-width: 70px;">+${totalStats.critChance || 0}% Crit</span>
+        </div>
+      </div>
+
       <div class="text-neon-gray text-sm mt-3 mb-1" style="display:flex; align-items:center; justify-content:center; gap:.5rem; margin-top:1rem;">
         <span style="font-weight:800;">Inventory</span>
         <span class="text-xs" style="opacity:.9; padding:.15rem .55rem; border:1px solid var(--border-color); border-radius:999px; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">${Math.min(totalItems, capacity)}/${capacity}</span>
