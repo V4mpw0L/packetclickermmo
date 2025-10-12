@@ -216,8 +216,8 @@ async function getStorageApi() {
  * Returns a sanitized https URL or empty string on failure.
  */
 async function maybeUploadAvatar(id, avatar) {
+  const raw = String(avatar || "");
   try {
-    const raw = String(avatar || "");
     if (!raw.startsWith("data:")) {
       return sanitizeAvatar(raw);
     }
