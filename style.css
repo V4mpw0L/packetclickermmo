@@ -1904,6 +1904,145 @@ footer {
     }
 }
 
+@keyframes celestialRainbow {
+    0% {
+        border-image: linear-gradient(
+                0deg,
+                #ff0080,
+                #00ff80,
+                #8000ff,
+                #ff8000,
+                #ff0080
+            )
+            1;
+        box-shadow: 0 0 20px rgba(255, 0, 128, 0.8);
+    }
+    25% {
+        border-image: linear-gradient(
+                90deg,
+                #00ff80,
+                #8000ff,
+                #ff8000,
+                #ff0080,
+                #00ff80
+            )
+            1;
+        box-shadow: 0 0 20px rgba(0, 255, 128, 0.8);
+    }
+    50% {
+        border-image: linear-gradient(
+                180deg,
+                #8000ff,
+                #ff8000,
+                #ff0080,
+                #00ff80,
+                #8000ff
+            )
+            1;
+        box-shadow: 0 0 20px rgba(128, 0, 255, 0.8);
+    }
+    75% {
+        border-image: linear-gradient(
+                270deg,
+                #ff8000,
+                #ff0080,
+                #00ff80,
+                #8000ff,
+                #ff8000
+            )
+            1;
+        box-shadow: 0 0 20px rgba(255, 128, 0, 0.8);
+    }
+    100% {
+        border-image: linear-gradient(
+                360deg,
+                #ff0080,
+                #00ff80,
+                #8000ff,
+                #ff8000,
+                #ff0080
+            )
+            1;
+        box-shadow: 0 0 20px rgba(255, 0, 128, 0.8);
+    }
+}
+
+@keyframes celestialTextRainbow {
+    0% {
+        color: #ff0080;
+        text-shadow: 0 0 8px rgba(255, 0, 128, 0.8);
+    }
+    25% {
+        color: #00ff80;
+        text-shadow: 0 0 8px rgba(0, 255, 128, 0.8);
+    }
+    50% {
+        color: #8000ff;
+        text-shadow: 0 0 8px rgba(128, 0, 255, 0.8);
+    }
+    75% {
+        color: #ff8000;
+        text-shadow: 0 0 8px rgba(255, 128, 0, 0.8);
+    }
+    100% {
+        color: #ff0080;
+        text-shadow: 0 0 8px rgba(255, 0, 128, 0.8);
+    }
+}
+
+@keyframes celestialRainbowBg {
+    0% {
+        background: linear-gradient(
+            45deg,
+            #ff0080,
+            #00ff80,
+            #8000ff,
+            #ff8000,
+            #ff0080
+        );
+    }
+    25% {
+        background: linear-gradient(
+            135deg,
+            #00ff80,
+            #8000ff,
+            #ff8000,
+            #ff0080,
+            #00ff80
+        );
+    }
+    50% {
+        background: linear-gradient(
+            225deg,
+            #8000ff,
+            #ff8000,
+            #ff0080,
+            #00ff80,
+            #8000ff
+        );
+    }
+    75% {
+        background: linear-gradient(
+            315deg,
+            #ff8000,
+            #ff0080,
+            #00ff80,
+            #8000ff,
+            #ff8000
+        );
+    }
+    100% {
+        background: linear-gradient(
+            45deg,
+            #ff0080,
+            #00ff80,
+            #8000ff,
+            #ff8000,
+            #ff0080
+        );
+    }
+}
+
 @keyframes floatUpAndFadeOut {
     0% {
         opacity: 1;
@@ -3226,8 +3365,6 @@ footer {
             right: auto;
             top: auto;
         }
-            margin-top: 0.5rem;
-        }
 
         #vip-badge {
             margin-right: 0;
@@ -3816,7 +3953,9 @@ footer {
     }
 
     /* iOS specific gentle fixes */
-    input, select, textarea {
+    input,
+    select,
+    textarea {
         font-size: 16px !important;
     }
 

@@ -25,7 +25,7 @@
 - **Visual Cursor Changes** that reflect your current combo tier
 
 ### 📦 **Revolutionary Equipment System**
-- **100 Unique Items** across 5 rarity tiers with beautiful sprite artwork
+- **100 Unique Items** across 6 rarity tiers with beautiful sprite artwork
 - **4 Equipment Slots** in a compact 2x2 grid layout for optimal space usage
 - **Smart Equipment UI** with centered item display, stats, and one-click equipping
 - **Balanced Item Economy** with doubled selling rewards:

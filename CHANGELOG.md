@@ -1,5 +1,34 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.21 - Celestial Rarity & Rainbow Effects
+*Released: January 2025*
+
+### ✨ **New Celestial Rarity Tier**
+- **CELESTIAL Items** - Introducing the ultimate rarity tier with animated rainbow borders
+- **Rainbow Animation** - Beautiful color-shifting border effects that cycle through vibrant hues
+- **Double Animal Stats** - Celestial items have 2x the power of Animal rarity (30-60x multipliers)
+- **Ultra-Rare Drops** - Even rarer than Animal rarity with 0.01% base drop chance
+- **Premium Pricing** - Celestial items sell for 40,000 packets each
+- **Visual Excellence** - Enhanced glow effects and smooth 3-second rainbow cycles
+
+### 🌈 **Enhanced Visual Effects**
+- **Animated Borders** - Dynamic rainbow gradients that rotate around item borders
+- **Rainbow Text Animation** - Celestial rarity names animate with matching rainbow colors and glow
+- **Equipment Header Rainbow** - "Celestial" text in equipment section features full rainbow animation
+- **Color Cycling** - Smooth transitions through pink, green, purple, and orange hues
+- **Enhanced Glow** - Celestial items feature stronger glow effects matching their border colors
+- **Inventory Integration** - Rainbow effects work seamlessly in equipment slots and inventory grid
+
+### 🎮 **Developer Commands**
+- **Console Command** - Use `spawnCelestial()` in browser console to instantly spawn a celestial item
+- **Debug Support** - Easy testing and demonstration of new rarity tier for development
+
+### 🛒 **Enhanced Sell All System**
+- **Celestial Support** - "Sell All" now includes Celestial rarity option with full rainbow effects
+- **Animated Background** - Celestial sell button features rainbow background animation
+- **Rainbow Border** - Matching rainbow border animation for visual consistency
+- **Complete Coverage** - All 6 rarity tiers now supported in bulk selling interface
+
 ## Version 0.0.20 - Firebase Integration & UI Stability Enhancement
 *Released: January 2025*
 

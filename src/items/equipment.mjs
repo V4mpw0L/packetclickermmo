@@ -99,6 +99,13 @@ export const RARITIES = [
     weight: 0.05,
     border: "1px solid rgba(255,48,64,1.0)",
   },
+  {
+    id: "celestial",
+    name: "Celestial",
+    color: "#ffffff",
+    weight: 0.01,
+    border: "2px solid #ffffff",
+  },
 ];
 
 /**
@@ -912,6 +919,14 @@ export function rollStatsFor(rarityId, slotId) {
       minPerSec: 12,
       minCrit: 20,
     },
+    celestial: {
+      min: 30.0,
+      max: 60.0,
+      basePrice: 100000,
+      minPerClick: 30,
+      minPerSec: 24,
+      minCrit: 40,
+    },
   };
 
   const range = rarityRanges[r.id] || rarityRanges.green;
@@ -1203,6 +1218,19 @@ export function unequip(state, slot) {
 function rarityStyles(rarityId) {
   const r = rarityById(rarityId);
   const isAnimal = r.id === "animal";
+  const isCelestial = r.id === "celestial";
+
+  if (isCelestial) {
+    return {
+      color: "#ffffff",
+      border: "2px solid transparent",
+      borderImage:
+        "linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1",
+      glow: "0 0 20px rgba(255,255,255,0.8)",
+      animation: "celestialRainbow 3s linear infinite",
+    };
+  }
+
   return {
     color: r.color,
     border: `1.5px solid ${r.color}`,
@@ -1225,12 +1253,17 @@ function slotHeaderHTML(item, slotName, slotId) {
     `;
   }
   const st = rarityStyles(item.rarity);
+  const imgBorderStyle =
+    item.rarity === "celestial"
+      ? `border: ${st.border}; border-image: ${st.borderImage};`
+      : `border:${st.border};`;
+  const imgAnimationStyle = st.animation ? `animation: ${st.animation};` : "";
   return `
     <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.4rem; flex:1; min-width:0; padding:.8rem; position:relative; text-align:center;">
-      <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:8px;border:${st.border};box-shadow:${st.glow}; object-fit:cover; flex-shrink:0;" />
+      <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:8px;${imgBorderStyle}box-shadow:${st.glow}; object-fit:cover; flex-shrink:0; ${imgAnimationStyle}" />
       <div style="flex:1; min-width:0; width:100%;">
         <div style="font-weight:800; color:${st.color}; line-height:1.1; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:.2rem;">${item.name}</div>
-        <div class="text-xs" style="opacity:.85; color:${st.color}; line-height:1; margin-bottom:.3rem;">${item.rarityName}</div>
+        <div class="text-xs" style="opacity:.85; color:${st.color}; line-height:1; margin-bottom:.3rem; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : ""}">${item.rarityName}</div>
         <div style="display:flex; gap:.3rem; flex-wrap:nowrap; align-items:center; justify-content:center;">
           <span style="padding:.06rem .35rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.perClick || 0}/click</span>
           <span style="padding:.06rem .35rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.perSec || 0}/sec</span>
@@ -1278,14 +1311,18 @@ export function renderTab(state) {
       const st = rarityStyles(it.rarity);
       const absIndex = start + i;
       const animationStyle = st.animation ? `animation: ${st.animation};` : "";
+      const borderStyle =
+        it.rarity === "celestial"
+          ? `border: ${st.border}; border-image: ${st.borderImage};`
+          : `border-color:${st.color};`;
       return `
-          <div class="neon-card" style="padding:.3rem; border-color:${st.color}; box-shadow:${st.glow}; ${animationStyle} display:flex; align-items:center; justify-content:center; width:100%; max-width:100%; margin:0; aspect-ratio:1/1;">
+          <div class="neon-card" style="padding:.3rem; ${borderStyle} box-shadow:${st.glow}; ${animationStyle} display:flex; align-items:center; justify-content:center; width:100%; max-width:100%; margin:0; aspect-ratio:1/1;">
             <button class="neon-btn" data-open-item-index="${absIndex}" style="width:100%; height:100%; background: transparent; border:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.2rem; padding:.2rem;">
               <div style="position:relative; display:inline-block; width:72%; height:72%;">
                 <img src="${it.icon}" alt="${it.name}" style="width:100%;height:100%;border-radius:6px; box-sizing:border-box; object-fit:cover;" />
                 <span style="position:absolute; bottom:2px; right:2px; background: rgba(0,0,0,0.6); border:1px solid var(--border-color); border-radius:10px; padding:0 6px; font-size:.7rem; font-weight:800; color:${st.color};">x${it.q || 1}</span>
               </div>
-              <div style="font-size:.7rem; font-weight:700; color:${st.color}; text-align:center; line-height:1;">${it.rarityName}</div>
+              <div style="font-size:.7rem; font-weight:700; color:${st.color}; text-align:center; line-height:1; ${it.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : ""}">${it.rarityName}</div>
             </button>
           </div>`;
     })
@@ -1326,6 +1363,67 @@ export function renderTab(state) {
         0%, 100% { box-shadow: 0 0 15px rgba(255,48,64,0.6); }
         50% { box-shadow: 0 0 25px rgba(255,48,64,0.9), 0 0 35px rgba(255,48,64,0.4); }
       }
+      @keyframes celestialRainbow {
+        0% {
+          border-image: linear-gradient(0deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1;
+          box-shadow: 0 0 20px rgba(255,0,128,0.8);
+        }
+        25% {
+          border-image: linear-gradient(90deg, #00ff80, #8000ff, #ff8000, #ff0080, #00ff80) 1;
+          box-shadow: 0 0 20px rgba(0,255,128,0.8);
+        }
+        50% {
+          border-image: linear-gradient(180deg, #8000ff, #ff8000, #ff0080, #00ff80, #8000ff) 1;
+          box-shadow: 0 0 20px rgba(128,0,255,0.8);
+        }
+        75% {
+          border-image: linear-gradient(270deg, #ff8000, #ff0080, #00ff80, #8000ff, #ff8000) 1;
+          box-shadow: 0 0 20px rgba(255,128,0,0.8);
+        }
+        100% {
+          border-image: linear-gradient(360deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1;
+          box-shadow: 0 0 20px rgba(255,0,128,0.8);
+        }
+      }
+      @keyframes celestialTextRainbow {
+        0% {
+          color: #ff0080;
+          text-shadow: 0 0 8px rgba(255,0,128,0.8);
+        }
+        25% {
+          color: #00ff80;
+          text-shadow: 0 0 8px rgba(0,255,128,0.8);
+        }
+        50% {
+          color: #8000ff;
+          text-shadow: 0 0 8px rgba(128,0,255,0.8);
+        }
+        75% {
+          color: #ff8000;
+          text-shadow: 0 0 8px rgba(255,128,0,0.8);
+        }
+        100% {
+          color: #ff0080;
+          text-shadow: 0 0 8px rgba(255,0,128,0.8);
+        }
+      }
+      @keyframes celestialRainbowBg {
+        0% {
+          background: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080);
+        }
+        25% {
+          background: linear-gradient(135deg, #00ff80, #8000ff, #ff8000, #ff0080, #00ff80);
+        }
+        50% {
+          background: linear-gradient(225deg, #8000ff, #ff8000, #ff0080, #00ff80, #8000ff);
+        }
+        75% {
+          background: linear-gradient(315deg, #ff8000, #ff0080, #00ff80, #8000ff, #ff8000);
+        }
+        100% {
+          background: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080);
+        }
+      }
     </style>
     <div class="neon-card px-3 py-4 mb-2">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🧰 Equipment</h2>
@@ -1335,7 +1433,8 @@ export function renderTab(state) {
         <span style="color:${rarityById("gold").color}">Gold</span> ·
         <span style="color:${rarityById("blue").color}">Blue</span> ·
         <span style="color:${rarityById("pink").color}">Pink</span> ·
-        <span style="color:${rarityById("animal").color}">Red</span>
+        <span style="color:${rarityById("animal").color}">Red</span> ·
+        <span style="animation: celestialTextRainbow 3s linear infinite;">Celestial</span>
       </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 0.5rem; width: 100%; box-sizing: border-box;">${slotCards}</div>
 
@@ -1393,6 +1492,7 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
         blue: 1000,
         pink: 5000,
         animal: 20000,
+        celestial: 40000,
       };
       const price = priceMap[item.rarity] || 10;
 
@@ -1572,7 +1672,15 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
       if (!state.inventory || state.inventory.length === 0) return;
 
       // Show sell all options modal
-      const rarityOptions = ["all", "green", "gold", "blue", "pink", "animal"];
+      const rarityOptions = [
+        "all",
+        "green",
+        "gold",
+        "blue",
+        "pink",
+        "animal",
+        "celestial",
+      ];
       const optionButtons = rarityOptions
         .map((rarity) => {
           const label =
@@ -1580,7 +1688,9 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
               ? "All Items"
               : rarity === "animal"
                 ? "Red Only"
-                : `${rarity.charAt(0).toUpperCase() + rarity.slice(1)} Only`;
+                : rarity === "celestial"
+                  ? "Celestial Only"
+                  : `${rarity.charAt(0).toUpperCase() + rarity.slice(1)} Only`;
 
           // Get background color for each rarity
           let backgroundColor = "";
@@ -1609,7 +1719,7 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
               break;
           }
 
-          return `<button class="neon-btn w-full mb-2" data-sell-rarity="${rarity}" style="background: ${backgroundColor}; color: ${textColor}; border-color: ${rarity === "all" ? "#666" : rarityById(rarity).color};">${label}</button>`;
+          return `<button class="neon-btn w-full mb-2" data-sell-rarity="${rarity}" style="${rarity === "celestial" ? "animation: celestialRainbow 3s linear infinite, celestialRainbowBg 3s linear infinite; background-size: 400% 400%; color: white; border-color: #ffffff;" : `background: ${backgroundColor}; color: ${textColor}; border-color: ${rarity === "all" ? "#666" : rarityById(rarity).color};`}">${label}</button>`;
         })
         .join("");
 
@@ -1636,6 +1746,7 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
                 blue: 1000,
                 pink: 5000,
                 animal: 20000,
+                celestial: 40000,
               };
 
               let totalValue = 0;
@@ -1779,6 +1890,31 @@ export const Equipment = {
   bindEvents,
   equip,
   unequip,
+  spawnCelestial: () => {
+    const state =
+      typeof window !== "undefined" && window.state ? window.state : {};
+    if (
+      state &&
+      typeof rollDrop === "function" &&
+      typeof awardDrop === "function"
+    ) {
+      const celestialItem = rollDrop(state, {
+        rarity: rarityById("celestial"),
+      });
+      const success = awardDrop(state, celestialItem);
+      if (success && typeof window !== "undefined" && window.showHudNotify) {
+        window.showHudNotify(
+          `🌟 Celestial ${celestialItem.name} spawned!`,
+          "✨",
+        );
+      }
+      if (typeof window !== "undefined" && window.save) {
+        window.save();
+      }
+      return celestialItem;
+    }
+    return null;
+  },
 };
 
 export default Equipment;
@@ -1797,6 +1933,9 @@ try {
         Equipment,
       ),
     });
+
+    // Expose spawnCelestial as a global command for easy console access
+    g.spawnCelestial = Equipment.spawnCelestial;
   }
 } catch {
   // ignore
