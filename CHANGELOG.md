@@ -1,5 +1,39 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.20 - Firebase Integration & UI Stability Enhancement
+*Released: January 2025*
+
+### 🔥 **Firebase Storage Integration**
+- **Custom Avatar Uploads** - Players can now upload custom avatars that sync across all devices
+- **Firebase Storage Rules** - Secure avatar upload validation with 2MB file size limits
+- **Cross-Device Sync** - Custom avatars visible to all players in real-time
+- **Upload Fallback System** - Graceful handling of network/ad blocker issues
+
+### 🎯 **UI Stability & Layout Fixes**
+- **Fixed Button Shifting** - Equipment and Settings buttons no longer move when numbers change
+- **Layout Stability** - Stats displays have fixed minimum widths preventing layout shifts
+- **Profile Form Protection** - Changing player name no longer resets custom avatars
+- **Mobile Responsive** - All fixes work seamlessly across desktop and mobile devices
+
+### 🧰 **Smart Equipment System Enhancement**
+- **Auto-Equip Logic** - Automatically equips items to empty slots (1-4) without user selection
+- **Smart Modal System** - Only shows slot selection when all slots are occupied
+- **Dynamic UI Feedback** - Color-coded info bars showing auto-equip vs manual selection
+- **Professional Notifications** - Enhanced equip notifications with specific slot names
+
+### 🛠️ **Technical Improvements**
+- **Error Handling Enhancement** - Better Firebase network error detection and handling
+- **Data URL Support** - Firestore rules updated to support custom avatar data URLs
+- **Avatar Sanitization** - Improved avatar validation and fallback mechanisms
+- **Console Cleanup** - Network errors now show as warnings instead of scary errors
+
+### 🔧 **Developer Experience**
+- **Firebase Rules Updated** - Both Firestore and Storage rules optimized for performance
+- **Service Worker Cache** - VIP icon added to cached assets for faster loading
+- **Version Consistency** - All components properly aligned to v0.0.20
+
+---
+
 ## Version 0.0.19 - VIP Icon Enhancement & Premium Shop Polish
 *Released: January 2025*
 

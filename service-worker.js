@@ -1,4 +1,4 @@
-// Derive VERSION from constants UMD when available; fallback to 0.0.19
+// Derive VERSION from constants UMD when available; fallback to 0.0.20
 const VERSION = (() => {
   try {
     // Load constants to access Packet.data.APP_VERSION if available
@@ -15,7 +15,7 @@ const VERSION = (() => {
     console.log("[SW] Could not load constants, using fallback version");
     // ignore, fall back below
   }
-  return "0.0.19";
+  return "0.0.20";
 })();
 
 const CACHE_NAME = "packet-clicker-cache-v" + VERSION;

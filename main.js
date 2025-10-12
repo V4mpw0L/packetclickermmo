@@ -1433,7 +1433,7 @@ function showEditProfile() {
       }
     } catch (_) {}
     try {
-      window.VERSION = "0.0.19";
+      window.VERSION = "0.0.20";
     } catch (_) {}
 
     updateTopBar();
@@ -1552,7 +1552,7 @@ function showSettings() {
         // Persist and refresh UI
         save();
         try {
-          window.VERSION = "0.0.19";
+          window.VERSION = "0.0.20";
         } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {
@@ -1992,7 +1992,7 @@ function upgrade(type) {
 
 // Comprehensive save migration function to update old saves
 function migrateSaveToCurrentVersion(state) {
-  console.log("[Migration] Checking save compatibility with version 0.0.19");
+  console.log("[Migration] Checking save compatibility with version 0.0.20");
 
   // Ensure all prestige upgrades exist
   if (!state.prestige) state.prestige = {};
@@ -2109,7 +2109,7 @@ function migrateSaveToCurrentVersion(state) {
 
   // Equipment system migration is handled by Equipment.ensureStateShape()
 
-  console.log("[Migration] Save updated to version 0.0.19 compatibility");
+  console.log("[Migration] Save updated to version 0.0.20 compatibility");
   return state;
 }
 
