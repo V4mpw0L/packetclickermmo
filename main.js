@@ -428,33 +428,33 @@ function renderGame() {
   // Active boosts
   if (state.boosts.doublePackets > Date.now()) {
     let remaining = Math.ceil((state.boosts.doublePackets - Date.now()) / 1000);
-    boostStatus += `<div class="text-green-400 text-xs">🚀 2x Packets (${remaining}s)</div>`;
+    boostStatus += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; margin-bottom:0.25rem; display:inline-block;">🚀 2x Packets (${remaining}s)</div>`;
     totalMultiplier *= 2;
   }
   if (state.boosts.quadrupleClick > Date.now()) {
     let remaining = Math.ceil(
       (state.boosts.quadrupleClick - Date.now()) / 1000,
     );
-    boostStatus += `<div class="text-green-400 text-xs">🖱️ 4x Click Power (${remaining}s)</div>`;
+    boostStatus += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; margin-bottom:0.25rem; display:inline-block;">🖱️ 4x Click Power (${remaining}s)</div>`;
     totalMultiplier *= 4;
   }
   if (state.boosts.megaCrit > Date.now()) {
     let remaining = Math.ceil((state.boosts.megaCrit - Date.now()) / 1000);
-    boostStatus += `<div class="text-neon-yellow text-xs">✨ 50% Crit (${remaining}s)</div>`;
+    boostStatus += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; margin-bottom:0.25rem; display:inline-block;">✨ 50% Crit (${remaining}s)</div>`;
   }
   if (state.boosts.tripleGems > Date.now()) {
     let remaining = Math.ceil((state.boosts.tripleGems - Date.now()) / 1000);
-    boostStatus += `<div class="text-gem text-xs"><span class="icon-packet"></span> 3x Gem Rate (${remaining}s)</div>`;
+    boostStatus += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; margin-bottom:0.25rem; display:inline-block;"><span class="icon-packet"></span> 3x Gem Rate (${remaining}s)</div>`;
   }
   if (state.boosts.autoClicker > Date.now()) {
     let remaining = Math.ceil((state.boosts.autoClicker - Date.now()) / 1000);
-    boostStatus += `<div class="text-neon-green text-xs">🤖 +10/s Auto Clicker (${remaining}s)</div>`;
+    boostStatus += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; margin-bottom:0.25rem; display:inline-block;">🤖 +10/s Auto Clicker (${remaining}s)</div>`;
   }
 
   // Prestige multiplier
   if (state.prestige.level > 0) {
     totalMultiplier *= 1 + state.prestige.level * 0.1;
-    boostStatus += `<div class="text-purple-400 text-xs">⭐ Prestige Bonus: +${state.prestige.level * 10}%</div>`;
+    boostStatus += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#c084fc; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; margin-bottom:0.25rem; display:inline-block;">⭐ Prestige Bonus: +${state.prestige.level * 10}%</div>`;
   }
 
   // Effective rates incl. boosts (match idleTick and clickPacket)
@@ -500,13 +500,13 @@ function renderGame() {
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🎮 Game</h2>
       ${clickBtn}
-      <div class="flex justify-between items-center text-neon-green text-sm">
-        <span>Packets/Click: ${effectivePerClick}</span>
-        <span>Packets/Sec: ${effectivePerSec}</span>
+      <div class="flex justify-between items-center text-sm" style="gap: 0.5rem;">
+        <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-weight:600;">Packets/Click: ${effectivePerClick}</span>
+        <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600;">Packets/Sec: ${effectivePerSec}</span>
       </div>
-      <div class="flex justify-between items-center text-neon-yellow text-sm">
-        <span>Crit Chance: ${Math.min(100, state.critChance + (eq.critChance || 0))}%</span>
-        <span>Crit Multiplier: ${state.critMult}x</span>
+      <div class="flex justify-between items-center text-sm" style="gap: 0.5rem;">
+        <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600;">Crit Chance: ${Math.min(100, state.critChance + (eq.critChance || 0))}%</span>
+        <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600;">Crit Multiplier: ${state.critMult}x</span>
       </div>
       ${boostStatus}
       ${renderActiveEvent()}
@@ -579,27 +579,38 @@ function renderThemes() {
     let canBuy = !isUnlocked && state.gems >= (theme.cost || 0);
     let canPreview = !isActive;
 
+    // Create gradient background based on theme colors
+    const primaryColor = theme.colors[0] || "#1de9b6";
+    const secondaryColor = theme.colors[1] || "#f7cf5c";
+    const accentColor = theme.colors[2] || "#222c38";
+
+    // Create a subtle gradient background
+    const backgroundStyle = `linear-gradient(135deg, ${primaryColor}15, ${secondaryColor}08, ${accentColor}12)`;
+    const borderColor = `${primaryColor}40`;
+
     return `
-      <div class="theme-card ${isActive ? "active" : ""} ${!isUnlocked && !canBuy ? "locked" : ""}" data-theme="${id}">
+      <div class="theme-card ${isActive ? "active" : ""} ${!isUnlocked && !canBuy ? "locked" : ""}"
+           data-theme="${id}"
+           style="background: ${backgroundStyle}; border: 1px solid ${borderColor}; box-shadow: 0 2px 8px ${primaryColor}20;">
         <div class="theme-header">
-          <div class="theme-name">${theme.name} ${isActive ? "✓" : ""}</div>
-          ${isActive ? '<div class="active-badge">Active</div>' : ""}
+          <div class="theme-name" style="color: ${primaryColor}; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">${theme.name} ${isActive ? "✓" : ""}</div>
+          ${isActive ? `<div class="active-badge" style="background: ${primaryColor}; color: ${accentColor};">Active</div>` : ""}
         </div>
 
         <div class="theme-preview">
           <div class="color-preview">
-            <span class="color-dot primary" style="background: ${theme.colors[0]}"></span>
-            <span class="color-dot secondary" style="background: ${theme.colors[1]}"></span>
-            <span class="color-dot accent" style="background: ${theme.colors[2]}"></span>
+            <span class="color-dot primary" style="background: ${theme.colors[0]}; box-shadow: 0 0 8px ${theme.colors[0]}60;"></span>
+            <span class="color-dot secondary" style="background: ${theme.colors[1]}; box-shadow: 0 0 8px ${theme.colors[1]}60;"></span>
+            <span class="color-dot accent" style="background: ${theme.colors[2]}; box-shadow: 0 0 8px ${theme.colors[2]}60;"></span>
           </div>
         </div>
 
-        <div class="theme-description">${theme.description || "Classic theme"}</div>
+        <div class="theme-description" style="color: var(--text-primary); opacity: 0.9;">${theme.description || "Classic theme"}</div>
 
         <div class="theme-actions">
           ${
             !isUnlocked
-              ? `<div class="theme-cost">
+              ? `<div class="theme-cost" style="color: ${secondaryColor}; font-weight: bold;">
               ${(theme.cost || 0).toLocaleString("en-US")}
               <img src="src/assets/gem.png" alt="Gems" class="gem-icon"/>
             </div>`
@@ -610,7 +621,8 @@ function renderThemes() {
             ${
               !isActive
                 ? `<button class="theme-action-btn ${!isUnlocked ? "buy-btn" : "activate-btn"}"
-                      ${!isUnlocked && !canBuy ? "disabled" : ""}>
+                      ${!isUnlocked && !canBuy ? "disabled" : ""}
+                      style="background: linear-gradient(135deg, ${primaryColor}, ${secondaryColor}); border-color: ${primaryColor}; color: ${accentColor}; font-weight: bold;">
                 ${!isUnlocked ? "💎 Buy" : "🎨 Use"}
               </button>`
                 : ""
