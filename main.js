@@ -2877,8 +2877,19 @@ function init() {
   document.addEventListener(
     "touchstart",
     function (e) {
+      // Only prevent multi-touch on UI elements, not content areas
       if (e.touches.length > 1) {
-        e.preventDefault();
+        const t = e.target;
+        const isUIElement =
+          t &&
+          (t.id === "click-btn" ||
+            (typeof t.closest === "function" &&
+              t.closest(
+                "#click-btn,.tab-btn,.neon-btn,.upgrade-btn,.gem-btn",
+              )));
+        if (isUIElement) {
+          e.preventDefault();
+        }
       }
     },
     { passive: false },
@@ -2888,21 +2899,22 @@ function init() {
     e.preventDefault();
   });
 
-  // Prevent double-tap zoom
+  // Prevent double-tap zoom only on UI elements, allow scrolling
   let lastTouchEnd = 0;
   document.addEventListener(
     "touchend",
     function (event) {
       const now = Date.now();
       const t = event.target;
-      const allowFastTap =
+      const isUIElement =
         t &&
         (t.id === "click-btn" ||
           (typeof t.closest === "function" &&
             t.closest(
               "#click-btn,.tab-btn,.neon-btn,.upgrade-btn,.gem-btn,.theme-action-btn,[data-theme]",
             )));
-      if (!allowFastTap && now - lastTouchEnd <= 300) {
+      // Only prevent double-tap on UI elements, not on content areas
+      if (isUIElement && now - lastTouchEnd <= 300) {
         event.preventDefault();
       }
       lastTouchEnd = now;
@@ -2910,11 +2922,12 @@ function init() {
     { passive: false },
   );
 
-  // Additional zoom prevention for iOS Safari
+  // Additional zoom prevention for iOS Safari - only prevent pinch zoom, allow scrolling
   document.addEventListener(
     "touchmove",
     function (e) {
-      if (e.scale !== 1) {
+      // Only prevent zoom gestures (multiple touches), allow single touch scrolling
+      if (e.touches && e.touches.length > 1) {
         e.preventDefault();
       }
     },

@@ -102,6 +102,12 @@
 html {
     font-size: 16px;
     scroll-behavior: smooth;
+    /* Ensure proper mobile scrolling */
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    /* Allow touch scrolling */
+    touch-action: auto;
 }
 
 body {
@@ -124,23 +130,17 @@ body {
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Prevent zoom on mobile */
-    touch-action: manipulation;
+    /* Allow normal touch scrolling everywhere */
+    touch-action: auto;
     -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
     -webkit-tap-highlight-color: transparent;
-    /* Prevent double-tap zoom */
-    -ms-touch-action: manipulation;
-    overscroll-behavior: none;
+    /* Allow normal scrolling behavior */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     /* Additional mobile optimizations */
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
     text-size-adjust: 100%;
-    -webkit-overflow-scrolling: touch;
 }
 
 /* === LAYOUT CONTAINERS === */
@@ -158,6 +158,17 @@ body {
     min-height: clamp(16rem, 35vh, 32rem);
     gap: var(--spacing-md);
     flex: 1 0 auto;
+    /* Ensure proper scrolling on mobile */
+    overflow: visible;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure main element allows proper scrolling */
+main {
+    width: 100%;
+    overflow: visible;
+    -webkit-overflow-scrolling: touch;
+    touch-action: auto;
 }
 
 /* Constrain major sections within a centered page width */
@@ -1251,6 +1262,28 @@ body {
     scroll-padding-top: calc(var(--touch-target) + 1.25rem);
 }
 
+/* Prevent text selection on UI elements while allowing scrolling */
+.top-bar,
+.menu-bar,
+.tab-btn,
+.neon-btn,
+.upgrade-btn,
+.gem-btn,
+#click-btn,
+.achievement-card,
+.shop-premium-btn,
+.shop-item-content,
+.neon-card,
+.hud-notify,
+.combo-total-hud,
+.random-event {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 /* === TAB MENU SYSTEM === */
 .menu-bar {
     display: grid;
@@ -1373,7 +1406,7 @@ body {
     white-space: nowrap;
     position: relative;
     overflow: hidden;
-    /* Prevent zoom on double tap */
+    /* Prevent zoom on double tap only for buttons */
     touch-action: manipulation;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
@@ -2821,7 +2854,7 @@ footer {
     #click-btn {
         position: relative;
         overflow: visible;
-        /* Enhanced mobile optimization */
+        /* Enhanced mobile optimization - prevent zoom on click button only */
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
         -webkit-user-select: none;
@@ -3732,10 +3765,15 @@ footer {
         touch-action: manipulation;
         -webkit-touch-callout: none;
         -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
         user-select: none;
+    }
+
+    /* Ensure scrollable areas work on mobile */
+    html,
+    body,
+    main,
+    #tab-content {
+        touch-action: auto !important;
     }
 
     /* Prevent zoom on specific game elements */
