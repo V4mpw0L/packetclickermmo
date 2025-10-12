@@ -1394,7 +1394,7 @@ function ensureToastStyles() {
 function showDropToast(item, fallbackNotify) {
   if (!hasDOM()) {
     if (fallbackNotify)
-      fallbackNotify(`Found ${item.rarityName} ${item.name}!`, "🎁");
+      fallbackNotify(`${item.name} (${item.rarityName})`, "🎁");
     return;
   }
   ensureToastStyles();
@@ -1408,14 +1408,14 @@ function showDropToast(item, fallbackNotify) {
     <div class="card" style="border:${st.border}; box-shadow:${st.glow}, 0 6px 22px rgba(0,0,0,0.35);">
       <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:6px;border:${st.border};box-shadow:${st.glow}" />
       <div>
-        <div style="font-weight:900; color:${st.color};">+ ${item.rarityName} Drop</div>
-        <div class="text-neon-gray text-xs" style="margin-top:.1rem;">
-          ${item.name}
-          <div class="text-sm" style="display:flex; gap:.35rem; flex-wrap:wrap; margin-top:.2rem;">
-            <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-size:.75rem;">+${item.stats.perClick || 0}/click</span>
-            <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-size:.75rem;">+${item.stats.perSec || 0}/sec</span>
-            <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-size:.75rem;">+${item.stats.critChance || 0}%</span>
-          </div>
+        <div style="font-weight:900; color:${st.color}; font-size:1rem;">${item.name}</div>
+        <div class="text-xs" style="margin-top:.15rem; color:${st.color}; opacity:0.8;">
+          ${item.rarityName} Drop
+        </div>
+        <div class="text-sm" style="display:flex; gap:.35rem; flex-wrap:wrap; margin-top:.3rem;">
+          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-size:.75rem;">+${item.stats.perClick || 0}/click</span>
+          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-size:.75rem;">+${item.stats.perSec || 0}/sec</span>
+          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-size:.75rem;">+${item.stats.critChance || 0}%</span>
         </div>
       </div>
     </div>
