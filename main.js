@@ -422,39 +422,68 @@ function updateTopBar() {
 // =============== GAME TAB RENDERING ===============
 function renderGame() {
   let adBanner = showAdBanner();
-  let boostStatus = "";
+  // Build boost status display
+  let boostPills = [];
   let totalMultiplier = 1;
 
   // Active boosts
   if (state.boosts.doublePackets > Date.now()) {
     let remaining = Math.ceil((state.boosts.doublePackets - Date.now()) / 1000);
-    boostStatus += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; margin-bottom:0.25rem; display:inline-block;">🚀 2x Packets (${remaining}s)</div>`;
+    boostPills.push(
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🚀 2x Packets (${remaining}s)</span>`,
+    );
     totalMultiplier *= 2;
   }
   if (state.boosts.quadrupleClick > Date.now()) {
     let remaining = Math.ceil(
       (state.boosts.quadrupleClick - Date.now()) / 1000,
     );
-    boostStatus += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; margin-bottom:0.25rem; display:inline-block;">🖱️ 4x Click Power (${remaining}s)</div>`;
+    boostPills.push(
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🖱️ 4x Click Power (${remaining}s)</span>`,
+    );
     totalMultiplier *= 4;
   }
   if (state.boosts.megaCrit > Date.now()) {
     let remaining = Math.ceil((state.boosts.megaCrit - Date.now()) / 1000);
-    boostStatus += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; margin-bottom:0.25rem; display:inline-block;">✨ 50% Crit (${remaining}s)</div>`;
+    boostPills.push(
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">✨ 50% Crit (${remaining}s)</span>`,
+    );
   }
   if (state.boosts.tripleGems > Date.now()) {
     let remaining = Math.ceil((state.boosts.tripleGems - Date.now()) / 1000);
-    boostStatus += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; margin-bottom:0.25rem; display:inline-block;"><span class="icon-packet"></span> 3x Gem Rate (${remaining}s)</div>`;
+    boostPills.push(
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;"><span class="icon-packet"></span> 3x Gem Rate (${remaining}s)</span>`,
+    );
   }
   if (state.boosts.autoClicker > Date.now()) {
     let remaining = Math.ceil((state.boosts.autoClicker - Date.now()) / 1000);
-    boostStatus += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; margin-bottom:0.25rem; display:inline-block;">🤖 +10/s Auto Clicker (${remaining}s)</div>`;
+    boostPills.push(
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🤖 +10/s Auto Clicker (${remaining}s)</span>`,
+    );
   }
 
   // Prestige multiplier
   if (state.prestige.level > 0) {
     totalMultiplier *= 1 + state.prestige.level * 0.1;
-    boostStatus += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#c084fc; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; margin-bottom:0.25rem; display:inline-block;">⭐ Prestige Bonus: +${state.prestige.level * 10}%</div>`;
+    boostPills.push(
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#c084fc; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">⭐ Prestige Bonus: +${state.prestige.level * 10}%</span>`,
+    );
+  }
+
+  // Create boost status with proper grid layout
+  let boostStatus = "";
+  if (boostPills.length > 0) {
+    let rows = [];
+    for (let i = 0; i < boostPills.length; i += 2) {
+      let row = `<div class="flex justify-between items-center text-sm" style="gap: 0.5rem;">`;
+      row += boostPills[i];
+      if (boostPills[i + 1]) {
+        row += boostPills[i + 1];
+      }
+      row += `</div>`;
+      rows.push(row);
+    }
+    boostStatus = rows.join("");
   }
 
   // Effective rates incl. boosts (match idleTick and clickPacket)
