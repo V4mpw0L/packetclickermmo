@@ -67,6 +67,8 @@ if (typeof document !== "undefined") {
 let clickCombo = 0;
 let lastClickTime = 0;
 /* Using global COMBO_TIMEOUT from constants UMD */
+// Track combo expiry to sync avatar border ring with combo HUD
+let _comboExpireAt = 0;
 
 const state = {
   player: {
@@ -394,6 +396,33 @@ function updateTopBar() {
   const _avatarEl = document.getElementById("avatar");
   if (_avatarEl) {
     _avatarEl.src = state.player.avatar;
+    // Dynamic avatar border ring based on current combo color (mirrors combo HUD colors)
+    let comboColor = "var(--primary-color)";
+    if (typeof clickCombo === "number") {
+      if (clickCombo >= 120) comboColor = "#ff3040";
+      else if (clickCombo >= 50) comboColor = "#ff4dff";
+      else if (clickCombo >= 15) comboColor = "var(--accent-color)";
+      else if (clickCombo >= 5) comboColor = "var(--secondary-color)";
+    }
+    const comboActive =
+      typeof clickCombo === "number" &&
+      clickCombo >= 5 &&
+      Date.now() <= (_comboExpireAt || 0);
+    if (comboActive) {
+      if (typeof _avatarEl._baseShadow === "undefined") {
+        _avatarEl._baseShadow = _avatarEl.style.boxShadow || "";
+      }
+      // 2px ring in combo color + keep subtle base glow
+      _avatarEl.style.boxShadow = `0 0 0 2px ${comboColor}, 0 0 0 3px #1de9b611, 0 2px 8px #c4ebea33`;
+    } else {
+      // Reset to original when combo ends
+      if (typeof _avatarEl._baseShadow !== "undefined") {
+        _avatarEl.style.boxShadow = _avatarEl._baseShadow;
+        delete _avatarEl._baseShadow;
+      } else {
+        _avatarEl.style.boxShadow = "";
+      }
+    }
   }
   let badge = document.getElementById("vip-badge");
 
@@ -1753,6 +1782,8 @@ function clickPacket(event) {
     clickCombo = 1;
   }
   lastClickTime = now;
+  // Track combo expiry to sync HUD and avatar ring
+  _comboExpireAt = now + COMBO_TIMEOUT + 200;
   setCursorForCombo(clickCombo);
 
   // Modularized combo effect logic
@@ -1785,7 +1816,17 @@ function clickPacket(event) {
     clickPacket._comboHideTimer = setTimeout(() => {
       hideComboTotalHUD(0);
       clickPacket._comboTotal = 0;
-    }, COMBO_TIMEOUT + 100);
+      _comboExpireAt = 0;
+      const el = document.getElementById("avatar");
+      if (el) {
+        if (typeof el._baseShadow !== "undefined") {
+          el.style.boxShadow = el._baseShadow;
+          delete el._baseShadow;
+        } else {
+          el.style.boxShadow = "";
+        }
+      }
+    }, COMBO_TIMEOUT + 200);
 
     // Show floating effect
     let clickFX = document.createElement("div");
