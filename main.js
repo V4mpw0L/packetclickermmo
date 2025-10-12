@@ -416,47 +416,6 @@ function updateTopBar() {
   let el = document.getElementById("gem-count");
   if (el) el.textContent = state.gems.toLocaleString("en-US");
 
-  // Add click handler to gem pill to navigate to Shop
-  const gemPillEl = document.getElementById("gem-pill-clickable");
-  if (gemPillEl) {
-    // Remove existing listeners to avoid duplicates
-    gemPillEl.replaceWith(gemPillEl.cloneNode(true));
-    const newGemPillEl = document.getElementById("gem-pill-clickable");
-    if (newGemPillEl) {
-      newGemPillEl.addEventListener("click", () => {
-        // Add click animation effect
-        newGemPillEl.style.transform = "scale(0.95)";
-        newGemPillEl.style.boxShadow =
-          "0 1px 5px var(--shadow-primary) inset, 0 1px 2px rgba(0,0,0,0.5)";
-
-        setTimeout(() => {
-          newGemPillEl.style.transform = "scale(1.05)";
-          newGemPillEl.style.boxShadow =
-            "0 2px 15px var(--shadow-primary) inset, 0 1px 5px rgba(0,0,0,0.45)";
-
-          setTimeout(() => {
-            newGemPillEl.style.transform = "scale(1)";
-            newGemPillEl.style.boxShadow =
-              "0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,0.35)";
-          }, 100);
-        }, 50);
-
-        setTab("shop");
-      });
-      // Add hover effect
-      newGemPillEl.addEventListener("mouseenter", () => {
-        newGemPillEl.style.transform = "scale(1.05)";
-        newGemPillEl.style.boxShadow =
-          "0 2px 15px var(--shadow-primary) inset, 0 1px 5px rgba(0,0,0,0.45)";
-      });
-      newGemPillEl.addEventListener("mouseleave", () => {
-        newGemPillEl.style.transform = "scale(1)";
-        newGemPillEl.style.boxShadow =
-          "0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,0.35)";
-      });
-    }
-  }
-
   // Packets/sec pill disabled per design request
 }
 
@@ -2725,6 +2684,14 @@ function init() {
   });
   document.getElementById("open-settings").onclick = () =>
     window.showSettings();
+
+  // Simple gem pill click to navigate to Shop
+  document.addEventListener("click", (e) => {
+    if (e.target.closest("#gem-pill-clickable")) {
+      setTab("shop");
+    }
+  });
+
   // Handled by PacketUI.showModal with target check; avoid closing modal on any click
   // document.getElementById("modal-backdrop").onclick = closeModal;
   setInterval(idleTick, 1000);
