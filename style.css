@@ -315,7 +315,7 @@ body .modal-box .space-y-3 > * + * {
     width: 100%;
     max-width: 100%;
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr min-content;
     grid-template-areas:
         "center settings"
         "pills  pills";
@@ -358,6 +358,8 @@ body .modal-box .space-y-3 > * + * {
     justify-self: end;
     flex: 0 0 auto;
     min-width: max-content;
+    margin-right: 1rem;
+    padding-right: 0.5rem;
 }
 .top-bar .controls #gem-display {
     display: none;
