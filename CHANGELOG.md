@@ -1,5 +1,40 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.17 - UI Polish & Inventory Enhancements
+*Released: January 2025*
+
+### 🎨 **UI & Visual Improvements**
+- **Fixed Description Colors** - Changed white/hard-to-read text to dark green in Prestige and Temporary Boosts sections
+- **Centralized Prestige Button** - Better positioning on Game page for improved UX
+- **Red Item Glow Animation** - Animal rarity items now have a beautiful pulsing glow effect
+
+### 📦 **Inventory System Enhancements**
+- **Red Sell Buttons** - Changed sell button color to match system theme
+- **Sell All Functionality** - New "Sell All" button with options to sell by rarity or all items
+- **Bulk Selling Options** - Choose to sell Green, Gold, Blue, Pink items or everything at once
+- **Smart Price Calculation** - Accurate total pricing for bulk operations
+
+### ⚡ **Random Events System**
+- **Complete Event Implementation** - All 5 random events now work perfectly:
+  - **Packet Rain** - 2x packet gain for 2 minutes ✅
+  - **Gem Rush** - 10x gem find chance for 90 seconds ✅
+  - **Critical Frenzy** - All clicks are critical for 1 minute ✅
+  - **Bonus Packets** - Instant packet bonus ✅
+  - **Upgrade Discount** - 50% off all upgrades for 3 minutes ✅
+
+### 🎲 **Dynamic Item Stats**
+- **Improved Randomization** - Items now have more varied and dynamic stats
+- **Balanced Rarity System** - Each rarity tier has proper stat ranges
+- **Slot-Based Bonuses** - Gloves favor click stats, trinkets favor per-second stats
+- **Better Economy Balance** - Preparation for future player marketplace
+
+### 🧹 **Code Quality & Performance**
+- **Version Update** - All files updated to v0.0.17
+- **Clean Codebase** - Removed unused code and improved organization
+- **Service Worker Updates** - Optimized caching and performance
+
+---
+
 ## Version 0.0.16 - Enhanced Themes & Mobile Improvements
 *Released: January 2025*
 

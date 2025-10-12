@@ -869,32 +869,80 @@ function rarityById(id) {
  */
 export function rollStatsFor(rarityId, slotId) {
   const r = rarityById(rarityId);
-  const isHighTier = r.id === "blue" || r.id === "pink" || r.id === "animal";
-  const isTopTier = r.id === "pink" || r.id === "animal";
 
-  // Baselines
-  let perClick = 1;
+  // Define rarity multiplier ranges for more dynamic stats
+  const rarityRanges = {
+    green: { min: 0.8, max: 1.5, basePrice: 50 },
+    gold: { min: 1.5, max: 3.2, basePrice: 200 },
+    blue: { min: 2.8, max: 5.5, basePrice: 1000 },
+    pink: { min: 5.0, max: 9.0, basePrice: 5000 },
+    animal: { min: 8.5, max: 15.0, basePrice: 20000 },
+  };
+
+  const range = rarityRanges[r.id] || rarityRanges.green;
+  const statVariation = rngBetween(range.min, range.max);
+
+  // Initialize base stats
+  let perClick = 0;
   let perSec = 0;
   let critChance = 0;
 
-  // Slot bias (gloves = click-focused, trinkets = mixed)
-  if (slotId === "glove") {
-    perClick += isHighTier ? 1 : 0;
-  } else if (slotId === "trinket") {
-    perSec += isHighTier ? 1 : 0;
+  // Dynamic stat distribution - each item gets 1-3 stats randomly
+  const numStats = Math.random() < 0.6 ? 1 : Math.random() < 0.8 ? 2 : 3;
+  const availableStats = ["perClick", "perSec", "critChance"];
+  const chosenStats = [];
+
+  // Choose which stats this item will have
+  while (chosenStats.length < numStats && availableStats.length > 0) {
+    const index = Math.floor(Math.random() * availableStats.length);
+    chosenStats.push(availableStats.splice(index, 1)[0]);
   }
 
-  // Rarity scaling
-  const multMap = { green: 1, gold: 2, blue: 3, pink: 4, animal: 6 };
-  const m = multMap[r.id] || 1;
+  // Slot influence on stat preferences
+  const slotBias = {
+    glove: { perClick: 1.8, perSec: 0.6, critChance: 1.2 },
+    trinket: { perClick: 1.0, perSec: 1.5, critChance: 1.4 },
+  };
+  const bias = slotBias[slotId] || {
+    perClick: 1.0,
+    perSec: 1.0,
+    critChance: 1.0,
+  };
 
-  // Randomize within stable bounds
-  perClick = Math.floor(perClick + rngBetween(0, 1) * m);
-  perSec = Math.floor(perSec + (isHighTier ? rngBetween(0, 1) * (m - 1) : 0));
-  critChance =
-    r.id === "gold" || isTopTier
-      ? Math.floor(clamp(rngBetween(1, 2 * m), 1, 50))
-      : 0;
+  // Distribute stat points among chosen stats
+  chosenStats.forEach((statType) => {
+    const baseValue = statVariation * bias[statType];
+    const randomFactor = rngBetween(0.7, 1.3); // Additional randomization
+
+    switch (statType) {
+      case "perClick":
+        perClick = Math.max(1, Math.floor(baseValue * randomFactor));
+        break;
+      case "perSec":
+        perSec = Math.max(0, Math.floor(baseValue * randomFactor * 0.8));
+        break;
+      case "critChance":
+        if (r.id !== "green" || Math.random() < 0.3) {
+          // Green has 30% chance for crit
+          critChance = Math.max(
+            1,
+            Math.floor(clamp(baseValue * randomFactor * 0.6, 1, 45)),
+          );
+        }
+        break;
+    }
+  });
+
+  // Ensure minimum values for higher rarities
+  if (r.id === "animal") {
+    perClick = Math.max(perClick, 8);
+    perSec = Math.max(perSec, 6);
+    critChance = Math.max(critChance, 12);
+  } else if (r.id === "pink") {
+    perClick = Math.max(perClick, 5);
+    perSec = Math.max(perSec, 4);
+    critChance = Math.max(critChance, 8);
+  }
 
   return { perClick, perSec, critChance };
 }
@@ -1076,10 +1124,12 @@ export function unequip(state, slot) {
 
 function rarityStyles(rarityId) {
   const r = rarityById(rarityId);
+  const isAnimal = r.id === "animal";
   return {
     color: r.color,
     border: `1.5px solid ${r.color}`,
-    glow: `0 0 10px ${r.color}55`,
+    glow: isAnimal ? `0 0 15px ${r.color}88` : `0 0 10px ${r.color}55`,
+    animation: isAnimal ? "animalPulse 2s ease-in-out infinite" : "",
   };
 }
 
@@ -1147,8 +1197,9 @@ export function renderTab(state) {
     .map((it, i) => {
       const st = rarityStyles(it.rarity);
       const absIndex = start + i;
+      const animationStyle = st.animation ? `animation: ${st.animation};` : "";
       return `
-          <div class="neon-card" style="padding:.3rem; border-color:${st.color}; box-shadow:${st.glow}; display:flex; align-items:center; justify-content:center; width:100%; max-width:100%; margin:0; aspect-ratio:1/1;">
+          <div class="neon-card" style="padding:.3rem; border-color:${st.color}; box-shadow:${st.glow}; ${animationStyle} display:flex; align-items:center; justify-content:center; width:100%; max-width:100%; margin:0; aspect-ratio:1/1;">
             <button class="neon-btn" data-open-item-index="${absIndex}" style="width:100%; height:100%; background: transparent; border:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.2rem; padding:.2rem;">
               <div style="position:relative; display:inline-block; width:72%; height:72%;">
                 <img src="${it.icon}" alt="${it.name}" style="width:100%;height:100%;border-radius:6px; box-sizing:border-box; object-fit:cover;" />
@@ -1190,6 +1241,12 @@ export function renderTab(state) {
       `;
 
   return `
+    <style>
+      @keyframes animalPulse {
+        0%, 100% { box-shadow: 0 0 15px rgba(255,48,64,0.6); }
+        50% { box-shadow: 0 0 25px rgba(255,48,64,0.9), 0 0 35px rgba(255,48,64,0.4); }
+      }
+    </style>
     <div class="neon-card px-3 py-4 mb-2">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🧰 Equipment</h2>
       <div class="text-neon-gray text-sm mb-3" style="text-align:center; margin:.5rem auto 1rem; padding:.35rem .75rem; border:1px solid var(--border-color); border-radius:999px; width:fit-content; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">
@@ -1208,7 +1265,10 @@ export function renderTab(state) {
       <div style="position:relative; height:10px; border-radius:999px; background:#22313f; border:1px solid var(--border-color); overflow:hidden; box-shadow: inset 0 1px 6px rgba(0,0,0,.5); margin-bottom:.25rem;">
         <div style="height:100%; width:${percent}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));"></div>
       </div>
-      <div class="text-neon-gray text-xs" style="text-align:center; margin:.15rem 0 .5rem; letter-spacing:.02em; font-weight:700;">${percent}%</div>
+      <div class="text-neon-gray text-xs" style="text-align:center; margin:.15rem 0 .35rem; letter-spacing:.02em; font-weight:700;">${percent}%</div>
+      <div style="display: flex; justify-content: center; margin-bottom: .5rem;">
+        <button class="neon-btn text-xs" id="sell-all-btn" style="background: linear-gradient(135deg, #ff3040, #cc2030); border-color: #ff3040; color: white; padding: 0.25rem 0.75rem;">Sell All</button>
+      </div>
       ${invCards}
     </div>
   `;
@@ -1272,7 +1332,7 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
           </div>
           <div class="button-group" style="display:flex; gap:.5rem; margin-top:.6rem;">
             <button class="neon-btn w-full" id="equip-item-btn" data-index="${idx}">Equip</button>
-            <button class="gem-btn w-full" id="sell-item-btn" data-index="${idx}">Sell for ${price} <span class="icon-packet"></span></button>
+            <button class="neon-btn w-full" id="sell-item-btn" data-index="${idx}" style="background: linear-gradient(135deg, #ff3040, #cc2030); border-color: #ff3040; color: white;">Sell for ${price} <span class="icon-packet"></span></button>
           </div>
         </div>
       `;
@@ -1348,6 +1408,125 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
       }
     });
   });
+
+  // Sell All functionality
+  const sellAllBtn = el.querySelector("#sell-all-btn");
+  if (sellAllBtn) {
+    sellAllBtn.addEventListener("click", () => {
+      if (!state.inventory || state.inventory.length === 0) return;
+
+      // Show sell all options modal
+      const rarityOptions = ["all", "green", "gold", "blue", "pink", "animal"];
+      const optionButtons = rarityOptions
+        .map((rarity) => {
+          const label =
+            rarity === "all"
+              ? "All Items"
+              : rarity === "animal"
+                ? "Red Only"
+                : `${rarity.charAt(0).toUpperCase() + rarity.slice(1)} Only`;
+
+          // Get background color for each rarity
+          let backgroundColor = "";
+          let textColor = "white";
+          switch (rarity) {
+            case "all":
+              backgroundColor = "linear-gradient(135deg, #666, #444)";
+              break;
+            case "green":
+              backgroundColor = "linear-gradient(135deg, #8ef1b2, #6bd18f)";
+              textColor = "#1a1a1a";
+              break;
+            case "gold":
+              backgroundColor = "linear-gradient(135deg, #ffd34d, #ffb84d)";
+              textColor = "#1a1a1a";
+              break;
+            case "blue":
+              backgroundColor = "linear-gradient(135deg, #6bd7e8, #4dc4e0)";
+              textColor = "#1a1a1a";
+              break;
+            case "pink":
+              backgroundColor = "linear-gradient(135deg, #ff66cc, #ff44bb)";
+              break;
+            case "animal":
+              backgroundColor = "linear-gradient(135deg, #ff3040, #cc2030)";
+              break;
+          }
+
+          return `<button class="neon-btn w-full mb-2" data-sell-rarity="${rarity}" style="background: ${backgroundColor}; color: ${textColor}; border-color: ${rarity === "all" ? "#666" : rarityById(rarity).color};">${label}</button>`;
+        })
+        .join("");
+
+      const html = `
+        <div class="neon-card" style="padding:.75rem;">
+          <div style="font-weight:900; margin-bottom: .75rem; text-align: center;">Sell Items</div>
+          <div style="margin-bottom: .75rem;">Choose which items to sell:</div>
+          ${optionButtons}
+        </div>
+      `;
+
+      if (typeof window.showModal === "function") {
+        window.showModal("Sell All", html);
+
+        setTimeout(() => {
+          document.querySelectorAll("[data-sell-rarity]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const targetRarity = btn.getAttribute("data-sell-rarity");
+
+              // Calculate total value and filter items
+              const priceMap = {
+                green: 50,
+                gold: 200,
+                blue: 1000,
+                pink: 5000,
+                animal: 20000,
+              };
+
+              let totalValue = 0;
+              let itemsToRemove = [];
+
+              for (let i = state.inventory.length - 1; i >= 0; i--) {
+                const item = state.inventory[i];
+                if (targetRarity === "all" || item.rarity === targetRarity) {
+                  const quantity = item.q || 1;
+                  const price = priceMap[item.rarity] || 10;
+                  totalValue += price * quantity;
+                  itemsToRemove.push(i);
+                }
+              }
+
+              if (itemsToRemove.length === 0) {
+                if (typeof window.closeModal === "function")
+                  window.closeModal();
+                return;
+              }
+
+              // Remove items and add packets
+              itemsToRemove.forEach((index) => {
+                state.inventory.splice(index, 1);
+              });
+              state.packets = (state.packets || 0) + totalValue;
+
+              if (typeof save === "function") save();
+              if (typeof rerender === "function") rerender();
+              if (typeof window.closeModal === "function") window.closeModal();
+
+              const n =
+                notify ||
+                (hasDOM() && typeof window.showHudNotify === "function"
+                  ? window.showHudNotify
+                  : null);
+              if (n)
+                n(
+                  `Sold ${itemsToRemove.length} items for ${totalValue.toLocaleString("en-US")} packets!`,
+                  "💰",
+                );
+            });
+          });
+        }, 0);
+      }
+    });
+  }
 
   // Inventory paging
   (el.querySelectorAll("[data-inv-page]") || []).forEach((btn) => {
