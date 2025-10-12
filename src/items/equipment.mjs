@@ -96,7 +96,7 @@ export const RARITIES = [
     id: "animal",
     name: "Animal",
     color: "#ff3040",
-    weight: 0.2,
+    weight: 0.05,
     border: "1px solid rgba(255,48,64,1.0)",
   },
 ];
@@ -905,12 +905,12 @@ export function rollStatsFor(rarityId, slotId) {
       minCrit: 8,
     },
     animal: {
-      min: 8.5,
-      max: 15.0,
-      basePrice: 20000,
-      minPerClick: 8,
-      minPerSec: 6,
-      minCrit: 12,
+      min: 15.0,
+      max: 30.0,
+      basePrice: 50000,
+      minPerClick: 15,
+      minPerSec: 12,
+      minCrit: 20,
     },
   };
 
@@ -1542,7 +1542,10 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
                   ? window.showHudNotify
                   : null);
               if (n)
-                n(`+${payout} packets`, '<span class="icon-packet"></span>');
+                n(
+                  `Sold for +${payout} packets`,
+                  '<span class="icon-packet"></span>',
+                );
             };
         }, 0);
       }

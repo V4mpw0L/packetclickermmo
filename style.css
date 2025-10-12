@@ -2979,7 +2979,7 @@ footer {
         font-weight: bold;
         display: flex;
         align-items: center;
-        gap: var(--spacing-sm);
+        gap: 0.4rem;
         z-index: 1000;
         opacity: 0;
         transition: all 0.5s ease-out;
@@ -3011,7 +3011,7 @@ footer {
         font-weight: bold !important;
         transition: all 0.2s ease !important;
         flex-shrink: 0 !important;
-        margin-left: 10px !important;
+        margin-left: 4px !important;
         font-size: 1.2em !important;
         font-family: inherit !important;
         outline: none !important;

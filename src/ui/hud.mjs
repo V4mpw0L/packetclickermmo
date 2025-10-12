@@ -68,7 +68,15 @@ export function showComboTotalHUD(total, color = null) {
 
   // Get combo count from global clickCombo if available
   const comboCount = (typeof window !== "undefined" && window.clickCombo) || 0;
-  hud.innerHTML = `COMBO: x${comboCount}<br>TOTAL PACKETS: +${Number(total || 0).toLocaleString()}`;
+
+  hud.innerHTML = `
+    <div style="text-align: center; line-height: 1.4;">
+      <div style="margin-bottom: 0.3rem;">COMBO:</div>
+      <div style="padding: 0.15rem 0.4rem; border: 1px solid ${c}; border-radius: 999px; background: rgba(0,0,0,0.25); font-weight: bold; margin-bottom: 0.6rem; display: inline-block; color: ${c};">x${comboCount}</div>
+      <div style="margin-bottom: 0.3rem;">Total Packets:</div>
+      <div style="padding: 0.15rem 0.4rem; border: 1px solid ${c}; border-radius: 999px; background: rgba(0,0,0,0.25); font-weight: bold; display: inline-block; color: ${c};">+${Number(total || 0).toLocaleString()}</div>
+    </div>
+  `;
 
   // Bump animation via transform
   hud.style.transition = "transform 120ms ease";
