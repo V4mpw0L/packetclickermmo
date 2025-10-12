@@ -870,13 +870,48 @@ function rarityById(id) {
 export function rollStatsFor(rarityId, slotId) {
   const r = rarityById(rarityId);
 
-  // Define rarity multiplier ranges for more dynamic stats
+  // Define rarity multiplier ranges and minimum stats
   const rarityRanges = {
-    green: { min: 0.8, max: 1.5, basePrice: 50 },
-    gold: { min: 1.5, max: 3.2, basePrice: 200 },
-    blue: { min: 2.8, max: 5.5, basePrice: 1000 },
-    pink: { min: 5.0, max: 9.0, basePrice: 5000 },
-    animal: { min: 8.5, max: 15.0, basePrice: 20000 },
+    green: {
+      min: 0.8,
+      max: 1.5,
+      basePrice: 50,
+      minPerClick: 1,
+      minPerSec: 0,
+      minCrit: 0,
+    },
+    gold: {
+      min: 1.5,
+      max: 3.2,
+      basePrice: 200,
+      minPerClick: 2,
+      minPerSec: 1,
+      minCrit: 2,
+    },
+    blue: {
+      min: 2.8,
+      max: 5.5,
+      basePrice: 1000,
+      minPerClick: 3,
+      minPerSec: 2,
+      minCrit: 4,
+    },
+    pink: {
+      min: 5.0,
+      max: 9.0,
+      basePrice: 5000,
+      minPerClick: 5,
+      minPerSec: 4,
+      minCrit: 8,
+    },
+    animal: {
+      min: 8.5,
+      max: 15.0,
+      basePrice: 20000,
+      minPerClick: 8,
+      minPerSec: 6,
+      minCrit: 12,
+    },
   };
 
   const range = rarityRanges[r.id] || rarityRanges.green;
@@ -916,33 +951,39 @@ export function rollStatsFor(rarityId, slotId) {
 
     switch (statType) {
       case "perClick":
-        perClick = Math.max(1, Math.floor(baseValue * randomFactor));
+        perClick = Math.max(
+          range.minPerClick,
+          Math.floor(baseValue * randomFactor),
+        );
         break;
       case "perSec":
-        perSec = Math.max(0, Math.floor(baseValue * randomFactor * 0.8));
+        perSec = Math.max(
+          range.minPerSec,
+          Math.floor(baseValue * randomFactor * 0.8),
+        );
         break;
       case "critChance":
-        if (r.id !== "green" || Math.random() < 0.3) {
-          // Green has 30% chance for crit
-          critChance = Math.max(
-            1,
-            Math.floor(clamp(baseValue * randomFactor * 0.6, 1, 45)),
-          );
-        }
+        critChance = Math.max(
+          range.minCrit,
+          Math.floor(clamp(baseValue * randomFactor * 0.6, range.minCrit, 45)),
+        );
         break;
     }
   });
 
-  // Ensure minimum values for higher rarities
-  if (r.id === "animal") {
-    perClick = Math.max(perClick, 8);
-    perSec = Math.max(perSec, 6);
-    critChance = Math.max(critChance, 12);
-  } else if (r.id === "pink") {
-    perClick = Math.max(perClick, 5);
-    perSec = Math.max(perSec, 4);
-    critChance = Math.max(critChance, 8);
+  // Ensure every item has at least one meaningful stat - never allow 0/0/0
+  if (perClick === 0 && perSec === 0 && critChance === 0) {
+    // Give minimum stats based on rarity
+    perClick = range.minPerClick;
+    if (r.id !== "green") {
+      perSec = range.minPerSec;
+    }
   }
+
+  // Apply final rarity minimums
+  perClick = Math.max(perClick, range.minPerClick);
+  perSec = Math.max(perSec, range.minPerSec);
+  critChance = Math.max(critChance, range.minCrit);
 
   return { perClick, perSec, critChance };
 }

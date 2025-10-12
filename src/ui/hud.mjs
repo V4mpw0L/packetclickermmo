@@ -66,7 +66,9 @@ export function showComboTotalHUD(total, color = null) {
   hud.style.color = c;
   hud.style.borderColor = c;
 
-  hud.innerHTML = `Total +${Number(total || 0).toLocaleString()} <span class="icon-packet"></span>`;
+  // Get combo count from global clickCombo if available
+  const comboCount = (typeof window !== "undefined" && window.clickCombo) || 0;
+  hud.innerHTML = `COMBO x${comboCount} - Total Packets: +${Number(total || 0).toLocaleString()} <span class="icon-packet"></span>`;
 
   // Bump animation via transform
   hud.style.transition = "transform 120ms ease";

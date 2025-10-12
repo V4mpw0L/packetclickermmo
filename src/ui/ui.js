@@ -100,9 +100,33 @@
     // Remove existing notifications to avoid stacking overflow
     document.querySelectorAll(".hud-notify").forEach((n) => n.remove());
 
+    // Format numbers in gold and ensure packet icons are displayed properly
+    let formattedMsg = msg;
+
+    // Only format if not already formatted
+    if (!formattedMsg.includes("color:#ffd700")) {
+      // Replace standalone numbers with gold styling (avoid HTML tags)
+      formattedMsg = formattedMsg.replace(
+        /(\+?\d{1,3}(?:,\d{3})*)(?![^<]*>)/g,
+        '<span style="color:#ffd700; font-weight:bold;">$1</span>',
+      );
+    }
+
+    // Ensure packet icons are properly formatted if not already
+    if (
+      !formattedMsg.includes('<span class="icon-packet">') &&
+      !formattedMsg.includes("icon-packet") &&
+      formattedMsg.toLowerCase().includes("packet")
+    ) {
+      formattedMsg = formattedMsg.replace(
+        /packet/gi,
+        'Packet <span class="icon-packet"></span>',
+      );
+    }
+
     const hud = document.createElement("div");
     hud.className = "hud-notify";
-    hud.innerHTML = `<span style="font-size:1.3em;">${ico}</span> <span>${msg}</span>`;
+    hud.innerHTML = `<span style="font-size:1.3em;">${ico}</span> <span>${formattedMsg}</span>`;
 
     const closeBtn = document.createElement("button");
     closeBtn.innerHTML = "×";

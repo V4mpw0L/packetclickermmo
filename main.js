@@ -66,6 +66,13 @@ if (typeof document !== "undefined") {
 // Click combo tracking
 let clickCombo = 0;
 let lastClickTime = 0;
+// Expose clickCombo globally for HUD access
+if (typeof window !== "undefined") {
+  Object.defineProperty(window, "clickCombo", {
+    get: () => clickCombo,
+    enumerable: true,
+  });
+}
 /* Using global COMBO_TIMEOUT from constants UMD */
 // Track combo expiry to sync avatar border ring with combo HUD
 let _comboExpireAt = 0;
@@ -622,7 +629,7 @@ function renderBoosts() {
         emoji = "🤖";
       }
 
-      activeBoosts += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:${color}; background:rgba(0,0,0,.25); font-weight:600; font-size:0.875rem; margin-bottom:0.5rem; display:inline-block; white-space:nowrap;">${emoji} ${boostInfo.name} active (${remaining}s)</div>`;
+      activeBoosts += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:${color}; background:rgba(0,0,0,.25); font-weight:600; font-size:0.875rem; margin-bottom:0.5rem; display:inline-block; white-space:nowrap;">${emoji} ${boostInfo.name} active (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block;">${remaining}s</span>)</div>`;
     }
   });
 
@@ -633,7 +640,7 @@ function renderBoosts() {
     const remaining = active ? Math.ceil((until - Date.now()) / 1000) : 0;
     const label = `<div class="font-bold">${boost.name}</div>
         <div class="text-sm opacity-75">${boost.gems} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/></div>
-        <div class="text-xs" style="color: #4a7c59; text-shadow: none; filter: none;">${boost.desc}${active ? ` — active (${remaining}s)` : ""}</div>`;
+        <div class="text-xs" style="color: #4a7c59; text-shadow: none; filter: none;">${boost.desc}${active ? ` — active (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block;">${remaining}s</span>)` : ""}</div>`;
     return renderButton({
       className: `gem-btn w-full mb-2 ${active ? "opacity-50" : ""}`,
       label,
@@ -1074,7 +1081,58 @@ function setCursorForCombo(combo) {
     else file = "src/assets/green.webp";
     // hotspot x=6 y=0 for pointer
     btn.style.cursor = `url("${file}") 6 0, pointer`;
+
+    // Store the current cursor image for mobile feedback
+    btn.dataset.cursorImage = file;
   } catch (_) {}
+}
+
+// Mobile tap visual feedback
+function showMobileCursorFeedback() {
+  if (typeof document === "undefined") return;
+
+  const btn = document.getElementById("click-btn");
+  if (!btn || !btn.dataset.cursorImage) return;
+
+  // Remove any existing feedback
+  const existing = document.getElementById("mobile-cursor-feedback");
+  if (existing) existing.remove();
+
+  // Create visual feedback element
+  const feedback = document.createElement("div");
+  feedback.id = "mobile-cursor-feedback";
+  feedback.style.position = "fixed";
+  feedback.style.pointerEvents = "none";
+  feedback.style.zIndex = "9999";
+  feedback.style.width = "48px";
+  feedback.style.height = "48px";
+  feedback.style.backgroundImage = `url("${btn.dataset.cursorImage}")`;
+  feedback.style.backgroundSize = "contain";
+  feedback.style.backgroundRepeat = "no-repeat";
+  feedback.style.backgroundPosition = "center";
+  feedback.style.transform = "translate(-50%, -50%) scale(0.8)";
+  feedback.style.opacity = "0";
+  feedback.style.transition = "all 200ms ease-out";
+
+  // Position at center of click button
+  const rect = btn.getBoundingClientRect();
+  feedback.style.left = rect.left + rect.width / 2 + "px";
+  feedback.style.top = rect.top + rect.height / 2 + "px";
+
+  document.body.appendChild(feedback);
+
+  // Animate in
+  requestAnimationFrame(() => {
+    feedback.style.opacity = "0.9";
+    feedback.style.transform = "translate(-50%, -50%) scale(1.2)";
+  });
+
+  // Animate out and remove
+  setTimeout(() => {
+    feedback.style.opacity = "0";
+    feedback.style.transform = "translate(-50%, -50%) scale(0.6)";
+    setTimeout(() => feedback.remove(), 200);
+  }, 300);
 }
 
 // =============== LEADERBOARD TAB ===============
@@ -1777,6 +1835,11 @@ function clickPacket(event) {
   _comboExpireAt = now + COMBO_TIMEOUT + 200;
   setCursorForCombo(clickCombo);
 
+  // Show mobile cursor feedback if combo is active (2 or more clicks)
+  if (clickCombo >= 2) {
+    showMobileCursorFeedback();
+  }
+
   // Modularized combo effect logic
   if (!clickPacket._lastFxTime || Date.now() - clickPacket._lastFxTime > 80) {
     clickPacket._lastFxTime = Date.now();
@@ -1817,6 +1880,9 @@ function clickPacket(event) {
           el.style.boxShadow = "";
         }
       }
+      // Remove mobile cursor feedback when combo ends
+      const feedback = document.getElementById("mobile-cursor-feedback");
+      if (feedback) feedback.remove();
     }, COMBO_TIMEOUT + 200);
 
     // Show floating effect

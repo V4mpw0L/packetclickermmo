@@ -4073,5 +4073,29 @@ footer {
             width: 20px;
             height: 20px;
         }
+
+        /* Mobile cursor feedback animation */
+        #mobile-cursor-feedback {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            width: 48px;
+            height: 48px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 0;
+            transition: all 200ms ease-out;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Ensure mobile cursor feedback works on touch devices */
+        @media (pointer: coarse) {
+            #mobile-cursor-feedback {
+                width: 52px;
+                height: 52px;
+            }
+        }
     }
 }
