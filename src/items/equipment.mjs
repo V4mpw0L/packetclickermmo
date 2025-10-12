@@ -1138,7 +1138,6 @@ function slotHeaderHTML(item, slotName, slotId) {
     return `
       <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.4rem; flex:1; min-width:0; padding:.8rem; text-align:center;">
         <div style="width:36px;height:36px;border-radius:8px;border:1.5px dashed var(--border-color); opacity:.4; display:flex; align-items:center; justify-content:center;">
-          <span style="font-size:1.2rem; opacity:.3;">📦</span>
         </div>
         <div style="min-width:0;">
           <div style="font-weight:700; font-size:.9rem;">${slotName}</div>
@@ -1531,8 +1530,8 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
                   : null);
               if (n)
                 n(
-                  `Sold ${itemsToRemove.length} items for ${totalValue.toLocaleString("en-US")} packets!`,
-                  "💰",
+                  `Sold <span style="font-size: 1.3em; font-weight: 900; color: #ffd700;">${itemsToRemove.length}</span> items for <span style="font-size: 1.3em; font-weight: 900; color: #ffd700;">${totalValue.toLocaleString("en-US")}</span> <span class="icon-packet" style="font-size: 1.3em; vertical-align: middle;"></span>!`,
+                  '<span class="icon-packet" style="font-size: 1.5em;"></span>',
                 );
             });
           });
