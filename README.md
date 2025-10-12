@@ -287,11 +287,14 @@ const THEMES = {
 ## 📊 **Version History**
 
 ### **Version 0.0.14** (Latest)
-- ✅ **Premium Shop UI Polish** - Enhanced gem buttons with consistent gem.png icons
-- ✅ **Improved Typography** - Larger, more readable gem amounts (10, 60, 150)
-- ✅ **Visual Consistency** - Unified gem iconography across all UI elements
-- ✅ **Better Spacing** - Optimized button layouts for improved user experience
-- ✅ **Professional Polish** - Final touches for seamless gameplay experience
+- ✅ **Complete Shop Redesign** - Professional shop interface with organized sections
+- ✅ **Premium Gem Buttons** - Enhanced visual styling with gem.png icons throughout
+- ✅ **Categorized Shopping** - Organized sections for Premium Gems, VIP, Cosmetics, and Utilities
+- ✅ **Visual Consistency** - Unified gem iconography across achievements, boosts, and all UI elements
+- ✅ **Enhanced Typography** - Larger, more readable gem amounts with improved spacing
+- ✅ **Professional Polish** - Shop header with balance display and section organization
+- ✅ **Mobile Optimization** - Responsive design for all shop elements on mobile devices
+- ✅ **Better UX** - Improved button states, hover effects, and visual hierarchy
 
 ### **Version 0.0.13**
 - ✅ **Perfect Combo Balance** - ANIMAL now requires 120+ clicks

@@ -750,6 +750,269 @@ body .modal-box .space-y-3 > * + * {
     }
 }
 
+/* === PROFESSIONAL SHOP STYLING === */
+.shop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: 0 2px 10px var(--shadow-primary);
+}
+
+.shop-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-color);
+    margin: 0;
+}
+
+.shop-balance {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1));
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.shop-section {
+    margin-bottom: 2rem;
+}
+
+.shop-section-header {
+    margin-bottom: 1rem;
+}
+
+.shop-section-title {
+    background: linear-gradient(90deg, #c4ebea33, transparent);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.shop-section-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    text-align: center;
+}
+
+.shop-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Premium Gem Buttons */
+.shop-premium-btn {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+    border: 2px solid #ffed4e;
+    color: #1a1a1a;
+    font-weight: 800;
+    animation: premium-glow 3s ease-in-out infinite;
+    transition: all 0.3s ease;
+    border-radius: var(--border-radius-md);
+}
+
+.shop-premium-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+    animation: premium-glow-hover 1.5s ease-in-out infinite;
+}
+
+.shop-premium-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    position: relative;
+}
+
+.shop-gem-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: gem-pulse 2s ease-in-out infinite;
+}
+
+.shop-gem-info {
+    flex: 1;
+    text-align: center;
+}
+
+.shop-gem-amount {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #1a1a1a;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    letter-spacing: 0.05em;
+}
+
+.shop-gem-price {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #333;
+    margin-top: 0.2rem;
+}
+
+.shop-sparkle {
+    font-size: 1.3rem;
+    animation: sparkle-rotate 4s linear infinite;
+}
+
+/* Shop Item Buttons */
+.shop-item-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+}
+
+.shop-item-icon {
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    margin-right: 0.5rem;
+}
+
+.shop-item-info {
+    flex: 1;
+    text-align: left;
+}
+
+.shop-item-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.2rem;
+}
+
+.shop-item-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    margin-bottom: 0.3rem;
+}
+
+.shop-item-price {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* VIP Buttons */
+.shop-vip-btn {
+    background: linear-gradient(135deg, #ffd700 10%, #ffed4e 50%, #ffc107 90%);
+    border: 2px solid #ffd700;
+    color: #1a1a1a;
+    transition: all 0.3s ease;
+}
+
+.shop-vip-btn .shop-item-name,
+.shop-vip-btn .shop-item-desc,
+.shop-vip-btn .shop-item-price {
+    color: #1a1a1a;
+}
+
+.shop-vip-btn:hover:not(.shop-owned) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+/* Cosmetic Buttons */
+.shop-cosmetic-btn {
+    background: linear-gradient(135deg, #e91e63 10%, #f06292 50%, #ec407a 90%);
+    border: 2px solid #e91e63;
+    color: #1a1a1a;
+    transition: all 0.3s ease;
+}
+
+.shop-cosmetic-btn .shop-item-name,
+.shop-cosmetic-btn .shop-item-desc,
+.shop-cosmetic-btn .shop-item-price {
+    color: #1a1a1a;
+}
+
+.shop-cosmetic-btn:hover:not(.shop-owned) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+}
+
+/* Utility Buttons */
+.shop-utility-btn {
+    background: linear-gradient(135deg, #9c27b0 10%, #ba68c8 50%, #ab47bc 90%);
+    border: 2px solid #9c27b0;
+    color: #1a1a1a;
+    transition: all 0.3s ease;
+}
+
+.shop-utility-btn .shop-item-name,
+.shop-utility-btn .shop-item-desc,
+.shop-utility-btn .shop-item-price {
+    color: #1a1a1a;
+}
+
+.shop-utility-btn:hover:not(.shop-owned) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+}
+
+/* Ad Button */
+.shop-ad-btn {
+    background: linear-gradient(135deg, #4caf50 10%, #66bb6a 50%, #57c75a 90%);
+    border: 2px solid #4caf50;
+    color: #1a1a1a;
+    transition: all 0.3s ease;
+}
+
+.shop-ad-btn .shop-item-name,
+.shop-ad-btn .shop-item-desc,
+.shop-ad-btn .shop-item-price {
+    color: #1a1a1a;
+}
+
+.shop-ad-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+/* Owned State */
+.shop-owned {
+    opacity: 0.6;
+    background: linear-gradient(135deg, #666 10%, #888 50%, #777 90%) !important;
+    border-color: #666 !important;
+    cursor: not-allowed;
+}
+
+.shop-owned-text {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.shop-free-text {
+    color: #4caf50;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
 /* Stabilize gem count digits */
 #gem-count {
     font-variant-numeric: tabular-nums;
@@ -1775,6 +2038,74 @@ footer {
 
         .gem-sparkle {
             font-size: 1rem;
+        }
+
+        /* New shop mobile styles */
+        .shop-header {
+            flex-direction: column;
+            gap: 1rem;
+            padding: 0.75rem;
+        }
+
+        .shop-title {
+            font-size: 1.5rem;
+        }
+
+        .shop-balance {
+            padding: 0.4rem 0.8rem;
+            font-size: 1rem;
+        }
+
+        .shop-section-title {
+            font-size: 1.1rem;
+            padding: 0.2rem 0.4rem;
+        }
+
+        .shop-section-subtitle {
+            font-size: 0.8rem;
+        }
+
+        .shop-premium-content {
+            padding: 0.75rem;
+        }
+
+        .shop-gem-icon img {
+            height: 1.6rem !important;
+            width: 1.6rem !important;
+        }
+
+        .shop-gem-amount {
+            font-size: 1.3rem;
+        }
+
+        .shop-gem-price {
+            font-size: 0.9rem;
+        }
+
+        .shop-sparkle {
+            font-size: 1.1rem;
+        }
+
+        .shop-item-content {
+            padding: 0.6rem;
+            gap: 0.75rem;
+        }
+
+        .shop-item-icon {
+            font-size: 1.5rem;
+            min-width: 2rem;
+        }
+
+        .shop-item-name {
+            font-size: 1rem;
+        }
+
+        .shop-item-desc {
+            font-size: 0.8rem;
+        }
+
+        .shop-item-price {
+            font-size: 0.9rem;
         }
     }
 

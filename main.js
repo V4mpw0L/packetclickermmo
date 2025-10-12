@@ -537,7 +537,7 @@ function renderBoosts() {
     const active = until > Date.now();
     const remaining = active ? Math.ceil((until - Date.now()) / 1000) : 0;
     const label = `<div class="font-bold">${boost.name}</div>
-        <div class="text-sm opacity-75">${boost.gems} 💎</div>
+        <div class="text-sm opacity-75">${boost.gems} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/></div>
         <div class="text-xs text-neon-gray">${boost.desc}${active ? ` — active (${remaining}s)` : ""}</div>`;
     return renderButton({
       className: `gem-btn w-full mb-2 ${active ? "opacity-50" : ""}`,
@@ -574,7 +574,7 @@ function renderThemes() {
       return renderButton({
         className: `gem-btn w-full mb-2 ${isActive ? "opacity-75" : ""} ${!isUnlocked && !canBuy ? "opacity-50" : ""}`,
         label: `<div class="font-bold">${theme.name} ${isActive ? "(Active)" : ""}</div>
-          ${!isUnlocked ? `<div class="text-sm opacity-75">${(theme.cost || 0).toLocaleString("en-US")} 💎</div>` : ""}
+          ${!isUnlocked ? `<div class="text-sm opacity-75">${(theme.cost || 0).toLocaleString("en-US")} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/></div>` : ""}
           <div class="text-xs text-neon-gray">
             Colors: <span style="color: ${theme.colors[0]}">●</span> <span style="color: ${theme.colors[1]}">●</span> <span style="color: ${theme.colors[2]}">●</span>
           </div>`,
@@ -650,7 +650,7 @@ function renderAchievements() {
       <div class="achievement-content">
         <div class="achievement-name">${ach.name}</div>
         <div class="achievement-desc">${ach.desc}</div>
-        ${ach.gem ? `<div class="achievement-reward">${unlocked ? "✓" : "+" + ach.gem} 💎</div>` : ""}
+        ${ach.gem ? `<div class="achievement-reward">${unlocked ? "✓" : "+" + ach.gem} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/></div>` : ""}
       </div>
     </div>`;
   }).join("");
@@ -667,53 +667,194 @@ function renderAchievements() {
 
 // =============== SHOP PANEL ===============
 function renderShop() {
+  // Premium Gem Packs Section
   let gemStore = GEM_PACKS.map((p) =>
     renderButton({
-      className: "gem-btn premium-gem-btn w-full mb-2",
-      label: `<div class="premium-gem-content">
-        <div class="gem-icon"><img src="src/assets/gem.png" alt="Gems" style="height:1.8rem;width:1.8rem;vertical-align:middle;display:inline-block;margin-right:0.5rem;" aria-hidden="true"/></div>
-        <div class="gem-info">
-          <div class="gem-amount">${p.label}</div>
-          <div class="gem-price">$${p.price.toFixed(2)}</div>
+      className: "shop-premium-btn w-full mb-3",
+      label: `<div class="shop-premium-content">
+        <div class="shop-gem-icon">
+          <img src="src/assets/gem.png" alt="Gems" style="height:2rem;width:2rem;" aria-hidden="true"/>
         </div>
-        <div class="gem-sparkle">✨</div>
+        <div class="shop-gem-info">
+          <div class="shop-gem-amount">${p.label}</div>
+          <div class="shop-gem-price">$${p.price.toFixed(2)}</div>
+        </div>
+        <div class="shop-sparkle">✨</div>
       </div>`,
       dataAttr: `data-gem-pack="${p.id}"`,
     }),
   ).join("");
-  let items = SHOP_ITEMS.map((item) => {
-    let owned =
-      (item.type === "vip" && isVIP()) ||
-      (item.type === "skin" && state.shop.skinBought) ||
-      (item.type === "noAds" && state.player.noAds);
-    let label = owned
-      ? "✓ Owned"
-      : item.label +
-        ` - ${item.gems} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/>`;
-    return renderButton({
-      className: "gem-btn w-full mb-2",
-      label: `${label}<div class="text-xs text-neon-gray">${item.desc}</div>`,
-      dataAttr: `data-shop-item="${item.id}"`,
-      disabled: owned,
-    });
-  }).join("");
+
+  // VIP Items Section
+  let vipItems = SHOP_ITEMS.filter((item) => item.type === "vip")
+    .map((item) => {
+      let owned = isVIP();
+      return renderButton({
+        className: `shop-vip-btn w-full mb-2 ${owned ? "shop-owned" : ""}`,
+        label: `<div class="shop-item-content">
+        <div class="shop-item-icon">👑</div>
+        <div class="shop-item-info">
+          <div class="shop-item-name">${item.label}</div>
+          <div class="shop-item-desc">${item.desc}</div>
+          <div class="shop-item-price">
+            ${
+              owned
+                ? '<span class="shop-owned-text">✓ Active</span>'
+                : `${item.gems} <img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;margin-left:0.3rem;" aria-hidden="true"/>`
+            }
+          </div>
+        </div>
+      </div>`,
+        dataAttr: `data-shop-item="${item.id}"`,
+        disabled: owned,
+      });
+    })
+    .join("");
+
+  // Cosmetic Items Section
+  let cosmeticItems = SHOP_ITEMS.filter((item) => item.type === "skin")
+    .map((item) => {
+      let owned = state.shop.skinBought;
+      return renderButton({
+        className: `shop-cosmetic-btn w-full mb-2 ${owned ? "shop-owned" : ""}`,
+        label: `<div class="shop-item-content">
+        <div class="shop-item-icon">🎨</div>
+        <div class="shop-item-info">
+          <div class="shop-item-name">${item.label}</div>
+          <div class="shop-item-desc">${item.desc}</div>
+          <div class="shop-item-price">
+            ${
+              owned
+                ? '<span class="shop-owned-text">✓ Owned</span>'
+                : `${item.gems} <img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;margin-left:0.3rem;" aria-hidden="true"/>`
+            }
+          </div>
+        </div>
+      </div>`,
+        dataAttr: `data-shop-item="${item.id}"`,
+        disabled: owned,
+      });
+    })
+    .join("");
+
+  // Utility Items Section
+  let utilityItems = SHOP_ITEMS.filter((item) => item.type === "noAds")
+    .map((item) => {
+      let owned = state.player.noAds;
+      return renderButton({
+        className: `shop-utility-btn w-full mb-2 ${owned ? "shop-owned" : ""}`,
+        label: `<div class="shop-item-content">
+        <div class="shop-item-icon">🚫</div>
+        <div class="shop-item-info">
+          <div class="shop-item-name">${item.label}</div>
+          <div class="shop-item-desc">${item.desc}</div>
+          <div class="shop-item-price">
+            ${
+              owned
+                ? '<span class="shop-owned-text">✓ Active</span>'
+                : `${item.gems} <img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;margin-left:0.3rem;" aria-hidden="true"/>`
+            }
+          </div>
+        </div>
+      </div>`,
+        dataAttr: `data-shop-item="${item.id}"`,
+        disabled: owned,
+      });
+    })
+    .join("");
+
+  // Ad Section
   let adBtn =
     !state.player.noAds && state.ads
-      ? renderButton({
+      ? `<div class="shop-section">
+        <div class="shop-section-header">
+          <h3 class="shop-section-title">📺 Free Rewards</h3>
+        </div>
+        ${renderButton({
           id: "watch-ad-btn",
-          className: "neon-btn w-full mb-2",
-          label: "Watch Ad (simulate)",
-        })
+          className: "shop-ad-btn w-full mb-2",
+          label: `<div class="shop-item-content">
+            <div class="shop-item-icon">📺</div>
+            <div class="shop-item-info">
+              <div class="shop-item-name">Watch Advertisement</div>
+              <div class="shop-item-desc">Get 1 gem for free</div>
+              <div class="shop-item-price">
+                <span class="shop-free-text">FREE</span>
+              </div>
+            </div>
+          </div>`,
+        })}
+      </div>`
       : "";
+
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🏬 Shop</h2>
-      <div class="flex flex-col gap-2 mt-4">
-        ${gemStore}
-        <div class="text-neon-gray text-xs text-center my-2">-- Special Items --</div>
-        ${items}
-        ${adBtn}
+      <div class="shop-header">
+        <h2 class="shop-title">🏪 Premium Shop</h2>
+        <div class="shop-balance">
+          <img src="src/assets/gem.png" alt="Gems" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/>
+          <span>${state.gems.toLocaleString("en-US")}</span>
+        </div>
       </div>
+
+      <!-- Premium Gems Section -->
+      <div class="shop-section">
+        <div class="shop-section-header">
+          <h3 class="shop-section-title">💎 Premium Gems</h3>
+          <div class="shop-section-subtitle">Support development & get gems</div>
+        </div>
+        <div class="shop-grid">
+          ${gemStore}
+        </div>
+      </div>
+
+      <!-- VIP Section -->
+      ${
+        vipItems
+          ? `<div class="shop-section">
+        <div class="shop-section-header">
+          <h3 class="shop-section-title">👑 VIP Membership</h3>
+          <div class="shop-section-subtitle">Exclusive benefits & bonuses</div>
+        </div>
+        <div class="shop-grid">
+          ${vipItems}
+        </div>
+      </div>`
+          : ""
+      }
+
+      <!-- Cosmetics Section -->
+      ${
+        cosmeticItems
+          ? `<div class="shop-section">
+        <div class="shop-section-header">
+          <h3 class="shop-section-title">🎨 Cosmetics</h3>
+          <div class="shop-section-subtitle">Customize your appearance</div>
+        </div>
+        <div class="shop-grid">
+          ${cosmeticItems}
+        </div>
+      </div>`
+          : ""
+      }
+
+      <!-- Utilities Section -->
+      ${
+        utilityItems
+          ? `<div class="shop-section">
+        <div class="shop-section-header">
+          <h3 class="shop-section-title">⚡ Utilities</h3>
+          <div class="shop-section-subtitle">Enhance your experience</div>
+        </div>
+        <div class="shop-grid">
+          ${utilityItems}
+        </div>
+      </div>`
+          : ""
+      }
+
+      <!-- Free Section -->
+      ${adBtn}
     </div>
   `;
 }
