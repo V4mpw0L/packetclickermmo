@@ -17,9 +17,11 @@
 - **Equipment Header Rainbow** - "Celestial" text in equipment section features full rainbow animation
 - **Item Modal Rainbow** - Celestial item names, rarity text, quantity numbers, and modal borders all rainbow animated
 - **Inventory Rainbow** - Celestial quantity numbers (x1, x2, etc.) now feature rainbow animation
+- **Perfect Color Consistency** - ALL rarities now have proper color matching across inventory, modals, and UI
+- **Enhanced Modal Borders** - All rarity modal borders now use proper 2px solid rarity colors
 - **Color Cycling** - Smooth transitions through pink, green, purple, and orange hues
 - **Enhanced Glow** - Celestial items feature stronger glow effects matching their border colors
-- **100% Coverage** - Rainbow effects now work perfectly across ALL UI locations and elements
+- **100% Coverage** - Rainbow effects and color consistency work perfectly across ALL UI locations
 
 ### 🎮 **Developer Commands**
 - **Console Command** - Use `spawnCelestial()` in browser console to instantly spawn a celestial item

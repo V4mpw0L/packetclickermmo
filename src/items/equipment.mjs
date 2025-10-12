@@ -1322,7 +1322,7 @@ export function renderTab(state) {
                 <img src="${it.icon}" alt="${it.name}" style="width:100%;height:100%;border-radius:6px; box-sizing:border-box; object-fit:cover;" />
                 <span style="position:absolute; bottom:2px; right:2px; background: rgba(0,0,0,0.6); border:1px solid var(--border-color); border-radius:10px; padding:0 6px; font-size:.7rem; font-weight:800; ${it.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">x${it.q || 1}</span>
               </div>
-              <div style="font-size:.7rem; font-weight:700; color:${st.color}; text-align:center; line-height:1; ${it.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : ""}">${it.rarityName}</div>
+              <div style="font-size:.7rem; font-weight:700; text-align:center; line-height:1; ${it.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">${it.rarityName}</div>
             </button>
           </div>`;
     })
@@ -1506,7 +1506,7 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
       // Create different modals based on whether slots are available
       const html = emptySlot
         ? `
-        <div class="neon-card" style="padding:.75rem; ${item.rarity === "celestial" ? "border: 2px solid transparent; border-image: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1; animation: celestialRainbow 3s linear infinite;" : `border-color:${st.color};`} box-shadow:${st.glow};">
+        <div class="neon-card" style="padding:.75rem; ${item.rarity === "celestial" ? "border: 2px solid transparent; border-image: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1; animation: celestialRainbow 3s linear infinite;" : `border: 2px solid ${st.color};`} box-shadow:${st.glow}; ${item.rarity === "animal" ? `animation: ${st.animation};` : ""}">
           <div style="display:flex; gap:.6rem; align-items:center;">
             <img src="${item.icon}" alt="${item.name}" style="width:64px;height:64px;border-radius:8px; object-fit:cover;" />
             <div>
@@ -1529,7 +1529,7 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
         </div>
       `
         : `
-        <div class="neon-card" style="padding:.75rem; ${item.rarity === "celestial" ? "border: 2px solid transparent; border-image: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1; animation: celestialRainbow 3s linear infinite;" : `border-color:${st.color};`} box-shadow:${st.glow};">
+        <div class="neon-card" style="padding:.75rem; ${item.rarity === "celestial" ? "border: 2px solid transparent; border-image: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1; animation: celestialRainbow 3s linear infinite;" : `border: 2px solid ${st.color};`} box-shadow:${st.glow}; ${item.rarity === "animal" ? `animation: ${st.animation};` : ""}">
           <div style="display:flex; gap:.6rem; align-items:center;">
             <img src="${item.icon}" alt="${item.name}" style="width:64px;height:64px;border-radius:8px; object-fit:cover;" />
             <div>
