@@ -1,5 +1,37 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.18 - Beautiful Game Stats & Visual Polish
+*Released: January 2025*
+
+### 🎨 **Game Stats Visual Overhaul**
+- **Bordered Stat Pills** - All game stats now have beautiful bordered pills matching equipment items
+- **Color-Coded Stats** - Each stat type has its distinctive color (teal, yellow, pink, gold)
+- **Symmetric Layout** - Perfect grid alignment for main stats and boost displays
+- **Professional Design** - Unified visual language across the entire game
+
+### 🌈 **Theme Cards Enhancement**
+- **Dynamic Backgrounds** - Each theme card now shows its actual color scheme
+- **Gradient Previews** - Beautiful subtle gradients using each theme's colors
+- **Enhanced Buttons** - Theme action buttons match their color schemes
+- **Visual Consistency** - Professional card design with proper shadows and effects
+
+### 💎 **Top Bar Gem Enhancement**
+- **Clickable Gem Counter** - Click the gem display to navigate directly to Shop
+- **Hover Effects** - Smooth transitions and visual feedback
+- **Improved UX** - Intuitive access to gem spending
+
+### ⚡ **Temporary Boosts Color Fix**
+- **Proper Color Coding** - Active boosts now show correct colors matching Game page
+- **Consistent Design** - Same bordered pill styling across all boost displays
+- **Visual Harmony** - Unified color scheme throughout the interface
+
+### 🛡️ **Enhanced Save Migration**
+- **Bulletproof Compatibility** - Comprehensive migration system for all old saves
+- **Zero Data Loss** - All progress preserved when updating from any version
+- **Future-Proof Architecture** - Ready for seamless updates
+
+---
+
 ## Version 0.0.17 - UI Polish & Inventory Enhancements
 *Released: January 2025*
 
