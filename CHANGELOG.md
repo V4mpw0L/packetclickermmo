@@ -1,5 +1,42 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.15 - Graphics Quality Settings & Performance Optimization
+*Released: January 2025*
+
+### 🎮 **New Features**
+
+#### **Graphics Quality Settings**
+- **Three Quality Levels**: High (Default), Medium (Reduced Effects), Low (Minimal Effects)
+- **Performance Scaling**: Adaptive animation durations and particle counts based on device capability
+- **Device Optimization**: Lower settings improve performance on older/slower devices
+- **Instant Application**: Settings apply immediately without restart
+- **Multilingual Support**: Full translations in English, Portuguese, and Russian
+
+#### **Smart Performance Adjustments**
+- **High Quality**: Full effects, original animation durations, maximum particles
+- **Medium Quality**: 75% animation speed, 50% particle count, reduced text shadows
+- **Low Quality**: 50% animation speed, no particles, minimal effects, disabled shaking
+
+### ⚙️ **Settings Enhancement**
+- **Improved UI**: Better organized settings with clear descriptions
+- **User Guidance**: Helpful tooltips explaining performance impact
+- **Backward Compatibility**: Existing saves automatically use "High" quality
+- **Persistent Storage**: Graphics preference saved across sessions
+
+### 🚀 **Technical Improvements**
+- **CSS-Based Scaling**: Clean implementation using body classes for quality levels
+- **Particle Management**: Smart particle limits based on graphics setting
+- **Animation Optimization**: JavaScript duration adjustments for smooth performance
+- **Memory Efficiency**: Reduced DOM operations on lower quality settings
+
+### 🎯 **Device Support**
+- **Mobile Optimization**: Automatic quality adjustments for different screen sizes
+- **Battery Conservation**: Lower settings reduce CPU usage significantly
+- **Accessibility**: Respects system "Reduce Motion" preferences
+- **Cross-Browser**: Works consistently across all supported browsers
+
+---
+
 ## Version 0.0.14 - Premium Shop UI Polish & Visual Consistency
 *Released: January 2025*
 

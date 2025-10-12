@@ -49,6 +49,20 @@ import {
 
 /* Using global DEFAULT_AVATAR and STORAGE_KEY from constants UMD (src/data/constants.js) */
 
+// Ensure default graphics quality is set immediately
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", function () {
+    if (
+      !document.body.classList.contains("graphics-high") &&
+      !document.body.classList.contains("graphics-medium") &&
+      !document.body.classList.contains("graphics-low")
+    ) {
+      document.body.classList.add("graphics-high");
+      window.graphicsQuality = "high";
+    }
+  });
+}
+
 // Click combo tracking
 let clickCombo = 0;
 let lastClickTime = 0;
@@ -61,6 +75,7 @@ const state = {
     name: "Player",
     avatar: DEFAULT_AVATAR,
     sound: true,
+    graphics: "high", // "high", "medium", "low"
     vipUntil: 0,
     noAds: false,
   },
@@ -242,6 +257,7 @@ function load() {
         name: "Player",
         avatar: DEFAULT_AVATAR,
         sound: true,
+        graphics: "high",
         vipUntil: 0,
         noAds: false,
       },
@@ -274,6 +290,7 @@ function load() {
         name: "Player",
         avatar: DEFAULT_AVATAR,
         sound: true,
+        graphics: "high",
         vipUntil: 0,
         noAds: false,
       },
@@ -301,9 +318,13 @@ function load() {
   Object.assign(state, d);
   if (!state.player.vipUntil) state.player.vipUntil = 0;
   if (state.player.noAds === undefined) state.player.noAds = false;
+  if (!state.player.graphics) state.player.graphics = "high";
   if (typeof state.gems !== "number") state.gems = 0;
   if (!state.theme) state.theme = "cyberpunk";
   if (!state.themes) state.themes = {};
+
+  // Apply graphics settings after loading saved data
+  applyGraphicsSettings(state.player.graphics || "high");
 }
 
 // =============== TABS & UI RENDERING ===============
@@ -1323,6 +1344,20 @@ function showEditProfile() {
   };
 }
 
+// =============== GRAPHICS SETTINGS ===============
+function applyGraphicsSettings(quality) {
+  const body = document.body;
+
+  // Remove existing graphics classes
+  body.classList.remove("graphics-high", "graphics-medium", "graphics-low");
+
+  // Apply new graphics class
+  body.classList.add(`graphics-${quality}`);
+
+  // Store in global for effects to reference
+  window.graphicsQuality = quality;
+}
+
 // =============== SETTINGS ===============
 function showSettings() {
   showModal(
@@ -1334,6 +1369,18 @@ function showSettings() {
             <input type="checkbox" id="setting-sound" ${state.player.sound ? "checked" : ""}/>
             <span>Game Sound Effects</span>
           </label>
+        </div>
+
+        <div class="neon-card" style="padding: 0.75rem;">
+          <label class="block mb-1 font-semibold" data-i18n="settings.graphics">Graphics Quality</label>
+          <select id="graphics-select" class="w-full p-2 bg-gray-700 rounded border border-neon-cyan mb-2">
+            <option value="high" ${state.player.graphics === "high" ? "selected" : ""} data-i18n="settings.graphicsHigh">High (Default)</option>
+            <option value="medium" ${state.player.graphics === "medium" ? "selected" : ""} data-i18n="settings.graphicsMedium">Medium (Reduced Effects)</option>
+            <option value="low" ${state.player.graphics === "low" ? "selected" : ""} data-i18n="settings.graphicsLow">Low (Minimal Effects)</option>
+          </select>
+          <div class="text-xs text-neon-gray" data-i18n="settings.graphicsNote">
+            Lower settings improve performance on older devices
+          </div>
         </div>
 
         <div class="neon-card" style="padding: 0.75rem;">
@@ -1378,6 +1425,14 @@ function showSettings() {
         // Sound toggle
         const soundEl = document.getElementById("setting-sound");
         state.player.sound = !!(soundEl && soundEl.checked);
+
+        // Graphics quality
+        const graphicsEl = document.getElementById("graphics-select");
+        if (graphicsEl) {
+          state.player.graphics = graphicsEl.value;
+          // Apply graphics settings immediately
+          applyGraphicsSettings(state.player.graphics);
+        }
 
         // Language
         const langEl = document.getElementById("lang-select");
@@ -1708,8 +1763,8 @@ function clickPacket(event) {
       }
     }
 
-    // Remove element after animation
-    const animationDuration =
+    // Remove element after animation - only adjust for medium/low quality
+    const baseDuration =
       clickCombo >= 50
         ? 1200
         : clickCombo >= 15
@@ -1717,6 +1772,16 @@ function clickPacket(event) {
           : clickCombo >= 5
             ? 1100
             : 900;
+
+    // Apply graphics quality modifier only for medium/low quality
+    const graphicsQuality = window.graphicsQuality || "high";
+    let animationDuration = baseDuration;
+    if (graphicsQuality === "medium") {
+      animationDuration = Math.max(600, baseDuration * 0.8);
+    } else if (graphicsQuality === "low") {
+      animationDuration = Math.max(800, baseDuration * 0.9);
+    }
+    // HIGH quality uses original baseDuration unchanged
     setTimeout(() => {
       if (clickFX.parentNode) {
         document.body.removeChild(clickFX);
@@ -2647,6 +2712,19 @@ function init() {
   document.addEventListener("contextmenu", function (e) {
     e.preventDefault();
   });
+
+  // Apply graphics settings on initialization
+  applyGraphicsSettings(state.player.graphics || "high");
+
+  // Ensure graphics are applied immediately even if state isn't loaded yet
+  if (
+    !document.body.classList.contains("graphics-high") &&
+    !document.body.classList.contains("graphics-medium") &&
+    !document.body.classList.contains("graphics-low")
+  ) {
+    document.body.classList.add("graphics-high");
+    window.graphicsQuality = "high";
+  }
 }
 
 // Custom name prompt modal

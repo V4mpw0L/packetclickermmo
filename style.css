@@ -3562,3 +3562,121 @@ button {
         color: black;
     }
 }
+
+/* =====================================================
+   GRAPHICS QUALITY SETTINGS
+   ===================================================== */
+
+/* HIGH QUALITY (Default) - No overrides, keep original behavior */
+/* All original animations and effects work as designed */
+
+/* Fallback for when no graphics class is applied - ensure effects show */
+body:not(.graphics-high):not(.graphics-medium):not(.graphics-low) .click-effect {
+    animation-duration: inherit;
+    text-shadow: inherit;
+}
+
+body:not(.graphics-high):not(.graphics-medium):not(.graphics-low) .shake-element {
+    animation: shake 0.3s ease-in-out;
+}
+
+/* MEDIUM QUALITY - Reduced effects */
+body.graphics-medium .click-effect {
+    animation-duration: 0.8s !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.graphics-medium .click-effect.combo {
+    animation-duration: 0.9s !important;
+}
+
+body.graphics-medium .click-effect.mega-combo {
+    animation-duration: 1s !important;
+}
+
+body.graphics-medium .click-effect.ultra-combo {
+    animation-duration: 1.1s !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6) !important;
+}
+
+body.graphics-medium .click-effect.animal-combo {
+    animation-duration: 1.2s !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7) !important;
+}
+
+body.graphics-medium .shake-element {
+    animation: shake 0.2s ease-in-out;
+}
+
+/* Reduce particle effects on medium */
+body.graphics-medium .animal-particle {
+    opacity: 0.7 !important;
+}
+
+/* LOW QUALITY - Smooth minimal effects */
+body.graphics-low .click-effect {
+    animation-duration: 0.8s !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4) !important;
+    font-size: clamp(1.1rem, 3.5vw, 1.6rem) !important;
+    transform: translateX(-50%) translateZ(0) !important;
+}
+
+body.graphics-low .click-effect.combo {
+    animation-duration: 0.9s !important;
+    font-size: clamp(1.2rem, 4vw, 1.8rem) !important;
+}
+
+body.graphics-low .click-effect.mega-combo {
+    animation-duration: 1s !important;
+    font-size: clamp(1.4rem, 4.5vw, 2rem) !important;
+    color: rgba(0, 188, 212, 0.7) !important; /* Reduced blue intensity */
+}
+
+body.graphics-low .click-effect.ultra-combo {
+    animation-duration: 1.1s !important;
+    font-size: clamp(1.6rem, 5vw, 2.4rem) !important;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
+    color: rgba(255, 77, 255, 0.8) !important; /* Slightly reduced intensity */
+}
+
+body.graphics-low .click-effect.animal-combo {
+    animation-duration: 1.2s !important;
+    font-size: clamp(1.8rem, 5.5vw, 2.6rem) !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+    color: rgba(255, 48, 64, 0.85) !important; /* Reduced animal red intensity */
+}
+
+/* Smooth minimal shake on low quality */
+body.graphics-low .shake-element {
+    animation: smoothShakeLow 0.15s ease-in-out !important;
+}
+
+@keyframes smoothShakeLow {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-1px); }
+    75% { transform: translateX(1px); }
+}
+
+/* Disable particle effects on low quality */
+body.graphics-low .animal-particle {
+    display: none !important;
+}
+
+body.graphics-low #animal-aura-layer {
+    display: none !important;
+}
+
+/* Reduce button glow effects on low quality */
+body.graphics-low #click-btn {
+    box-shadow: 0 0 0.5rem var(--primary-color) !important;
+}
+
+body.graphics-low .neon-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Performance optimizations for low quality */
+body.graphics-low .click-effect {
+    will-change: transform, opacity !important;
+    backface-visibility: hidden !important;
+}

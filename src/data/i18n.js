@@ -153,6 +153,11 @@
       settings: {
         title: "Settings",
         sfx: "Game Sound Effects",
+        graphics: "Graphics Quality",
+        graphicsHigh: "High (Default)",
+        graphicsMedium: "Medium (Reduced Effects)",
+        graphicsLow: "Low (Minimal Effects)",
+        graphicsNote: "Lower settings improve performance on older devices",
         note: "All progress is saved locally.<br>For mobile, use Store in-app for real gems/ads!",
       },
       profile: {
@@ -248,6 +253,12 @@
       settings: {
         title: "Configurações",
         sfx: "Efeitos Sonoros do Jogo",
+        graphics: "Qualidade Gráfica",
+        graphicsHigh: "Alta (Padrão)",
+        graphicsMedium: "Média (Efeitos Reduzidos)",
+        graphicsLow: "Baixa (Efeitos Mínimos)",
+        graphicsNote:
+          "Configurações menores melhoram performance em dispositivos antigos",
         note: "Todo progresso é salvo localmente.<br>No mobile, use a Loja do app para gemas/anúncios reais!",
       },
       profile: {
@@ -343,6 +354,12 @@
       settings: {
         title: "Настройки",
         sfx: "Звуковые эффекты игры",
+        graphics: "Качество графики",
+        graphicsHigh: "Высокое (По умолчанию)",
+        graphicsMedium: "Среднее (Уменьшенные эффекты)",
+        graphicsLow: "Низкое (Минимальные эффекты)",
+        graphicsNote:
+          "Более низкие настройки улучшают производительность на старых устройствах",
         note: "Весь прогресс сохраняется локально.<br>На мобильных используйте магазин приложения для настоящих гемов/рекламы!",
       },
       profile: {

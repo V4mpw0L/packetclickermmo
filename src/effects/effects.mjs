@@ -110,6 +110,12 @@ function releaseParticle(el) {
  */
 export function startAnimalAura(clickCombo = 30) {
   if (!hasDOM()) return;
+
+  // Check graphics quality - disable particles on low quality
+  if (typeof window !== "undefined" && window.graphicsQuality === "low") {
+    return;
+  }
+
   try {
     // Ensure a dedicated aura layer exists
     if (!_animalAuraLayer) {
@@ -145,14 +151,31 @@ export function startAnimalAura(clickCombo = 30) {
 
     // Start spawning
     if (_animalAuraInterval) return;
-    const rateMs = 70; // lower rate than 45ms for perf
+
+    // Adjust spawn rate based on graphics quality
+    let rateMs = 70; // default for high quality
+    if (typeof window !== "undefined") {
+      if (window.graphicsQuality === "medium") {
+        rateMs = 120; // slower for medium
+      } else if (window.graphicsQuality === "low") {
+        return; // already handled above, but safety check
+      }
+    }
 
     _animalAuraInterval = setInterval(() => {
       const btn = byId("click-btn");
       if (!btn) return;
 
       // Limit ACTUAL active particles (ignore pooled hidden nodes)
-      const maxParticles = 32;
+      // Adjust max particles based on graphics quality
+      let maxParticles = 32; // high quality
+      if (typeof window !== "undefined") {
+        if (window.graphicsQuality === "medium") {
+          maxParticles = 16; // medium quality
+        } else if (window.graphicsQuality === "low") {
+          maxParticles = 0; // low quality - no particles
+        }
+      }
       if (_particleInUse.size >= maxParticles) return;
 
       const rect = btn.getBoundingClientRect();
