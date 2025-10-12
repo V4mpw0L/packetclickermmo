@@ -672,9 +672,7 @@ function renderShop() {
     renderButton({
       className: "shop-premium-btn w-full mb-3",
       label: `<div class="shop-premium-content">
-        <div class="shop-gem-icon">
-          <img src="src/assets/gem.png" alt="Gems" style="height:2rem;width:2rem;" aria-hidden="true"/>
-        </div>
+        <div class="shop-sparkle-left">✨</div>
         <div class="shop-gem-info">
           <div class="shop-gem-amount">${p.label}</div>
           <div class="shop-gem-price">$${p.price.toFixed(2)}</div>
@@ -1964,6 +1962,9 @@ function buyShopItem(itemId) {
     let now = Date.now();
     if (!isVIP() || state.player.vipUntil < now) state.player.vipUntil = now;
     state.player.vipUntil += item.days * 86400 * 1000;
+    // VIP automatically includes ad removal
+    state.player.noAds = true;
+    state.ads = false;
   }
   if (item.type === "skin") state.shop.skinBought = true;
   if (item.type === "noAds") {

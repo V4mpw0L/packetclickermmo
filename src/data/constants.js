@@ -314,7 +314,7 @@
         gems: 25,
         type: "vip",
         days: 7,
-        desc: "Auto-collect, +25% earnings",
+        desc: "Auto-collect, +25% earnings, No ads",
       },
       {
         id: "vip30",
@@ -322,7 +322,7 @@
         gems: 60,
         type: "vip",
         days: 30,
-        desc: "Auto-collect, +25% earnings",
+        desc: "Auto-collect, +25% earnings, No ads",
       },
       {
         id: "skinElite",
