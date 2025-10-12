@@ -1659,10 +1659,8 @@ ul li:last-child {
 
 .avatar-choice.selected,
 .avatar-choice:hover {
-    border: 2.5px solid var(--border-color);
-    box-shadow:
-        0 2px 14px var(--primary-color),
-        0 0 8px var(--secondary-color);
+    border: 2.5px solid transparent;
+    box-shadow: none;
     background: #232e39;
     transform: scale(1.05);
 }

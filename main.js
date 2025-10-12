@@ -1232,7 +1232,7 @@ function showEditProfile() {
        <label class="block mb-3">
          <span class="block mb-1 font-semibold">Name:</span>
          <input type="text" id="profile-name" value="${state.player.name}" maxlength="14"
-                class="w-full p-2 bg-gray-700 rounded border border-neon-cyan focus:outline-none focus:border-yellow-400">
+                class="w-full p-2 bg-gray-700 rounded border border-neon-cyan focus:outline-none focus:border-yellow-400" readonly onfocus="this.removeAttribute('readonly')">
        </label>
        <div class="mb-4">
          <span class="block mb-2 font-semibold">Avatar:</span>
