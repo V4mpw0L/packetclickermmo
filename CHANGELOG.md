@@ -1,5 +1,48 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.16 - Enhanced Themes & Mobile Improvements
+*Released: January 2025*
+
+### 🎨 **Themes Section Complete Overhaul**
+
+#### **2 Brand New Premium Themes**
+- **Ocean Deep** (60 💎) - Calming blue depths for focused clicking sessions
+- **Gold Luxury** (150 💎) - Premium golden elegance for elite hackers
+
+#### **Revolutionary Themes UI**
+- **Beautiful Grid Layout** - Modern card-based design replacing simple list
+- **Organized Sections** - Free themes separated from premium themes
+- **Theme Personalities** - Rich descriptions explaining each theme's vibe
+- **Visual Color Previews** - Enhanced 3-dot color system with hover effects
+- **Background Aesthetics** - Each theme card has subtle background in its signature color
+
+#### **Professional User Experience**
+- **Clean Purchase Flow** - Clear gem costs with honest, no-confusion pricing
+- **Responsive Design** - Perfect layout on mobile and desktop
+- **Hover Animations** - Smooth card lifting and color transitions
+- **Active State Indicators** - Clear checkmarks and badges for current theme
+
+### 📱 **Mobile Optimization**
+
+#### **iPhone Zoom Prevention**
+- **Touch Action Controls** - Prevents annoying zoom on button taps
+- **Enhanced Double-Tap Protection** - No more accidental zooming
+- **Collect Packets Fixed** - Smooth button interaction without viewport changes
+- **Theme Buttons Protected** - All interactive elements zoom-safe
+
+### 🖼️ **Avatar Upload Enhancement**
+- **Increased Size Limit** - From 256KB to **5MB** for high-quality profile pictures
+- **Better User Experience** - Upload larger, clearer avatar images
+- **Improved Error Messages** - Clear feedback about file size limits
+
+### 🎯 **Technical Improvements**
+- **Comprehensive Touch Handling** - Multiple layers of mobile interaction protection
+- **CSS Grid Mastery** - Advanced responsive layout for themes section
+- **Performance Optimized** - Smooth animations without compromising speed
+- **Cross-Platform Compatibility** - Perfect experience on iOS, Android, and desktop
+
+---
+
 ## Version 0.0.15 - Graphics Quality Settings & Performance Optimization
 *Released: January 2025*
 

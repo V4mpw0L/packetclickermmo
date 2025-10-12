@@ -55,7 +55,7 @@
     var STORAGE_KEY = "packet_clicker_save_v3";
     var DEFAULT_AVATAR =
       "https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker";
-    var APP_VERSION = "0.0.15";
+    var APP_VERSION = "0.0.16";
 
     // Interaction tuning
     var COMBO_TIMEOUT = 1000; // ms to maintain click combo
@@ -181,31 +181,50 @@
     var THEMES = {
       cyberpunk: {
         name: "Cyberpunk",
+        description: "Classic hacker vibes with neon accents",
         colors: ["#1de9b6", "#f7cf5c", "#222c38"],
         unlocked: true,
       },
       neon: {
         name: "Neon Pink",
+        description: "Vibrant pink energy for night gaming",
         colors: ["#ff1493", "#00ffff", "#1a0d26"],
         cost: 50,
         unlocked: false,
       },
       dark: {
         name: "Dark Mode",
+        description: "Easy on the eyes, perfect for long sessions",
         colors: ["#ffffff", "#888888", "#000000"],
         cost: 25,
         unlocked: false,
       },
       matrix: {
         name: "Matrix Green",
+        description: "Enter the digital realm with code-green style",
         colors: ["#00ff41", "#008f11", "#0d1117"],
         cost: 100,
         unlocked: false,
       },
       retro: {
         name: "Retro Amber",
+        description: "Nostalgic terminal orange from the golden age",
         colors: ["#ffb000", "#ff6600", "#2d1b00"],
         cost: 75,
+        unlocked: false,
+      },
+      ocean: {
+        name: "Ocean Deep",
+        description: "Calming blue depths for focused clicking",
+        colors: ["#0ea5e9", "#06b6d4", "#164e63"],
+        cost: 60,
+        unlocked: false,
+      },
+      luxury: {
+        name: "Gold Luxury",
+        description: "Premium golden elegance for elite hackers",
+        colors: ["#fbbf24", "#f59e0b", "#451a03"],
+        cost: 150,
         unlocked: false,
       },
     };

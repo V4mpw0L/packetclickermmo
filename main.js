@@ -586,34 +586,102 @@ function renderBoosts() {
 
 // =============== THEMES TAB ===============
 function renderThemes() {
-  let themeItems = Object.entries(THEMES)
-    .map(([id, theme]) => {
-      let isActive = state.theme === id;
-      let isUnlocked = theme.unlocked || state.themes?.[id];
-      let canBuy = !isUnlocked && state.gems >= (theme.cost || 0);
+  // Separate free and premium themes
+  let freeThemes = [];
+  let premiumThemes = [];
 
-      return renderButton({
-        className: `gem-btn w-full mb-2 ${isActive ? "opacity-75" : ""} ${!isUnlocked && !canBuy ? "opacity-50" : ""}`,
-        label: `<div class="font-bold">${theme.name} ${isActive ? "(Active)" : ""}</div>
-          ${!isUnlocked ? `<div class="text-sm opacity-75">${(theme.cost || 0).toLocaleString("en-US")} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/></div>` : ""}
-          <div class="text-xs text-neon-gray">
-            Colors: <span style="color: ${theme.colors[0]}">●</span> <span style="color: ${theme.colors[1]}">●</span> <span style="color: ${theme.colors[2]}">●</span>
-          </div>`,
-        dataAttr: `data-theme="${id}"`,
-        disabled: isActive,
-      });
-    })
-    .join("");
+  Object.entries(THEMES).forEach(([id, theme]) => {
+    if (theme.unlocked || theme.cost === 0) {
+      freeThemes.push([id, theme]);
+    } else {
+      premiumThemes.push([id, theme]);
+    }
+  });
+
+  const renderThemeCard = ([id, theme]) => {
+    let isActive = state.theme === id;
+    let isUnlocked = theme.unlocked || state.themes?.[id];
+    let canBuy = !isUnlocked && state.gems >= (theme.cost || 0);
+    let canPreview = !isActive;
+
+    return `
+      <div class="theme-card ${isActive ? "active" : ""} ${!isUnlocked && !canBuy ? "locked" : ""}" data-theme="${id}">
+        <div class="theme-header">
+          <div class="theme-name">${theme.name} ${isActive ? "✓" : ""}</div>
+          ${isActive ? '<div class="active-badge">Active</div>' : ""}
+        </div>
+
+        <div class="theme-preview">
+          <div class="color-preview">
+            <span class="color-dot primary" style="background: ${theme.colors[0]}"></span>
+            <span class="color-dot secondary" style="background: ${theme.colors[1]}"></span>
+            <span class="color-dot accent" style="background: ${theme.colors[2]}"></span>
+          </div>
+        </div>
+
+        <div class="theme-description">${theme.description || "Classic theme"}</div>
+
+        <div class="theme-actions">
+          ${
+            !isUnlocked
+              ? `<div class="theme-cost">
+              ${(theme.cost || 0).toLocaleString("en-US")}
+              <img src="src/assets/gem.png" alt="Gems" class="gem-icon"/>
+            </div>`
+              : ""
+          }
+
+          <div class="theme-buttons">
+            ${
+              !isActive
+                ? `<button class="theme-action-btn ${!isUnlocked ? "buy-btn" : "activate-btn"}"
+                      ${!isUnlocked && !canBuy ? "disabled" : ""}>
+                ${!isUnlocked ? "💎 Buy" : "🎨 Use"}
+              </button>`
+                : ""
+            }
+          </div>
+        </div>
+      </div>
+    `;
+  };
+
+  let freeThemeItems = freeThemes.map(renderThemeCard).join("");
+  let premiumThemeItems = premiumThemes.map(renderThemeCard).join("");
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🎨 Visual Themes</h2>
 
       <div class="text-sm text-neon-gray mb-4 text-center">
-        Customize your game's appearance
+        Customize your game's appearance with beautiful color schemes
       </div>
 
-      ${themeItems}
+      ${
+        freeThemes.length > 0
+          ? `
+        <div class="themes-section">
+          <h3 class="themes-section-title">🆓 Free Themes</h3>
+          <div class="themes-grid">
+            ${freeThemeItems}
+          </div>
+        </div>
+      `
+          : ""
+      }
+
+      ${
+        premiumThemes.length > 0
+          ? `
+        <div class="themes-section">
+          <h3 class="themes-section-title">💎 Premium Themes</h3>
+          <div class="themes-grid">
+            ${premiumThemeItems}
+          </div>
+        </div>
+      `
+          : ""
+      }
     </div>
   `;
 }
@@ -1277,16 +1345,16 @@ function showEditProfile() {
       const reader = new FileReader();
       reader.onload = function (ev) {
         uploadedAvatarDataUrl = String(ev.target && ev.target.result) || null;
-        // Enforce ~256KB max for uploaded avatars (prevent huge data URLs)
+        // Enforce 5MB max for uploaded avatars (prevent huge data URLs)
         try {
           var __data = uploadedAvatarDataUrl || "";
           var __idx = __data.indexOf(",") + 1;
           var __b64len = __idx > 0 ? __data.length - __idx : 0;
           var __bytes = Math.ceil((__b64len * 3) / 4);
-          if (__bytes > 262144) {
+          if (__bytes > 5242880) {
             uploadedAvatarDataUrl = null;
             try {
-              showHudNotify("Image too large (max 256KB)", "⚠️");
+              showHudNotify("Image too large (max 5MB)", "⚠️");
             } catch (_) {}
           }
         } catch (_) {}
@@ -2440,8 +2508,9 @@ function claimDailyReward() {
 // =============== UI BINDING ===============
 function clearTabEvents() {
   // Clear theme button events specifically
-  document.querySelectorAll("[data-theme]").forEach((btn) => {
-    btn.onclick = null;
+  document.querySelectorAll("[data-theme]").forEach((card) => {
+    const actionBtn = card.querySelector(".theme-action-btn");
+    if (actionBtn) actionBtn.onclick = null;
   });
 
   // Clear other button events
@@ -2537,12 +2606,16 @@ function bindTabEvents(tab) {
     }
   }
   if (tab === "themes") {
-    document.querySelectorAll("[data-theme]").forEach((btn) => {
-      // Only add event listener if button is not disabled and not already active theme
-      if (!btn.disabled && btn.getAttribute("data-theme") !== state.theme) {
-        btn.onclick = (e) => {
+    document.querySelectorAll("[data-theme]").forEach((card) => {
+      const themeId = card.getAttribute("data-theme");
+
+      // Handle theme action buttons (Buy/Use)
+      const actionBtn = card.querySelector(".theme-action-btn");
+      if (actionBtn && !actionBtn.disabled && themeId !== state.theme) {
+        actionBtn.onclick = (e) => {
           e.preventDefault();
-          buyTheme(btn.getAttribute("data-theme"));
+          e.stopPropagation();
+          buyTheme(themeId);
         };
       }
     });
@@ -2688,13 +2761,37 @@ function init() {
         t &&
         (t.id === "click-btn" ||
           (typeof t.closest === "function" &&
-            t.closest("#click-btn,.tab-btn,.neon-btn,.upgrade-btn,.gem-btn")));
+            t.closest(
+              "#click-btn,.tab-btn,.neon-btn,.upgrade-btn,.gem-btn,.theme-action-btn,[data-theme]",
+            )));
       if (!allowFastTap && now - lastTouchEnd <= 300) {
         event.preventDefault();
       }
       lastTouchEnd = now;
     },
     { passive: false },
+  );
+
+  // Additional zoom prevention for iOS Safari
+  document.addEventListener(
+    "touchmove",
+    function (e) {
+      if (e.scale !== 1) {
+        e.preventDefault();
+      }
+    },
+    { passive: false },
+  );
+
+  // Prevent zoom on specific elements
+  document.addEventListener(
+    "touchstart",
+    function (e) {
+      if (e.target.closest(".theme-card, .theme-action-btn, [data-theme]")) {
+        e.target.style.touchAction = "manipulation";
+      }
+    },
+    { passive: true },
   );
 
   // Disable pinch zoom

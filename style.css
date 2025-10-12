@@ -3678,3 +3678,255 @@ body.graphics-low .click-effect {
     will-change: transform, opacity !important;
     backface-visibility: hidden !important;
 }
+
+/* =====================================================
+   PREVENT ZOOM ON MOBILE DEVICES
+   ===================================================== */
+
+/* Prevent zoom on double tap for all interactive elements */
+button, input, select, textarea, .neon-btn, .gem-btn, .upgrade-btn, .tab-btn {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Prevent zoom on specific game elements */
+#click-btn, .click-btn, [data-theme], [data-boost] {
+    touch-action: manipulation;
+}
+
+/* Global zoom prevention */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+/* =====================================================
+   ENHANCED THEMES SECTION
+   ===================================================== */
+
+.themes-section {
+    margin-bottom: 1.5rem;
+}
+
+.themes-section-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(196, 235, 234, 0.2);
+}
+
+.themes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.theme-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Theme card backgrounds based on theme colors */
+.theme-card[data-theme="cyberpunk"] {
+    background: linear-gradient(135deg, var(--bg-card), rgba(29, 233, 182, 0.05));
+}
+
+.theme-card[data-theme="neon"] {
+    background: linear-gradient(135deg, var(--bg-card), rgba(255, 20, 147, 0.05));
+}
+
+.theme-card[data-theme="dark"] {
+    background: linear-gradient(135deg, var(--bg-card), rgba(255, 255, 255, 0.03));
+}
+
+.theme-card[data-theme="matrix"] {
+    background: linear-gradient(135deg, var(--bg-card), rgba(0, 255, 65, 0.05));
+}
+
+.theme-card[data-theme="retro"] {
+    background: linear-gradient(135deg, var(--bg-card), rgba(255, 176, 0, 0.05));
+}
+
+.theme-card[data-theme="ocean"] {
+    background: linear-gradient(135deg, var(--bg-card), rgba(14, 165, 233, 0.05));
+}
+
+.theme-card[data-theme="luxury"] {
+    background: linear-gradient(135deg, var(--bg-card), rgba(251, 191, 36, 0.05));
+}
+
+.theme-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 16px rgba(29, 233, 182, 0.15);
+    transform: translateY(-2px);
+}
+
+.theme-card.active {
+    border-color: var(--secondary-color);
+    background: linear-gradient(135deg, var(--bg-card), rgba(247, 207, 92, 0.05));
+    box-shadow: 0 0 20px rgba(247, 207, 92, 0.2);
+}
+
+.theme-card.locked {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.theme-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.theme-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.active-badge {
+    background: var(--secondary-color);
+    color: var(--bg-primary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.theme-preview {
+    margin-bottom: 0.75rem;
+}
+
+.color-preview {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.color-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.color-dot:hover {
+    transform: scale(1.2);
+}
+
+.color-dot.primary {
+    transform: scale(1.1);
+}
+
+.theme-description {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+.theme-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.theme-cost {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+.theme-cost .gem-icon {
+    width: 1rem;
+    height: 1rem;
+    vertical-align: middle;
+}
+
+.theme-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+
+
+.theme-action-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    border: none;
+    flex: 1;
+}
+
+.buy-btn {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+}
+
+.buy-btn:hover {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    transform: translateY(-1px);
+}
+
+.activate-btn {
+    background: linear-gradient(135deg, var(--primary-color), #1de9b6);
+    color: var(--bg-primary);
+}
+
+.activate-btn:hover {
+    background: linear-gradient(135deg, #1de9b6, #00d4aa);
+    transform: translateY(-1px);
+}
+
+.theme-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Mobile responsiveness for themes */
+@media (max-width: 640px) {
+    .themes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .theme-card {
+        padding: 0.75rem;
+    }
+
+
+
+    .color-dot {
+        width: 20px;
+        height: 20px;
+    }
+}
