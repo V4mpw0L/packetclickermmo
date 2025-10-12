@@ -64,22 +64,19 @@
     var GEM_PACKS = [
       {
         id: "small",
-        label:
-          '10 <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/>',
+        label: "10 Gems",
         gems: 10,
         price: 0.99,
       },
       {
         id: "medium",
-        label:
-          '60 <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/>',
+        label: "60 Gems",
         gems: 60,
         price: 4.99,
       },
       {
         id: "big",
-        label:
-          '150 <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/>',
+        label: "150 Gems",
         gems: 150,
         price: 9.99,
       },

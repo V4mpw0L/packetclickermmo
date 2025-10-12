@@ -844,12 +844,10 @@ function renderShop() {
     renderButton({
       className: "shop-premium-btn w-full mb-3",
       label: `<div class="shop-premium-content">
-        <div class="shop-sparkle-left">✨</div>
         <div class="shop-gem-info">
           <div class="shop-gem-amount">${p.label}</div>
           <div class="shop-gem-price">$${p.price.toFixed(2)}</div>
         </div>
-        <div class="shop-sparkle">✨</div>
       </div>`,
       dataAttr: `data-gem-pack="${p.id}"`,
     }),
