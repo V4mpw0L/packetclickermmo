@@ -971,8 +971,9 @@ function renderShop() {
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <div class="shop-header">
-        <h2 class="shop-title">🏪 Premium Shop</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🏪 Premium Shop</h2>
+
+      <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
         <div class="shop-balance">
           <img src="src/assets/gem.png" alt="Gems" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/>
           <span>${state.gems.toLocaleString("en-US")}</span>
