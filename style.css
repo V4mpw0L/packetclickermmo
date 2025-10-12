@@ -371,13 +371,12 @@ body .modal-box .space-y-3 > * + * {
     flex: 0 0 auto;
     min-width: max-content;
     position: absolute;
-    right: 1rem;
+    right: 0.5rem;
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;
-    padding-right: 1rem !important;
-    margin-top: 0.5rem !important;
-    margin-bottom: 0.5rem !important;
+    width: 120px;
+    justify-content: flex-end;
 }
 .top-bar .controls #gem-display {
     display: none;
@@ -424,6 +423,8 @@ body .modal-box .space-y-3 > * + * {
     flex-shrink: 1;
     margin-left: auto;
     margin-right: 5rem;
+    min-width: 200px;
+    justify-content: center;
     grid-area: pills;
     max-width: calc(100% - 6rem);
     overflow: hidden;
@@ -1058,6 +1059,18 @@ body .modal-box .space-y-3 > * + * {
 /* Mobile responsive styles handled inline */
 
 /* Small pill for Packets (matches gem pill), appears inside #vip-badge HTML */
+#packets-bar {
+    min-width: 85px !important;
+    text-align: center !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+}
+
+#gem-pill-clickable {
+    min-width: 90px !important;
+    justify-content: center !important;
+}
+
 #packets-bar,
 #pps-display {
     display: inline-flex;
@@ -3202,9 +3215,12 @@ footer {
         .top-bar .controls {
             position: static;
             transform: none;
+            width: auto;
+            justify-content: center;
+            margin-top: 0.5rem;
             right: auto;
             top: auto;
-            justify-content: center;
+        }
             margin-top: 0.5rem;
         }
 

@@ -1402,16 +1402,21 @@ function showEditProfile() {
     e.preventDefault();
     let newName = document.getElementById("profile-name").value.trim();
     let selectedEl = document.querySelector(".avatar-choice.selected");
-    let selected = selectedEl ? selectedEl.getAttribute("data-seed") : "Hacker";
+    let selected = selectedEl ? selectedEl.getAttribute("data-seed") : null;
     if (newName) state.player.name = newName.slice(0, 14);
 
-    if (uploadedAvatarDataUrl || selected === "__custom__") {
-      state.player.avatar =
-        uploadedAvatarDataUrl ||
-        (customImg ? customImg.src : state.player.avatar);
-    } else {
+    // Only change avatar if user explicitly selected a different one
+    if (uploadedAvatarDataUrl) {
+      // User uploaded a new custom avatar
+      state.player.avatar = uploadedAvatarDataUrl;
+    } else if (selected === "__custom__") {
+      // User selected existing custom avatar
+      state.player.avatar = customImg ? customImg.src : state.player.avatar;
+    } else if (selected && selected !== "__custom__") {
+      // User selected a different pre-made avatar
       state.player.avatar = `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${encodeURIComponent(selected)}`;
     }
+    // If no selection made, keep current avatar unchanged
 
     save();
     // Push profile changes (including avatar) to leaderboard immediately

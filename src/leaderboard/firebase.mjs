@@ -102,8 +102,9 @@ function sanitizeAvatar(url) {
   try {
     const s = String(url || "").trim();
     if (!s) return "";
-    // Accept only http(s) URLs
+    // Accept http(s) URLs and data URLs for custom avatars
     if (/^https?:\/\//i.test(s)) return s.slice(0, 256);
+    if (/^data:image\//i.test(s)) return s.slice(0, 50000); // Allow data URLs up to 50KB
     return "";
   } catch {
     return "";
@@ -248,9 +249,28 @@ async function maybeUploadAvatar(id, avatar) {
     console.log("[Leaderboard] avatar uploaded successfully:", url);
     return sanitizeAvatar(url);
   } catch (e) {
-    console.error("[Leaderboard] avatar upload failed:", e);
-    // Return the original data URL as fallback
-    return raw.startsWith("data:") ? "" : sanitizeAvatar(raw);
+    // Check if it's a network-related error (ad blocker, connectivity issues)
+    const isNetworkError =
+      e.name === "TypeError" ||
+      e.message?.includes("ERR_BLOCKED_BY_CLIENT") ||
+      e.message?.includes("Failed to fetch") ||
+      e.code === "storage/unknown";
+
+    if (isNetworkError) {
+      console.warn(
+        "[Leaderboard] Avatar upload blocked by network/ad blocker - using fallback",
+      );
+    } else {
+      console.error("[Leaderboard] avatar upload failed:", e);
+    }
+
+    // Return the original data URL as fallback for local storage
+    // But return empty for Firebase to avoid storage issues
+    if (raw.startsWith("data:")) {
+      console.log("[Leaderboard] Using local data URL as fallback");
+      return raw; // Keep the data URL locally
+    }
+    return sanitizeAvatar(raw);
   }
 }
 
@@ -376,7 +396,20 @@ async function flushWrite() {
     // Reset backoff on success
     _backoffMs = 0;
   } catch (e) {
-    console.error("[Leaderboard] write failed; using backoff:", e);
+    // Check if it's a network-related error (ad blocker, connectivity issues)
+    const isNetworkError =
+      e.name === "TypeError" ||
+      e.message?.includes("ERR_BLOCKED_BY_CLIENT") ||
+      e.message?.includes("Failed to fetch") ||
+      e.code?.includes("unavailable");
+
+    if (isNetworkError) {
+      console.warn(
+        "[Leaderboard] Write blocked by network/ad blocker - using backoff",
+      );
+    } else {
+      console.error("[Leaderboard] write failed; using backoff:", e);
+    }
     // Exponential backoff up to 5 minutes
     _backoffMs = Math.max(
       2000,
