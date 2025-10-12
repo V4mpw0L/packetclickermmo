@@ -482,7 +482,7 @@ function renderGame() {
   if (state.boosts.doublePackets > Date.now()) {
     let remaining = Math.ceil((state.boosts.doublePackets - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🚀 2x Packets (${remaining}s)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🚀 2x Packets (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block;">${remaining}s</span>)</span>`,
     );
     totalMultiplier *= 2;
   }
@@ -491,26 +491,26 @@ function renderGame() {
       (state.boosts.quadrupleClick - Date.now()) / 1000,
     );
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🖱️ 4x Click Power (${remaining}s)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🖱️ 4x Click Power (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block;">${remaining}s</span>)</span>`,
     );
     totalMultiplier *= 4;
   }
   if (state.boosts.megaCrit > Date.now()) {
     let remaining = Math.ceil((state.boosts.megaCrit - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">✨ 50% Crit (${remaining}s)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">✨ 50% Crit (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block;">${remaining}s</span>)</span>`,
     );
   }
   if (state.boosts.tripleGems > Date.now()) {
     let remaining = Math.ceil((state.boosts.tripleGems - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;"><span class="icon-packet"></span> 3x Gem Rate (${remaining}s)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;"><span class="icon-packet"></span> 3x Gem Rate (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block;">${remaining}s</span>)</span>`,
     );
   }
   if (state.boosts.autoClicker > Date.now()) {
     let remaining = Math.ceil((state.boosts.autoClicker - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🤖 +10/s Auto Clicker (${remaining}s)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🤖 +10/s Auto Clicker (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block;">${remaining}s</span>)</span>`,
     );
   }
 
