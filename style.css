@@ -1658,7 +1658,6 @@ ul li:last-child {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     padding: var(--spacing-xs);
     background: rgba(28, 40, 48, 0.5);
-    box-shadow: 0 2px 12px var(--shadow-primary);
     min-width: var(--touch-target);
     min-height: var(--touch-target);
 }
@@ -1676,7 +1675,6 @@ ul li:last-child {
     height: 3rem;
     border-radius: 50%;
     background: var(--bg-primary);
-    box-shadow: 0 2px 6px var(--shadow-primary);
     object-fit: cover;
 }
 
