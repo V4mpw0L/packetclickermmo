@@ -434,7 +434,9 @@ function updateTopBar() {
     let ms = state.player.vipUntil - Date.now();
     let days = Math.floor(ms / (1000 * 60 * 60 * 24));
     let hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
-    badge.innerHTML = `<span class="font-bold text-yellow-400 ml-2" style="margin-right:8px;display:inline-block;">👑 VIP ${days > 0 ? days + "d " : ""}${hours}h</span> ${gemPill} ${packets}`;
+    // Optimize VIP text length to prevent layout issues
+    let vipText = days > 0 ? `👑 VIP ${days}d` : `👑 VIP ${hours}h`;
+    badge.innerHTML = `<span class="font-bold text-yellow-400 ml-2" style="margin-right:8px;display:inline-block;">${vipText}</span> ${gemPill} ${packets}`;
   } else {
     badge.innerHTML = `${gemPill} ${packets}`;
   }
