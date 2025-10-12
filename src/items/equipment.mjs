@@ -1084,6 +1084,43 @@ export function maybeDropOnClick(state, opts = {}) {
 
 /* ------------------------------- Equip flows ------------------------------ */
 
+/**
+ * Find the first empty equipment slot, or null if all slots are full
+ */
+function findEmptySlot(state) {
+  ensureStateShape(state);
+  for (const slot of SLOTS) {
+    if (!state.equipment[slot.id]) {
+      return slot.id;
+    }
+  }
+  return null;
+}
+
+/**
+ * Smart equip function - auto-equips to empty slot if available
+ * Returns: { success: true, slot: "slotX" } or { success: false, needsSlotChoice: true }
+ */
+export function smartEquip(state, index) {
+  ensureStateShape(state);
+  const inv = state.inventory;
+  if (!Array.isArray(inv)) return { success: false };
+  if (index < 0 || index >= inv.length) return { success: false };
+  const toEquip = inv[index];
+  if (!toEquip) return { success: false };
+
+  // Check for empty slot first
+  const emptySlot = findEmptySlot(state);
+  if (emptySlot) {
+    // Auto-equip to empty slot
+    const success = equip(state, index, emptySlot);
+    return { success, slot: emptySlot };
+  }
+
+  // All slots are full - need user to choose which slot to replace
+  return { success: false, needsSlotChoice: true };
+}
+
 export function equip(state, index, slot) {
   ensureStateShape(state);
   const inv = state.inventory;
@@ -1319,10 +1356,15 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
       const price = priceMap[item.rarity] || 10;
 
       const st = rarityStyles(item.rarity);
+      // Check if we have empty slots for smart equipping
+      const emptySlot = findEmptySlot(state);
       const slotOptions = SLOTS.map(
         (s) => `<option value="${s.id}">${s.name}</option>`,
       ).join("");
-      const html = `
+
+      // Create different modals based on whether slots are available
+      const html = emptySlot
+        ? `
         <div class="neon-card" style="padding:.75rem; border-color:${st.color}; box-shadow:${st.glow};">
           <div style="display:flex; gap:.6rem; align-items:center;">
             <img src="${item.icon}" alt="${item.name}" style="width:64px;height:64px;border-radius:8px; object-fit:cover;" />
@@ -1336,14 +1378,40 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
               <div class="text-xs" style="margin-top:.25rem; color:var(--text-primary);">Qty: <span style="padding:.05rem .4rem; border:1px solid var(--border-color); border-radius:999px; background:rgba(0,0,0,.25); font-weight:800; color:${st.color};">${item.q || 1}</span></div>
             </div>
           </div>
+          <div class="text-xs" style="margin-top:.6rem; padding:.4rem .6rem; background:rgba(101,255,218,.1); border:1px solid rgba(101,255,218,.3); border-radius:8px; color:#65ffda; text-align:center;">
+            <span style="opacity:.9;">🎯 Will auto-equip to first available slot</span>
+          </div>
+          <div class="button-group" style="display:flex; gap:.5rem; margin-top:.6rem;">
+            <button class="neon-btn w-full" id="smart-equip-item-btn" data-index="${idx}">🧰 Quick Equip</button>
+            <button class="neon-btn w-full" id="sell-item-btn" data-index="${idx}" style="background: linear-gradient(135deg, #ff3040, #cc2030); border-color: #ff3040; color: white;">Sell for ${price} <span class="icon-packet"></span></button>
+          </div>
+        </div>
+      `
+        : `
+        <div class="neon-card" style="padding:.75rem; border-color:${st.color}; box-shadow:${st.glow};">
+          <div style="display:flex; gap:.6rem; align-items:center;">
+            <img src="${item.icon}" alt="${item.name}" style="width:64px;height:64px;border-radius:8px; object-fit:cover;" />
+            <div>
+              <div style="font-weight:900; color:${st.color};">${item.name} <span style="font-size:.85em; opacity:.95; color:${st.color};">(${item.rarityName})</span></div>
+              <div class="text-sm" style="display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.25rem;">
+                <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25);">+${item.stats.perClick || 0}/click</span>
+                <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25);">+${item.stats.perSec || 0}/sec</span>
+                <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25);">+${item.stats.critChance || 0}%</span>
+              </div>
+              <div class="text-xs" style="margin-top:.25rem; color:var(--text-primary);">Qty: <span style="padding:.05rem .4rem; border:1px solid var(--border-color); border-radius:999px; background:rgba(0,0,0,.25); font-weight:800; color:${st.color};">${item.q || 1}</span></div>
+            </div>
+          </div>
+          <div class="text-xs" style="margin-top:.6rem; padding:.4rem .6rem; background:rgba(255,152,0,.1); border:1px solid rgba(255,152,0,.3); border-radius:8px; color:#ff9800; text-align:center;">
+            <span style="opacity:.9;">⚠️ All slots occupied - choose which to replace:</span>
+          </div>
           <div class="text-xs" style="margin-top:.6rem; display:flex; align-items:center; gap:.35rem;">
-            <span style="opacity:.9;">Equip to:</span>
+            <span style="opacity:.9;">Replace slot:</span>
             <select id="equip-slot-select" style="padding:.2rem .55rem; border-radius:8px; background: linear-gradient(135deg, rgba(0,0,0,.25), rgba(0,0,0,.05)); border:1px solid var(--border-color); font-weight:800; font-size:.85rem; color:var(--text-primary);">
               ${slotOptions}
             </select>
           </div>
           <div class="button-group" style="display:flex; gap:.5rem; margin-top:.6rem;">
-            <button class="neon-btn w-full" id="equip-item-btn" data-index="${idx}">Equip</button>
+            <button class="neon-btn w-full" id="equip-item-btn" data-index="${idx}">🔄 Replace & Equip</button>
             <button class="neon-btn w-full" id="sell-item-btn" data-index="${idx}" style="background: linear-gradient(135deg, #ff3040, #cc2030); border-color: #ff3040; color: white;">Sell for ${price} <span class="icon-packet"></span></button>
           </div>
         </div>
@@ -1352,9 +1420,39 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
         window.showModal("Item", html);
         // Bind modal action buttons
         setTimeout(() => {
+          const smartEq = document.getElementById("smart-equip-item-btn");
           const eq = document.getElementById("equip-item-btn");
           const sell = document.getElementById("sell-item-btn");
 
+          // Smart equip button (when empty slots available)
+          if (smartEq)
+            smartEq.onclick = () => {
+              const i = parseInt(
+                smartEq.getAttribute("data-index") || "-1",
+                10,
+              );
+              const it = (state.inventory || [])[i];
+              if (!it) return;
+              const result = smartEquip(state, i);
+              if (result.success) {
+                if (typeof save === "function") save();
+                if (typeof rerender === "function") rerender();
+                if (typeof window.closeModal === "function")
+                  window.closeModal();
+                const n =
+                  notify ||
+                  (hasDOM() && typeof window.showHudNotify === "function"
+                    ? window.showHudNotify
+                    : null);
+                if (n)
+                  n(
+                    `Equipped to ${SLOTS.find((s) => s.id === result.slot)?.name || "slot"}!`,
+                    "🧰",
+                  );
+              }
+            };
+
+          // Manual equip button (when all slots are full)
           if (eq)
             eq.onclick = () => {
               const i = parseInt(eq.getAttribute("data-index") || "-1", 10);
@@ -1373,7 +1471,9 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
                   (hasDOM() && typeof window.showHudNotify === "function"
                     ? window.showHudNotify
                     : null);
-                if (n) n("Equipped!", "🧰");
+                const slotName =
+                  SLOTS.find((s) => s.id === targetSlot)?.name || "slot";
+                if (n) n(`Equipped to ${slotName}!`, "🧰");
               }
             };
 
