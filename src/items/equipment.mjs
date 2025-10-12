@@ -1011,7 +1011,7 @@ export function awardDrop(state, item, opts = {}) {
  */
 export function maybeDropOnClick(state, opts = {}) {
   ensureStateShape(state);
-  const baseRate = typeof opts.baseRate === "number" ? opts.baseRate : 0.015;
+  const baseRate = typeof opts.baseRate === "number" ? opts.baseRate : 0.0075;
 
   // Optional pity counter on state (non-invasive)
   state._dropClicks = (state._dropClicks || 0) + 1;
