@@ -266,7 +266,7 @@ async function maybeUploadAvatar(id, avatar) {
 
     // Return the original data URL as fallback for local storage
     // But return empty for Firebase to avoid storage issues
-    if (raw.startsWith("data:")) {
+    if (raw && raw.startsWith("data:")) {
       console.log("[Leaderboard] Using local data URL as fallback");
       return raw; // Keep the data URL locally
     }
