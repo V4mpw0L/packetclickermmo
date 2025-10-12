@@ -399,7 +399,7 @@ function updateTopBar() {
 
   // Pills to show under the name (centered by CSS)
   let packets = `<span class="ml-2 text-neon-green font-bold" id="packets-bar" style="font-size:1em;display:inline-block;min-width:65px;text-align:right;"><span class="icon-packet"></span> ${state.packets.toLocaleString("en-US")}</span>`;
-  let gemPill = `<span class="ml-2 text-neon-green font-bold" style="font-size:1em;display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .5rem;border:1px solid var(--border-color);border-radius:999px;background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));box-shadow:0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,0.35);"><img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/><span>${state.gems.toLocaleString("en-US")}</span></span>`;
+  let gemPill = `<span id="gem-pill-clickable" class="ml-2 text-neon-green font-bold" style="font-size:1em;display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .5rem;border:1px solid var(--border-color);border-radius:999px;background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));box-shadow:0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,0.35);cursor:pointer;transition:all 0.2s ease;"><img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/><span>${state.gems.toLocaleString("en-US")}</span></span>`;
 
   if (isVIP()) {
     let ms = state.player.vipUntil - Date.now();
@@ -415,6 +415,47 @@ function updateTopBar() {
   // Keep existing gem counter (in the settings area) in sync
   let el = document.getElementById("gem-count");
   if (el) el.textContent = state.gems.toLocaleString("en-US");
+
+  // Add click handler to gem pill to navigate to Shop
+  const gemPillEl = document.getElementById("gem-pill-clickable");
+  if (gemPillEl) {
+    // Remove existing listeners to avoid duplicates
+    gemPillEl.replaceWith(gemPillEl.cloneNode(true));
+    const newGemPillEl = document.getElementById("gem-pill-clickable");
+    if (newGemPillEl) {
+      newGemPillEl.addEventListener("click", () => {
+        // Add click animation effect
+        newGemPillEl.style.transform = "scale(0.95)";
+        newGemPillEl.style.boxShadow =
+          "0 1px 5px var(--shadow-primary) inset, 0 1px 2px rgba(0,0,0,0.5)";
+
+        setTimeout(() => {
+          newGemPillEl.style.transform = "scale(1.05)";
+          newGemPillEl.style.boxShadow =
+            "0 2px 15px var(--shadow-primary) inset, 0 1px 5px rgba(0,0,0,0.45)";
+
+          setTimeout(() => {
+            newGemPillEl.style.transform = "scale(1)";
+            newGemPillEl.style.boxShadow =
+              "0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,0.35)";
+          }, 100);
+        }, 50);
+
+        setTab("shop");
+      });
+      // Add hover effect
+      newGemPillEl.addEventListener("mouseenter", () => {
+        newGemPillEl.style.transform = "scale(1.05)";
+        newGemPillEl.style.boxShadow =
+          "0 2px 15px var(--shadow-primary) inset, 0 1px 5px rgba(0,0,0,0.45)";
+      });
+      newGemPillEl.addEventListener("mouseleave", () => {
+        newGemPillEl.style.transform = "scale(1)";
+        newGemPillEl.style.boxShadow =
+          "0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,0.35)";
+      });
+    }
+  }
 
   // Packets/sec pill disabled per design request
 }
