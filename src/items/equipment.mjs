@@ -1263,11 +1263,11 @@ function slotHeaderHTML(item, slotName, slotId) {
       <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:8px;${imgBorderStyle}box-shadow:${st.glow}; object-fit:cover; flex-shrink:0; ${imgAnimationStyle}" />
       <div style="flex:1; min-width:0; width:100%;">
         <div style="font-weight:800; color:${st.color}; line-height:1.1; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:.2rem;">${item.name}</div>
-        <div class="text-xs" style="opacity:.85; color:${st.color}; line-height:1; margin-bottom:.3rem; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : ""}">${item.rarityName}</div>
+        <div class="text-xs" style="opacity:.85; color:${st.color}; line-height:1; margin-bottom:.3rem; ${item.rarity === "celestial" ? "animation: celestialTextOnly 3s linear infinite;" : ""}">${item.rarityName}</div>
         <div style="display:flex; gap:.3rem; flex-wrap:nowrap; align-items:center; justify-content:center;">
-          <span style="padding:.06rem .35rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.perClick || 0}/click</span>
-          <span style="padding:.06rem .35rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.perSec || 0}/sec</span>
-          <span style="padding:.06rem .35rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.critChance || 0}% crit</span>
+          <span style="padding:.06rem .35rem; ${item.rarity === "celestial" ? "border: 1px solid #ff0080; box-shadow: 0 0 4px rgba(255,0,128,0.6); animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.perClick || 0}/click</span>
+          <span style="padding:.06rem .35rem; ${item.rarity === "celestial" ? "border: 1px solid #ff0080; box-shadow: 0 0 4px rgba(255,0,128,0.6); animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.perSec || 0}/sec</span>
+          <span style="padding:.06rem .35rem; ${item.rarity === "celestial" ? "border: 1px solid #ff0080; box-shadow: 0 0 4px rgba(255,0,128,0.6); animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-size:.68rem; white-space:nowrap;">+${item.stats.critChance || 0}% crit</span>
         </div>
       </div>
       <button data-unequip-slot="${slotId}" aria-label="Unequip" title="Unequip" style="position:absolute; top:6px; right:6px; width:22px; height:22px; padding:0; font-size:13px; line-height:1; border-radius:50%; background:#ff4757; border:1px solid #ff3742; color:white; cursor:pointer; z-index:2; display:flex; align-items:center; justify-content:center; font-weight:bold;">✕</button>
@@ -1320,9 +1320,9 @@ export function renderTab(state) {
             <button class="neon-btn" data-open-item-index="${absIndex}" style="width:100%; height:100%; background: transparent; border:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.2rem; padding:.2rem;">
               <div style="position:relative; display:inline-block; width:72%; height:72%;">
                 <img src="${it.icon}" alt="${it.name}" style="width:100%;height:100%;border-radius:6px; box-sizing:border-box; object-fit:cover;" />
-                <span style="position:absolute; bottom:2px; right:2px; background: rgba(0,0,0,0.6); ${it.rarity === "celestial" ? "border: 1px solid transparent; border-image: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1; animation: celestialRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:10px; padding:0 6px; font-size:.7rem; font-weight:800; ${it.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">x${it.q || 1}</span>
+                <span style="position:absolute; bottom:2px; right:2px; background: rgba(0,0,0,0.6); ${it.rarity === "celestial" ? "border: 1px solid #ff0080; box-shadow: 0 0 6px rgba(255,0,128,0.8); animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:10px; padding:0 6px; font-size:.7rem; font-weight:800; ${it.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">x${it.q || 1}</span>
               </div>
-              <div style="font-size:.7rem; font-weight:700; text-align:center; line-height:1; ${it.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">${it.rarityName}</div>
+              <div style="font-size:.7rem; font-weight:700; text-align:center; line-height:1; ${it.rarity === "celestial" ? "animation: celestialTextOnly 3s linear infinite;" : `color:${st.color};`}">${it.rarityName}</div>
             </button>
           </div>`;
     })
@@ -1385,7 +1385,7 @@ export function renderTab(state) {
           box-shadow: 0 0 20px rgba(255,0,128,0.8);
         }
       }
-      @keyframes celestialTextRainbow {
+      @keyframes celestialTextOnly {
         0% {
           color: #ff0080;
           text-shadow: 0 0 8px rgba(255,0,128,0.8);
@@ -1405,6 +1405,38 @@ export function renderTab(state) {
         100% {
           color: #ff0080;
           text-shadow: 0 0 8px rgba(255,0,128,0.8);
+        }
+      }
+      @keyframes celestialTextRainbow {
+        0% {
+          color: #ff0080;
+          text-shadow: 0 0 8px rgba(255,0,128,0.8);
+          border-color: #ff0080;
+          box-shadow: 0 0 6px rgba(255,0,128,0.8);
+        }
+        25% {
+          color: #00ff80;
+          text-shadow: 0 0 8px rgba(0,255,128,0.8);
+          border-color: #00ff80;
+          box-shadow: 0 0 6px rgba(0,255,128,0.8);
+        }
+        50% {
+          color: #8000ff;
+          text-shadow: 0 0 8px rgba(128,0,255,0.8);
+          border-color: #8000ff;
+          box-shadow: 0 0 6px rgba(128,0,255,0.8);
+        }
+        75% {
+          color: #ff8000;
+          text-shadow: 0 0 8px rgba(255,128,0,0.8);
+          border-color: #ff8000;
+          box-shadow: 0 0 6px rgba(255,128,0,0.8);
+        }
+        100% {
+          color: #ff0080;
+          text-shadow: 0 0 8px rgba(255,0,128,0.8);
+          border-color: #ff0080;
+          box-shadow: 0 0 6px rgba(255,0,128,0.8);
         }
       }
       @keyframes celestialRainbowBg {
@@ -1434,7 +1466,7 @@ export function renderTab(state) {
         <span style="color:${rarityById("blue").color}">Blue</span> ·
         <span style="color:${rarityById("pink").color}">Pink</span> ·
         <span style="color:${rarityById("animal").color}">Red</span> ·
-        <span style="animation: celestialTextRainbow 3s linear infinite;">Celestial</span>
+        <span style="animation: celestialTextOnly 3s linear infinite;">Celestial</span>
       </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 0.5rem; width: 100%; box-sizing: border-box;">${slotCards}</div>
 
@@ -1510,13 +1542,13 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
           <div style="display:flex; gap:.6rem; align-items:center;">
             <img src="${item.icon}" alt="${item.name}" style="width:64px;height:64px;border-radius:8px; object-fit:cover;" />
             <div>
-              <div style="font-weight:900; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">${item.name} <span style="font-size:.85em; opacity:.95; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">(${item.rarityName})</span></div>
+              <div style="font-weight:900; ${item.rarity === "celestial" ? "animation: celestialTextOnly 3s linear infinite;" : `color:${st.color};`}">${item.name} <span style="font-size:.85em; opacity:.95; ${item.rarity === "celestial" ? "animation: celestialTextOnly 3s linear infinite;" : `color:${st.color};`}">(${item.rarityName})</span></div>
               <div class="text-sm" style="display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.25rem;">
                 <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25);">+${item.stats.perClick || 0}/click</span>
                 <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25);">+${item.stats.perSec || 0}/sec</span>
                 <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25);">+${item.stats.critChance || 0}%</span>
               </div>
-              <div class="text-xs" style="margin-top:.25rem; color:var(--text-primary);">Qty: <span style="padding:.05rem .4rem; ${item.rarity === "celestial" ? "border: 1px solid transparent; border-image: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1; animation: celestialRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:999px; background:rgba(0,0,0,.25); font-weight:800; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">${item.q || 1}</span></div>
+              <div class="text-xs" style="margin-top:.25rem; color:var(--text-primary);">Qty: <span style="padding:.05rem .4rem; ${item.rarity === "celestial" ? "border: 1px solid #ff0080; box-shadow: 0 0 6px rgba(255,0,128,0.8); animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:999px; background:rgba(0,0,0,.25); font-weight:800; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">${item.q || 1}</span></div>
             </div>
           </div>
           <div class="text-xs" style="margin-top:.6rem; padding:.4rem .6rem; background:rgba(101,255,218,.1); border:1px solid rgba(101,255,218,.3); border-radius:8px; color:#65ffda; text-align:center;">
@@ -1533,13 +1565,13 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
           <div style="display:flex; gap:.6rem; align-items:center;">
             <img src="${item.icon}" alt="${item.name}" style="width:64px;height:64px;border-radius:8px; object-fit:cover;" />
             <div>
-              <div style="font-weight:900; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">${item.name} <span style="font-size:.85em; opacity:.95; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">(${item.rarityName})</span></div>
+              <div style="font-weight:900; ${item.rarity === "celestial" ? "animation: celestialTextOnly 3s linear infinite;" : `color:${st.color};`}">${item.name} <span style="font-size:.85em; opacity:.95; ${item.rarity === "celestial" ? "animation: celestialTextOnly 3s linear infinite;" : `color:${st.color};`}">(${item.rarityName})</span></div>
               <div class="text-sm" style="display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.25rem;">
                 <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25);">+${item.stats.perClick || 0}/click</span>
                 <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25);">+${item.stats.perSec || 0}/sec</span>
                 <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25);">+${item.stats.critChance || 0}%</span>
               </div>
-              <div class="text-xs" style="margin-top:.25rem; color:var(--text-primary);">Qty: <span style="padding:.05rem .4rem; ${item.rarity === "celestial" ? "border: 1px solid transparent; border-image: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1; animation: celestialRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:999px; background:rgba(0,0,0,.25); font-weight:800; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">${item.q || 1}</span></div>
+              <div class="text-xs" style="margin-top:.25rem; color:var(--text-primary);">Qty: <span style="padding:.05rem .4rem; ${item.rarity === "celestial" ? "border: 1px solid #ff0080; box-shadow: 0 0 6px rgba(255,0,128,0.8); animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:999px; background:rgba(0,0,0,.25); font-weight:800; ${item.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">${item.q || 1}</span></div>
             </div>
           </div>
           <div class="text-xs" style="margin-top:.6rem; padding:.4rem .6rem; background:rgba(255,152,0,.1); border:1px solid rgba(255,152,0,.3); border-radius:8px; color:#ff9800; text-align:center;">

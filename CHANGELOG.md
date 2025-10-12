@@ -20,6 +20,9 @@
 - **Perfect Color Consistency** - ALL rarities now have proper color matching across inventory, modals, and UI
 - **Enhanced Modal Borders** - All rarity modal borders now use proper 2px solid rarity colors
 - **Quantity Banner Borders** - Quantity banners (x1, x2, x3) now use rarity colors instead of generic green
+- **Celestial Rainbow Banners** - Celestial quantity banners feature full rainbow animation with cycling borders and glow
+- **Clean Text Animation** - Celestial text elements use clean rainbow animation without unwanted border artifacts
+- **Stat Banner Consistency** - Equipment stat banners (+click, +sec, +crit) now use rarity colors for perfect consistency
 - **Color Cycling** - Smooth transitions through pink, green, purple, and orange hues
 - **Enhanced Glow** - Celestial items feature stronger glow effects matching their border colors
 - **100% Coverage** - Rainbow effects and color consistency work perfectly across ALL UI locations

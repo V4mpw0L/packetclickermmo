@@ -1529,7 +1529,7 @@ function showEditProfile() {
       }
     } catch (_) {}
     try {
-      window.VERSION = "0.0.20";
+      window.VERSION = "0.0.21";
     } catch (_) {}
 
     updateTopBar();
@@ -1648,7 +1648,7 @@ function showSettings() {
         // Persist and refresh UI
         save();
         try {
-          window.VERSION = "0.0.20";
+          window.VERSION = "0.0.21";
         } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {
@@ -2102,7 +2102,7 @@ function migrateSaveToCurrentVersion() {
       window.Packet &&
       window.Packet.data &&
       window.Packet.data.APP_VERSION) ||
-    "0.0.20";
+    "0.0.21";
 
   console.log(
     "[Migration] Checking save compatibility with version",
