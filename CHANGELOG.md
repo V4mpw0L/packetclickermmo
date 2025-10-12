@@ -1,6 +1,38 @@
 # 📝 Changelog - Packet Clicker
 
-## Version 2.0.0 - Enhanced Mobile & Visual Experience
+## Version 0.0.14 - Premium Shop UI Polish & Visual Consistency
+*Released: January 2025*
+
+### ✨ **UI/UX Improvements**
+
+#### **Premium Shop Enhancement**
+- **Consistent Gem Icons**: Replaced all diamond emojis (💎) with professional gem.png images
+- **Enhanced Typography**: Increased gem amount text size (10, 60, 150) with improved readability
+- **Better Spacing**: Added proper margins and padding for gem icons and text elements
+- **Visual Consistency**: Unified gem iconography across shop items and gem packs
+- **Professional Polish**: Text shadows and letter spacing for premium feel
+
+#### **Design Refinements**
+- **Icon Alignment**: Perfect vertical and horizontal alignment of gem images
+- **Responsive Sizing**: Adaptive gem icon sizes for mobile and desktop
+- **Improved Contrast**: Enhanced text visibility with subtle shadows
+- **Spacing Optimization**: Better visual hierarchy in shop button layouts
+
+### 🎯 **Technical Updates**
+- **Asset Consistency**: Standardized use of `src/assets/gem.png` throughout the UI
+- **CSS Improvements**: Enhanced gem icon styling with flexbox alignment
+- **Mobile Responsiveness**: Optimized gem icon sizes for different screen sizes
+- **Performance**: Efficient image loading and caching for gem icons
+
+### 📋 **Version Notes**
+- All shop elements now use consistent gem imagery
+- Improved user experience with better visual feedback
+- Enhanced premium shop appearance to encourage engagement
+- Maintains perfect functionality while improving aesthetics
+
+---
+
+## Version 0.0.13 - Equipment System & Combo Balance Perfection
 *Released: January 2025*
 
 ### 🚀 Major Improvements

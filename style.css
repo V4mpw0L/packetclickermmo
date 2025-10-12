@@ -679,7 +679,9 @@ body .modal-box .space-y-3 > * + * {
 }
 
 .gem-icon {
-    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     animation: gem-pulse 2s ease-in-out infinite;
 }
 
@@ -689,9 +691,11 @@ body .modal-box .space-y-3 > * + * {
 }
 
 .gem-amount {
-    font-size: 1.1rem;
+    font-size: 1.4rem;
     font-weight: 900;
     color: #1a1a1a;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    letter-spacing: 0.05em;
 }
 
 .gem-price {
@@ -1756,12 +1760,13 @@ footer {
             padding: 0.4rem;
         }
 
-        .gem-icon {
-            font-size: 1.3rem;
+        .gem-icon img {
+            height: 1.5rem !important;
+            width: 1.5rem !important;
         }
 
         .gem-amount {
-            font-size: 1rem;
+            font-size: 1.2rem;
         }
 
         .gem-price {

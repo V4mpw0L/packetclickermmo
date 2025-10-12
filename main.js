@@ -671,7 +671,7 @@ function renderShop() {
     renderButton({
       className: "gem-btn premium-gem-btn w-full mb-2",
       label: `<div class="premium-gem-content">
-        <div class="gem-icon">💎</div>
+        <div class="gem-icon"><img src="src/assets/gem.png" alt="Gems" style="height:1.8rem;width:1.8rem;vertical-align:middle;display:inline-block;margin-right:0.5rem;" aria-hidden="true"/></div>
         <div class="gem-info">
           <div class="gem-amount">${p.label}</div>
           <div class="gem-price">$${p.price.toFixed(2)}</div>
@@ -686,7 +686,10 @@ function renderShop() {
       (item.type === "vip" && isVIP()) ||
       (item.type === "skin" && state.shop.skinBought) ||
       (item.type === "noAds" && state.player.noAds);
-    let label = owned ? "✓ Owned" : item.label + ` - ${item.gems} 💎`;
+    let label = owned
+      ? "✓ Owned"
+      : item.label +
+        ` - ${item.gems} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/>`;
     return renderButton({
       className: "gem-btn w-full mb-2",
       label: `${label}<div class="text-xs text-neon-gray">${item.desc}</div>`,

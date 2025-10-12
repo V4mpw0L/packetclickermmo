@@ -2,7 +2,7 @@
 
 > **The Ultimate Cyberpunk Idle Clicker Experience - Now with 100 Items, Epic Combos & Equipment System!**
 
-[![Version 0.0.13](https://img.shields.io/badge/Version-0.0.13-brightgreen.svg)]()
+[![Version 0.0.14](https://img.shields.io/badge/Version-0.0.14-brightgreen.svg)]()
 [![PWA Ready](https://img.shields.io/badge/PWA-Ready-blue.svg)](https://web.dev/progressive-web-apps/)
 [![Mobile Optimized](https://img.shields.io/badge/Mobile-Optimized-success.svg)]()
 [![Anti-Cheat](https://img.shields.io/badge/Anti--Cheat-Protected-red.svg)]()
@@ -286,7 +286,14 @@ const THEMES = {
 
 ## 📊 **Version History**
 
-### **Version 0.0.13** (Latest)
+### **Version 0.0.14** (Latest)
+- ✅ **Premium Shop UI Polish** - Enhanced gem buttons with consistent gem.png icons
+- ✅ **Improved Typography** - Larger, more readable gem amounts (10, 60, 150)
+- ✅ **Visual Consistency** - Unified gem iconography across all UI elements
+- ✅ **Better Spacing** - Optimized button layouts for improved user experience
+- ✅ **Professional Polish** - Final touches for seamless gameplay experience
+
+### **Version 0.0.13**
 - ✅ **Perfect Combo Balance** - ANIMAL now requires 120+ clicks
 - ✅ **Sound System Overhaul** - Zero-latency clicking sounds
 - ✅ **Doubled Selling Rewards** - Better item economy
