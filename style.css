@@ -108,6 +108,8 @@ html {
     -webkit-overflow-scrolling: touch;
     /* Allow touch scrolling */
     touch-action: auto;
+    /* Gentle iOS fixes */
+    -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -121,6 +123,9 @@ body {
     min-height: 100vh;
     min-height: 100dvh; /* Dynamic viewport height for mobile */
     color: var(--text-primary);
+    /* Gentle iOS fixes */
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3808,6 +3813,11 @@ footer {
     /* Global zoom prevention */
     * {
         -webkit-tap-highlight-color: transparent;
+    }
+
+    /* iOS specific gentle fixes */
+    input, select, textarea {
+        font-size: 16px !important;
     }
 
     html {

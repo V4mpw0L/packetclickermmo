@@ -401,6 +401,14 @@ function updateTopBar() {
   const _avatarEl = document.getElementById("avatar");
   if (_avatarEl) {
     _avatarEl.src = state.player.avatar;
+    // Add error handling to fallback to default avatar if loading fails
+    _avatarEl.onerror = function () {
+      if (this.src !== DEFAULT_AVATAR) {
+        console.log("Avatar failed to load, using default");
+        this.src = DEFAULT_AVATAR;
+        this.onerror = null; // Prevent infinite loop
+      }
+    };
     // Dynamic avatar border ring based on current combo color (mirrors combo HUD colors)
     let comboColor = "var(--primary-color)";
     if (typeof clickCombo === "number") {
@@ -1069,7 +1077,29 @@ function setCursorForCombo(combo) {
   } catch (_) {}
 }
 
-// =============== LEADERBOARD PANEL ===============
+// =============== LEADERBOARD TAB ===============
+// Helper function to safely handle avatar URLs
+function getSafeAvatarUrl(avatar) {
+  if (!avatar || typeof avatar !== "string" || avatar.trim() === "") {
+    return DEFAULT_AVATAR;
+  }
+  // Allow HTTP URLs
+  if (avatar.startsWith("http")) {
+    return avatar;
+  }
+  // Allow data URLs but with size limits for performance
+  if (avatar.startsWith("data:image/")) {
+    // Reject excessively large data URLs (> 1MB) to prevent performance issues
+    if (avatar.length > 1024 * 1024) {
+      console.warn("Avatar data URL too large, using default");
+      return DEFAULT_AVATAR;
+    }
+    return avatar;
+  }
+  // If it's not a valid URL format, use default
+  return DEFAULT_AVATAR;
+}
+
 function renderLeaderboard() {
   // Prefer live rows from Firebase when available; fallback to local bots
   let bots = [];
@@ -1119,7 +1149,7 @@ function renderLeaderboard() {
       (p, idx) => `
     <li style="display: flex; gap: 0.75rem; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #273742;">
       <span style="width: 2rem; text-align: right; color: var(--secondary-color); font-weight: bold;">${idx === 0 ? "🥇 " : idx === 1 ? "🥈 " : idx === 2 ? "🥉 " : ""}${idx + 1}.</span>
-      <img src="${p.avatar || DEFAULT_AVATAR}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 2rem; height: 2rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "3px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"}; box-shadow: ${idx === 0 ? "0 0 14px rgba(255,215,0,0.6)" : idx === 1 ? "0 0 12px rgba(192,192,192,0.55)" : idx === 2 ? "0 0 12px rgba(205,127,50,0.55)" : "none"};" alt="">
+      <img src="${getSafeAvatarUrl(p.avatar)}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 2rem; height: 2rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "3px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"}; box-shadow: ${idx === 0 ? "0 0 14px rgba(255,215,0,0.6)" : idx === 1 ? "0 0 12px rgba(192,192,192,0.55)" : idx === 2 ? "0 0 12px rgba(205,127,50,0.55)" : "none"};" alt="" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}'; console.log('Avatar failed to load, using default')">
       <span style="font-weight: 800; ${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary);" : "color: var(--text-primary);"}">${idx === 0 ? '<span class="crown-badge">👑</span>' : ""}${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) && isVIP() ? '<img src="src/assets/vip.png" alt="VIP" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;" aria-hidden="true"/>' : ""}${p.name}</span>
       <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary); font-weight: bold; font-size: 1.05em;"><span class="icon-packet"></span> ${p.packets.toLocaleString("en-US")}</span>
     </li>
@@ -1422,10 +1452,18 @@ function showEditProfile() {
     // Push profile changes (including avatar) to leaderboard immediately
     try {
       if (typeof Leaderboard !== "undefined" && Leaderboard.submit) {
+        // Ensure avatar is valid before submitting
+        const avatarToSubmit =
+          state.player.avatar &&
+          typeof state.player.avatar === "string" &&
+          state.player.avatar.trim() !== ""
+            ? state.player.avatar
+            : DEFAULT_AVATAR;
+
         Leaderboard.submit(
           {
             name: state.player.name,
-            avatar: state.player.avatar,
+            avatar: avatarToSubmit,
             packets: state.packets,
           },
           { throttleMs: 0 },
@@ -1991,8 +2029,48 @@ function upgrade(type) {
 }
 
 // Comprehensive save migration function to update old saves
-function migrateSaveToCurrentVersion(state) {
-  console.log("[Migration] Checking save compatibility with version 0.0.20");
+function migrateSaveToCurrentVersion() {
+  // Get current version from global constants
+  const currentVersion =
+    (typeof window !== "undefined" &&
+      window.Packet &&
+      window.Packet.data &&
+      window.Packet.data.APP_VERSION) ||
+    "0.0.20";
+
+  console.log(
+    "[Migration] Checking save compatibility with version",
+    currentVersion,
+  );
+
+  // Force update check - if save is from older version, ensure full migration
+  const saveVersion = state.version || "0.0.1";
+
+  // Version comparison for major updates
+  const needsForceUpdate = compareVersions(saveVersion, currentVersion) < 0;
+
+  if (needsForceUpdate) {
+    console.log(
+      `[Migration] Force updating from ${saveVersion} to ${currentVersion}`,
+    );
+
+    // Clear any cached service worker data to ensure fresh assets
+    if ("caches" in window) {
+      caches
+        .keys()
+        .then((cacheNames) => {
+          return Promise.all(
+            cacheNames.map((cacheName) => {
+              if (cacheName.includes("packet-clicker-cache")) {
+                console.log("[Migration] Clearing old cache:", cacheName);
+                return caches.delete(cacheName);
+              }
+            }),
+          );
+        })
+        .catch(() => {});
+    }
+  }
 
   // Ensure all prestige upgrades exist
   if (!state.prestige) state.prestige = {};
@@ -2109,8 +2187,39 @@ function migrateSaveToCurrentVersion(state) {
 
   // Equipment system migration is handled by Equipment.ensureStateShape()
 
-  console.log("[Migration] Save updated to version 0.0.20 compatibility");
-  return state;
+  // Ensure avatar is properly set and compatible
+  if (
+    typeof state.player.avatar !== "string" ||
+    !state.player.avatar ||
+    state.player.avatar.trim() === ""
+  ) {
+    state.player.avatar = DEFAULT_AVATAR;
+    console.log("[Migration] Reset avatar to default");
+  }
+
+  // Update save version to current
+  state.version = currentVersion;
+
+  console.log(
+    "[Migration] Save updated to version",
+    currentVersion,
+    "compatibility",
+  );
+}
+
+// Version comparison helper function
+function compareVersions(a, b) {
+  const parseVersion = (v) => v.split(".").map(Number);
+  const versionA = parseVersion(a);
+  const versionB = parseVersion(b);
+
+  for (let i = 0; i < Math.max(versionA.length, versionB.length); i++) {
+    const partA = versionA[i] || 0;
+    const partB = versionB[i] || 0;
+    if (partA < partB) return -1;
+    if (partA > partB) return 1;
+  }
+  return 0;
 }
 
 function idleTick() {
@@ -2855,18 +2964,31 @@ function init() {
       Leaderboard.submit(
         {
           name: state.player.name,
-          avatar: state.player.avatar,
+          avatar:
+            state.player.avatar &&
+            typeof state.player.avatar === "string" &&
+            state.player.avatar.trim() !== ""
+              ? state.player.avatar
+              : DEFAULT_AVATAR,
           packets: state.packets,
         },
-        { throttleMs: 15000 },
+        { throttleMs: 20000 },
       );
     };
 
     // Immediate submit once after init so other devices see us quickly (no throttle)
+    // Ensure avatar is valid before submitting
+    const avatarToSubmit =
+      state.player.avatar &&
+      typeof state.player.avatar === "string" &&
+      state.player.avatar.trim() !== ""
+        ? state.player.avatar
+        : DEFAULT_AVATAR;
+
     Leaderboard.submit(
       {
         name: state.player.name,
-        avatar: state.player.avatar,
+        avatar: avatarToSubmit,
         packets: state.packets,
       },
       { throttleMs: 0 },

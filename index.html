@@ -787,6 +787,103 @@
         <!-- PWA: Register Service Worker -->
         <script>
             if ("serviceWorker" in navigator) {
+                // Listen for force update messages from service worker
+                navigator.serviceWorker.addEventListener(
+                    "message",
+                    function (event) {
+                        if (
+                            event.data &&
+                            event.data.type === "VERSION_UPDATE"
+                        ) {
+                            // Check if user's save needs force update
+                            const currentSave = localStorage.getItem(
+                                "packet_clicker_save_v3",
+                            );
+                            if (currentSave) {
+                                try {
+                                    const saveData = JSON.parse(currentSave);
+                                    const saveVersion =
+                                        saveData.version || "0.0.1";
+                                    const currentVersion =
+                                        event.data.version || "0.0.20";
+
+                                    // Compare versions and force update if needed
+                                    if (saveVersion !== currentVersion) {
+                                        console.log(
+                                            "[Update] Force update needed:",
+                                            saveVersion,
+                                            "->",
+                                            currentVersion,
+                                        );
+
+                                        // Clear old caches and force refresh
+                                        if ("caches" in window) {
+                                            caches
+                                                .keys()
+                                                .then(function (cacheNames) {
+                                                    return Promise.all(
+                                                        cacheNames.map(
+                                                            function (
+                                                                cacheName,
+                                                            ) {
+                                                                if (
+                                                                    cacheName.includes(
+                                                                        "packet-clicker-cache",
+                                                                    )
+                                                                ) {
+                                                                    console.log(
+                                                                        "[Update] Clearing cache:",
+                                                                        cacheName,
+                                                                    );
+                                                                    return caches.delete(
+                                                                        cacheName,
+                                                                    );
+                                                                }
+                                                            },
+                                                        ),
+                                                    );
+                                                })
+                                                .then(function () {
+                                                    // Send force refresh message to service worker
+                                                    if (
+                                                        navigator.serviceWorker
+                                                            .controller
+                                                    ) {
+                                                        navigator.serviceWorker.controller.postMessage(
+                                                            {
+                                                                type: "FORCE_REFRESH",
+                                                            },
+                                                        );
+                                                    }
+                                                    // Reload after a short delay to ensure cache clearing
+                                                    setTimeout(function () {
+                                                        window.location.reload(
+                                                            true,
+                                                        );
+                                                    }, 500);
+                                                });
+                                        } else {
+                                            // Fallback: just reload
+                                            setTimeout(function () {
+                                                window.location.reload(true);
+                                            }, 500);
+                                        }
+                                    }
+                                } catch (e) {
+                                    console.warn(
+                                        "[Update] Could not parse save data for version check:",
+                                        e,
+                                    );
+                                }
+                            }
+                        }
+
+                        if (event.data && event.data.type === "FORCE_RELOAD") {
+                            window.location.reload(true);
+                        }
+                    },
+                );
+
                 navigator.serviceWorker
                     .register("service-worker.js")
                     .then(function (reg) {
@@ -822,7 +919,14 @@
                             );
                         });
 
-                        // Update check disabled to avoid redundant updates
+                        // Force update check on registration
+                        if (reg.active && !hasController) {
+                            // First time loading, check for version updates
+                            reg.active.postMessage({ type: "CHECK_VERSION" });
+                        }
+                    })
+                    .catch(function (error) {
+                        console.warn("[SW] Registration failed:", error);
                     });
 
                 // Guarded one-time reload when the new service worker takes control
@@ -835,6 +939,48 @@
                         window.location.reload();
                     },
                 );
+            }
+
+            // Gentle iOS Safari fixes - prevent zoom on input focus only
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                // Prevent zoom on input focus by ensuring 16px font size
+                const style = document.createElement("style");
+                style.textContent = `
+                    input, select, textarea {
+                        font-size: 16px !important;
+                    }
+
+                    /* Gentle bounce scroll prevention */
+                    body {
+                        overscroll-behavior-y: none;
+                    }
+
+                    /* Prevent accidental zoom on double tap for buttons only */
+                    button, .neon-btn, .tab-btn {
+                        touch-action: manipulation;
+                    }
+                `;
+                document.head.appendChild(style);
+
+                // Handle new inputs dynamically
+                const observer = new MutationObserver(function (mutations) {
+                    mutations.forEach(function (mutation) {
+                        mutation.addedNodes.forEach(function (node) {
+                            if (node.querySelectorAll) {
+                                const inputs = node.querySelectorAll(
+                                    "input, select, textarea",
+                                );
+                                inputs.forEach(function (input) {
+                                    input.style.fontSize = "16px";
+                                });
+                            }
+                        });
+                    });
+                });
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true,
+                });
             }
         </script>
     </body>

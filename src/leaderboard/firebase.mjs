@@ -217,60 +217,141 @@ async function getStorageApi() {
  */
 async function maybeUploadAvatar(id, avatar) {
   const raw = String(avatar || "");
+
   try {
     if (!raw.startsWith("data:")) {
       return sanitizeAvatar(raw);
     }
+
+    // Validate data URL before processing
+    if (raw.length > 50000) {
+      console.warn("[Leaderboard] Avatar data URL exceeds 50KB limit");
+      return "";
+    }
+
+    // Validate data URL format
+    if (!raw.match(/^data:image\/(png|jpg|jpeg|gif|webp);base64,/)) {
+      console.warn("[Leaderboard] Invalid data URL format for avatar");
+      return "";
+    }
+
+    console.log("[Leaderboard] Starting avatar upload for device:", id);
+
     // Ensure Firebase is initialized
     await lazyFirebase();
     const st = await getStorageApi();
     const storage = st.getStorage(_app);
+
+    // Create safe filename with device ID validation
     const safeId = String(id || deviceId()).replace(/[^a-zA-Z0-9_.-]/g, "_");
     const timestamp = Date.now();
-    const r = st.ref(storage, `avatars/${safeId}_${timestamp}.png`);
+    const filename = `${safeId}_${timestamp}.png`;
+    const r = st.ref(storage, `avatars/${filename}`);
 
-    // Convert data URL to blob for better upload reliability
-    const response = await fetch(raw);
-    const blob = await response.blob();
+    console.log("[Leaderboard] Converting data URL to blob...");
 
-    // Upload with metadata for better caching
+    // Convert data URL to blob with error handling
+    let blob;
+    try {
+      const response = await fetch(raw);
+      if (!response.ok) {
+        throw new Error(`Fetch failed: ${response.status}`);
+      }
+      blob = await response.blob();
+
+      // Validate blob size
+      if (blob.size > 2 * 1024 * 1024) {
+        // 2MB limit
+        console.warn("[Leaderboard] Blob size exceeds 2MB limit:", blob.size);
+        return "";
+      }
+
+      console.log("[Leaderboard] Blob created successfully, size:", blob.size);
+    } catch (fetchError) {
+      console.error(
+        "[Leaderboard] Failed to convert data URL to blob:",
+        fetchError,
+      );
+      // Fallback to data URL if conversion fails but URL is valid
+      return sanitizeAvatar(raw);
+    }
+
+    // Upload with comprehensive metadata
     const metadata = {
-      contentType: "image/png",
+      contentType: blob.type || "image/png",
       cacheControl: "public,max-age=3600",
       customMetadata: {
         uploadedAt: timestamp.toString(),
         deviceId: safeId,
+        originalSize: raw.length.toString(),
+        blobSize: blob.size.toString(),
       },
     };
 
+    console.log("[Leaderboard] Uploading to Firebase Storage...");
     await st.uploadBytes(r, blob, metadata);
+
+    console.log("[Leaderboard] Getting download URL...");
     const url = await st.getDownloadURL(r);
 
-    console.log("[Leaderboard] avatar uploaded successfully:", url);
+    console.log(
+      "[Leaderboard] Avatar uploaded successfully:",
+      url.substring(0, 100) + "...",
+    );
     return sanitizeAvatar(url);
   } catch (e) {
-    // Check if it's a network-related error (ad blocker, connectivity issues)
+    // Enhanced error classification
     const isNetworkError =
       e.name === "TypeError" ||
       e.message?.includes("ERR_BLOCKED_BY_CLIENT") ||
       e.message?.includes("Failed to fetch") ||
+      e.message?.includes("NetworkError") ||
       e.code === "storage/unknown";
 
+    const isQuotaError =
+      e.code === "storage/quota-exceeded" ||
+      e.message?.includes("quota") ||
+      e.message?.includes("storage full");
+
+    const isPermissionError =
+      e.code === "storage/unauthorized" ||
+      e.code?.includes("permission") ||
+      e.message?.includes("permission denied");
+
+    const isSizeError =
+      e.code === "storage/invalid-argument" ||
+      e.message?.includes("size") ||
+      e.message?.includes("too large");
+
+    // Log appropriate warning/error based on error type
     if (isNetworkError) {
-      console.warn(
-        "[Leaderboard] Avatar upload blocked by network/ad blocker - using fallback",
-      );
+      console.warn("[Leaderboard] Avatar upload blocked by network/ad blocker");
+    } else if (isQuotaError) {
+      console.warn("[Leaderboard] Storage quota exceeded for avatar upload");
+    } else if (isPermissionError) {
+      console.warn("[Leaderboard] Permission denied for avatar upload");
+    } else if (isSizeError) {
+      console.warn("[Leaderboard] Avatar file size exceeds limits");
     } else {
-      console.error("[Leaderboard] avatar upload failed:", e);
+      console.error(
+        "[Leaderboard] Avatar upload failed:",
+        e.code || e.name,
+        e.message,
+      );
     }
 
-    // Return the original data URL as fallback for local storage
-    // But return empty for Firebase to avoid storage issues
-    if (raw && raw.startsWith("data:")) {
-      console.log("[Leaderboard] Using local data URL as fallback");
-      return raw; // Keep the data URL locally
+    // Return appropriate fallback based on error type and rules compliance
+    if (raw && raw.startsWith("data:") && raw.length <= 50000) {
+      console.log("[Leaderboard] Using data URL fallback (within 50KB limit)");
+      return sanitizeAvatar(raw);
+    } else if (raw && raw.startsWith("data:") && raw.length > 50000) {
+      console.warn(
+        "[Leaderboard] Data URL too large for fallback, using empty avatar",
+      );
+      return "";
     }
-    return sanitizeAvatar(raw);
+
+    return sanitizeAvatar(raw) || "";
   }
 }
 
@@ -350,23 +431,64 @@ async function flushWrite() {
 
     const ref = doc(_db, _collection, docData.id);
 
-    // Always try to upload avatar if it's a data URL
+    // Validate and sanitize avatar before processing
     let avatarUrl = sanitizeAvatar(docData.avatar);
+
+    // Enhanced avatar processing with better error handling
     if (
       typeof docData.avatar === "string" &&
       docData.avatar.startsWith("data:")
     ) {
       try {
-        console.log("[Leaderboard] uploading avatar for", docData.id);
-        avatarUrl = await maybeUploadAvatar(docData.id, docData.avatar);
-        if (!avatarUrl) {
+        console.log("[Leaderboard] Processing avatar upload for", docData.id);
+
+        // Check data URL size before upload
+        if (docData.avatar.length > 50000) {
           console.warn(
-            "[Leaderboard] avatar upload returned empty, using fallback",
+            "[Leaderboard] Avatar data URL too large, using fallback",
           );
           avatarUrl = "";
+        } else {
+          avatarUrl = await maybeUploadAvatar(docData.id, docData.avatar);
+
+          if (!avatarUrl || avatarUrl === "") {
+            console.warn(
+              "[Leaderboard] Avatar upload failed, using empty avatar",
+            );
+            avatarUrl = "";
+          } else {
+            console.log("[Leaderboard] Avatar upload successful");
+          }
         }
       } catch (uploadError) {
-        console.error("[Leaderboard] avatar upload error:", uploadError);
+        console.error("[Leaderboard] Avatar upload error:", uploadError);
+
+        // Check if it's a storage quota or permission error
+        const isStorageError =
+          uploadError.code?.includes("storage/") ||
+          uploadError.message?.includes("storage") ||
+          uploadError.message?.includes("quota");
+
+        if (isStorageError) {
+          console.warn(
+            "[Leaderboard] Storage issue detected, using empty avatar",
+          );
+        }
+
+        avatarUrl = "";
+      }
+    }
+
+    // Final validation of avatar URL before submission
+    if (avatarUrl && typeof avatarUrl === "string") {
+      // Ensure URL is properly formatted
+      if (!avatarUrl.startsWith("http") && !avatarUrl.startsWith("data:")) {
+        console.warn("[Leaderboard] Invalid avatar URL format, clearing");
+        avatarUrl = "";
+      }
+      // Double check size limits
+      if (avatarUrl.length > 50000) {
+        console.warn("[Leaderboard] Avatar URL too long, clearing");
         avatarUrl = "";
       }
     }
@@ -374,50 +496,90 @@ async function flushWrite() {
     const payload = {
       name: docData.name,
       packets: docData.packets,
-      avatar: avatarUrl,
+      avatar: avatarUrl || "", // Ensure string type
       updatedAt: serverTimestamp(),
-      deviceId: docData.id, // Add device ID for better tracking
+      deviceId: docData.id,
     };
 
-    console.log("[Leaderboard] writing payload:", payload);
+    console.log("[Leaderboard] Submitting payload:", {
+      ...payload,
+      avatar: payload.avatar
+        ? payload.avatar.startsWith("data:")
+          ? "data_url"
+          : payload.avatar
+        : "empty",
+    });
+
     await setDoc(ref, payload, { merge: true });
 
     if (!_lastWriteMs) {
-      console.log("[Leaderboard] first write ok", {
+      console.log("[Leaderboard] First write successful", {
         id: docData.id,
         packets: docData.packets,
-        avatar: avatarUrl ? "uploaded" : "empty",
+        avatar: avatarUrl
+          ? avatarUrl.startsWith("data:")
+            ? "data_url"
+            : "storage_url"
+          : "empty",
         collection: _collection,
       });
     }
+
     _lastWriteMs = nowTs();
     _lastSentPackets = docData.packets;
 
     // Reset backoff on success
     _backoffMs = 0;
   } catch (e) {
-    // Check if it's a network-related error (ad blocker, connectivity issues)
+    // Enhanced error classification
     const isNetworkError =
       e.name === "TypeError" ||
       e.message?.includes("ERR_BLOCKED_BY_CLIENT") ||
       e.message?.includes("Failed to fetch") ||
-      e.code?.includes("unavailable");
+      e.code?.includes("unavailable") ||
+      e.code?.includes("network");
+
+    const isPermissionError =
+      e.code?.includes("permission") ||
+      e.code?.includes("unauthorized") ||
+      e.message?.includes("permission");
+
+    const isValidationError =
+      e.code?.includes("invalid-argument") ||
+      e.message?.includes("validation") ||
+      e.message?.includes("size");
 
     if (isNetworkError) {
-      console.warn(
-        "[Leaderboard] Write blocked by network/ad blocker - using backoff",
-      );
+      console.warn("[Leaderboard] Network/connectivity issue - using backoff");
+    } else if (isPermissionError) {
+      console.warn("[Leaderboard] Permission denied - check Firebase rules");
+    } else if (isValidationError) {
+      console.warn("[Leaderboard] Data validation error:", e.message);
     } else {
-      console.error("[Leaderboard] write failed; using backoff:", e);
+      console.error("[Leaderboard] Write failed with error:", e);
     }
+
     // Exponential backoff up to 5 minutes
     _backoffMs = Math.max(
       2000,
       Math.min(_backoffMs ? _backoffMs * 2 : 5000, 5 * 60 * 1000),
     );
-    // Requeue last doc
+
+    // Requeue document with potentially cleaned avatar data
+    if (
+      isValidationError &&
+      docData.avatar &&
+      docData.avatar.startsWith("data:")
+    ) {
+      console.log(
+        "[Leaderboard] Validation error - retrying with empty avatar",
+      );
+      docData.avatar = ""; // Clear problematic avatar for retry
+    }
+
     _pendingDoc = _pendingDoc || docData;
-    // Re-arm timer
+
+    // Re-arm timer with backoff
     _writeTimer = setTimeout(flushWrite, _backoffMs);
   }
 }

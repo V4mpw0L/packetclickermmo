@@ -18,6 +18,9 @@ const VERSION = (() => {
   return "0.0.20";
 })();
 
+// Force update flag uses the same version from constants
+const FORCE_UPDATE_VERSION = VERSION;
+
 const CACHE_NAME = "packet-clicker-cache-v" + VERSION;
 const ASSETS_TO_CACHE = [
   "./",
@@ -82,27 +85,71 @@ self.addEventListener("install", (event) => {
         );
       }),
   );
+
+  // Skip waiting immediately for force updates
+  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            console.log("[Service Worker] Deleting old cache:", cache);
-            return caches.delete(cache);
-          }
-        }),
-      );
-    }),
+    Promise.all([
+      // Clear old caches
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cache) => {
+            if (cache !== CACHE_NAME) {
+              console.log("[Service Worker] Deleting old cache:", cache);
+              return caches.delete(cache);
+            }
+          }),
+        );
+      }),
+
+      // Force refresh for clients with old saves
+      self.clients.matchAll().then((clients) => {
+        clients.forEach((client) => {
+          // Send message to client to check if force update is needed
+          client.postMessage({
+            type: "VERSION_UPDATE",
+            version: VERSION,
+            forceUpdateVersion: FORCE_UPDATE_VERSION,
+          });
+        });
+      }),
+    ]),
   );
+
   self.clients.claim();
 });
 
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
+  }
+
+  if (event.data && event.data.type === "FORCE_REFRESH") {
+    // Clear all caches and force refresh
+    event.waitUntil(
+      caches
+        .keys()
+        .then((cacheNames) => {
+          return Promise.all(
+            cacheNames.map((cacheName) => {
+              console.log("[Service Worker] Force clearing cache:", cacheName);
+              return caches.delete(cacheName);
+            }),
+          );
+        })
+        .then(() => {
+          // Notify all clients to refresh
+          return self.clients.matchAll();
+        })
+        .then((clients) => {
+          clients.forEach((client) => {
+            client.postMessage({ type: "FORCE_RELOAD" });
+          });
+        }),
+    );
   }
 });
 
