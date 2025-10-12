@@ -534,7 +534,7 @@ function renderBoosts() {
     const remaining = active ? Math.ceil((until - Date.now()) / 1000) : 0;
     const label = `<div class="font-bold">${boost.name}</div>
         <div class="text-sm opacity-75">${boost.gems} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/></div>
-        <div class="text-xs" style="color: #2d5a3d;">${boost.desc}${active ? ` — active (${remaining}s)` : ""}</div>`;
+        <div class="text-xs" style="color: #4a7c59; text-shadow: none; filter: none;">${boost.desc}${active ? ` — active (${remaining}s)` : ""}</div>`;
     return renderButton({
       className: `gem-btn w-full mb-2 ${active ? "opacity-50" : ""}`,
       label,
@@ -1161,7 +1161,7 @@ function renderPrestige() {
     return `<button class="gem-btn w-full mb-2 ${canBuy ? "" : "opacity-50"}"
                     data-prestige-upgrade="${upgrade.id}" ${!canBuy ? "disabled" : ""}>
       ${upgrade.name} (${currentLevel}/${upgrade.maxLevel}) - ${cost} 🔷
-      <div class="text-xs" style="color: #2d5a3d;">${upgrade.desc}</div>
+      <div class="text-xs" style="color: #4a7c59; text-shadow: none; filter: none;">${upgrade.desc}</div>
     </button>`;
   }).join("");
 
@@ -1197,7 +1197,7 @@ function renderPrestige() {
         canPrestige
           ? `<button id="do-prestige" class="neon-btn w-full mb-2" style="white-space: normal; display: flex; flex-direction: column; align-items: center; gap: 0.2rem;">
           <span>⭐ Prestige Now! (+${shardGain} 🔷)</span>
-          <span style="color: #2d5a3d; font-size: 0.8rem; opacity: 0.9; line-height: 1.2;">Reset progress for permanent bonuses</span>
+          <span style="color: #4a7c59; font-size: 0.8rem; opacity: 1; line-height: 1.2; text-shadow: none; filter: none;">Reset progress for permanent bonuses</span>
         </button>`
           : `<div class="text-center text-neon-gray mb-4" style="font-size:.9rem;">
           Need 50,000 packets to prestige<br>
@@ -1720,17 +1720,7 @@ function clickPacket(event) {
     clickPacket._comboHideTimer = setTimeout(() => {
       hideComboTotalHUD(0);
       clickPacket._comboTotal = 0;
-      _comboExpireAt = 0;
-      const el = document.getElementById("avatar");
-      if (el) {
-        if (typeof el._baseShadow !== "undefined") {
-          el.style.boxShadow = el._baseShadow;
-          delete el._baseShadow;
-        } else {
-          el.style.boxShadow = "";
-        }
-      }
-    }, COMBO_TIMEOUT + 200);
+    }, COMBO_TIMEOUT + 100);
 
     // Show floating effect
     let clickFX = document.createElement("div");

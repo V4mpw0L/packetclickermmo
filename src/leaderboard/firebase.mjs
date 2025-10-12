@@ -225,13 +225,32 @@ async function maybeUploadAvatar(id, avatar) {
     const st = await getStorageApi();
     const storage = st.getStorage(_app);
     const safeId = String(id || deviceId()).replace(/[^a-zA-Z0-9_.-]/g, "_");
-    const r = st.ref(storage, `avatars/${safeId}.png`);
-    await st.uploadString(r, raw, "data_url");
+    const timestamp = Date.now();
+    const r = st.ref(storage, `avatars/${safeId}_${timestamp}.png`);
+
+    // Convert data URL to blob for better upload reliability
+    const response = await fetch(raw);
+    const blob = await response.blob();
+
+    // Upload with metadata for better caching
+    const metadata = {
+      contentType: "image/png",
+      cacheControl: "public,max-age=3600",
+      customMetadata: {
+        uploadedAt: timestamp.toString(),
+        deviceId: safeId,
+      },
+    };
+
+    await st.uploadBytes(r, blob, metadata);
     const url = await st.getDownloadURL(r);
+
+    console.log("[Leaderboard] avatar uploaded successfully:", url);
     return sanitizeAvatar(url);
   } catch (e) {
-    console.warn("[Leaderboard] avatar upload failed:", e);
-    return "";
+    console.error("[Leaderboard] avatar upload failed:", e);
+    // Return the original data URL as fallback
+    return raw.startsWith("data:") ? "" : sanitizeAvatar(raw);
   }
 }
 
@@ -311,18 +330,25 @@ async function flushWrite() {
 
     const ref = doc(_db, _collection, docData.id);
 
-    // Ensure avatar is a resolvable https URL; upload if we received a data URL
+    // Always try to upload avatar if it's a data URL
     let avatarUrl = sanitizeAvatar(docData.avatar);
-    try {
-      if (
-        (!avatarUrl || avatarUrl === "") &&
-        typeof docData.avatar === "string" &&
-        docData.avatar.startsWith("data:")
-      ) {
+    if (
+      typeof docData.avatar === "string" &&
+      docData.avatar.startsWith("data:")
+    ) {
+      try {
+        console.log("[Leaderboard] uploading avatar for", docData.id);
         avatarUrl = await maybeUploadAvatar(docData.id, docData.avatar);
+        if (!avatarUrl) {
+          console.warn(
+            "[Leaderboard] avatar upload returned empty, using fallback",
+          );
+          avatarUrl = "";
+        }
+      } catch (uploadError) {
+        console.error("[Leaderboard] avatar upload error:", uploadError);
+        avatarUrl = "";
       }
-    } catch (_) {
-      // ignore upload errors; fallback to empty/sanitized
     }
 
     const payload = {
@@ -330,12 +356,17 @@ async function flushWrite() {
       packets: docData.packets,
       avatar: avatarUrl,
       updatedAt: serverTimestamp(),
+      deviceId: docData.id, // Add device ID for better tracking
     };
+
+    console.log("[Leaderboard] writing payload:", payload);
     await setDoc(ref, payload, { merge: true });
+
     if (!_lastWriteMs) {
       console.log("[Leaderboard] first write ok", {
         id: docData.id,
         packets: docData.packets,
+        avatar: avatarUrl ? "uploaded" : "empty",
         collection: _collection,
       });
     }
@@ -345,7 +376,7 @@ async function flushWrite() {
     // Reset backoff on success
     _backoffMs = 0;
   } catch (e) {
-    console.warn("[Leaderboard] write failed; using backoff:", e);
+    console.error("[Leaderboard] write failed; using backoff:", e);
     // Exponential backoff up to 5 minutes
     _backoffMs = Math.max(
       2000,
@@ -386,20 +417,27 @@ function subscribe(callback, opts = {}) {
           const rows = [];
           snap.forEach((doc) => {
             const d = doc.data() || {};
+            const avatar = sanitizeAvatar(d.avatar);
             rows.push({
               id: doc.id,
               name: sanitizeName(d.name),
               packets: clamp(d.packets, 0, Number.MAX_SAFE_INTEGER),
-              avatar: sanitizeAvatar(d.avatar),
+              avatar: avatar,
               updatedAt: d.updatedAt?.toMillis
                 ? d.updatedAt.toMillis()
                 : nowTs(),
             });
           });
+
+          console.log(
+            "[Leaderboard] real-time update:",
+            rows.length,
+            "players",
+          );
           cb(rows);
         },
         (err) => {
-          console.warn("[Leaderboard] subscribe error:", err);
+          console.error("[Leaderboard] subscribe error:", err);
           // Switch to fallback if snapshot fails
           startFallback(cb, limitN);
         },
