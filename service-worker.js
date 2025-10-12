@@ -1,4 +1,4 @@
-// Derive VERSION from constants UMD when available; fallback to 0.0.18
+// Derive VERSION from constants UMD when available; fallback to 0.0.19
 const VERSION = (() => {
   try {
     // Load constants to access Packet.data.APP_VERSION if available
@@ -11,13 +11,11 @@ const VERSION = (() => {
     ) {
       return self.Packet.data.APP_VERSION;
     }
-    if (typeof self.APP_VERSION === "string") {
-      return self.APP_VERSION;
-    }
   } catch (e) {
+    console.log("[SW] Could not load constants, using fallback version");
     // ignore, fall back below
   }
-  return "0.0.18";
+  return "0.0.19";
 })();
 
 const CACHE_NAME = "packet-clicker-cache-v" + VERSION;
@@ -43,6 +41,7 @@ const ASSETS_TO_CACHE = [
 
   // App icons and images
   "src/assets/gem.png",
+  "src/assets/vip.png",
   "src/assets/packet.webp",
 ];
 

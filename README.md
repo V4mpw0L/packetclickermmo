@@ -2,7 +2,7 @@
 
 > **The Ultimate Cyberpunk Idle Clicker Experience - Now with 100 Items, Epic Combos & Equipment System!**
 
-[![Version 0.0.18](https://img.shields.io/badge/Version-0.0.18-brightgreen.svg)]()
+[![Version 0.0.19](https://img.shields.io/badge/Version-0.0.19-brightgreen.svg)]()
 [![PWA Ready](https://img.shields.io/badge/PWA-Ready-blue.svg)](https://web.dev/progressive-web-apps/)
 [![Mobile Optimized](https://img.shields.io/badge/Mobile-Optimized-success.svg)]()
 [![Anti-Cheat](https://img.shields.io/badge/Anti--Cheat-Protected-red.svg)]()
@@ -286,7 +286,12 @@ const THEMES = {
 
 ## 📊 **Version History**
 
-### **Version 0.0.18** (Latest)
+### **Version 0.0.19** (Latest)
+- ✅ **VIP Icon Enhancement** - VIP icon appears before player name when active
+- ✅ **Premium Shop Polish** - Consistent grey banner and professional VIP icons
+- ✅ **Leaderboard VIP Display** - VIP status visible on rankings
+
+### **Version 0.0.18**
 - ✅ **Complete Shop Redesign** - Professional shop interface with organized sections
 - ✅ **Premium Gem Buttons** - Enhanced visual styling with gem.png icons throughout
 - ✅ **Categorized Shopping** - Organized sections for Premium Gems, VIP, Cosmetics, and Utilities

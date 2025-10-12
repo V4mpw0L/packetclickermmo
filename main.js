@@ -1120,7 +1120,7 @@ function renderLeaderboard() {
     <li style="display: flex; gap: 0.75rem; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #273742;">
       <span style="width: 2rem; text-align: right; color: var(--secondary-color); font-weight: bold;">${idx === 0 ? "🥇 " : idx === 1 ? "🥈 " : idx === 2 ? "🥉 " : ""}${idx + 1}.</span>
       <img src="${p.avatar || DEFAULT_AVATAR}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 2rem; height: 2rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "3px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"}; box-shadow: ${idx === 0 ? "0 0 14px rgba(255,215,0,0.6)" : idx === 1 ? "0 0 12px rgba(192,192,192,0.55)" : idx === 2 ? "0 0 12px rgba(205,127,50,0.55)" : "none"};" alt="">
-      <span style="font-weight: 800; ${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary);" : "color: var(--text-primary);"}">${idx === 0 ? '<span class="crown-badge">👑</span>' : ""}${p.name}</span>
+      <span style="font-weight: 800; ${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary);" : "color: var(--text-primary);"}">${idx === 0 ? '<span class="crown-badge">👑</span>' : ""}${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) && isVIP() ? '<img src="src/assets/vip.png" alt="VIP" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;" aria-hidden="true"/>' : ""}${p.name}</span>
       <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary); font-weight: bold; font-size: 1.05em;"><span class="icon-packet"></span> ${p.packets.toLocaleString("en-US")}</span>
     </li>
   `,
@@ -1428,7 +1428,7 @@ function showEditProfile() {
       }
     } catch (_) {}
     try {
-      window.VERSION = "0.0.18";
+      window.VERSION = "0.0.19";
     } catch (_) {}
 
     updateTopBar();
@@ -1547,7 +1547,7 @@ function showSettings() {
         // Persist and refresh UI
         save();
         try {
-          window.VERSION = "0.0.18";
+          window.VERSION = "0.0.19";
         } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {
@@ -1987,7 +1987,7 @@ function upgrade(type) {
 
 // Comprehensive save migration function to update old saves
 function migrateSaveToCurrentVersion(state) {
-  console.log("[Migration] Checking save compatibility with version 0.0.18");
+  console.log("[Migration] Checking save compatibility with version 0.0.19");
 
   // Ensure all prestige upgrades exist
   if (!state.prestige) state.prestige = {};
@@ -2104,7 +2104,7 @@ function migrateSaveToCurrentVersion(state) {
 
   // Equipment system migration is handled by Equipment.ensureStateShape()
 
-  console.log("[Migration] Save updated to version 0.0.18 compatibility");
+  console.log("[Migration] Save updated to version 0.0.19 compatibility");
   return state;
 }
 

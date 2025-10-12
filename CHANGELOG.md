@@ -1,5 +1,27 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.19 - VIP Icon Enhancement & Premium Shop Polish
+*Released: January 2025*
+
+### 🎖️ **VIP Icon System Enhancement**
+- **Player Name VIP Icon** - VIP icon now appears before player name when VIP is active
+- **Leaderboard VIP Display** - VIP icon shows before player name on rankings when VIP status is active
+- **Professional VIP Icons** - All VIP elements now use custom `vip.png` icon instead of crown emoji
+- **Consistent VIP Branding** - Unified VIP iconography across shop, top bar, and leaderboard
+
+### 🏪 **Premium Shop Visual Consistency**
+- **Grey Banner Title** - Premium Shop now has consistent grey banner matching all other sections
+- **Clean VIP Section** - Removed icon from "VIP Membership" section title for cleaner appearance
+- **Professional Button Icons** - VIP purchase buttons use custom `vip.png` icon
+- **Unified Design Language** - Premium Shop matches the visual hierarchy of other game sections
+
+### 🔧 **Technical Updates**
+- **Service Worker Updated** - Cache versioning updated for optimal performance
+- **Manifest Compatibility** - PWA configuration optimized for latest features
+- **Storage Migration** - Save compatibility maintained across version updates
+
+---
+
 ## Version 0.0.18 - Beautiful Game Stats & Visual Polish
 *Released: January 2025*
 
