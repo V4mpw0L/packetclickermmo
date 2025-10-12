@@ -632,7 +632,6 @@ body .modal-box .space-y-3 > * + * {
 }
 
 /* Equipped slot styles are now handled inline for better control */
-
 /* Equipment button styles are now handled inline for better control */
 .modal-box #equip-slot-select {
     padding: 0.2rem 0.55rem;
@@ -653,8 +652,99 @@ body .modal-box .space-y-3 > * + * {
     box-shadow: 0 0 0 2px rgba(101, 255, 218, 0.2);
 }
 
-/* Ensure Unequip button stays inside its card */
-/* Remove duplicate styles - handled above */
+/* === PREMIUM GEM BUTTON ANIMATIONS === */
+.premium-gem-btn {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+    border: 2px solid #ffed4e;
+    color: #1a1a1a;
+    font-weight: 800;
+    animation: premium-glow 3s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+
+.premium-gem-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+    animation: premium-glow-hover 1.5s ease-in-out infinite;
+}
+
+.premium-gem-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
+    position: relative;
+}
+
+.gem-icon {
+    font-size: 1.5rem;
+    animation: gem-pulse 2s ease-in-out infinite;
+}
+
+.gem-info {
+    flex: 1;
+    text-align: center;
+}
+
+.gem-amount {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #1a1a1a;
+}
+
+.gem-price {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #333;
+    margin-top: 0.1rem;
+}
+
+.gem-sparkle {
+    font-size: 1.2rem;
+    animation: sparkle-rotate 4s linear infinite;
+}
+
+/* Premium button animations */
+@keyframes premium-glow {
+    0%,
+    100% {
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+}
+
+@keyframes premium-glow-hover {
+    0%,
+    100% {
+        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+    }
+    50% {
+        box-shadow: 0 8px 35px rgba(255, 215, 0, 0.7);
+    }
+}
+
+@keyframes gem-pulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes sparkle-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
 /* Stabilize gem count digits */
 #gem-count {
@@ -1159,76 +1249,104 @@ ul li:last-child {
 }
 
 /* === ACHIEVEMENT SYSTEM === */
-.achievement-badge {
-    background: linear-gradient(100deg, var(--bg-secondary) 60%, #273742 100%);
+.achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.achievement-card {
+    background: linear-gradient(
+        135deg,
+        var(--bg-secondary) 0%,
+        var(--bg-card) 100%
+    );
     border: 1.5px solid var(--border-color);
     border-radius: var(--border-radius-md);
-    box-shadow: 0 1.5px 10px var(--shadow-primary);
-    margin: var(--spacing-sm) 0;
-    padding: var(--spacing-md);
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    justify-items: center;
-    gap: var(--spacing-md);
-    font-size: var(--font-size-base);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    min-height: var(--touch-target);
-}
-
-.achievement-badge:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 15px var(--shadow-primary);
-}
-
-.achievement-badge.unlocked {
-    background: linear-gradient(90deg, #e8ffcf 50%, #bff9e4 100%);
-    border-color: var(--secondary-color);
-    color: #223c33;
-    font-weight: bold;
-    box-shadow: 0 2px 14px #faffc466;
-}
-
-.achievement-badge .emoji {
-    font-size: var(--font-size-xl);
-    flex-shrink: 0;
-    justify-self: start;
-}
-
-.achievement-badge .desc {
-    font-size: var(--font-size-sm);
-    color: var(--accent-color);
-    text-align: center;
-}
-
-.achievement-badge .text {
+    box-shadow: 0 2px 8px var(--shadow-primary);
+    padding: 0.75rem;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
+    gap: 0.75rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    min-height: 80px;
 }
 
-.achievement-badge.unlocked .desc {
-    color: #495a29;
+.achievement-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--shadow-primary);
+    border-color: var(--primary-color);
 }
 
-.achievement-gem-reward {
-    position: absolute;
-    right: var(--spacing-md);
-    top: 50%;
-    transform: translateY(-50%);
+.achievement-card.unlocked {
+    background: linear-gradient(135deg, #2d4a2d 0%, #1e3a1e 100%);
+    border-color: var(--secondary-color);
+    box-shadow: 0 2px 8px rgba(247, 207, 92, 0.3);
+}
+
+.achievement-card.unlocked:hover {
+    box-shadow: 0 4px 12px rgba(247, 207, 92, 0.5);
+}
+
+.achievement-emoji {
+    font-size: 2rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+}
+
+.achievement-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.achievement-name {
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+}
+
+.achievement-desc {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    line-height: 1.3;
+    margin-bottom: 0.25rem;
+}
+
+.achievement-reward {
+    font-size: 0.7rem;
+    color: #ffd700;
+    font-weight: 700;
     display: inline-flex;
     align-items: center;
-    font-size: var(--font-size-sm);
-    color: #ffd700;
-    font-weight: bold;
-    gap: 0.25rem;
+    gap: 0.15rem;
+    padding: 0.1rem 0.35rem;
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 999px;
 }
 
-.achievement-gem-reward img {
-    width: 18px;
-    height: 18px;
+.achievement-card.unlocked .achievement-name {
+    color: #e8ffcf;
+}
+
+.achievement-card.unlocked .achievement-desc {
+    color: #bff9e4;
+}
+
+.achievement-card.unlocked .achievement-reward {
+    color: #28a745;
+    background: rgba(40, 167, 69, 0.1);
+    border-color: rgba(40, 167, 69, 0.3);
 }
 
 /* === AVATAR SELECTION === */
@@ -1610,18 +1728,50 @@ footer {
         min-height: 48px;
     }
 
-    .neon-btn,
-    .upgrade-btn,
-    .gem-btn {
-        min-height: 48px;
-        padding: var(--spacing-md);
-    }
+    @media (pointer: coarse) {
+        .neon-btn,
+        .gem-btn {
+            padding: var(--spacing-md);
+        }
 
-    .achievement-badge {
-        min-height: 60px;
-        padding: var(--spacing-md);
+        .achievement-card {
+            min-height: 70px;
+            padding: 0.6rem;
+            gap: 0.6rem;
+        }
+
+        .achievement-emoji {
+            font-size: 1.8rem;
+            width: 36px;
+            height: 36px;
+        }
+
+        .achievement-grid {
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 0.4rem;
+        }
+
+        /* Premium gem buttons mobile adjustments */
+        .premium-gem-content {
+            padding: 0.4rem;
+        }
+
+        .gem-icon {
+            font-size: 1.3rem;
+        }
+
+        .gem-amount {
+            font-size: 1rem;
+        }
+
+        .gem-price {
+            font-size: 0.8rem;
+        }
+
+        .gem-sparkle {
+            font-size: 1rem;
+        }
     }
-}
 
 /* === FOCUS MANAGEMENT === */
 .tab-btn:focus-visible,
@@ -2620,8 +2770,13 @@ button {
         padding: var(--spacing-lg);
     }
 
-    .achievement-badge {
+    .achievement-card {
         font-size: var(--font-size-lg);
+    }
+
+    .achievement-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 0.6rem;
     }
 }
 

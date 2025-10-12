@@ -645,19 +645,22 @@ function upgradeCost(type) {
 function renderAchievements() {
   let achList = ACHIEVEMENTS.map((ach) => {
     let unlocked = state.achievements.includes(ach.id);
-    return `<li class="achievement-badge${unlocked ? " unlocked" : ""}">
-      <span class="emoji">${ach.emoji === "📦" ? '<span class="icon-packet"></span>' : ach.emoji}</span>
-      <div class="text">
-        <span class="font-bold">${ach.name}</span>
-        <div class="desc">${ach.desc}</div>
+    return `<div class="achievement-card${unlocked ? " unlocked" : ""}">
+      <div class="achievement-emoji">${ach.emoji === "📦" ? '<span class="icon-packet"></span>' : ach.emoji}</div>
+      <div class="achievement-content">
+        <div class="achievement-name">${ach.name}</div>
+        <div class="achievement-desc">${ach.desc}</div>
+        ${ach.gem ? `<div class="achievement-reward">${unlocked ? "✓" : "+" + ach.gem} 💎</div>` : ""}
       </div>
-      ${ach.gem ? `<span class="achievement-gem-reward">${unlocked ? "✓" : "+" + ach.gem} 💎</span>` : ""}
-    </li>`;
+    </div>`;
   }).join("");
   return `
-    <div class="neon-card px-3 py-5">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🎯 Achievements</h2>
-      <ul id="achievement-list" class="flex flex-col gap-2 mt-4">${achList}</ul>
+    <div class="neon-card px-3 py-4 mb-2">
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🏆 Achievements</h2>
+      <div class="achievement-stats" style="text-align:center; margin:.5rem 0 1rem; padding:.35rem .75rem; border:1px solid var(--border-color); border-radius:999px; width:fit-content; margin:0 auto; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">
+        ${state.achievements.length} / ${ACHIEVEMENTS.length} Unlocked
+      </div>
+      <div class="achievement-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.5rem; margin-top: 1rem;">${achList}</div>
     </div>
   `;
 }
@@ -666,8 +669,15 @@ function renderAchievements() {
 function renderShop() {
   let gemStore = GEM_PACKS.map((p) =>
     renderButton({
-      className: "gem-btn w-full mb-2",
-      label: `Buy ${p.label} - $${p.price.toFixed(2)}`,
+      className: "gem-btn premium-gem-btn w-full mb-2",
+      label: `<div class="premium-gem-content">
+        <div class="gem-icon">💎</div>
+        <div class="gem-info">
+          <div class="gem-amount">${p.label}</div>
+          <div class="gem-price">$${p.price.toFixed(2)}</div>
+        </div>
+        <div class="gem-sparkle">✨</div>
+      </div>`,
       dataAttr: `data-gem-pack="${p.id}"`,
     }),
   ).join("");

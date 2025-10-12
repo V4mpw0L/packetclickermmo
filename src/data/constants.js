@@ -344,6 +344,7 @@
     // Achievement catalog
     // Requirements are expressed only in terms of provided state to avoid cross-module deps.
     var ACHIEVEMENTS = [
+      // Starter Achievements (1-2 gems)
       {
         id: "start",
         name: "Getting Started",
@@ -365,14 +366,78 @@
         gem: 1,
       },
       {
-        id: "1kgems",
-        name: "Gem Collector",
-        emoji: "💎",
-        desc: "Earn 10 Gems",
+        id: "1kpackets",
+        name: "Packet Collector",
+        emoji: "📦",
+        desc: "Reach 1,000 Packets",
         req: function (s) {
-          return (s && s.gems) >= 10;
+          return (s && s.packets) >= 1000;
         },
         gem: 2,
+      },
+      {
+        id: "10kpackets",
+        name: "Packet Hoarder",
+        emoji: "🏛️",
+        desc: "Reach 10,000 Packets",
+        req: function (s) {
+          return (s && s.packets) >= 10000;
+        },
+        gem: 3,
+      },
+
+      // Clicking Achievements
+      {
+        id: "clicker10",
+        name: "Novice Clicker",
+        emoji: "👆",
+        desc: "Click 10 times",
+        req: function (s) {
+          return (s && s.stats && s.stats.totalClicks) >= 10;
+        },
+        gem: 1,
+      },
+      {
+        id: "clicker100",
+        name: "Click Master",
+        emoji: "🖱️",
+        desc: "Click 100 times",
+        req: function (s) {
+          return (s && s.stats && s.stats.totalClicks) >= 100;
+        },
+        gem: 2,
+      },
+      {
+        id: "clicker1000",
+        name: "Click Champion",
+        emoji: "⚡",
+        desc: "Click 1,000 times",
+        req: function (s) {
+          return (s && s.stats && s.stats.totalClicks) >= 1000;
+        },
+        gem: 3,
+      },
+      {
+        id: "clicker10000",
+        name: "Click Legend",
+        emoji: "🏆",
+        desc: "Click 10,000 times",
+        req: function (s) {
+          return (s && s.stats && s.stats.totalClicks) >= 10000;
+        },
+        gem: 8,
+      },
+
+      // Upgrade Achievements
+      {
+        id: "click5",
+        name: "Power Upgrade",
+        emoji: "💪",
+        desc: "Upgrade Click Power 5x",
+        req: function (s) {
+          return s && s.upgrades && s.upgrades.click >= 5;
+        },
+        gem: 1,
       },
       {
         id: "click10",
@@ -382,7 +447,17 @@
         req: function (s) {
           return s && s.upgrades && s.upgrades.click >= 10;
         },
-        gem: 1,
+        gem: 2,
+      },
+      {
+        id: "click25",
+        name: "Click Specialist",
+        emoji: "🎯",
+        desc: "Upgrade Click Power 25x",
+        req: function (s) {
+          return s && s.upgrades && s.upgrades.click >= 25;
+        },
+        gem: 5,
       },
       {
         id: "idle10",
@@ -392,7 +467,17 @@
         req: function (s) {
           return s && s.upgrades && s.upgrades.idle >= 10;
         },
-        gem: 1,
+        gem: 2,
+      },
+      {
+        id: "idle25",
+        name: "Automation Expert",
+        emoji: "⚙️",
+        desc: "Upgrade Idle Power 25x",
+        req: function (s) {
+          return s && s.upgrades && s.upgrades.idle >= 25;
+        },
+        gem: 5,
       },
       {
         id: "crit1",
@@ -404,6 +489,160 @@
         },
         gem: 1,
       },
+      {
+        id: "crit10",
+        name: "Crit Master",
+        emoji: "🌟",
+        desc: "Upgrade Crit Chance 10x",
+        req: function (s) {
+          return s && s.upgrades && s.upgrades.crit >= 10;
+        },
+        gem: 3,
+      },
+
+      // Gem Achievements
+      {
+        id: "gems5",
+        name: "First Gems",
+        emoji: "💎",
+        desc: "Earn 5 Gems",
+        req: function (s) {
+          return (s && s.gems) >= 5;
+        },
+        gem: 1,
+      },
+      {
+        id: "gems25",
+        name: "Gem Collector",
+        emoji: "💍",
+        desc: "Earn 25 Gems",
+        req: function (s) {
+          return (s && s.gems) >= 25;
+        },
+        gem: 3,
+      },
+      {
+        id: "gems100",
+        name: "Gem Hoarder",
+        emoji: "👑",
+        desc: "Earn 100 Gems",
+        req: function (s) {
+          return (s && s.gems) >= 100;
+        },
+        gem: 10,
+      },
+
+      // Prestige Achievements
+      {
+        id: "prestige1",
+        name: "First Prestige",
+        emoji: "⭐",
+        desc: "Reach your first prestige",
+        req: function (s) {
+          return (s && s.prestige && s.prestige.level) >= 1;
+        },
+        gem: 5,
+      },
+      {
+        id: "prestige5",
+        name: "Prestige Expert",
+        emoji: "🌟",
+        desc: "Reach prestige level 5",
+        req: function (s) {
+          return (s && s.prestige && s.prestige.level) >= 5;
+        },
+        gem: 10,
+      },
+      {
+        id: "prestige10",
+        name: "Prestige Master",
+        emoji: "✨",
+        desc: "Reach prestige level 10",
+        req: function (s) {
+          return (s && s.prestige && s.prestige.level) >= 10;
+        },
+        gem: 20,
+      },
+
+      // Daily Achievements
+      {
+        id: "daily3",
+        name: "Consistent Player",
+        emoji: "📅",
+        desc: "Login 3 days in a row",
+        req: function (s) {
+          return (s && s.dailyRewards && s.dailyRewards.streak) >= 3;
+        },
+        gem: 2,
+      },
+      {
+        id: "daily7",
+        name: "Week Warrior",
+        emoji: "📦",
+        desc: "Login 7 days in a row",
+        req: function (s) {
+          return (s && s.dailyRewards && s.dailyRewards.streak) >= 7;
+        },
+        gem: 5,
+      },
+      {
+        id: "daily30",
+        name: "Month Master",
+        emoji: "🗓️",
+        desc: "Login 30 days in a row",
+        req: function (s) {
+          return (s && s.dailyRewards && s.dailyRewards.streak) >= 30;
+        },
+        gem: 25,
+      },
+
+      // Equipment Achievements
+      {
+        id: "firstitem",
+        name: "First Drop",
+        emoji: "🎁",
+        desc: "Find your first item",
+        req: function (s) {
+          return s && s.inventory && s.inventory.length >= 1;
+        },
+        gem: 2,
+      },
+      {
+        id: "collector10",
+        name: "Item Collector",
+        emoji: "🗃️",
+        desc: "Find 10 different items",
+        req: function (s) {
+          return s && s.inventory && s.inventory.length >= 10;
+        },
+        gem: 3,
+      },
+      {
+        id: "collector50",
+        name: "Item Hoarder",
+        emoji: "📚",
+        desc: "Find 50 different items",
+        req: function (s) {
+          return s && s.inventory && s.inventory.length >= 50;
+        },
+        gem: 8,
+      },
+      {
+        id: "fullequip",
+        name: "Fully Equipped",
+        emoji: "⚔️",
+        desc: "Equip items in all 4 slots",
+        req: function (s) {
+          if (!s || !s.equipment) return false;
+          var slots = ["slot1", "slot2", "slot3", "slot4"];
+          return slots.every(function (slot) {
+            return s.equipment[slot] !== null;
+          });
+        },
+        gem: 5,
+      },
+
+      // Shop & Premium Achievements
       {
         id: "shopSkin",
         name: "Elite!",
@@ -419,7 +658,6 @@
         name: "VIP Status",
         emoji: "👑",
         desc: "Activate VIP",
-        // Inline VIP check to avoid dependency on isVIP():
         req: function (s) {
           return Date.now() < ((s && s.player && s.player.vipUntil) || 0);
         },
@@ -433,37 +671,45 @@
         req: function (s) {
           return !!(s && s.player && s.player.noAds);
         },
-        gem: 1,
+        gem: 3,
       },
+
+      // Special Achievements
       {
-        id: "clicker100",
-        name: "Click Master",
-        emoji: "🖱️",
-        desc: "Click 100 times",
+        id: "speedrun",
+        name: "Speed Runner",
+        emoji: "🏃",
+        desc: "Reach 1000 packets in under 5 minutes",
         req: function (s) {
-          return (s && s.stats && s.stats.totalClicks) >= 100;
-        },
-        gem: 2,
-      },
-      {
-        id: "prestige1",
-        name: "First Prestige",
-        emoji: "⭐",
-        desc: "Reach your first prestige",
-        req: function (s) {
-          return (s && s.prestige && s.prestige.level) >= 1;
-        },
-        gem: 5,
-      },
-      {
-        id: "daily7",
-        name: "Week Warrior",
-        emoji: "📦",
-        desc: "Claim daily rewards for 7 days",
-        req: function (s) {
-          return (s && s.dailyRewards && s.dailyRewards.streak) >= 7;
+          return (
+            (s && s.packets) >= 1000 &&
+            s &&
+            s.stats &&
+            s.stats.sessionStart &&
+            Date.now() - s.stats.sessionStart < 300000
+          );
         },
         gem: 10,
+      },
+      {
+        id: "dedication",
+        name: "Dedicated Player",
+        emoji: "🎮",
+        desc: "Play for 1 hour total",
+        req: function (s) {
+          return (s && s.stats && s.stats.totalPlayTime) >= 3600000;
+        },
+        gem: 8,
+      },
+      {
+        id: "completionist",
+        name: "Achievement Hunter",
+        emoji: "🏆",
+        desc: "Unlock 20 achievements",
+        req: function (s) {
+          return (s && s.achievements && s.achievements.length) >= 20;
+        },
+        gem: 25,
       },
     ];
 
