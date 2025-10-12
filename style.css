@@ -1590,12 +1590,12 @@ ul li:last-child {
     box-shadow: 0 2px 8px var(--shadow-primary);
     padding: 0.75rem;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
-    transition: all 0.3s ease;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
     cursor: pointer;
-    position: relative;
-    min-height: 80px;
+    text-align: center;
 }
 
 .achievement-card:hover {
@@ -1615,18 +1615,23 @@ ul li:last-child {
 }
 
 .achievement-emoji {
-    font-size: 2rem;
+    font-size: 2.5rem;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
+    margin-bottom: 0.5rem;
 }
 
 .achievement-content {
     flex: 1;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 .achievement-name {

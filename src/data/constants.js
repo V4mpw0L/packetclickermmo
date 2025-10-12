@@ -570,7 +570,8 @@
       {
         id: "prestige1",
         name: "First Prestige",
-        emoji: "⭐",
+        emoji:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:2rem;height:2rem;"/>',
         desc: "Reach your first prestige",
         req: function (s) {
           return (s && s.prestige && s.prestige.level) >= 1;

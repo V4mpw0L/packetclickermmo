@@ -495,7 +495,7 @@ function renderGame() {
   if (state.prestige.level > 0) {
     totalMultiplier *= 1 + state.prestige.level * 0.1;
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#c084fc; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">⭐ Prestige Bonus: +${state.prestige.level * 10}%</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#c084fc; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;"><img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:0.85rem;height:0.85rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Bonus: +${state.prestige.level * 10}%</span>`,
     );
   }
 
@@ -549,7 +549,8 @@ function renderGame() {
           {
             id: "prestige-btn",
             className: "text-sm",
-            label: "⭐ Prestige Available",
+            label:
+              '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1.2rem;height:1.2rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Available <img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1.2rem;height:1.2rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>',
           },
         )}</div>`
       : "";
@@ -817,21 +818,34 @@ function upgradeCost(type) {
 function renderAchievements() {
   let achList = ACHIEVEMENTS.map((ach) => {
     let unlocked = state.achievements.includes(ach.id);
-    return `<div class="achievement-card${unlocked ? " unlocked" : ""}">
+    return `<div class="achievement-card${unlocked ? " unlocked" : ""}" style="text-align: center;">
       <div class="achievement-emoji">${ach.emoji === "📦" ? '<span class="icon-packet"></span>' : ach.emoji}</div>
-      <div class="achievement-content">
-        <div class="achievement-name">${ach.name}</div>
-        <div class="achievement-desc">${ach.desc}</div>
-        ${ach.gem ? `<div class="achievement-reward">${unlocked ? "✓" : "+" + ach.gem} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/></div>` : ""}
+      <div class="achievement-content" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+        <div class="achievement-name" style="text-align: center;">${ach.name}</div>
+        <div class="achievement-desc" style="text-align: center;">${ach.desc}</div>
+        ${ach.gem ? `<div class="achievement-reward" style="text-align: center;">${unlocked ? "✓" : "+" + ach.gem} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/></div>` : ""}
       </div>
     </div>`;
   }).join("");
+
+  const unlockedCount = state.achievements.length;
+  const totalCount = ACHIEVEMENTS.length;
+  const progressPercentage = (unlockedCount / totalCount) * 100;
+
   return `
     <div class="neon-card px-3 py-4 mb-2">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🏆 Achievements</h2>
-      <div class="achievement-stats" style="text-align:center; margin:.5rem 0 1rem; padding:.35rem .75rem; border:1px solid var(--border-color); border-radius:999px; width:fit-content; margin:0 auto; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">
-        ${state.achievements.length} / ${ACHIEVEMENTS.length} Unlocked
+
+      <div style="text-align: center; margin: 1rem 0;">
+        <div class="achievement-stats" style="text-align:center; margin:.5rem 0 .75rem; padding:.35rem .75rem; border:1px solid var(--border-color); border-radius:999px; width:fit-content; margin:0 auto .75rem; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">
+          ${unlockedCount} / ${totalCount} Unlocked
+        </div>
+
+        <div style="position:relative; height:8px; border-radius:999px; background:#22313f; border:1px solid var(--border-color); overflow:hidden; box-shadow: inset 0 1px 4px rgba(0,0,0,.5); margin:0 auto; max-width: 300px;">
+          <div style="height:100%; width: ${progressPercentage.toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); box-shadow: 0 0 6px var(--shadow-primary); transition: width 0.3s ease;"></div>
+        </div>
       </div>
+
       <div class="achievement-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.5rem; margin-top: 1rem;">${achList}</div>
     </div>
   `;
@@ -1171,19 +1185,24 @@ function renderPrestige() {
 
     return `<button class="gem-btn w-full mb-2 ${canBuy ? "" : "opacity-50"}"
                     data-prestige-upgrade="${upgrade.id}" ${!canBuy ? "disabled" : ""}>
-      ${upgrade.name} (${currentLevel}/${upgrade.maxLevel}) - ${cost} 🔷
-      <div class="text-xs" style="color: #4a7c59; text-shadow: none; filter: none;">${upgrade.desc}</div>
+      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span>${upgrade.name} (${currentLevel}/${upgrade.maxLevel})</span>
+        <span style="display: flex; align-items: center; gap: 0.25rem;">
+          ${cost} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;"/>
+        </span>
+      </div>
+      <div class="text-xs" style="color: #4a7c59; text-shadow: none; filter: none; margin-top: 0.25rem;">${upgrade.desc}</div>
     </button>`;
   }).join("");
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">⭐ Prestige</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);"><img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1.2rem;height:1.2rem;vertical-align:middle;display:inline-block;margin-right:0.35rem;"/> Prestige</h2>
       <div class="text-center mb-4" style="display:flex; flex-direction:column; align-items:center; gap:.35rem;">
         <div class="text-lg" style="font-weight:900;">Level ${state.prestige.level}</div>
         <div class="text-sm text-neon-gray">
           <span style="display:inline-flex; align-items:center; gap:.35rem; padding:.2rem .55rem; border:1px solid var(--border-color); border-radius:999px; background:linear-gradient(135deg, rgba(0,0,0,.25), rgba(0,0,0,.05)); box-shadow:0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,.35);">
-            ${state.prestige.dataShards} 🔷
+            ${state.prestige.dataShards} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>
           </span>
         </div>
       </div>
@@ -1207,7 +1226,7 @@ function renderPrestige() {
       ${
         canPrestige
           ? `<button id="do-prestige" class="neon-btn w-full mb-2" style="white-space: normal; display: flex; flex-direction: column; align-items: center; gap: 0.2rem;">
-          <span>⭐ Prestige Now! (+${shardGain} 🔷)</span>
+          <span><img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Now! (+${shardGain} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>)</span>
           <span style="color: #4a7c59; font-size: 0.8rem; opacity: 1; line-height: 1.2; text-shadow: none; filter: none;">Reset progress for permanent bonuses</span>
         </button>`
           : `<div class="text-center text-neon-gray mb-4" style="font-size:.9rem;">
@@ -2513,9 +2532,12 @@ function doPrestige() {
 
   showModal(
     "Prestige Complete!",
-    `You gained ${shardGain} 🔷 Data Shards!<br>Your prestige level is now ${state.prestige.level}!`,
+    `You gained ${shardGain} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/> Data Shards!<br>Your prestige level is now ${state.prestige.level}!`,
   );
-  showHudNotify(`Prestige Level ${state.prestige.level}!`, "⭐");
+  showHudNotify(
+    `Prestige Level ${state.prestige.level}!`,
+    '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;"/>',
+  );
   save();
   updateTopBar();
   renderTab();
@@ -2535,7 +2557,10 @@ function buyPrestigeUpgrade(upgradeId) {
   state.prestige.dataShards -= cost;
   state.prestige[upgradeId] = currentLevel + 1;
 
-  showHudNotify(`${upgrade.name} upgraded!`, "🔷");
+  showHudNotify(
+    `${upgrade.name} upgraded!`,
+    '<img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;"/>',
+  );
   save();
   updateTopBar();
   renderTab();

@@ -132,8 +132,10 @@
       },
       buttons: {
         collect: "Collect Packets",
-        prestigeAvailable: "⭐ Prestige Available",
-        prestigeNow: "Prestige Now! (+{n} 🔷)",
+        prestigeAvailable:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Available',
+        prestigeNow:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Now! (+{n} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>)',
         save: "Save",
         editProfile: "Edit Profile",
         claimDaily: "Claim Day {n} Reward!",
@@ -168,12 +170,15 @@
         updated: "Profile updated!",
       },
       prestige: {
-        title: "⭐ Prestige",
-        prestigeNow: "Prestige Now! (+{n} 🔷)",
+        title:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1.2rem;height:1.2rem;vertical-align:middle;display:inline-block;margin-right:0.35rem;"/> Prestige',
+        prestigeNow:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Now! (+{n} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>)',
         resetHint: "Reset progress for permanent bonuses",
         need: "Need 50,000 packets to prestige",
         current: "Current: {curr}",
-        levelUp: "Prestige Level {level}!",
+        levelUp:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Level {level}!',
       },
       boosts: {
         title: "⚡ Temporary Boosts",
@@ -232,8 +237,10 @@
       },
       buttons: {
         collect: "Coletar Pacotes",
-        prestigeAvailable: "⭐ Prestígio Disponível",
-        prestigeNow: "Prestigiar Agora! (+{n} 🔷)",
+        prestigeAvailable:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestígio Disponível',
+        prestigeNow:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestigiar Agora! (+{n} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>)',
         save: "Salvar",
         editProfile: "Editar Perfil",
         claimDaily: "Resgatar Recompensa do Dia {n}!",
@@ -269,12 +276,15 @@
         updated: "Perfil atualizado!",
       },
       prestige: {
-        title: "⭐ Prestígio",
-        prestigeNow: "Prestrigiar Agora! (+{n} 🔷)",
+        title:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1.2rem;height:1.2rem;vertical-align:middle;display:inline-block;margin-right:0.35rem;"/> Prestígio',
+        prestigeNow:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestrigiar Agora! (+{n} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>)',
         resetHint: "Resetar progresso por bônus permanentes",
         need: "Precisa de 50.000 pacotes para prestigiar",
         current: "Atual: {curr}",
-        levelUp: "Nível de Prestígio {level}!",
+        levelUp:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Nível de Prestígio {level}!',
       },
       boosts: {
         title: "⚡ Boosts Temporários",
@@ -333,8 +343,10 @@
       },
       buttons: {
         collect: "Собрать пакеты",
-        prestigeAvailable: "⭐ Доступен престиж",
-        prestigeNow: "Престиж сейчас! (+{n} 🔷)",
+        prestigeAvailable:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Доступен престиж',
+        prestigeNow:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Престиж сейчас! (+{n} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>)',
         save: "Сохранить",
         editProfile: "Редактировать профиль",
         claimDaily: "Забрать награду за день {n}!",
@@ -370,12 +382,15 @@
         updated: "Профиль обновлён!",
       },
       prestige: {
-        title: "⭐ Престиж",
-        prestigeNow: "Престиж сейчас! (+{n} 🔷)",
+        title:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1.2rem;height:1.2rem;vertical-align:middle;display:inline-block;margin-right:0.35rem;"/> Престиж',
+        prestigeNow:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Престиж сейчас! (+{n} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>)',
         resetHint: "Сброс прогресса за постоянные бонусы",
         need: "Нужно 50 000 пакетов для престижа",
         current: "Текущие: {curr}",
-        levelUp: "Уровень престижа {level}!",
+        levelUp:
+          '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Уровень престижа {level}!',
       },
       boosts: {
         title: "⚡ Временные бусты",
