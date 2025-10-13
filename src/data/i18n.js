@@ -175,7 +175,7 @@
         prestigeNow:
           '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Now! (+{n} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>)',
         resetHint: "Reset progress for permanent bonuses",
-        need: "Need 50,000 packets to prestige",
+        need: "Need 500,000 packets to prestige",
         current: "Current: {curr}",
         levelUp:
           '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Level {level}!',
@@ -281,7 +281,7 @@
         prestigeNow:
           '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestrigiar Agora! (+{n} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>)',
         resetHint: "Resetar progresso por bônus permanentes",
-        need: "Precisa de 50.000 pacotes para prestigiar",
+        need: "Precisa de 500.000 pacotes para prestigiar",
         current: "Atual: {curr}",
         levelUp:
           '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Nível de Prestígio {level}!',
@@ -387,7 +387,7 @@
         prestigeNow:
           '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Престиж сейчас! (+{n} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>)',
         resetHint: "Сброс прогресса за постоянные бонусы",
-        need: "Нужно 50 000 пакетов для престижа",
+        need: "Нужно 500 000 пакетов для престижа",
         current: "Текущие: {curr}",
         levelUp:
           '<img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Уровень престижа {level}!',

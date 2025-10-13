@@ -82,10 +82,10 @@ let _comboExpireAt = 0;
 
 // Calculate prestige requirement based on current prestige level
 function getPrestigeRequirement() {
-  const baseRequirement = 50000;
+  const baseRequirement = 500000;
   const level = state.prestige.level || 0;
-  // Each prestige increases requirement by 2x
-  return Math.floor(baseRequirement * Math.pow(2, level));
+  // Each prestige increases requirement by 5x
+  return Math.floor(baseRequirement * Math.pow(5, level));
 }
 
 const state = {
@@ -601,9 +601,9 @@ function renderGame() {
 
   // Prestige multiplier
   if (state.prestige.level > 0) {
-    totalMultiplier *= 1 + state.prestige.level * 0.1;
+    totalMultiplier *= 1 + state.prestige.level * 0.03;
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#c084fc; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;"><img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:0.85rem;height:0.85rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Bonus: <span class="event-number-glow">+${state.prestige.level * 10}%</span></span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#c084fc; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;"><img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:0.85rem;height:0.85rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Bonus: <span class="event-number-glow">+${state.prestige.level * 3}%</span></span>`,
     );
   }
 
@@ -1481,7 +1481,7 @@ function setCursorForCombo(combo) {
     const btn = document.getElementById("click-btn");
     if (!btn) return;
     let file = "src/assets/green.webp"; // default
-    if (combo >= 120) file = "src/assets/animal.webp";
+    if (combo >= 200) file = "src/assets/animal.webp";
     else if (combo >= 50) file = "src/assets/pink.webp";
     else if (combo >= 15) file = "src/assets/blue.webp";
     else if (combo >= 5) file = "src/assets/gold.webp";
@@ -1768,7 +1768,7 @@ function renderPrestige() {
   const prestigeRequirement = getPrestigeRequirement();
   let canPrestige = state.packets >= prestigeRequirement;
   let shardGain = canPrestige
-    ? Math.floor(Math.sqrt(state.packets / 10000))
+    ? Math.floor(Math.sqrt(state.packets / 100000))
     : 0;
 
   let upgrades = PRESTIGE_UPGRADES.map((upgrade) => {
@@ -2027,7 +2027,7 @@ function showEditProfile() {
       }
     } catch (_) {}
     try {
-      window.VERSION = "0.0.28";
+      window.VERSION = "0.0.29";
     } catch (_) {}
 
     updateTopBar();
@@ -2149,7 +2149,7 @@ function showSettings() {
         // Persist and refresh UI
         save();
         try {
-          window.VERSION = "0.0.28";
+          window.VERSION = "0.0.29";
         } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {
@@ -3216,7 +3216,7 @@ function clickPacket(event) {
 
   // Apply prestige bonus
   if (state.prestige.level > 0) {
-    bonus *= 1 + state.prestige.level * 0.1;
+    bonus *= 1 + state.prestige.level * 0.03;
   }
 
   // Apply active boosts
@@ -3633,7 +3633,7 @@ function migrateSaveToCurrentVersion() {
       window.Packet &&
       window.Packet.data &&
       window.Packet.data.APP_VERSION) ||
-    "0.0.28";
+    "0.0.29";
 
   console.log(
     "[Migration] Checking save compatibility with version",
@@ -3838,7 +3838,7 @@ function idleTick() {
 
   // Apply prestige bonus
   if (state.prestige.level > 0) {
-    bonus *= 1 + state.prestige.level * 0.1;
+    bonus *= 1 + state.prestige.level * 0.03;
   }
 
   // Apply active boosts
@@ -4263,7 +4263,7 @@ function doPrestige() {
   const prestigeRequirement = getPrestigeRequirement();
   if (state.packets < prestigeRequirement) return;
 
-  let shardGain = Math.floor(Math.sqrt(state.packets / 10000));
+  let shardGain = Math.floor(Math.sqrt(state.packets / 100000));
   state.prestige.level++;
   state.prestige.dataShards += shardGain;
   state.prestige.totalPrestigeClicks += state.stats.totalClicks;
@@ -4281,7 +4281,7 @@ function doPrestige() {
 
   showModal(
     "Prestige Complete!",
-    `You gained ${shardGain.toLocaleString("en-US")} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/> Data Shards!<br>Your prestige level is now ${state.prestige.level.toLocaleString("en-US")}!`,
+    `You gained <span class="event-number-glow">${shardGain.toLocaleString("en-US")}</span> <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/> Data Shards!<br>Your prestige level is now <span class="event-number-glow">${state.prestige.level.toLocaleString("en-US")}</span>!`,
   );
   showHudNotify(
     `Prestige Level ${state.prestige.level}!`,

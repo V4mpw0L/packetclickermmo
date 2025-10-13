@@ -1,5 +1,38 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.29 - Prestige Rebalance & Combo Challenge
+*Released: January 2025*
+
+### ⚖️ **Prestige System Massive Rebalance**
+- **Base Requirement Increase** - From 50,000 to 500,000 packets (10x harder!)
+- **Exponential Scaling** - From 2x to 5x multiplier per level (much more challenging)
+- **Bonus Reduction** - From +10% to +3% per prestige level (70% nerf)
+- **Shard Generation Nerf** - Reduced by ~68% for balanced progression
+- **Upgrade Cost Increases** - All prestige upgrades 150-200% more expensive
+
+### 🔥 **ANIMAL Combo Challenge**
+- **Tap Requirement** - Increased from 120 to 200 taps for ANIMAL combo
+- **Bonus Reduction** - Decreased from +88% to +60% bonus damage
+- **Elite Achievement** - ANIMAL combo now truly legendary difficulty
+- **Cursor Updates** - Visual feedback matches new 200-tap threshold
+
+### 🛍️ **Shop & UI Enhancements**
+- **x1 Upgrade Button** - Added precise single upgrade option
+- **5 New Premium Avatars** - Cyber Ninja, Data Ghost, Quantum Hacker, Neon Samurai, Shadow Phoenix
+- **$99 Mega Gem Pack** - 6,000 gems ultimate value pack
+- **Smaller Shop Buttons** - Reduced size for better layout efficiency
+
+### ✨ **Visual Polish**
+- **Golden Prestige Numbers** - All prestige stats now have proper gold glow effects
+- **Modal Number Glow** - Prestige completion modal shows golden numbers
+- **Consistent Styling** - Number formatting matches throughout prestige system
+
+### 🔧 **Save Compatibility & Technical**
+- **Automatic Migration** - Old saves seamlessly upgrade to new prestige system
+- **Storage Updates** - Enhanced save validation and compatibility
+- **Service Worker** - Proper version management and cache updates
+- **Cross-Platform** - All changes work across web, PWA, and mobile
+
 ## Version 0.0.28 - Game Page Enhancement & Celestial Boost Fix
 *Released: January 2025*
 

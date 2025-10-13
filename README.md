@@ -2,7 +2,7 @@
 
 > **The Ultimate Cyberpunk Idle Clicker Experience - Now with 100 Items, Epic Combos & Equipment System!**
 
-[![Version 0.0.28](https://img.shields.io/badge/Version-0.0.28-brightgreen.svg)]()
+[![Version 0.0.29](https://img.shields.io/badge/Version-0.0.29-brightgreen.svg)]()
 [![PWA Ready](https://img.shields.io/badge/PWA-Ready-blue.svg)](https://web.dev/progressive-web-apps/)
 [![Mobile Optimized](https://img.shields.io/badge/Mobile-Optimized-success.svg)]()
 [![Anti-Cheat](https://img.shields.io/badge/Anti--Cheat-Protected-red.svg)]()
@@ -19,8 +19,8 @@
   - 🟢 **GREEN** (1-4 clicks) - Basic clicking
   - 🟡 **GOLD** (5-14 clicks) - Entry combo bonus
   - 🔵 **MEGA** (15-49 clicks) - Medium challenge with visual effects
-  - 🟣 **ULTRA** (50-119 clicks) - Hard achievement with epic bonuses
-  - 🔴 **ANIMAL** (120+ clicks) - **LEGENDARY** tier requiring 20+ seconds of sustained clicking!
+  - 🟣 **ULTRA** (50-199 clicks) - Hard achievement with epic bonuses
+  - 🔴 **ANIMAL** (200+ clicks) - **LEGENDARY** tier requiring 35+ seconds of sustained clicking!
 - **Critical Hit System** with customizable multipliers
 - **Visual Cursor Changes** that reflect your current combo tier
 
@@ -245,7 +245,7 @@ http://localhost:8000
 4. **Daily Rewards** - Maintain login streaks for compounding bonuses
 
 ### **Advanced Strategy**
-1. **ANIMAL Combo Mastery** - Master the legendary 120+ click combo
+1. **ANIMAL Combo Mastery** - Master the legendary 200+ click combo
 2. **Equipment Trading** - Sell lower tier items to buy upgrades
 3. **Prestige Optimization** - Plan your prestige upgrade paths
 4. **Leaderboard Competition** - Compete for top rankings
@@ -262,7 +262,7 @@ const COMBO_THRESHOLDS = {
   GOLD: 5,
   MEGA: 15,
   ULTRA: 50,
-  ANIMAL: 120
+  ANIMAL: 200
 };
 
 // Example: Modify drop rates
@@ -286,11 +286,11 @@ const THEMES = {
 
 ## 📊 **Version History**
 
-### **Version 0.0.28** (Latest)
-- ✅ **Game Page UI Enhancement** - Added proper tab-title headers for Player Status and Temporary Boosts
-- ✅ **Celestial Boost Rainbow Fix** - Quantum Boost now displays with proper rainbow animation on all pages
-- ✅ **Quantum Boost Duration** - Reduced from 2 minutes to 10 seconds for intense burst gameplay
-- ✅ **Temporary Boost Spacing** - Fixed layout spacing issues for better visual organization
+### **Version 0.0.29** (Latest)
+- ✅ **Prestige System Rebalance** - Massive difficulty increase: 500k base requirement, 5x scaling, reduced bonuses
+- ✅ **ANIMAL Combo Challenge** - Increased from 120 to 200 taps, reduced bonus from 88% to 60%
+- ✅ **Enhanced Shop** - Added x1 upgrade button, 5 new premium avatars, and $99 mega gem pack
+- ✅ **Visual Polish** - Fixed prestige number glow effects and improved UI consistency
 - ✅ **3 New Premium Themes** - Sunset Glow, Forest Depths, and Royal Purple
 - ✅ **Mobile Experience Enhanced** - Better responsive design and touch interactions
 - ✅ **Professional Card Design** - Smaller, elegant theme cards with improved layout
@@ -330,7 +330,7 @@ const THEMES = {
 - ✅ **Better UX** - Improved button states, hover effects, and visual hierarchy
 
 ### **Version 0.0.13**
-- ✅ **Perfect Combo Balance** - ANIMAL now requires 120+ clicks
+- ✅ **Perfect Combo Balance** - ANIMAL now requires 200+ clicks
 - ✅ **Sound System Overhaul** - Zero-latency clicking sounds
 - ✅ **Doubled Selling Rewards** - Better item economy
 - ✅ **100 Items Complete** - Full equipment collection

@@ -55,7 +55,7 @@
     var STORAGE_KEY = "packet_clicker_save_v3";
     var DEFAULT_AVATAR =
       "https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker";
-    var APP_VERSION = "0.0.28";
+    var APP_VERSION = "0.0.29";
 
     // Interaction tuning
     var COMBO_TIMEOUT = 1000; // ms to maintain click combo
@@ -105,56 +105,56 @@
         id: "autoClicker",
         name: "Auto Clicker",
         desc: "Clicks 1/sec automatically",
-        cost: 1,
+        cost: 3,
         maxLevel: 10,
       },
       {
         id: "packetBoost",
         name: "Packet Multiplier",
         desc: "+10% packet gain per level",
-        cost: 2,
+        cost: 5,
         maxLevel: 20,
       },
       {
         id: "gemFind",
         name: "Gem Hunter",
         desc: "5% chance to find gems on click",
-        cost: 3,
+        cost: 8,
         maxLevel: 5,
       },
       {
         id: "critBoost",
         name: "Critical Master",
         desc: "+5% crit chance per level",
-        cost: 4,
+        cost: 10,
         maxLevel: 15,
       },
       {
         id: "offlineEarnings",
         name: "Offline Packets",
         desc: "Earn packets while offline (1hr/level)",
-        cost: 5,
+        cost: 15,
         maxLevel: 24,
       },
       {
         id: "luckyClicks",
         name: "Lucky Clicker",
         desc: "1% chance for 10x click reward",
-        cost: 8,
+        cost: 20,
         maxLevel: 10,
       },
       {
         id: "megaCrits",
         name: "Mega Crits",
         desc: "Crits give 3x instead of 2x",
-        cost: 12,
+        cost: 30,
         maxLevel: 5,
       },
       {
         id: "gemMagnet",
         name: "Gem Magnet",
         desc: "Idle packets have chance to give gems",
-        cost: 15,
+        cost: 25,
         maxLevel: 8,
       },
     ];

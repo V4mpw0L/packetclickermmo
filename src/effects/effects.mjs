@@ -326,12 +326,12 @@ export function handleComboEffect(clickCombo, amount, state) {
     }
   };
 
-  if (clickCombo >= 120) {
+  if (clickCombo >= 200) {
     effectClass = "animal-combo";
-    const extra = Math.floor(amount * 0.88);
+    const extra = Math.floor(amount * 0.6);
     safeAddPackets(extra);
     displayedGain += extra;
-    effectText = `<span class="animal-text-layer" style="color:#ff3040">ANIMAL!\n+${displayedGain}\n(${amount}+88%)</span>`;
+    effectText = `<span class="animal-text-layer" style="color:#ff3040">ANIMAL!\n+${displayedGain}\n(${amount}+60%)</span>`;
 
     if (hasDOM()) {
       try {
