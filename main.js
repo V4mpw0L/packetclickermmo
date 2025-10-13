@@ -1043,7 +1043,7 @@ function renderAchievements() {
         </div>
       </div>
 
-      <div class="achievement-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.5rem; margin-top: 1rem;">${achList}</div>
+      <div class="achievement-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 1rem;">${achList}</div>
     </div>
   `;
 }

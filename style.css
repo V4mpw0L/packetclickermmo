@@ -1613,7 +1613,7 @@ ul li:last-child {
 /* === ACHIEVEMENT SYSTEM === */
 .achievement-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
     margin-top: 1rem;
 }
@@ -2282,7 +2282,7 @@ footer {
         }
 
         .achievement-grid {
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 0.4rem;
         }
 
@@ -3380,7 +3380,7 @@ footer {
         }
 
         .achievement-grid {
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 0.6rem;
         }
     }
