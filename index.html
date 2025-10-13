@@ -1,0 +1,987 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Packet Clicker!</title>
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+        />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="black-translucent"
+        />
+        <meta name="apple-touch-fullscreen" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+
+        <!-- PWA / SEO / SOCIAL META -->
+        <link rel="manifest" href="manifest.json" />
+        <meta name="theme-color" content="#161a22" />
+        <meta
+            name="description"
+            content="Packet Clicker – Cyberpunk idle clicker MMO for web and mobile. Evolve, earn gems, collect skins, compete and have fun!"
+        />
+        <meta property="og:title" content="Packet Clicker" />
+        <meta
+            property="og:description"
+            content="Cyberpunk idle MMO game: evolve, earn gems, compete, unlock skins and more!"
+        />
+        <meta property="og:image" content="src/assets/packet.webp" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://seusite.com/" />
+        <!-- Update to your real site -->
+        <link
+            rel="icon"
+            href="src/assets/packet.webp"
+            sizes="32x32"
+            type="image/webp"
+        />
+        <link
+            rel="icon"
+            href="src/assets/packet.webp"
+            sizes="48x48"
+            type="image/webp"
+        />
+        <link
+            rel="icon"
+            href="src/assets/packet.webp"
+            sizes="64x64"
+            type="image/webp"
+        />
+        <link
+            rel="icon"
+            href="src/assets/packet.webp"
+            sizes="512x512"
+            type="image/webp"
+        />
+        <link
+            rel="apple-touch-icon"
+            href="src/assets/packet.webp"
+            sizes="512x512"
+        />
+
+        <!-- Custom CSS only - no external dependencies -->
+        <link rel="stylesheet" href="style.css" />
+        <style>
+            /* Hide Packets/s pill */
+            #pps-display {
+                display: none !important;
+            }
+
+            /* Menu icons with captions under each icon (uses aria-label) */
+            nav.menu-bar .tab-btn {
+                display: inline-flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.15rem;
+            }
+            nav.menu-bar .tab-btn::after {
+                content: attr(aria-label);
+                font-size: 0.6rem;
+                line-height: 1;
+                opacity: 0.8;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Top Navigation Bar -->
+        <nav class="top-bar" role="navigation" aria-label="Main navigation">
+            <div class="user-info">
+                <img
+                    id="avatar"
+                    src="https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker"
+                    alt="Player avatar"
+                    draggable="false"
+                />
+                <span id="player-name">Player</span>
+                <span id="vip-badge"></span>
+            </div>
+            <div class="controls">
+                <span id="gem-display">
+                    <img
+                        src="src/assets/gem.png"
+                        alt="Gems"
+                        style="
+                            height: 1.1rem;
+                            width: 1.1rem;
+                            vertical-align: middle;
+                            display: inline-block;
+                        "
+                        aria-hidden="true"
+                    />
+                    <span id="gem-count">0</span>
+                </span>
+                <!-- removed Packets/s pill -->
+                <button
+                    id="open-equipment"
+                    title="Equipment"
+                    aria-label="Open equipment"
+                    onclick="(function(){var b=document.querySelector('.menu-bar .tab-btn[data-tab=equipment]'); if(b){ b.click(); }})();"
+                >
+                    <img
+                        src="src/assets/items/I_Chest01.png"
+                        alt="Equipment"
+                        style="width: 28px; height: 28px; display: inline-block"
+                        aria-hidden="true"
+                    />
+                </button>
+                <button
+                    id="open-settings"
+                    title="Settings"
+                    aria-label="Open settings"
+                >
+                    <img
+                        src="src/assets/settings.webp"
+                        alt="Settings"
+                        style="width: 32px; height: 32px; display: inline-block"
+                        aria-hidden="true"
+                    />
+                </button>
+            </div>
+        </nav>
+
+        <!-- Tab Menu Bar -->
+        <nav class="menu-bar" role="tablist" aria-label="Game sections">
+            <button
+                class="tab-btn"
+                data-tab="game"
+                role="tab"
+                aria-label="Game"
+                title="Game"
+            >
+                🕹️
+            </button>
+            <button
+                class="tab-btn"
+                data-tab="upgrades"
+                role="tab"
+                aria-label="Upgrades"
+                title="Upgrades"
+            >
+                🛠️
+            </button>
+            <button
+                class="tab-btn"
+                data-tab="equipment"
+                role="tab"
+                aria-label="Equipment"
+                title="Equipment"
+                style="display: none"
+                aria-hidden="true"
+            >
+                🧰
+            </button>
+            <button
+                class="tab-btn"
+                data-tab="achievements"
+                role="tab"
+                aria-label="Achievements"
+                title="Achievements"
+            >
+                🎯
+            </button>
+            <button
+                class="tab-btn"
+                data-tab="shop"
+                role="tab"
+                aria-label="Shop"
+                title="Shop"
+            >
+                🏬
+            </button>
+            <!-- Equipment button moved next to Upgrades for better UX ordering -->
+            <button
+                class="tab-btn"
+                data-tab="boosts"
+                role="tab"
+                aria-label="Boosts"
+                title="Boosts"
+            >
+                ⚡
+            </button>
+            <button
+                class="tab-btn"
+                data-tab="themes"
+                role="tab"
+                aria-label="Themes"
+                title="Themes"
+            >
+                🎨
+            </button>
+            <button
+                class="tab-btn"
+                data-tab="prestige"
+                role="tab"
+                aria-label="Prestige"
+                title="Prestige"
+            >
+                <img
+                    src="src/assets/items/I_Sapphire.png"
+                    alt="Prestige"
+                    style="width: 24px; height: 24px"
+                />
+            </button>
+            <button
+                class="tab-btn"
+                data-tab="daily"
+                role="tab"
+                aria-label="Daily"
+                title="Daily"
+            >
+                📅
+            </button>
+            <button
+                class="tab-btn"
+                data-tab="leaderboard"
+                role="tab"
+                aria-label="Leaderboard"
+                title="Leaderboard"
+            >
+                🏆
+            </button>
+        </nav>
+
+        <!-- Main Content / Tabs -->
+        <main id="tab-content" role="main" aria-live="polite"></main>
+
+        <!-- Modals: Profile & Settings -->
+        <div id="modal-backdrop" class="modal-backdrop hidden">
+            <div
+                id="modal"
+                class="modal-box hidden"
+                role="dialog"
+                aria-modal="true"
+                tabindex="-1"
+                aria-labelledby="modal-title"
+            ></div>
+        </div>
+
+        <!-- HUD notification (injected by JS) -->
+
+        <!-- Firebase Leaderboard config (optional)
+             Fill with your Firebase project credentials to enable live leaderboards during testing.
+             Safe defaults: empty object keeps local leaderboard only.
+
+             Example (paste into a <script> tag before main.js to enable live board):
+             window.FIREBASE_CONFIG = {
+               apiKey: "AIzaSy...",
+               authDomain: "your-app.firebaseapp.com",
+               projectId: "your-app",
+               appId: "1:123456789:web:abcdef",
+               collection: "leaderboard"
+             };
+
+             For quick testing, you can also print your device id and copy Firestore rules.
+             The snippet below prints your device id on the page and exposes a rules helper in the console.
+
+             Document snippet example (dev only):
+             <script>
+               (function () {
+                 var KEY = "pc_device_id_v1";
+                 try {
+                   var id = localStorage.getItem(KEY);
+                   if (!id) {
+                     id = "dev_" + Math.random().toString(36).slice(2) + "_" + Date.now().toString(36);
+                     localStorage.setItem(KEY, id);
+                   }
+                   document.write('<div style="font-size:12px;color:#9aa; text-align:center; margin:.25rem 0;">DeviceId: ' + id + '</div>');
+                 } catch (e) {}
+               })();
+             </script>
+        -->
+        <script>
+            // Expose Firestore rules helper in console (window.LeaderboardRules)
+            (function () {
+                try {
+                    window.LeaderboardRules = {
+                        dev: "rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /leaderboard/{docId} {\n      allow read: if true;\n      allow write: if\n        request.time < timestamp.date(2026, 1, 1) &&\n        request.resource.data.keys().hasOnly(['name','packets','avatar','updatedAt']) &&\n        request.resource.data.name is string &&\n        request.resource.data.name.size() > 0 &&\n        request.resource.data.name.size() <= 24 &&\n        request.resource.data.packets is int &&\n        request.resource.data.packets >= 0 &&\n        request.resource.data.packets <= 1000000000 &&\n        (!('avatar' in request.resource.data) || (request.resource.data.avatar is string && request.resource.data.avatar.size() <= 256));\n    }\n  }\n}",
+                        whitelist:
+                            "rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /leaderboard/{docId} {\n      allow read: if true;\n      allow write: if\n        docId in ['DEV_ID_Tiago','DEV_ID_Dizao'] &&\n        request.resource.data.keys().hasOnly(['name','packets','avatar','updatedAt']) &&\n        request.resource.data.name is string &&\n        request.resource.data.name.size() > 0 &&\n        request.resource.data.name.size() <= 24 &&\n        request.resource.data.packets is int &&\n        request.resource.data.packets >= 0 &&\n        request.resource.data.packets <= 1000000000 &&\n        (!('avatar' in request.resource.data) || (request.resource.data.avatar is string && request.resource.data.avatar.size() <= 256));\n    }\n  }\n}",
+                        storage:
+                            "rules_version = '2';\nservice firebase.storage {\n  match /b/{bucket}/o {\n    match /avatars/{allPaths=**} {\n      allow read: if true;\n      allow write: if\n        request.time < timestamp.date(2026, 1, 1) &&\n        request.resource.size < 3 * 1024 * 1024 &&\n        request.resource.contentType.matches('image/.*');\n    }\n  }\n}",
+                    };
+                    // Also log the device id so it's easy to copy from console
+                    (function () {
+                        var KEY = "pc_device_id_v1";
+                        var id = null;
+                        try {
+                            id = localStorage.getItem(KEY);
+                            if (!id) {
+                                id =
+                                    "dev_" +
+                                    Math.random().toString(36).slice(2) +
+                                    "_" +
+                                    Date.now().toString(36);
+                                localStorage.setItem(KEY, id);
+                            }
+                        } catch (e) {}
+                        console.log(
+                            "[Leaderboard] DeviceId:",
+                            id || "(not available yet)",
+                        );
+                        console.log(
+                            "Copy rules with window.LeaderboardRules.dev (Firestore), .whitelist (Firestore), or .storage (Storage)",
+                        );
+                    })();
+                } catch (e) {}
+            })();
+        </script>
+        <script>
+            // Firebase config for live leaderboard (safe for dev; do not ship secrets for production)
+            window.FIREBASE_CONFIG = {
+                apiKey: "AIzaSyA6KOXoqPl2khvvdb-I9GCStFt68PCPpYM",
+                authDomain: "packetclicker.firebaseapp.com",
+                databaseURL:
+                    "https://packetclicker-default-rtdb.firebaseio.com",
+                projectId: "packetclicker",
+                storageBucket: "packetclicker.firebasestorage.app",
+                messagingSenderId: "321149831631",
+                appId: "1:321149831631:web:c58bec15f05d204982eaba",
+            };
+            // Optional Firebase anonymous auth toggle.
+            // Keep disabled by default to avoid Identity Toolkit errors if Auth isn't configured.
+            // To enable later, set window.FIREBASE_ENABLE_ANON = true before main.js loads,
+            // or pass { enableAnonAuth: true } to Leaderboard.init().
+            window.FIREBASE_ENABLE_ANON = false;
+        </script>
+
+        <footer role="contentinfo">
+            <div
+                style="
+                    display: flex;
+                    gap: 0.5rem;
+                    align-items: center;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                "
+            >
+                <span
+                    >Packet Clicker &copy; 2025 | Developed by:
+                    <a
+                        href="https://www.gennisys.com"
+                        target="_blank"
+                        rel="noopener"
+                        style="
+                            color: #00ff41;
+                            text-decoration: none;
+                            font-weight: bold;
+                        "
+                        >Gennisys</a
+                    >
+                </span>
+                <span
+                    id="version-badge"
+                    title="App version"
+                    style="
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 0.35rem;
+                        padding: 0.15rem 0.5rem;
+                        border: 1px solid var(--primary-color);
+                        color: var(--primary-color);
+                        border-radius: 8px;
+                        font-weight: 700;
+                        font-size: 0.85rem;
+                        background: linear-gradient(
+                            135deg,
+                            var(--bg-secondary),
+                            var(--bg-card)
+                        );
+                        box-shadow: 0 2px 10px var(--shadow-primary);
+                    "
+                >
+                    <span>Version</span><strong id="app-version"></strong>
+                </span>
+            </div>
+        </footer>
+
+        <!-- Constants (UMD) -->
+        <script src="src/data/constants.js"></script>
+        <!-- I18N (UMD) -->
+        <script src="src/data/i18n.js"></script>
+        <!-- Storage (UMD) -->
+        <script src="src/utils/storage.js"></script>
+        <!-- Modular helpers (non-invasive) -->
+        <script src="src/ui/ui.js"></script>
+        <script src="src/logic/bootstrap.js"></script>
+        <script>
+            (function () {
+                try {
+                    var v =
+                        (window.Packet &&
+                            window.Packet.data &&
+                            window.Packet.data.APP_VERSION) ||
+                        window.APP_VERSION ||
+                        (typeof VERSION !== "undefined" ? VERSION : null);
+                    if (v) {
+                        var el = document.getElementById("app-version");
+                        if (el) el.textContent = v;
+                        var badge = document.getElementById("version-badge");
+                        if (badge) badge.title = "App version " + v;
+                    }
+                } catch (e) {}
+            })();
+        </script>
+
+        <!-- Main Game Logic -->
+        <script type="module" src="main.js"></script>
+        <!-- I18N wiring and language pickers -->
+        <script>
+            (function () {
+                // Helper to translate dynamic HTML from render* functions
+                function tr(k, p) {
+                    try {
+                        return window.Packet && window.Packet.i18n
+                            ? window.Packet.i18n.t(k, p)
+                            : k;
+                    } catch (_) {
+                        return k;
+                    }
+                }
+                function trNoIcon(k, p) {
+                    try {
+                        var s = tr(k, p);
+                        return s
+                            .replace(/^📅\s*/, "")
+                            .replace(/^⚡\s*/, "")
+                            .replace(/^⭐\s*/, "");
+                    } catch (_) {
+                        return tr(k, p);
+                    }
+                }
+                function translateHtml(html) {
+                    try {
+                        return String(html)
+                            .replace(
+                                />🎮 Game</g,
+                                ">🎮 " + tr("tabs.game") + "<",
+                            )
+                            .replace(
+                                />🛠️ Upgrades</g,
+                                ">🛠️ " + tr("tabs.upgrades") + "<",
+                            )
+                            .replace(
+                                />📅 Daily Rewards</g,
+                                "> " + trNoIcon("daily.title") + "<",
+                            )
+                            .replace(
+                                />Daily Rewards</g,
+                                "> " + trNoIcon("daily.title") + "<",
+                            )
+                            .replace(
+                                />⚡ Temporary Boosts</g,
+                                ">⚡ " + trNoIcon("boosts.title") + "<",
+                            )
+                            .replace(
+                                />⭐ Prestige</g,
+                                ">⭐ " + trNoIcon("prestige.title") + "<",
+                            )
+                            .replace(
+                                />🎨 Visual Themes</g,
+                                ">🎨 " + tr("tabs.themes") + "<",
+                            )
+                            .replace(
+                                />🏆 Leaderboard</g,
+                                ">🏆 " + tr("tabs.leaderboard") + "<",
+                            )
+                            .replace(
+                                />🎯 Achievements</g,
+                                ">🎯 " + tr("tabs.achievements") + "<",
+                            )
+                            .replace(
+                                />🏬 Shop</g,
+                                ">🏬 " + tr("tabs.shop") + "<",
+                            )
+                            .replace(
+                                /⭐ Prestige Available/g,
+                                tr("buttons.prestigeAvailable"),
+                            )
+                            .replace(/Save Settings/g, tr("buttons.save"))
+                            .replace(
+                                /Ad Banner \(Remove in Shop\)/g,
+                                tr("labels.adBanner"),
+                            )
+                            .replace(
+                                /Come back tomorrow for next reward!/g,
+                                tr("daily.comeBack"),
+                            )
+                            .replace(/Collect Packets/g, tr("buttons.collect"))
+                            .replace(
+                                /Packets\/Click:/g,
+                                tr("labels.packetsPerClick") + ":",
+                            )
+                            .replace(
+                                /Packets\/Sec:/g,
+                                tr("labels.packetsPerSec") + ":",
+                            )
+                            .replace(
+                                /Crit Chance:/g,
+                                tr("labels.critChance") + ":",
+                            )
+                            .replace(
+                                /Crit Multiplier:/g,
+                                tr("labels.critMultiplier") + ":",
+                            )
+                            .replace(
+                                /Available Boosts/g,
+                                tr("boosts.available"),
+                            )
+                            .replace(
+                                /Boosts stack with other bonuses for maximum effect!/g,
+                                tr("boosts.stackHint"),
+                            )
+                            .replace(
+                                /Need 50,000 packets to prestige/g,
+                                tr("prestige.need"),
+                            )
+                            .replace(
+                                /Reset progress for permanent bonuses/g,
+                                tr("prestige.resetHint"),
+                            );
+                    } catch (_) {
+                        return html;
+                    }
+                }
+                function applyLang() {
+                    try {
+                        wrapRenders();
+                    } catch (_) {}
+                    // Update navbar/tab button aria-labels and titles
+                    function updateNavLabels() {
+                        try {
+                            var map = {
+                                game: "tabs.game",
+                                upgrades: "tabs.upgrades",
+                                achievements: "tabs.achievements",
+                                shop: "tabs.shop",
+                                boosts: "tabs.boosts",
+                                themes: "tabs.themes",
+                                prestige: "tabs.prestige",
+                                daily: "daily.title",
+                                leaderboard: "tabs.leaderboard",
+                            };
+                            var i18n = window.Packet && window.Packet.i18n;
+                            var buttons =
+                                document.querySelectorAll(".menu-bar .tab-btn");
+                            buttons.forEach(function (btn) {
+                                var tab = btn.getAttribute("data-tab");
+                                if (!tab || !map[tab] || !i18n) return;
+                                var label = i18n.t(map[tab]);
+                                btn.setAttribute("aria-label", label);
+                                btn.setAttribute("title", label);
+                            });
+                            // Settings gear title/aria
+                            var settings =
+                                document.getElementById("open-settings");
+                            if (settings && i18n) {
+                                var st = i18n.t("settings.title");
+                                settings.setAttribute("title", st);
+                                settings.setAttribute("aria-label", st);
+                            }
+                            // Tablist aria-label for screen readers
+                            var tablist = document.querySelector(
+                                'nav.menu-bar[role="tablist"]',
+                            );
+                            if (tablist && i18n) {
+                                tablist.setAttribute(
+                                    "aria-label",
+                                    i18n.t("tabs.game") + " sections",
+                                );
+                            }
+                        } catch (_) {}
+                    }
+                    try {
+                        if (window.Packet && window.Packet.i18n) {
+                            window.Packet.i18n.applyLanguageToData();
+                        }
+                    } catch (_) {}
+                    try {
+                        typeof updateTopBar === "function" && updateTopBar();
+                    } catch (_) {}
+                    try {
+                        typeof renderTab === "function" && renderTab();
+                    } catch (_) {}
+                    // Footer label
+                    try {
+                        var badge = document.getElementById("version-badge");
+                        if (badge) {
+                            var s = badge.querySelector("span");
+                            if (s && window.Packet && window.Packet.i18n) {
+                                s.textContent =
+                                    window.Packet.i18n.t("labels.version");
+                            }
+                        }
+                    } catch (_) {}
+                    // Finally update navbar labels/titles
+                    updateNavLabels();
+                }
+                // Wrap render functions to translate their HTML output (robust, retries until main.js loaded)
+                var __i18nWrapped = false;
+                function wrapRenders() {
+                    if (__i18nWrapped) return true;
+                    var names = [
+                        "renderGame",
+                        "renderUpgrades",
+                        "renderAchievements",
+                        "renderShop",
+                        "renderLeaderboard",
+                        "renderPrestige",
+                        "renderDaily",
+                        "renderBoosts",
+                        "renderThemes",
+                    ];
+                    var found = 0;
+                    names.forEach(function (n) {
+                        if (
+                            typeof window[n] === "function" &&
+                            !window[n].__i18nWrapped
+                        ) {
+                            var _orig = window[n];
+                            var wrapped = function () {
+                                var html = _orig.apply(this, arguments);
+                                return translateHtml(html);
+                            };
+                            wrapped.__i18nWrapped = true;
+                            window[n] = wrapped;
+                            found++;
+                        }
+                    });
+                    if (found > 0) {
+                        __i18nWrapped = true;
+                        return true;
+                    }
+                    return false;
+                }
+                // Try now, on load, and retry a few times after parse (modules are deferred)
+                wrapRenders();
+                window.addEventListener("load", function () {
+                    wrapRenders();
+                });
+                (function retryWrap() {
+                    var attempts = 0;
+                    var id = setInterval(function () {
+                        if (wrapRenders() || attempts++ > 60) clearInterval(id);
+                    }, 100);
+                })();
+
+                // Inject language select into Settings modal
+                (function patchSettings() {
+                    if (typeof window.showSettings !== "function") return;
+                    var _orig = window.showSettings;
+                    window.showSettings = function () {
+                        _orig();
+                        setTimeout(function () {
+                            try {
+                                var box = document.querySelector(".modal-box");
+                                if (!box || box.querySelector("#lang-select"))
+                                    return;
+                                var title =
+                                    window.Packet && window.Packet.i18n
+                                        ? window.Packet.i18n.t("settings.title")
+                                        : "Settings";
+                                // Replace modal title if needed
+                                var h = box.querySelector("h2,h3,h1");
+                                if (h && title) h.textContent = title;
+
+                                var wrap = document.createElement("label");
+                                wrap.className = "flex items-center mb-2";
+                                wrap.innerHTML =
+                                    '<span class="mr-2">Language</span>' +
+                                    '<select id="lang-select" class="w-full p-2 bg-gray-700 rounded border border-neon-cyan">' +
+                                    '<option value="en">English</option>' +
+                                    '<option value="pt-br">Português (Brasil)</option>' +
+                                    '<option value="ru">Русский</option>' +
+                                    "</select>";
+                                var before =
+                                    box.querySelector("#edit-profile-inside") ||
+                                    box.firstChild;
+                                box.insertBefore(wrap, before);
+
+                                var sel = wrap.querySelector("#lang-select");
+                                try {
+                                    sel.value =
+                                        (window.Packet &&
+                                            window.Packet.i18n &&
+                                            window.Packet.i18n.getLanguage()) ||
+                                        "en";
+                                } catch (_) {}
+                                sel.onchange = function () {
+                                    if (window.Packet && window.Packet.i18n) {
+                                        window.Packet.i18n.setLanguage(
+                                            this.value,
+                                        );
+                                        applyLang();
+                                    }
+                                };
+                            } catch (_) {}
+                        }, 0);
+                    };
+                })();
+
+                // Inject language select into Edit Profile modal and persist on Save
+                (function patchEditProfile() {
+                    if (typeof window.showEditProfile !== "function") return;
+                    var _orig = window.showEditProfile;
+                    window.showEditProfile = function () {
+                        _orig();
+                        setTimeout(function () {
+                            try {
+                                var form =
+                                    document.getElementById("profile-form");
+                                if (!form || form.querySelector("#lang-select"))
+                                    return;
+                                var field = document.createElement("label");
+                                field.className = "block mb-3";
+                                field.innerHTML =
+                                    '<span class="block mb-1 font-semibold">Language:</span>' +
+                                    '<select id="lang-select" class="w-full p-2 bg-gray-700 rounded border border-neon-cyan">' +
+                                    '<option value="en">English</option>' +
+                                    '<option value="pt-br">Português (Brasil)</option>' +
+                                    '<option value="ru">Русский</option>' +
+                                    "</select>";
+                                var avatarBlock = form.querySelector(".mb-4");
+                                form.insertBefore(field, avatarBlock);
+
+                                var sel = field.querySelector("#lang-select");
+                                try {
+                                    sel.value =
+                                        (window.Packet &&
+                                            window.Packet.i18n &&
+                                            window.Packet.i18n.getLanguage()) ||
+                                        "en";
+                                } catch (_) {}
+                                form.addEventListener(
+                                    "submit",
+                                    function () {
+                                        try {
+                                            if (
+                                                window.Packet &&
+                                                window.Packet.i18n
+                                            ) {
+                                                window.Packet.i18n.setLanguage(
+                                                    sel.value,
+                                                );
+                                                setTimeout(applyLang, 0);
+                                            }
+                                        } catch (_) {}
+                                    },
+                                    { once: true },
+                                );
+                            } catch (_) {}
+                        }, 0);
+                    };
+                })();
+
+                // React on language changes
+                window.addEventListener("packet:i18n:change", function () {
+                    applyLang();
+                });
+
+                // Initial apply (if stored lang is not English)
+                applyLang();
+            })();
+        </script>
+
+        <!-- PWA: Register Service Worker -->
+        <script>
+            if ("serviceWorker" in navigator) {
+                // Listen for force update messages from service worker
+                navigator.serviceWorker.addEventListener(
+                    "message",
+                    function (event) {
+                        if (
+                            event.data &&
+                            event.data.type === "VERSION_UPDATE"
+                        ) {
+                            // Check if user's save needs force update
+                            const currentSave = localStorage.getItem(
+                                "packet_clicker_save_v3",
+                            );
+                            if (currentSave) {
+                                try {
+                                    const saveData = JSON.parse(currentSave);
+                                    const saveVersion =
+                                        saveData.version || "0.0.1";
+                                    const currentVersion =
+                                        event.data.version || "0.0.23";
+
+                                    // Compare versions and force update if needed
+                                    if (saveVersion !== currentVersion) {
+                                        console.log(
+                                            "[Update] Force update needed:",
+                                            saveVersion,
+                                            "->",
+                                            currentVersion,
+                                        );
+
+                                        // Clear old caches and force refresh
+                                        if ("caches" in window) {
+                                            caches
+                                                .keys()
+                                                .then(function (cacheNames) {
+                                                    return Promise.all(
+                                                        cacheNames.map(
+                                                            function (
+                                                                cacheName,
+                                                            ) {
+                                                                if (
+                                                                    cacheName.includes(
+                                                                        "packet-clicker-cache",
+                                                                    )
+                                                                ) {
+                                                                    console.log(
+                                                                        "[Update] Clearing cache:",
+                                                                        cacheName,
+                                                                    );
+                                                                    return caches.delete(
+                                                                        cacheName,
+                                                                    );
+                                                                }
+                                                            },
+                                                        ),
+                                                    );
+                                                })
+                                                .then(function () {
+                                                    // Send force refresh message to service worker
+                                                    if (
+                                                        navigator.serviceWorker
+                                                            .controller
+                                                    ) {
+                                                        navigator.serviceWorker.controller.postMessage(
+                                                            {
+                                                                type: "FORCE_REFRESH",
+                                                            },
+                                                        );
+                                                    }
+                                                    // Reload after a short delay to ensure cache clearing
+                                                    setTimeout(function () {
+                                                        window.location.reload(
+                                                            true,
+                                                        );
+                                                    }, 500);
+                                                });
+                                        } else {
+                                            // Fallback: just reload
+                                            setTimeout(function () {
+                                                window.location.reload(true);
+                                            }, 500);
+                                        }
+                                    }
+                                } catch (e) {
+                                    console.warn(
+                                        "[Update] Could not parse save data for version check:",
+                                        e,
+                                    );
+                                }
+                            }
+                        }
+
+                        if (event.data && event.data.type === "FORCE_RELOAD") {
+                            window.location.reload(true);
+                        }
+                    },
+                );
+
+                navigator.serviceWorker
+                    .register("service-worker.js")
+                    .then(function (reg) {
+                        const hasController =
+                            !!navigator.serviceWorker.controller;
+                        // Only request skipWaiting once per session and only when updating an existing SW
+                        const alreadySkipped =
+                            sessionStorage.getItem("sw-skip") === "1";
+                        if (reg.waiting && hasController && !alreadySkipped) {
+                            reg.waiting.postMessage({ type: "SKIP_WAITING" });
+                            sessionStorage.setItem("sw-skip", "1");
+                        }
+
+                        // Listen for a new worker and activate it once per session when updating
+                        reg.addEventListener("updatefound", function () {
+                            const newWorker = reg.installing;
+                            if (!newWorker) return;
+                            newWorker.addEventListener(
+                                "statechange",
+                                function () {
+                                    if (
+                                        newWorker.state === "installed" &&
+                                        hasController &&
+                                        sessionStorage.getItem("sw-skip") !==
+                                            "1"
+                                    ) {
+                                        newWorker.postMessage({
+                                            type: "SKIP_WAITING",
+                                        });
+                                        sessionStorage.setItem("sw-skip", "1");
+                                    }
+                                },
+                            );
+                        });
+
+                        // Force update check on registration
+                        if (reg.active && !hasController) {
+                            // First time loading, check for version updates
+                            reg.active.postMessage({ type: "CHECK_VERSION" });
+                        }
+                    })
+                    .catch(function (error) {
+                        console.warn("[SW] Registration failed:", error);
+                    });
+
+                // Guarded one-time reload when the new service worker takes control
+                navigator.serviceWorker.addEventListener(
+                    "controllerchange",
+                    function () {
+                        if (sessionStorage.getItem("sw-reloaded") === "1")
+                            return;
+                        sessionStorage.setItem("sw-reloaded", "1");
+                        window.location.reload();
+                    },
+                );
+            }
+
+            // Gentle iOS Safari fixes - prevent zoom on input focus only
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                // Prevent zoom on input focus by ensuring 16px font size
+                const style = document.createElement("style");
+                style.textContent = `
+                    input, select, textarea {
+                        font-size: 16px !important;
+                    }
+
+                    /* Gentle bounce scroll prevention */
+                    body {
+                        overscroll-behavior-y: none;
+                    }
+
+                    /* Prevent accidental zoom on double tap for buttons only */
+                    button, .neon-btn, .tab-btn {
+                        touch-action: manipulation;
+                    }
+                `;
+                document.head.appendChild(style);
+
+                // Handle new inputs dynamically
+                const observer = new MutationObserver(function (mutations) {
+                    mutations.forEach(function (mutation) {
+                        mutation.addedNodes.forEach(function (node) {
+                            if (node.querySelectorAll) {
+                                const inputs = node.querySelectorAll(
+                                    "input, select, textarea",
+                                );
+                                inputs.forEach(function (input) {
+                                    input.style.fontSize = "16px";
+                                });
+                            }
+                        });
+                    });
+                });
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true,
+                });
+            }
+        </script>
+    </body>
+</html>
