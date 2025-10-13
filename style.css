@@ -3565,9 +3565,9 @@ body.animal-active #click-btn {
 }
 
 .hud-close-btn {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border: 1px solid var(--primary-color) !important;
-    color: #ff3040 !important;
+    background: #ff4757 !important;
+    border: 1px solid #ff3742 !important;
+    color: white !important;
     border-radius: 50% !important;
     width: 24px !important;
     height: 24px !important;
@@ -3656,9 +3656,9 @@ body:has(.click-effect.critical) #combo-total-hud {
 }
 
 .hud-close-btn:hover {
-    background: var(--primary-color) !important;
-    color: #ff3040 !important;
-    border-color: var(--primary-color) !important;
+    background: #ff3742 !important;
+    color: white !important;
+    border-color: #ff3742 !important;
 }
 
 .hud-close-btn:active {
