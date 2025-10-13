@@ -1616,7 +1616,10 @@ function renderDaily() {
     let current = index === streak && canClaim;
 
     return `<div class="reward-row" style="display:flex; align-items:center; justify-content:space-between; padding: 0.5rem 0.75rem; border: 1px solid ${claimed ? "#3ba86b" : current ? "#d5b85a" : "#2e3a47"}; border-radius: 10px; background: linear-gradient(100deg, ${claimed ? "rgba(20,60,40,.5)" : current ? "rgba(60,50,20,.5)" : "rgba(28,36,46,.6)"} , rgba(0,0,0,0.15)); box-shadow: 0 1px 10px rgba(0,0,0,0.25) inset;">
-      <span style="font-weight:700; color:${claimed ? "#8ef1b2" : current ? "#ffe08a" : "var(--text-secondary)"};">Day ${reward.day}</span>
+      <div style="display:flex; flex-direction:column; align-items:flex-start; gap:0.1rem;">
+        <span style="font-weight:700; color:${claimed ? "#8ef1b2" : current ? "#ffe08a" : "var(--text-secondary)"};">Day <span class="event-number-glow">${reward.day}</span></span>
+        ${reward.bonus ? `<span style="font-size:0.65rem; color:${claimed ? "#a8e6b8" : current ? "#f4e29f" : "#8e9aaf"}; font-style:italic;">${reward.bonus}</span>` : ""}
+      </div>
       <span style="display:inline-flex; align-items:center; gap:.4rem; color:var(--text-primary);">
         <span style="display:inline-flex; align-items:center; gap:.25rem; padding:.1rem .4rem; border:1px solid var(--border-color); border-radius:999px; background: rgba(0,0,0,0.25);">
           ${reward.gems.toLocaleString("en-US")}
@@ -1635,12 +1638,13 @@ function renderDaily() {
     <div class="neon-card px-3 py-4 mb-2">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.title").replace(/^📅\s*/, "") : "Daily Rewards"}</h2>
       <div class="text-center mb-4">
-        <div class="text-lg">Streak: ${streak} days</div>
+        <div class="text-lg">Streak: <span class="event-number-glow">${streak}</span> days</div>
         ${
           canClaim
             ? `<button id="claim-daily" class="neon-btn mt-2">
             ${window.Packet && Packet.i18n ? Packet.i18n.t("buttons.claimDaily", { n: streak + 1 }) : "Claim Day " + (streak + 1) + " Reward!"}
-            <div class="text-xs">${nextReward.gems}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> + ${nextReward.packets}<span class="icon-packet"></span></div>
+            <div class="text-xs"><span class="event-number-glow">${nextReward.gems}</span><img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> + <span class="event-number-glow">${nextReward.packets}</span><span class="icon-packet"></span></div>
+            ${nextReward.bonus ? `<div class="text-xs" style="color:#f4e29f; font-style:italic; margin-top:0.25rem;">${nextReward.bonus}</div>` : ""}
           </button>`
             : `<div class="text-neon-gray text-sm mt-2">Come back tomorrow for next reward!</div>`
         }
@@ -3293,9 +3297,12 @@ function claimDailyReward() {
 
   showModal(
     "Daily Reward!",
-    `You received ${reward.gems.toLocaleString("en-US")} 💎 and ${reward.packets.toLocaleString("en-US")} <span class="icon-packet"></span>!<br>Streak: ${state.dailyRewards.streak} days`,
+    `You received <span class="event-number-glow">${reward.gems.toLocaleString("en-US")}</span> 💎 and <span class="event-number-glow">${reward.packets.toLocaleString("en-US")}</span> <span class="icon-packet"></span>!<br>Streak: <span class="event-number-glow">${state.dailyRewards.streak}</span> days${reward.bonus ? `<br><span style="color:#f4e29f; font-style:italic; font-size:0.9rem;">${reward.bonus}</span>` : ""}`,
   );
-  showHudNotify(`Day ${state.dailyRewards.streak} claimed!`, "📅");
+  showHudNotify(
+    `Day ${state.dailyRewards.streak} claimed! ${reward.bonus || ""}`,
+    "📅",
+  );
 
   save();
   updateTopBar();
