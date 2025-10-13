@@ -526,7 +526,7 @@ function renderGame() {
   if (state.prestige.level > 0) {
     totalMultiplier *= 1 + state.prestige.level * 0.1;
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#c084fc; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;"><img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:0.85rem;height:0.85rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Bonus: +${state.prestige.level * 10}%</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#c084fc; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;"><img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:0.85rem;height:0.85rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Bonus: <span class="event-number-glow">+${state.prestige.level * 10}%</span></span>`,
     );
   }
 
@@ -603,13 +603,15 @@ function renderGame() {
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🎮 Game</h2>
       ${clickBtn}
-      <div class="flex justify-between items-center text-sm" style="gap: 0.5rem;">
-        <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-weight:600;">Packets/Click: ${effectivePerClick}</span>
-        <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600;">Packets/Sec: ${effectivePerSec}</span>
-      </div>
-      <div class="flex justify-between items-center text-sm" style="gap: 0.5rem;">
-        <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600;">Crit Chance: ${Math.min(100, state.critChance + (eq.critChance || 0))}%</span>
-        <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600;">Crit Multiplier: ${state.critMult}x</span>
+      <div style="border: 1px solid #4caf50; border-radius: 8px; padding: 0.75rem; background: rgba(76, 175, 80, 0.05);">
+        <div class="flex justify-between items-center text-sm" style="gap: 0.5rem;">
+          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-weight:600;">Packets/Click: <span class="event-number-glow">${effectivePerClick}</span></span>
+          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600;">Packets/Sec: <span class="event-number-glow">${effectivePerSec}</span></span>
+        </div>
+        <div class="flex justify-between items-center text-sm" style="gap: 0.5rem; margin-top: 0.5rem;">
+          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600;">Crit Chance: <span class="event-number-glow">${Math.min(100, state.critChance + (eq.critChance || 0))}%</span></span>
+          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600;">Crit Multiplier: <span class="event-number-glow">${state.critMult}x</span></span>
+        </div>
       </div>
       ${boostStatus}
       ${renderActiveEvent()}
