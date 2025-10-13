@@ -1223,9 +1223,9 @@ function rarityStyles(rarityId) {
   if (isCelestial) {
     return {
       color: "#ffffff",
-      border: "2px solid transparent",
-      borderImage:
-        "linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1",
+      border: "none",
+      borderForRounded:
+        "border: none; box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080;",
       glow: "0 0 20px rgba(255,255,255,0.8)",
       animation: "celestialRainbow 3s linear infinite",
     };
@@ -1254,9 +1254,7 @@ function slotHeaderHTML(item, slotName, slotId) {
   }
   const st = rarityStyles(item.rarity);
   const imgBorderStyle =
-    item.rarity === "celestial"
-      ? `border: none; border-radius: 8px; box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080;`
-      : `border:${st.border};`;
+    item.rarity === "celestial" ? st.borderForRounded : `border:${st.border};`;
   const imgAnimationStyle = st.animation ? `animation: ${st.animation};` : "";
   return `
     <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.4rem; flex:1; min-width:0; padding:.8rem; position:relative; text-align:center;">
@@ -1319,14 +1317,14 @@ export function renderTab(state) {
       const animationStyle = st.animation ? `animation: ${st.animation};` : "";
       const borderStyle =
         it.rarity === "celestial"
-          ? `border: none; border-radius: 12px; box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080;`
+          ? `border: none; border-radius: 12px; ${st.borderForRounded}`
           : `border-color:${st.color};`;
       return `
           <div class="neon-card" style="padding:.3rem; ${borderStyle} box-shadow:${st.glow}; ${animationStyle} display:flex; align-items:center; justify-content:center; width:100%; max-width:100%; margin:0; aspect-ratio:1/1;">
             <button class="neon-btn" data-open-item-index="${absIndex}" style="width:100%; height:100%; background: transparent; border:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.2rem; padding:.2rem;">
               <div style="position:relative; display:inline-block; width:72%; height:72%;">
                 <img src="${it.icon}" alt="${it.name}" style="width:100%;height:100%;border-radius:6px; box-sizing:border-box; object-fit:cover;" />
-                <span style="position:absolute; bottom:2px; right:2px; background: rgba(0,0,0,0.6); ${it.rarity === "celestial" ? "border: 1px solid #ff0080; box-shadow: 0 0 6px rgba(255,0,128,0.8); animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:10px; padding:0 6px; font-size:.7rem; font-weight:800; ${it.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">x${it.q || 1}</span>
+                <span style="position:absolute; bottom:2px; right:2px; background: rgba(0,0,0,0.6); ${it.rarity === "celestial" ? "border: none; box-shadow: inset 0 0 0 1px transparent, 0 0 0 1px #ff0080, 0 0 6px rgba(255,0,128,0.8); animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:10px; padding:0 6px; font-size:.7rem; font-weight:800; ${it.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">x${it.q || 1}</span>
               </div>
               <div style="font-size:.7rem; font-weight:700; text-align:center; line-height:1; ${it.rarity === "celestial" ? "animation: celestialTextOnly 3s linear infinite;" : `color:${st.color};`}">${it.rarityName}</div>
             </button>
@@ -1884,19 +1882,19 @@ function showDropToast(item, fallbackNotify) {
   const toast = document.createElement("div");
   toast.className = "drop-toast";
 
-  // Handle celestial rainbow border specially
+  // Handle celestial rainbow border specially - use box-shadow approach for rounded corners
   const cardBorderStyle =
     item.rarity === "celestial"
-      ? `border: ${st.border}; border-image: ${st.borderImage}; animation: ${st.animation};`
+      ? `border: none; border-radius: 12px; animation: ${st.animation};`
       : `border: ${st.border};`;
   const imgBorderStyle =
     item.rarity === "celestial"
-      ? `border: ${st.border}; border-image: ${st.borderImage}; animation: ${st.animation};`
+      ? `border: none; border-radius: 6px; animation: ${st.animation};`
       : `border: ${st.border};`;
 
   toast.innerHTML = `
-    <div class="card" style="${cardBorderStyle} box-shadow:${st.glow}, 0 6px 22px rgba(0,0,0,0.35);">
-      <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:6px;${imgBorderStyle}box-shadow:${st.glow}" />
+    <div class="card" style="${cardBorderStyle} box-shadow: ${item.rarity === "celestial" ? "inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, " + st.glow + ", 0 6px 22px rgba(0,0,0,0.35)" : st.glow + ", 0 6px 22px rgba(0,0,0,0.35)"};">
+      <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:6px;${imgBorderStyle} box-shadow: ${item.rarity === "celestial" ? "inset 0 0 0 2px transparent, 0 0 0 2px #ff0080" : st.glow}; object-fit:cover;" />
       <div>
         <div style="font-weight:900; color:${st.color}; font-size:1rem;">${item.name}</div>
         <div class="text-xs" style="margin-top:.15rem; color:${st.color}; opacity:0.8;">
