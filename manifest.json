@@ -1,13 +1,18 @@
 {
-  "name": "Packet Clicker",
+  "name": "Packet Clicker MMO",
   "version": "0.0.23",
   "short_name": "Packet",
-  "start_url": ".",
+  "start_url": "./",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#161a22",
-  "theme_color": "#161a22",
-  "description": "Packet idle clicker MMO. Evolua, conquiste rankings, compre VIP, skins e gems! Instale como app.",
+  "theme_color": "#1de9b6",
+  "description": "Cyberpunk idle clicker MMO. Evolve, compete on leaderboards, buy VIP, skins and gems! Install as app for the best mobile experience.",
+  "categories": ["games", "entertainment"],
+  "lang": "en",
+  "dir": "ltr",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "src/assets/packet-32.png",
@@ -37,6 +42,43 @@
       "purpose": "any maskable"
     }
   ],
-  "scope": ".",
-  "id": "/"
+  "screenshots": [
+    {
+      "src": "src/assets/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile gameplay view"
+    },
+    {
+      "src": "src/assets/screenshot-desktop.png",
+      "sizes": "1200x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Desktop gameplay view"
+    }
+  ],
+  "scope": "./",
+  "id": "/",
+  "launch_handler": {
+    "client_mode": ["focus-existing", "auto"]
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "shortcuts": [
+    {
+      "name": "Play Game",
+      "short_name": "Play",
+      "description": "Start playing Packet Clicker",
+      "url": "./",
+      "icons": [
+        {
+          "src": "src/assets/packet-48.png",
+          "sizes": "48x48",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
 }

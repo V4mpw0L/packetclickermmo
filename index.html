@@ -5,7 +5,7 @@
         <title>Packet Clicker!</title>
         <meta
             name="viewport"
-            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+            content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover, interactive-widget=resizes-content"
         />
         <meta name="format-detection" content="telephone=no" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -15,6 +15,12 @@
         />
         <meta name="apple-touch-fullscreen" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="Packet Clicker" />
+        <meta name="application-name" content="Packet Clicker" />
+        <meta name="msapplication-TileColor" content="#161a22" />
+        <meta name="msapplication-config" content="browserconfig.xml" />
+        <meta name="HandheldFriendly" content="true" />
+        <meta name="MobileOptimized" content="320" />
 
         <!-- PWA / SEO / SOCIAL META -->
         <link rel="manifest" href="manifest.json" />
@@ -70,18 +76,68 @@
                 display: none !important;
             }
 
-            /* Menu icons with captions under each icon (uses aria-label) */
+            /* Mobile-first responsive menu bar layout */
+            nav.menu-bar {
+                --mobile-cols: 3;
+                --tablet-cols: 4;
+                --desktop-cols: 5;
+                display: grid;
+                grid-template-columns: repeat(var(--mobile-cols), 1fr);
+                width: 100%;
+                max-width: 100vw;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            nav.menu-bar::-webkit-scrollbar {
+                display: none;
+            }
+
+            /* Responsive breakpoints for menu bar */
+            @media (min-width: 480px) {
+                nav.menu-bar {
+                    grid-template-columns: repeat(var(--tablet-cols), 1fr);
+                }
+            }
+
+            @media (min-width: 768px) {
+                nav.menu-bar {
+                    grid-template-columns: repeat(var(--desktop-cols), 1fr);
+                }
+            }
+
+            /* Menu icons with captions - mobile optimized */
             nav.menu-bar .tab-btn {
                 display: inline-flex;
                 flex-direction: column;
                 align-items: center;
                 gap: 0.15rem;
+                min-width: 0;
+                padding: 0.5rem 0.25rem;
+                touch-action: manipulation;
+                -webkit-touch-callout: none;
+                -webkit-tap-highlight-color: transparent;
             }
+
             nav.menu-bar .tab-btn::after {
                 content: attr(aria-label);
-                font-size: 0.6rem;
+                font-size: clamp(0.55rem, 2vw, 0.65rem);
                 line-height: 1;
                 opacity: 0.8;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
+            }
+
+            /* Enhanced mobile touch targets */
+            @media (max-width: 480px) {
+                nav.menu-bar .tab-btn {
+                    min-height: 60px;
+                    font-size: clamp(1.2rem, 4vw, 1.5rem);
+                }
             }
         </style>
     </head>
@@ -244,7 +300,12 @@
         </nav>
 
         <!-- Main Content / Tabs -->
-        <main id="tab-content" role="main" aria-live="polite"></main>
+        <main
+            id="tab-content"
+            role="main"
+            aria-live="polite"
+            class="mobile-optimized"
+        ></main>
 
         <!-- Modals: Profile & Settings -->
         <div id="modal-backdrop" class="modal-backdrop hidden">

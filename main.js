@@ -564,14 +564,27 @@ function renderGame() {
     (perSecBase + (eq.perSec || 0)) * totalMultiplier,
   );
 
-  // Use modular renderButton for click button
+  // Use modular renderButton for click button - mobile optimized
   const clickBtn = renderButton({
     id: "click-btn",
-    className: "neon-btn text-2xl py-4 active:scale-95 transition-transform",
+    className: "neon-btn mobile-click-btn active:scale-95 transition-transform",
     label:
       '<span class="finger-icon"></span> Collect Packets <span class="finger-icon"></span>',
-    attrs: { style: "padding-top: 1.15rem; padding-bottom: 1.15rem;" },
+    attrs: {
+      style:
+        "min-width: clamp(200px, 60vw, 320px); min-height: clamp(80px, 15vh, 120px); font-size: clamp(1.2rem, 5vw, 2rem); touch-action: manipulation; -webkit-tap-highlight-color: transparent;",
+      "aria-label": "Collect Packets - Tap to earn",
+    },
   });
+
+  // Add mobile optimizations to click button after creation
+  setTimeout(() => {
+    const clickButton = document.getElementById("click-btn");
+    if (clickButton && MobileUtils.isMobile()) {
+      MobileUtils.addTouchOptimization(clickButton);
+      MobileUtils.enableGPUAcceleration(clickButton);
+    }
+  }, 0);
 
   // Use modular renderButton for prestige button if available
   const prestigeBtn =
@@ -1971,7 +1984,149 @@ function renderActiveEvent() {
   </div>`;
 }
 
-// =============== GAME LOGIC ===============
+// =============== MOBILE UTILITIES SYSTEM ===============
+const MobileUtils = {
+  // Detect mobile device
+  isMobile: () => {
+    return (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent,
+      ) ||
+      window.innerWidth <= 768 ||
+      "ontouchstart" in window
+    );
+  },
+
+  // Detect touch device
+  isTouch: () => {
+    return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+  },
+
+  // Get safe area insets
+  getSafeAreaInsets: () => {
+    const style = getComputedStyle(document.documentElement);
+    return {
+      top: parseInt(style.getPropertyValue("--mobile-safe-area-top")) || 0,
+      bottom:
+        parseInt(style.getPropertyValue("--mobile-safe-area-bottom")) || 0,
+      left: parseInt(style.getPropertyValue("--mobile-safe-area-left")) || 0,
+      right: parseInt(style.getPropertyValue("--mobile-safe-area-right")) || 0,
+    };
+  },
+
+  // Add touch optimization to element
+  addTouchOptimization: (element) => {
+    if (!element) return;
+    element.style.touchAction = "manipulation";
+    element.style.webkitTouchCallout = "none";
+    element.style.webkitTapHighlightColor = "transparent";
+    element.style.webkitUserSelect = "none";
+    element.style.userSelect = "none";
+  },
+
+  // Enable GPU acceleration
+  enableGPUAcceleration: (element) => {
+    if (!element) return;
+    element.style.transform = "translateZ(0)";
+    element.style.willChange = "transform";
+    element.style.backfaceVisibility = "hidden";
+  },
+
+  // Optimize for mobile performance
+  optimizeForMobile: () => {
+    if (!MobileUtils.isMobile()) return;
+
+    // Add mobile class to body
+    document.body.classList.add("mobile-device");
+
+    // Set CSS variables for mobile
+    document.documentElement.style.setProperty("--is-mobile", "1");
+
+    // Reduce animations on low-end devices
+    if (navigator.hardwareConcurrency <= 2) {
+      document.body.classList.add("low-performance");
+    }
+
+    // Add viewport height CSS variable
+    const setVH = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+    setVH();
+    window.addEventListener("resize", setVH);
+    window.addEventListener("orientationchange", setVH);
+  },
+
+  // Throttle function for performance
+  throttle: (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  },
+
+  // Debounce function for performance
+  debounce: (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  },
+
+  // Add vibration feedback (mobile only)
+  vibrate: (pattern = [50]) => {
+    if (navigator.vibrate && MobileUtils.isMobile()) {
+      navigator.vibrate(pattern);
+    }
+  },
+
+  // Initialize mobile optimizations
+  init: () => {
+    MobileUtils.optimizeForMobile();
+
+    // Add global mobile styles
+    const style = document.createElement("style");
+    style.textContent = `
+      .mobile-device .tab-btn {
+        min-width: max(48px, 12vw);
+        min-height: max(48px, 12vw);
+      }
+
+      .mobile-device .neon-btn,
+      .mobile-device .upgrade-btn,
+      .mobile-device .gem-btn {
+        min-height: max(48px, 12vw);
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .low-performance * {
+        animation-duration: 0.1s !important;
+        transition-duration: 0.1s !important;
+      }
+
+      @media (max-width: 480px) {
+        .mobile-device #click-btn {
+          min-width: 80vw;
+          min-height: max(80px, 12vh);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  },
+};
+
+// =============== MAIN GAME STATE ===============
 
 function clickPacket(event) {
   // Add click throttling to prevent performance issues
@@ -3183,6 +3338,8 @@ function bindTabEvents(tab) {
       btn.onclick = null;
       btn.onpointerdown = null;
       btn.onpointerup = null;
+      btn.ontouchstart = null;
+      btn.ontouchend = null;
 
       // Shared click state to prevent button getting stuck
       if (!btn._clickState) {
@@ -3241,19 +3398,28 @@ function bindTabEvents(tab) {
     if (prestigeBtn) prestigeBtn.onclick = () => setTab("prestige");
   }
   if (tab === "upgrades") {
-    let uc = document.getElementById("upgrade-click");
-    if (uc) uc.onclick = () => upgrade("click");
-    let ui = document.getElementById("upgrade-idle");
-    if (ui) ui.onclick = () => upgrade("idle");
-    let ucr = document.getElementById("upgrade-crit");
-    if (ucr) ucr.onclick = () => upgrade("crit");
+    // Enhanced touch handling for upgrade buttons
+    const bindUpgradeButton = (id, type) => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        btn.onclick = () => upgrade(type);
+        MobileUtils.addTouchOptimization(btn);
+        MobileUtils.enableGPUAcceleration(btn);
+      }
+    };
 
-    // Bind bulk mode buttons
+    bindUpgradeButton("upgrade-click", "click");
+    bindUpgradeButton("upgrade-idle", "idle");
+    bindUpgradeButton("upgrade-crit", "crit");
+
+    // Bind bulk mode buttons with mobile optimization
     document.querySelectorAll(".bulk-btn").forEach((btn) => {
       btn.onclick = () => {
         const bulk = btn.getAttribute("data-bulk");
         setBulkMode(bulk === "max" ? "max" : parseInt(bulk));
       };
+      MobileUtils.addTouchOptimization(btn);
+      MobileUtils.enableGPUAcceleration(btn);
     });
 
     // Set initial bulk mode and update labels
@@ -3475,7 +3641,7 @@ function init() {
           (t.id === "click-btn" ||
             (typeof t.closest === "function" &&
               t.closest(
-                "#click-btn,.tab-btn,.neon-btn,.upgrade-btn,.gem-btn",
+                "#click-btn,.tab-btn,.neon-btn,.upgrade-btn,.gem-btn,.mobile-click-btn",
               )));
         if (isUIElement) {
           e.preventDefault();
@@ -3490,25 +3656,28 @@ function init() {
   });
 
   // Prevent double-tap zoom only on UI elements, allow scrolling
+  // Prevent double-tap zoom on mobile - optimized for better performance
   let lastTouchEnd = 0;
+  const handleTouchEnd = (event) => {
+    const now = Date.now();
+    const t = event.target;
+    const isUIElement =
+      t &&
+      (t.id === "click-btn" ||
+        (typeof t.closest === "function" &&
+          t.closest(
+            "#click-btn,.tab-btn,.neon-btn,.upgrade-btn,.gem-btn,.mobile-click-btn,.theme-action-btn,[data-theme]",
+          )));
+    // Only prevent double-tap on UI elements, not on content areas
+    if (isUIElement && now - lastTouchEnd <= 300) {
+      event.preventDefault();
+    }
+    lastTouchEnd = now;
+  };
+
   document.addEventListener(
     "touchend",
-    function (event) {
-      const now = Date.now();
-      const t = event.target;
-      const isUIElement =
-        t &&
-        (t.id === "click-btn" ||
-          (typeof t.closest === "function" &&
-            t.closest(
-              "#click-btn,.tab-btn,.neon-btn,.upgrade-btn,.gem-btn,.theme-action-btn,[data-theme]",
-            )));
-      // Only prevent double-tap on UI elements, not on content areas
-      if (isUIElement && now - lastTouchEnd <= 300) {
-        event.preventDefault();
-      }
-      lastTouchEnd = now;
-    },
+    MobileUtils.throttle(handleTouchEnd, 16),
     { passive: false },
   );
 
@@ -3562,6 +3731,31 @@ function init() {
   ) {
     document.body.classList.add("graphics-high");
     window.graphicsQuality = "high";
+  }
+
+  // Initialize mobile utilities system
+  MobileUtils.init();
+
+  // Add mobile-specific event listeners and optimizations
+  if (MobileUtils.isMobile()) {
+    // Add vibration feedback on button clicks
+    document.addEventListener("click", (e) => {
+      const isButton = e.target.closest(
+        ".neon-btn, .upgrade-btn, .gem-btn, .tab-btn, #click-btn",
+      );
+      if (isButton && state.player.sound) {
+        MobileUtils.vibrate([30]);
+      }
+    });
+
+    // Optimize scroll performance on mobile
+    const scrollElements = document.querySelectorAll(
+      "#tab-content, .neon-card, main",
+    );
+    scrollElements.forEach((el) => {
+      el.style.webkitOverflowScrolling = "touch";
+      el.style.overscrollBehavior = "contain";
+    });
   }
 }
 
