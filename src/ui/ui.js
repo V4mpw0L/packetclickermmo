@@ -102,7 +102,7 @@
 
     // Simple number formatting - only format if not already styled
     let formattedMsg = msg;
-    if (!formattedMsg.includes("color:#ffd700")) {
+    if (!formattedMsg.includes("<span") && !formattedMsg.includes("style=")) {
       formattedMsg = formattedMsg.replace(
         /(\+?\d{1,3}(?:,\d{3})*)/g,
         '<span style="color:#ffd700; font-weight:bold;">$1</span>',
