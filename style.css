@@ -4549,6 +4549,30 @@ html {
     );
 }
 
+.theme-card[data-theme="sunset"] {
+    background: linear-gradient(
+        135deg,
+        var(--bg-card),
+        rgba(255, 107, 53, 0.05)
+    );
+}
+
+.theme-card[data-theme="forest"] {
+    background: linear-gradient(
+        135deg,
+        var(--bg-card),
+        rgba(39, 174, 96, 0.05)
+    );
+}
+
+.theme-card[data-theme="royal"] {
+    background: linear-gradient(
+        135deg,
+        var(--bg-card),
+        rgba(142, 68, 173, 0.05)
+    );
+}
+
 .theme-card:hover {
     border-color: var(--primary-color);
     box-shadow: 0 4px 16px rgba(29, 233, 182, 0.15);
@@ -4694,6 +4718,250 @@ html {
 }
 
 /* Mobile responsiveness for themes */
+/* === COMPACT THEME CARDS === */
+.themes-section-compact {
+    margin-bottom: 1.5rem;
+}
+
+.themes-section-title-compact {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(196, 235, 234, 0.15);
+    text-align: center;
+}
+
+.themes-grid-compact {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    padding: 0.25rem 0;
+}
+
+.theme-card-compact {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.theme-card-compact[data-theme="cyberpunk"] {
+    background: linear-gradient(
+        135deg,
+        var(--bg-card),
+        rgba(29, 233, 182, 0.08)
+    );
+}
+
+.theme-card-compact[data-theme="neon"] {
+    background: linear-gradient(
+        135deg,
+        var(--bg-card),
+        rgba(255, 20, 147, 0.08)
+    );
+}
+
+.theme-card-compact[data-theme="dark"] {
+    background: linear-gradient(
+        135deg,
+        var(--bg-card),
+        rgba(255, 255, 255, 0.05)
+    );
+}
+
+.theme-card-compact[data-theme="matrix"] {
+    background: linear-gradient(135deg, var(--bg-card), rgba(0, 255, 65, 0.08));
+}
+
+.theme-card-compact[data-theme="retro"] {
+    background: linear-gradient(
+        135deg,
+        var(--bg-card),
+        rgba(255, 176, 0, 0.08)
+    );
+}
+
+.theme-card-compact[data-theme="ocean"] {
+    background: linear-gradient(
+        135deg,
+        var(--bg-card),
+        rgba(14, 165, 233, 0.08)
+    );
+}
+
+.theme-card-compact[data-theme="luxury"] {
+    background: linear-gradient(
+        135deg,
+        var(--bg-card),
+        rgba(251, 191, 36, 0.08)
+    );
+}
+
+.theme-card-compact[data-theme="sunset"] {
+    background: linear-gradient(
+        135deg,
+        var(--bg-card),
+        rgba(255, 107, 53, 0.08)
+    );
+}
+
+.theme-card-compact[data-theme="forest"] {
+    background: linear-gradient(
+        135deg,
+        var(--bg-card),
+        rgba(39, 174, 96, 0.08)
+    );
+}
+
+.theme-card-compact[data-theme="royal"] {
+    background: linear-gradient(
+        135deg,
+        var(--bg-card),
+        rgba(142, 68, 173, 0.08)
+    );
+}
+
+.theme-card-compact:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 16px rgba(29, 233, 182, 0.25);
+    transform: translateY(-2px);
+}
+
+.theme-card-compact.active {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 15px rgba(247, 207, 92, 0.25);
+}
+
+.theme-card-compact.locked {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.theme-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.theme-info {
+    flex: 1;
+}
+
+.theme-name-compact {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.theme-desc-compact {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    line-height: 1.2;
+}
+
+.active-indicator {
+    background: var(--secondary-color);
+    color: var(--bg-primary);
+    padding: 0.15rem 0.4rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    margin-left: 0.5rem;
+}
+
+.theme-preview-compact {
+    margin-bottom: 0.5rem;
+}
+
+.color-preview-compact {
+    display: flex;
+    gap: 0.3rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.color-dot-compact {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.color-dot-compact:hover {
+    transform: scale(1.2);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.theme-action-compact {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.theme-cost-compact {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.theme-btn-compact {
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    border: none;
+    background: linear-gradient(
+        135deg,
+        var(--theme-primary, var(--primary-color)),
+        var(--theme-secondary, var(--secondary-color))
+    );
+    color: white;
+    min-width: 50px;
+}
+
+.theme-btn-compact:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    filter: brightness(1.1);
+}
+
+.theme-btn-compact:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.active-label {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    background: rgba(247, 207, 92, 0.15);
+    border: 1px solid rgba(247, 207, 92, 0.3);
+}
+
 @media (max-width: 640px) {
     .themes-grid {
         grid-template-columns: 1fr;
@@ -4706,6 +4974,29 @@ html {
     .color-dot {
         width: 20px;
         height: 20px;
+    }
+
+    .themes-grid-compact {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .theme-card-compact {
+        padding: 0.6rem;
+        min-height: 100px;
+    }
+
+    .theme-name-compact {
+        font-size: 0.85rem;
+    }
+
+    .theme-desc-compact {
+        font-size: 0.65rem;
+    }
+
+    .color-dot-compact {
+        width: 14px;
+        height: 14px;
     }
 
     /* Mobile cursor feedback animation */

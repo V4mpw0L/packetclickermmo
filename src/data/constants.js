@@ -55,7 +55,7 @@
     var STORAGE_KEY = "packet_clicker_save_v3";
     var DEFAULT_AVATAR =
       "https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker";
-    var APP_VERSION = "0.0.25";
+    var APP_VERSION = "0.0.26";
 
     // Interaction tuning
     var COMBO_TIMEOUT = 1000; // ms to maintain click combo
@@ -265,6 +265,27 @@
         description: "Premium golden elegance for elite hackers",
         colors: ["#fbbf24", "#f59e0b", "#451a03"],
         cost: 150,
+        unlocked: false,
+      },
+      sunset: {
+        name: "Sunset Glow",
+        description: "Warm orange and purple hues of twilight magic",
+        colors: ["#ff6b35", "#e74c3c", "#2c1810"],
+        cost: 80,
+        unlocked: false,
+      },
+      forest: {
+        name: "Forest Depths",
+        description: "Natural green tranquility for peaceful sessions",
+        colors: ["#27ae60", "#2ecc71", "#1b2f1b"],
+        cost: 90,
+        unlocked: false,
+      },
+      royal: {
+        name: "Royal Purple",
+        description: "Majestic violet elegance fit for digital royalty",
+        colors: ["#8e44ad", "#9b59b6", "#2c1810"],
+        cost: 120,
         unlocked: false,
       },
     };

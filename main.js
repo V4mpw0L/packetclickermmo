@@ -879,57 +879,47 @@ function renderThemes() {
     let isActive = state.theme === id;
     let isUnlocked = theme.unlocked || state.themes?.[id];
     let canBuy = !isUnlocked && state.gems >= (theme.cost || 0);
-    let canPreview = !isActive;
 
-    // Create gradient background based on theme colors
     const primaryColor = theme.colors[0] || "#1de9b6";
     const secondaryColor = theme.colors[1] || "#f7cf5c";
     const accentColor = theme.colors[2] || "#222c38";
 
-    // Create a subtle gradient background
-    const backgroundStyle = `linear-gradient(135deg, ${primaryColor}15, ${secondaryColor}08, ${accentColor}12)`;
-    const borderColor = `${primaryColor}40`;
-
     return `
-      <div class="theme-card ${isActive ? "active" : ""} ${!isUnlocked && !canBuy ? "locked" : ""}"
-           data-theme="${id}"
-           style="background: ${backgroundStyle}; border: 1px solid ${borderColor}; box-shadow: 0 2px 8px ${primaryColor}20;">
-        <div class="theme-header">
-          <div class="theme-name" style="color: ${primaryColor}; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">${theme.name} ${isActive ? "✓" : ""}</div>
-          ${isActive ? `<div class="active-badge" style="background: ${primaryColor}; color: ${accentColor};">Active</div>` : ""}
+      <div class="theme-card-compact ${isActive ? "active" : ""} ${!isUnlocked && !canBuy ? "locked" : ""}"
+           data-theme="${id}">
+        <div class="theme-card-header">
+          <div class="theme-info">
+            <div class="theme-name-compact">${theme.name}</div>
+            <div class="theme-desc-compact">${theme.description || "Classic theme"}</div>
+          </div>
+          ${isActive ? `<div class="active-indicator">✓</div>` : ""}
         </div>
 
-        <div class="theme-preview">
-          <div class="color-preview">
-            <span class="color-dot primary" style="background: ${theme.colors[0]}; box-shadow: 0 0 8px ${theme.colors[0]}60;"></span>
-            <span class="color-dot secondary" style="background: ${theme.colors[1]}; box-shadow: 0 0 8px ${theme.colors[1]}60;"></span>
-            <span class="color-dot accent" style="background: ${theme.colors[2]}; box-shadow: 0 0 8px ${theme.colors[2]}60;"></span>
+        <div class="theme-preview-compact">
+          <div class="color-preview-compact">
+            <span class="color-dot-compact" style="background: ${theme.colors[0]};"></span>
+            <span class="color-dot-compact" style="background: ${theme.colors[1]};"></span>
+            <span class="color-dot-compact" style="background: ${theme.colors[2]};"></span>
           </div>
         </div>
 
-        <div class="theme-description" style="color: var(--text-primary); opacity: 0.9;">${theme.description || "Classic theme"}</div>
-
-        <div class="theme-actions">
+        <div class="theme-action-compact">
           ${
             !isUnlocked
-              ? `<div class="theme-cost" style="color: ${secondaryColor}; font-weight: bold;">
-              ${(theme.cost || 0).toLocaleString("en-US")}
-              <img src="src/assets/gem.png" alt="Gems" class="gem-icon"/>
+              ? `<div class="theme-cost-compact">
+              ${(theme.cost || 0).toLocaleString("en-US")} 💎
             </div>`
               : ""
           }
-
-          <div class="theme-buttons">
-            ${
-              !isActive
-                ? `<button class="theme-action-btn ${!isUnlocked ? "buy-btn" : "activate-btn"}"
-                      ${!isUnlocked && !canBuy ? "disabled" : ""}
-                      style="background: linear-gradient(135deg, ${primaryColor}, ${secondaryColor}); border-color: ${primaryColor}; color: ${accentColor}; font-weight: bold;">
-                ${!isUnlocked ? "💎 Buy" : "🎨 Use"}
-              </button>`
-                : ""
-            }
-          </div>
+          ${
+            !isActive
+              ? `<button class="theme-btn-compact ${!isUnlocked ? "buy" : "use"}"
+                    ${!isUnlocked && !canBuy ? "disabled" : ""}
+                    style="--theme-primary: ${primaryColor}; --theme-secondary: ${secondaryColor};">
+              ${!isUnlocked ? "Buy" : "Use"}
+            </button>`
+              : `<div class="active-label">Active</div>`
+          }
         </div>
       </div>
     `;
@@ -949,9 +939,9 @@ function renderThemes() {
       ${
         freeThemes.length > 0
           ? `
-        <div class="themes-section">
-          <h3 class="themes-section-title">🆓 Free Themes</h3>
-          <div class="themes-grid">
+        <div class="themes-section-compact">
+          <h3 class="themes-section-title-compact">🆓 Free Themes</h3>
+          <div class="themes-grid-compact">
             ${freeThemeItems}
           </div>
         </div>
@@ -962,9 +952,9 @@ function renderThemes() {
       ${
         premiumThemes.length > 0
           ? `
-        <div class="themes-section">
-          <h3 class="themes-section-title">💎 Premium Themes</h3>
-          <div class="themes-grid">
+        <div class="themes-section-compact">
+          <h3 class="themes-section-title-compact">💎 Premium Themes</h3>
+          <div class="themes-grid-compact">
             ${premiumThemeItems}
           </div>
         </div>
@@ -1969,7 +1959,7 @@ function showEditProfile() {
       }
     } catch (_) {}
     try {
-      window.VERSION = "0.0.25";
+      window.VERSION = "0.0.26";
     } catch (_) {}
 
     updateTopBar();
@@ -2088,7 +2078,7 @@ function showSettings() {
         // Persist and refresh UI
         save();
         try {
-          window.VERSION = "0.0.25";
+          window.VERSION = "0.0.26";
         } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {
@@ -2738,7 +2728,7 @@ function migrateSaveToCurrentVersion() {
       window.Packet &&
       window.Packet.data &&
       window.Packet.data.APP_VERSION) ||
-    "0.0.25";
+    "0.0.26";
 
   console.log(
     "[Migration] Checking save compatibility with version",
@@ -3536,7 +3526,9 @@ function claimDailyReward() {
 function clearTabEvents() {
   // Clear theme button events specifically
   document.querySelectorAll("[data-theme]").forEach((card) => {
-    const actionBtn = card.querySelector(".theme-action-btn");
+    const actionBtn = card.querySelector(
+      ".theme-action-btn, .theme-btn-compact",
+    );
     if (actionBtn) actionBtn.onclick = null;
   });
 
@@ -3709,8 +3701,10 @@ function bindTabEvents(tab) {
     document.querySelectorAll("[data-theme]").forEach((card) => {
       const themeId = card.getAttribute("data-theme");
 
-      // Handle theme action buttons (Buy/Use)
-      const actionBtn = card.querySelector(".theme-action-btn");
+      // Handle theme action buttons (Buy/Use) - support both old and new button classes
+      const actionBtn = card.querySelector(
+        ".theme-action-btn, .theme-btn-compact",
+      );
       if (actionBtn && !actionBtn.disabled && themeId !== state.theme) {
         actionBtn.onclick = (e) => {
           e.preventDefault();
@@ -3898,10 +3892,11 @@ function init() {
       (t.id === "click-btn" ||
         (typeof t.closest === "function" &&
           t.closest(
-            "#click-btn,.tab-btn,.neon-btn,.upgrade-btn,.gem-btn,.mobile-click-btn,.theme-action-btn,[data-theme]",
+            "#click-btn,.tab-btn,.neon-btn,.upgrade-btn,.gem-btn,.mobile-click-btn,.theme-action-btn,.theme-btn-compact,[data-theme]",
           )));
     // Only prevent double-tap on UI elements, not on content areas
-    if (isUIElement && now - lastTouchEnd <= 300) {
+    // Check if event is cancelable before attempting to prevent default
+    if (isUIElement && now - lastTouchEnd <= 300 && event.cancelable) {
       event.preventDefault();
     }
     lastTouchEnd = now;
@@ -3929,7 +3924,11 @@ function init() {
   document.addEventListener(
     "touchstart",
     function (e) {
-      if (e.target.closest(".theme-card, .theme-action-btn, [data-theme]")) {
+      if (
+        e.target.closest(
+          ".theme-card, .theme-card-compact, .theme-action-btn, .theme-btn-compact, [data-theme]",
+        )
+      ) {
         e.target.style.touchAction = "manipulation";
       }
     },
