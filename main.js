@@ -77,6 +77,14 @@ if (typeof window !== "undefined") {
 // Track combo expiry to sync avatar border ring with combo HUD
 let _comboExpireAt = 0;
 
+// Calculate prestige requirement based on current prestige level
+function getPrestigeRequirement() {
+  const baseRequirement = 50000;
+  const level = state.prestige.level || 0;
+  // Each prestige increases requirement by 1.5x
+  return Math.floor(baseRequirement * Math.pow(1.5, level));
+}
+
 const state = {
   player: {
     name: "Player",
@@ -567,7 +575,7 @@ function renderGame() {
 
   // Use modular renderButton for prestige button if available
   const prestigeBtn =
-    state.packets >= 50000
+    state.packets >= getPrestigeRequirement()
       ? `<div class="text-center" style="display: flex; justify-content: center;">${renderButton(
           {
             id: "prestige-btn",
@@ -1519,7 +1527,8 @@ function renderLeaderboard() {
 
 // =============== PRESTIGE TAB ===============
 function renderPrestige() {
-  let canPrestige = state.packets >= 50000;
+  const prestigeRequirement = getPrestigeRequirement();
+  let canPrestige = state.packets >= prestigeRequirement;
   let shardGain = canPrestige
     ? Math.floor(Math.sqrt(state.packets / 10000))
     : 0;
@@ -1565,9 +1574,9 @@ function renderPrestige() {
             }
             #prestige-progress-fill.prestige-glow { animation: prestigeReadyPulse 1.6s ease-in-out infinite; }
           </style>
-          <div id="prestige-progress-fill" class="${state.packets >= 50000 ? "prestige-glow" : ""}" style="height:100%; width: ${Math.min(100, (state.packets / 50000) * 100).toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); box-shadow: 0 0 10px var(--shadow-primary);"></div>
+          <div id="prestige-progress-fill" class="${state.packets >= prestigeRequirement ? "prestige-glow" : ""}" style="height:100%; width: ${Math.min(100, (state.packets / prestigeRequirement) * 100).toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); box-shadow: 0 0 10px var(--shadow-primary);"></div>
         </div>
-        <div id="prestige-progress-label" class="text-neon-gray" style="font-size:.8rem; margin-top:.25rem;">${state.packets.toLocaleString("en-US")} / 50,000</div>
+        <div id="prestige-progress-label" class="text-neon-gray" style="font-size:.8rem; margin-top:.25rem;">${state.packets.toLocaleString("en-US")} / ${prestigeRequirement.toLocaleString("en-US")}</div>
       </div>
 
       ${
@@ -2955,7 +2964,8 @@ function generateBots(n = 6) {
 
 // =============== PRESTIGE FUNCTIONS ===============
 function doPrestige() {
-  if (state.packets < 50000) return;
+  const prestigeRequirement = getPrestigeRequirement();
+  if (state.packets < prestigeRequirement) return;
 
   let shardGain = Math.floor(Math.sqrt(state.packets / 10000));
   state.prestige.level++;
