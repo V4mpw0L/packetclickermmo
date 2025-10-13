@@ -1,5 +1,30 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.27 - UI Polish & Shadow Ninja Enhancement
+*Released: January 2025*
+
+### 🥷 **Shadow Ninja Avatar Enhancement**
+- **Authentic Ninja Appearance** - Shadow Ninja avatar now displays in true black coloring
+- **Consistent Styling** - Black ninja effect applied across all game areas (profile, leaderboard, top bar)
+- **Visual Polish** - Enhanced stealth aesthetic for premium ninja skin
+
+### 🎨 **Profile & UI Improvements**
+- **Avatar Selection Layout** - Fixed avatar grid breaking and improved responsive wrapping
+- **Clean Avatar Backgrounds** - Removed dark grey rings from avatar selection for cleaner appearance
+- **Achievement Counter Enhancement** - Added signature gold glow effect to achievement numbers
+
+### 🔧 **Animal Combo Fixes**
+- **Horizontal Scroll Prevention** - Fixed page moving sideways during Animal combo shake animation
+- **Page Height Stability** - Prevented Animal combo effects from increasing page scroll height
+- **Visual Containment** - All combo effects now properly contained within viewport
+
+### ✨ **Visual Consistency**
+- **Gold Number Glow** - Achievement page now features consistent gold glowing numbers
+- **Improved Responsiveness** - Better avatar selection layout on all screen sizes
+- **Enhanced Ninja Aesthetics** - Premium Shadow Ninja skin now truly embodies stealth appearance
+
+---
+
 ## Version 0.0.26 - Theme System Surgical Enhancement & UI Revolution
 *Released: January 2025*
 
