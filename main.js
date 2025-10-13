@@ -1218,7 +1218,7 @@ function renderAchievements() {
 
       <div style="text-align: center; margin: 1rem 0;">
         <div class="achievement-stats" style="text-align:center; margin:.5rem 0 .75rem; padding:.35rem .75rem; border:1px solid var(--border-color); border-radius:999px; width:fit-content; margin:0 auto .75rem; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">
-          ${unlockedCount} / ${totalCount} Unlocked
+          <span class="event-number-glow">${unlockedCount}</span> / <span class="event-number-glow">${totalCount}</span> Unlocked
         </div>
 
         <div style="position:relative; height:8px; border-radius:999px; background:#22313f; border:1px solid var(--border-color); overflow:hidden; box-shadow: inset 0 1px 4px rgba(0,0,0,.5); margin:0 auto; max-width: 300px;">
