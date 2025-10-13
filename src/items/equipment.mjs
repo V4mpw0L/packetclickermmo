@@ -1752,7 +1752,13 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
               break;
           }
 
-          return `<button class="neon-btn w-full mb-2" data-sell-rarity="${rarity}" style="${rarity === "celestial" ? "animation: celestialRainbow 3s linear infinite, celestialRainbowBg 3s linear infinite; background-size: 400% 400%; color: white; border-color: #ffffff;" : `background: ${backgroundColor}; color: ${textColor}; border-color: ${rarity === "all" ? "#666" : rarityById(rarity).color};`}">${label}</button>`;
+          const borderColor =
+            rarity === "all"
+              ? "#666"
+              : rarity === "celestial"
+                ? "#ffffff"
+                : rarityById(rarity)?.color || "#666";
+          return `<button class="neon-btn w-full mb-2" data-sell-rarity="${rarity}" style="${rarity === "celestial" ? "animation: celestialRainbow 3s linear infinite, celestialRainbowBg 3s linear infinite; background-size: 400% 400%; color: white; border-color: #ffffff;" : `background: ${backgroundColor}; color: ${textColor}; border-color: ${borderColor};`}">${label}</button>`;
         })
         .join("");
 
@@ -1811,16 +1817,21 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
               if (typeof rerender === "function") rerender();
               if (typeof window.closeModal === "function") window.closeModal();
 
-              const n =
-                notify ||
-                (hasDOM() && typeof window.showHudNotify === "function"
-                  ? window.showHudNotify
-                  : null);
-              if (n)
-                n(
+              // Show notification
+              if (typeof notify === "function") {
+                notify(
                   `Sold <span style="font-size: 1.3em; font-weight: 900; color: #ffd700;">${itemsToRemove.length}</span> items for <span style="font-size: 1.3em; font-weight: 900; color: #ffd700;">${totalValue.toLocaleString("en-US")}</span> <span class="icon-packet" style="font-size: 1.3em; vertical-align: middle;"></span>!`,
                   '<span class="icon-packet" style="font-size: 1.5em;"></span>',
                 );
+              } else if (
+                hasDOM() &&
+                typeof window.showHudNotify === "function"
+              ) {
+                window.showHudNotify(
+                  `Sold <span style="font-size: 1.3em; font-weight: 900; color: #ffd700;">${itemsToRemove.length}</span> items for <span style="font-size: 1.3em; font-weight: 900; color: #ffd700;">${totalValue.toLocaleString("en-US")}</span> <span class="icon-packet" style="font-size: 1.3em; vertical-align: middle;"></span>!`,
+                  '<span class="icon-packet" style="font-size: 1.5em;"></span>',
+                );
+              }
             });
           });
         }, 0);
