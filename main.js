@@ -1033,6 +1033,12 @@ function renderUpgrades() {
 
       <div class="bulk-options" style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
         ${renderButton({
+          id: "bulk-x1",
+          className: "bulk-btn",
+          label: "x1",
+          dataAttr: 'data-bulk="1"',
+        })}
+        ${renderButton({
           id: "bulk-x10",
           className: "bulk-btn",
           label: "x10",
