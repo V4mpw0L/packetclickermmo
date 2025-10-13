@@ -657,12 +657,12 @@ function renderGame() {
       ${clickBtn}
       <div style="border: 1px solid #4caf50; border-radius: 8px; padding: 0.75rem; background: rgba(76, 175, 80, 0.05);">
         <div class="flex justify-between items-center text-sm" style="gap: 0.5rem;">
-          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-weight:600;">Packets/Click: <span class="event-number-glow">${effectivePerClick}</span></span>
-          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600;">Packets/Sec: <span class="event-number-glow">${effectivePerSec}</span></span>
+          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-weight:600;">Packets/Click: <span class="event-number-glow">${effectivePerClick.toLocaleString("en-US")}</span></span>
+          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600;">Packets/Sec: <span class="event-number-glow">${effectivePerSec.toLocaleString("en-US")}</span></span>
         </div>
         <div class="flex justify-between items-center text-sm" style="gap: 0.5rem; margin-top: 0.5rem;">
           <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600;">Crit Chance: <span class="event-number-glow">${Math.min(100, state.critChance + (eq.critChance || 0))}%</span></span>
-          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600;">Crit Multiplier: <span class="event-number-glow">${state.critMult}x</span></span>
+          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600;">Crit Multiplier: <span class="event-number-glow">${state.critMult.toLocaleString("en-US")}x</span></span>
         </div>
       </div>
       ${boostStatus}
@@ -794,7 +794,7 @@ function renderBoosts() {
 
         <div style="width: 100%; margin-top: auto;">
           <div style="display: flex; align-items: center; justify-content: center; gap: 0.25rem; padding: 0.4rem 0.6rem; background: rgba(0,0,0,0.4); border-radius: 999px; border: 1px solid ${style.border}40; margin-bottom: 0.5rem;">
-            <span class="event-number-glow" style="font-size: 1rem; font-weight: 800;">${boost.gems}</span>
+            <span class="event-number-glow" style="font-size: 1rem; font-weight: 800;">${boost.gems.toLocaleString("en-US")}</span>
             <img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;" aria-hidden="true"/>
           </div>
 
@@ -828,7 +828,7 @@ function renderBoosts() {
         </div>
         <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(90deg, rgba(76, 175, 80, 0.1), rgba(34, 197, 94, 0.1)); border: 1px solid #4caf50; border-radius: 999px;">
           <span style="color: #4caf50; font-weight: bold;">Your Gems:</span>
-          <span class="event-number-glow" style="font-size: 1.3rem; font-weight: 900;">${state.gems}</span>
+          <span class="event-number-glow" style="font-size: 1.3rem; font-weight: 900;">${state.gems.toLocaleString("en-US")}</span>
           <img src="src/assets/gem.png" alt="Gems" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/>
         </div>
       </div>
@@ -1261,7 +1261,7 @@ function renderShop() {
           ${
             owned
               ? '<span class="shop-owned-text">✓</span>'
-              : `${item.gems}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
+              : `${item.gems.toLocaleString("en-US")}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
           }
         </div>
       </div>`,
@@ -1286,7 +1286,7 @@ function renderShop() {
           ${
             owned
               ? '<span class="shop-owned-text">✓</span>'
-              : `${item.gems}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
+              : `${item.gems.toLocaleString("en-US")}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
           }
         </div>
         <div class="shop-item-desc">${item.desc}</div>
@@ -1310,7 +1310,7 @@ function renderShop() {
           ${
             owned
               ? '<span class="shop-owned-text">✓</span>'
-              : `${item.gems}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
+              : `${item.gems.toLocaleString("en-US")}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
           }
         </div>
       </div>`,
@@ -1735,10 +1735,10 @@ function renderPrestige() {
     <div class="neon-card px-3 py-4 mb-2">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);"><img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1.2rem;height:1.2rem;vertical-align:middle;display:inline-block;margin-right:0.35rem;"/> Prestige</h2>
       <div class="text-center mb-4" style="display:flex; flex-direction:column; align-items:center; gap:.35rem;">
-        <div class="text-lg" style="font-weight:900;">Level <span class="event-number-glow">${state.prestige.level}</span></div>
+        <div class="text-lg" style="font-weight:900;">Level <span class="event-number-glow">${state.prestige.level.toLocaleString("en-US")}</span></div>
         <div class="text-sm text-neon-gray">
           <span style="display:inline-flex; align-items:center; gap:.35rem; padding:.2rem .55rem; border:1px solid var(--border-color); border-radius:999px; background:linear-gradient(135deg, rgba(0,0,0,.25), rgba(0,0,0,.05)); box-shadow:0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,.35);">
-            <span class="event-number-glow">${state.prestige.dataShards}</span> <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>
+            <span class="event-number-glow">${state.prestige.dataShards.toLocaleString("en-US")}</span> <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>
           </span>
         </div>
       </div>
@@ -1762,7 +1762,7 @@ function renderPrestige() {
       ${
         canPrestige
           ? `<button id="do-prestige" class="neon-btn w-full mb-2" style="white-space: normal; display: flex; flex-direction: column; align-items: center; gap: 0.2rem;">
-          <span><img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Now! (+${shardGain} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>)</span>
+          <span><img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Now! (+${shardGain.toLocaleString("en-US")} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>)</span>
           <span style="color: #4a7c59; font-size: 0.8rem; opacity: 1; line-height: 1.2; text-shadow: none; filter: none;">Reset progress for permanent bonuses</span>
         </button>`
           : `<div class="text-center text-neon-gray mb-4" style="font-size:.9rem;">
@@ -1819,7 +1819,7 @@ function renderDaily() {
           canClaim
             ? `<button id="claim-daily" class="neon-btn mt-2">
             ${window.Packet && Packet.i18n ? Packet.i18n.t("buttons.claimDaily", { n: streak + 1 }) : "Claim Day " + (streak + 1) + " Reward!"}
-            <div class="text-xs"><span class="event-number-glow">${nextReward.gems}</span><img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> + <span class="event-number-glow">${nextReward.packets}</span><span class="icon-packet"></span></div>
+            <div class="text-xs"><span class="event-number-glow">${nextReward.gems.toLocaleString("en-US")}</span><img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> + <span class="event-number-glow">${nextReward.packets.toLocaleString("en-US")}</span><span class="icon-packet"></span></div>
             ${nextReward.bonus ? `<div class="text-xs" style="color:#f4e29f; font-style:italic; margin-top:0.25rem;">${nextReward.bonus}</div>` : ""}
           </button>`
             : `<div class="text-neon-gray text-sm mt-2">Come back tomorrow for next reward!</div>`
@@ -2181,7 +2181,7 @@ function renderAdminItemsTab() {
             <button id="admin-add-gems" class="neon-btn" style="font-size: 0.8rem;">Add Gems</button>
             <button id="admin-set-gems" class="neon-btn" style="font-size: 0.8rem;">Set Gems</button>
           </div>
-          <div style="font-size: 0.9rem; color: #a0aec0;">Current Gems: <span id="admin-current-gems">${state.gems}</span></div>
+          <div style="font-size: 0.9rem; color: #a0aec0;">Current Gems: <span id="admin-current-gems">${state.gems.toLocaleString("en-US")}</span></div>
         </div>
 
         <div class="neon-card" style="padding: 1rem;">
@@ -2213,7 +2213,7 @@ function renderAdminItemsTab() {
             <button id="admin-clear-inventory" class="neon-btn" style="background: #e53e3e; font-size: 0.8rem;">Clear Inventory</button>
             <button id="admin-auto-equip-best" class="neon-btn" style="font-size: 0.8rem;">Auto-Equip Best</button>
           </div>
-          <div style="font-size: 0.9rem; color: #a0aec0;">Inventory Items: <span id="admin-inventory-count">${state.inventory.length}</span></div>
+          <div style="font-size: 0.9rem; color: #a0aec0;">Inventory Items: <span id="admin-inventory-count">${state.inventory.length.toLocaleString("en-US")}</span></div>
         </div>
       </div>
     </div>
@@ -2239,8 +2239,17 @@ function bindAdminPanelEvents() {
         case "items":
           content = renderAdminItemsTab();
           break;
-        default:
-          content = "<div>Coming soon...</div>";
+        case "player":
+          content = renderAdminPlayerTab();
+          break;
+        case "boosts":
+          content = renderAdminBoostsTab();
+          break;
+        case "logs":
+          content = renderAdminLogsTab();
+          break;
+        case "achievements":
+          content = renderAdminAchievementsTab();
           break;
       }
       document.getElementById("admin-content").innerHTML = content;
@@ -2267,7 +2276,8 @@ function bindAdminTabEvents(tabName) {
         parseInt(document.getElementById("admin-gem-amount").value) || 0;
       if (amount > 0) {
         state.gems += amount;
-        document.getElementById("admin-current-gems").textContent = state.gems;
+        document.getElementById("admin-current-gems").textContent =
+          state.gems.toLocaleString("en-US");
         logAdminAction(`Added ${amount} gems`);
         save();
         updateTopBar();
@@ -2278,7 +2288,8 @@ function bindAdminTabEvents(tabName) {
       const amount =
         parseInt(document.getElementById("admin-gem-amount").value) || 0;
       state.gems = Math.max(0, amount);
-      document.getElementById("admin-current-gems").textContent = state.gems;
+      document.getElementById("admin-current-gems").textContent =
+        state.gems.toLocaleString("en-US");
       logAdminAction(`Set gems to ${state.gems}`);
       save();
       updateTopBar();
@@ -2346,7 +2357,7 @@ function bindAdminTabEvents(tabName) {
         }
 
         document.getElementById("admin-inventory-count").textContent =
-          state.inventory.length;
+          state.inventory.length.toLocaleString("en-US");
         logAdminAction(`Spawned ${successCount}/${count} ${rarityId} items`);
         save();
 
@@ -2413,7 +2424,7 @@ function bindAdminTabEvents(tabName) {
               console.log("[ADMIN] Award specific result:", success);
               if (success) {
                 document.getElementById("admin-inventory-count").textContent =
-                  state.inventory.length;
+                  state.inventory.length.toLocaleString("en-US");
                 logAdminAction(`Spawned ${rarityId} ${baseItem.name}`);
                 save();
                 // Force refresh the equipment tab if visible
@@ -2444,7 +2455,7 @@ function bindAdminTabEvents(tabName) {
       if (confirm("Clear entire inventory? This cannot be undone.")) {
         const count = state.inventory.length;
         state.inventory = [];
-        document.getElementById("admin-inventory-count").textContent = 0;
+        document.getElementById("admin-inventory-count").textContent = "0";
         logAdminAction(`Cleared inventory (${count} items removed)`);
         save();
         if (Equipment && typeof Equipment.renderTab === "function") {
@@ -2466,6 +2477,235 @@ function bindAdminTabEvents(tabName) {
         if (typeof Equipment.renderTab === "function") {
           Equipment.renderTab(state);
         }
+      }
+    };
+  } else if (tabName === "player") {
+    // Player stats
+    document.getElementById("admin-update-stats").onclick = () => {
+      state.packets = Math.max(
+        0,
+        parseFloat(document.getElementById("admin-packets").value) || 0,
+      );
+      state.clickMult = Math.max(
+        1,
+        parseFloat(document.getElementById("admin-click-power").value) || 1,
+      );
+      state.idleMult = Math.max(
+        0,
+        parseFloat(document.getElementById("admin-idle-power").value) || 0,
+      );
+      state.critMult = Math.max(
+        1,
+        parseFloat(document.getElementById("admin-crit-mult").value) || 1,
+      );
+      logAdminAction(`Updated player stats`);
+      save();
+      updateTopBar();
+      renderTab();
+    };
+
+    // VIP toggle
+    document.getElementById("admin-toggle-vip").onclick = () => {
+      if (isVIP()) {
+        state.player.vipUntil = 0;
+        logAdminAction(`Removed VIP status`);
+      } else {
+        state.player.vipUntil = Date.now() + 365 * 24 * 60 * 60 * 1000;
+        logAdminAction(`Granted VIP status`);
+      }
+      save();
+      updateTopBar();
+    };
+
+    // Unlock all skins
+    document.getElementById("admin-unlock-all-skins").onclick = () => {
+      state.shop.skinBought = true;
+      state.shop.skinElite = true;
+      state.shop.skinCyber = true;
+      state.shop.skinNeon = true;
+      state.shop.skinMatrix = true;
+      state.shop.skinRetro = true;
+      logAdminAction(`Unlocked all skins`);
+      save();
+    };
+
+    // Unlock all themes
+    document.getElementById("admin-unlock-all-themes").onclick = () => {
+      if (typeof THEMES !== "undefined") {
+        Object.keys(THEMES).forEach((themeId) => {
+          if (!state.themes) state.themes = {};
+          state.themes[themeId] = true;
+        });
+      }
+      logAdminAction(`Unlocked all themes`);
+      save();
+    };
+
+    // Upgrades
+    document.getElementById("admin-update-upgrades").onclick = () => {
+      state.upgrades.click = Math.max(
+        0,
+        parseInt(document.getElementById("admin-click-upgrade").value) || 0,
+      );
+      state.upgrades.idle = Math.max(
+        0,
+        parseInt(document.getElementById("admin-idle-upgrade").value) || 0,
+      );
+      state.upgrades.crit = Math.max(
+        0,
+        parseInt(document.getElementById("admin-crit-upgrade").value) || 0,
+      );
+      logAdminAction(`Updated upgrade levels`);
+      save();
+      renderTab();
+    };
+  } else if (tabName === "boosts") {
+    // Boost toggles
+    document.querySelectorAll(".admin-boost-btn").forEach((btn) => {
+      btn.onclick = () => {
+        const boostType = btn.dataset.boost;
+        const duration =
+          parseInt(document.getElementById("admin-boost-duration").value) || 10;
+
+        if (state.boosts[boostType] > Date.now()) {
+          state.boosts[boostType] = 0;
+          logAdminAction(`Deactivated ${boostType} boost`);
+        } else {
+          state.boosts[boostType] = Date.now() + duration * 60 * 1000;
+          logAdminAction(
+            `Activated ${boostType} boost for ${duration} minutes`,
+          );
+        }
+        save();
+
+        document.getElementById("admin-content").innerHTML =
+          renderAdminBoostsTab();
+        bindAdminTabEvents("boosts");
+      };
+    });
+
+    document.getElementById("admin-clear-all-boosts").onclick = () => {
+      Object.keys(state.boosts).forEach((boost) => {
+        state.boosts[boost] = 0;
+      });
+      logAdminAction(`Cleared all active boosts`);
+      save();
+
+      document.getElementById("admin-content").innerHTML =
+        renderAdminBoostsTab();
+      bindAdminTabEvents("boosts");
+    };
+  } else if (tabName === "logs") {
+    document.getElementById("admin-clear-logs").onclick = () => {
+      clearAdminLogs();
+      document.getElementById("admin-log-container").innerHTML = "";
+    };
+
+    document.getElementById("admin-export-logs").onclick = () => {
+      const logs = getAdminLogs();
+      const blob = new Blob([logs.join("\n")], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `admin-logs-${new Date().toISOString().split("T")[0]}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    document.getElementById("admin-refresh-logs").onclick = () => {
+      document.getElementById("admin-log-container").innerHTML =
+        getAdminLogs().join("<br>");
+    };
+
+    document.getElementById("admin-export-save").onclick = () => {
+      const saveData = JSON.stringify(state, null, 2);
+      const blob = new Blob([saveData], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `save-data-${new Date().toISOString().split("T")[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    document.getElementById("admin-import-save").onclick = () => {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = ".json";
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            try {
+              const importedState = JSON.parse(e.target.result);
+              Object.assign(state, importedState);
+              save();
+              logAdminAction(`Imported save data from ${file.name}`);
+              alert("Save data imported successfully! Refreshing...");
+              location.reload();
+            } catch (err) {
+              alert("Error importing save data: " + err.message);
+            }
+          };
+          reader.readAsText(file);
+        }
+      };
+      input.click();
+    };
+
+    document.getElementById("admin-reset-save").onclick = () => {
+      if (
+        confirm(
+          "Reset entire game? This will delete ALL progress and cannot be undone!",
+        )
+      ) {
+        localStorage.removeItem(STORAGE_KEY);
+        logAdminAction(`Reset entire game save`);
+        alert("Game reset! Refreshing...");
+        location.reload();
+      }
+    };
+  } else if (tabName === "achievements") {
+    document.getElementById("admin-unlock-all-achievements").onclick = () => {
+      if (typeof ACHIEVEMENTS !== "undefined") {
+        let count = 0;
+        ACHIEVEMENTS.forEach((achievement) => {
+          if (!state.achievements.includes(achievement.id)) {
+            state.achievements.push(achievement.id);
+            count++;
+          }
+        });
+        document.getElementById("admin-achievement-count").textContent =
+          state.achievements.length.toLocaleString("en-US");
+        logAdminAction(`Unlocked ${count} achievements`);
+        save();
+      }
+    };
+
+    document.getElementById("admin-reset-achievements").onclick = () => {
+      if (confirm("Reset all achievements? This cannot be undone.")) {
+        state.achievements = [];
+        document.getElementById("admin-achievement-count").textContent = "0";
+        logAdminAction(`Reset all achievements`);
+        save();
+      }
+    };
+
+    document.getElementById("admin-reset-stats").onclick = () => {
+      if (confirm("Reset all statistics? This cannot be undone.")) {
+        state.stats = {
+          totalClicks: 0,
+          totalPackets: 0,
+          totalUpgrades: 0,
+          sessionStart: Date.now(),
+        };
+        logAdminAction(`Reset all statistics`);
+        save();
+
+        document.getElementById("admin-content").innerHTML =
+          renderAdminAchievementsTab();
+        bindAdminTabEvents("achievements");
       }
     };
   }
@@ -2527,6 +2767,170 @@ function getAdminLogs() {
 
 function clearAdminLogs() {
   adminLogs = [];
+}
+
+function renderAdminPlayerTab() {
+  return `
+    <div class="admin-tab-content" data-tab="player" style="display: none;">
+      <div class="space-y-3">
+        <div class="neon-card" style="padding: 1rem;">
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">📊 Player Stats</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <div>
+              <label style="display: block; font-size: 0.8rem; color: #a0aec0;">Packets:</label>
+              <input type="number" id="admin-packets" value="${state.packets}" style="padding: 0.5rem; background: #2d3748; border: 1px solid #4a5568; border-radius: 0.25rem; color: white; width: 100%;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.8rem; color: #a0aec0;">Click Power:</label>
+              <input type="number" id="admin-click-power" value="${state.clickMult}" style="padding: 0.5rem; background: #2d3748; border: 1px solid #4a5568; border-radius: 0.25rem; color: white; width: 100%;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.8rem; color: #a0aec0;">Idle Power:</label>
+              <input type="number" id="admin-idle-power" value="${state.idleMult}" style="padding: 0.5rem; background: #2d3748; border: 1px solid #4a5568; border-radius: 0.25rem; color: white; width: 100%;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.8rem; color: #a0aec0;">Crit Multiplier:</label>
+              <input type="number" id="admin-crit-mult" value="${state.critMult}" style="padding: 0.5rem; background: #2d3748; border: 1px solid #4a5568; border-radius: 0.25rem; color: white; width: 100%;">
+            </div>
+          </div>
+          <button id="admin-update-stats" class="neon-btn" style="margin-top: 0.5rem; width: 100%;">Update Stats</button>
+        </div>
+
+        <div class="neon-card" style="padding: 1rem;">
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">🎖️ VIP & Shop</h3>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button id="admin-toggle-vip" class="neon-btn" style="font-size: 0.8rem;">${isVIP() ? "Remove VIP" : "Grant VIP"}</button>
+            <button id="admin-unlock-all-skins" class="neon-btn" style="font-size: 0.8rem;">Unlock All Skins</button>
+            <button id="admin-unlock-all-themes" class="neon-btn" style="font-size: 0.8rem;">Unlock All Themes</button>
+          </div>
+        </div>
+
+        <div class="neon-card" style="padding: 1rem;">
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">📈 Upgrades</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+            <div>
+              <label style="display: block; font-size: 0.8rem; color: #a0aec0;">Click Upgrade:</label>
+              <input type="number" id="admin-click-upgrade" value="${state.upgrades.click}" style="padding: 0.5rem; background: #2d3748; border: 1px solid #4a5568; border-radius: 0.25rem; color: white; width: 100%;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.8rem; color: #a0aec0;">Idle Upgrade:</label>
+              <input type="number" id="admin-idle-upgrade" value="${state.upgrades.idle}" style="padding: 0.5rem; background: #2d3748; border: 1px solid #4a5568; border-radius: 0.25rem; color: white; width: 100%;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.8rem; color: #a0aec0;">Crit Upgrade:</label>
+              <input type="number" id="admin-crit-upgrade" value="${state.upgrades.crit}" style="padding: 0.5rem; background: #2d3748; border: 1px solid #4a5568; border-radius: 0.25rem; color: white; width: 100%;">
+            </div>
+          </div>
+          <button id="admin-update-upgrades" class="neon-btn" style="margin-top: 0.5rem; width: 100%;">Update Upgrades</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAdminBoostsTab() {
+  return `
+    <div class="admin-tab-content" data-tab="boosts" style="display: none;">
+      <div class="space-y-3">
+        <div class="neon-card" style="padding: 1rem;">
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">⚡ Active Boosts Control</h3>
+          <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 0.5rem; align-items: center;">
+            <div>Double Packets</div>
+            <div style="font-size: 0.8rem; color: #a0aec0;">${state.boosts.doublePackets > Date.now() ? Math.ceil((state.boosts.doublePackets - Date.now()) / 1000).toLocaleString("en-US") + "s" : "Inactive"}</div>
+            <button class="admin-boost-btn" data-boost="doublePackets" style="padding: 0.25rem 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.7rem;">Toggle</button>
+
+            <div>Triple Gems</div>
+            <div style="font-size: 0.8rem; color: #a0aec0;">${state.boosts.tripleGems > Date.now() ? Math.ceil((state.boosts.tripleGems - Date.now()) / 1000).toLocaleString("en-US") + "s" : "Inactive"}</div>
+            <button class="admin-boost-btn" data-boost="tripleGems" style="padding: 0.25rem 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.7rem;">Toggle</button>
+
+            <div>Quadruple Click</div>
+            <div style="font-size: 0.8rem; color: #a0aec0;">${state.boosts.quadrupleClick > Date.now() ? Math.ceil((state.boosts.quadrupleClick - Date.now()) / 1000).toLocaleString("en-US") + "s" : "Inactive"}</div>
+            <button class="admin-boost-btn" data-boost="quadrupleClick" style="padding: 0.25rem 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.7rem;">Toggle</button>
+
+            <div>Mega Crit</div>
+            <div style="font-size: 0.8rem; color: #a0aec0;">${state.boosts.megaCrit > Date.now() ? Math.ceil((state.boosts.megaCrit - Date.now()) / 1000).toLocaleString("en-US") + "s" : "Inactive"}</div>
+            <button class="admin-boost-btn" data-boost="megaCrit" style="padding: 0.25rem 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.7rem;">Toggle</button>
+
+            <div>Auto Clicker</div>
+            <div style="font-size: 0.8rem; color: #a0aec0;">${state.boosts.autoClicker > Date.now() ? Math.ceil((state.boosts.autoClicker - Date.now()) / 1000).toLocaleString("en-US") + "s" : "Inactive"}</div>
+            <button class="admin-boost-btn" data-boost="autoClicker" style="padding: 0.25rem 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.7rem;">Toggle</button>
+
+            <div>Ultra Combo</div>
+            <div style="font-size: 0.8rem; color: #a0aec0;">${state.boosts.ultraCombo > Date.now() ? Math.ceil((state.boosts.ultraCombo - Date.now()) / 1000).toLocaleString("en-US") + "s" : "Inactive"}</div>
+            <button class="admin-boost-btn" data-boost="ultraCombo" style="padding: 0.25rem 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.7rem;">Toggle</button>
+          </div>
+        </div>
+
+        <div class="neon-card" style="padding: 1rem;">
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">🎯 Boost Duration</h3>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <input type="number" id="admin-boost-duration" placeholder="Minutes" value="10" min="1" max="1440" style="padding: 0.5rem; background: #2d3748; border: 1px solid #4a5568; border-radius: 0.25rem; color: white; width: 100px;">
+            <span style="font-size: 0.8rem; color: #a0aec0;">minutes</span>
+            <button id="admin-clear-all-boosts" class="neon-btn" style="background: #e53e3e; font-size: 0.8rem;">Clear All Boosts</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAdminLogsTab() {
+  return `
+    <div class="admin-tab-content" data-tab="logs" style="display: none;">
+      <div class="space-y-3">
+        <div class="neon-card" style="padding: 1rem;">
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">📋 Activity Log</h3>
+          <div id="admin-log-container" style="background: #1a202c; border: 1px solid #4a5568; border-radius: 0.25rem; padding: 0.5rem; height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.8rem;">
+            ${getAdminLogs().join("<br>")}
+          </div>
+          <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem;">
+            <button id="admin-clear-logs" class="neon-btn" style="font-size: 0.8rem; background: #e53e3e;">Clear Logs</button>
+            <button id="admin-export-logs" class="neon-btn" style="font-size: 0.8rem;">Export Logs</button>
+            <button id="admin-refresh-logs" class="neon-btn" style="font-size: 0.8rem;">Refresh</button>
+          </div>
+        </div>
+
+        <div class="neon-card" style="padding: 1rem;">
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">💾 Game Data</h3>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button id="admin-export-save" class="neon-btn" style="font-size: 0.8rem;">Export Save Data</button>
+            <button id="admin-import-save" class="neon-btn" style="font-size: 0.8rem;">Import Save Data</button>
+            <button id="admin-reset-save" class="neon-btn" style="background: #e53e3e; font-size: 0.8rem;">Reset Game</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAdminAchievementsTab() {
+  return `
+    <div class="admin-tab-content" data-tab="achievements" style="display: none;">
+      <div class="space-y-3">
+        <div class="neon-card" style="padding: 1rem;">
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">🏆 Achievement Control</h3>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <button id="admin-unlock-all-achievements" class="neon-btn" style="font-size: 0.8rem;">Unlock All Achievements</button>
+            <button id="admin-reset-achievements" class="neon-btn" style="background: #e53e3e; font-size: 0.8rem;">Reset All Achievements</button>
+          </div>
+          <div style="font-size: 0.9rem; color: #a0aec0;">
+            Unlocked: <span id="admin-achievement-count">${(state.achievements || []).length.toLocaleString("en-US")}</span>
+          </div>
+        </div>
+
+        <div class="neon-card" style="padding: 1rem;">
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">📊 Statistics</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.9rem;">
+            <div>Total Clicks: <span class="event-number-glow">${(state.stats?.totalClicks || 0).toLocaleString("en-US")}</span></div>
+            <div>Total Packets: <span class="event-number-glow">${(state.stats?.totalPackets || 0).toLocaleString("en-US")}</span></div>
+            <div>Total Upgrades: <span class="event-number-glow">${(state.stats?.totalUpgrades || 0).toLocaleString("en-US")}</span></div>
+            <div>Session Time: <span class="event-number-glow">${Math.floor((Date.now() - (state.stats?.sessionStart || Date.now())) / 60000).toLocaleString("en-US")}m</span></div>
+          </div>
+          <button id="admin-reset-stats" class="neon-btn" style="margin-top: 0.5rem; background: #e53e3e; font-size: 0.8rem; width: 100%;">Reset Statistics</button>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 // =============== RANDOM EVENTS ===============
@@ -3480,13 +3884,13 @@ function buyGemPack(packId) {
   state.gems += pack.gems;
   showModal(
     "Thank You!",
-    `You received <b>${pack.gems} 💎</b>!<br>Implement real payments for store publishing.`,
+    `You received <b>${pack.gems.toLocaleString("en-US")} 💎</b>!<br>Implement real payments for store publishing.`,
   );
   save();
   updateTopBar();
   renderTab();
   checkAchievements();
-  showHudNotify(`+${pack.gems} 💎 (Purchased!)`, "💎");
+  showHudNotify(`+${pack.gems.toLocaleString("en-US")} 💎 (Purchased!)`, "💎");
 }
 
 function buyShopItem(itemId) {
@@ -3793,7 +4197,7 @@ function doPrestige() {
 
   showModal(
     "Prestige Complete!",
-    `You gained ${shardGain} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/> Data Shards!<br>Your prestige level is now ${state.prestige.level}!`,
+    `You gained ${shardGain.toLocaleString("en-US")} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/> Data Shards!<br>Your prestige level is now ${state.prestige.level.toLocaleString("en-US")}!`,
   );
   showHudNotify(
     `Prestige Level ${state.prestige.level}!`,
