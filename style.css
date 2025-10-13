@@ -101,8 +101,8 @@ html {
     overflow-x: hidden;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
-    /* Allow touch scrolling */
-    touch-action: auto;
+    /* Prevent double-tap zoom */
+    touch-action: manipulation;
     /* Gentle iOS fixes */
     -webkit-text-size-adjust: 100%;
 }
@@ -135,8 +135,8 @@ body {
     line-height: 1.4;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Enhanced touch handling */
-    touch-action: pan-y pinch-zoom;
+    /* Enhanced touch handling - PREVENT DOUBLE TAP ZOOM */
+    touch-action: manipulation;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;
