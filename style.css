@@ -4294,14 +4294,13 @@ footer {
     }
 }
 
-/* === PRESTIGE AVAILABLE BUTTON RAINBOW BORDER === */
-#prestige-btn {
-    border: 3px solid;
-    animation: celestialRainbow 3s ease-in-out infinite;
-}
-
-/* === PRESTIGE AVAILABLE BUTTON RAINBOW TEXT === */
-#prestige-btn {
+/* === PRESTIGE AVAILABLE BUTTON RAINBOW BORDER & TEXT === */
+#prestige-btn,
+#prestige-btn.neon-btn,
+button#prestige-btn,
+.neon-btn#prestige-btn {
+    border: 3px solid !important;
+    border-radius: 12px !important;
     animation:
         celestialRainbow 3s ease-in-out infinite,
         celestialTextOnly 3s ease-in-out infinite;
