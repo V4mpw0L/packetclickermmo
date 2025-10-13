@@ -1255,7 +1255,7 @@ function slotHeaderHTML(item, slotName, slotId) {
   const st = rarityStyles(item.rarity);
   const imgBorderStyle =
     item.rarity === "celestial"
-      ? `border: ${st.border}; border-image: ${st.borderImage};`
+      ? `border: none; border-radius: 8px; box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080;`
       : `border:${st.border};`;
   const imgAnimationStyle = st.animation ? `animation: ${st.animation};` : "";
   return `
@@ -1371,19 +1371,19 @@ export function renderTab(state) {
       }
       @keyframes celestialRainbow {
         0% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, 0 0 20px rgba(255,0,128,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, 0 0 20px rgba(255,255,255,0.8);
         }
         25% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #00ff80, 0 0 20px rgba(0,255,128,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #00ff80, 0 0 20px rgba(255,255,255,0.8);
         }
         50% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #8000ff, 0 0 20px rgba(128,0,255,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #8000ff, 0 0 20px rgba(255,255,255,0.8);
         }
         75% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff8000, 0 0 20px rgba(255,128,0,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff8000, 0 0 20px rgba(255,255,255,0.8);
         }
         100% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, 0 0 20px rgba(255,0,128,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, 0 0 20px rgba(255,255,255,0.8);
         }
       }
       @keyframes celestialTextOnly {
@@ -1539,7 +1539,7 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
       // Create different modals based on whether slots are available
       const html = emptySlot
         ? `
-        <div class="neon-card" style="padding:.75rem; ${item.rarity === "celestial" ? "border: 2px solid transparent; border-image: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1; animation: celestialRainbow 3s linear infinite;" : `border: 2px solid ${st.color};`} box-shadow:${st.glow}; ${item.rarity === "animal" ? `animation: ${st.animation};` : ""}">
+        <div class="neon-card" style="padding:.75rem; ${item.rarity === "celestial" ? "border: none; border-radius: 12px; animation: celestialRainbow 3s linear infinite;" : `border: 2px solid ${st.color}; box-shadow:${st.glow};`} ${item.rarity === "celestial" ? "" : item.rarity === "animal" ? `box-shadow:${st.glow}; animation: ${st.animation};` : `box-shadow:${st.glow};`}">
           <div style="display:flex; gap:.6rem; align-items:center;">
             <img src="${item.icon}" alt="${item.name}" style="width:64px;height:64px;border-radius:8px; object-fit:cover;" />
             <div>
@@ -1562,7 +1562,7 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
         </div>
       `
         : `
-        <div class="neon-card" style="padding:.75rem; ${item.rarity === "celestial" ? "border: 2px solid transparent; border-image: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1; animation: celestialRainbow 3s linear infinite;" : `border: 2px solid ${st.color};`} box-shadow:${st.glow}; ${item.rarity === "animal" ? `animation: ${st.animation};` : ""}">
+        <div class="neon-card" style="padding:.75rem; ${item.rarity === "celestial" ? "border: none; border-radius: 12px; animation: celestialRainbow 3s linear infinite;" : `border: 2px solid ${st.color}; box-shadow:${st.glow};`} ${item.rarity === "celestial" ? "" : item.rarity === "animal" ? `box-shadow:${st.glow}; animation: ${st.animation};` : `box-shadow:${st.glow};`}">
           <div style="display:flex; gap:.6rem; align-items:center;">
             <img src="${item.icon}" alt="${item.name}" style="width:64px;height:64px;border-radius:8px; object-fit:cover;" />
             <div>
