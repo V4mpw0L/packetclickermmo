@@ -2338,6 +2338,17 @@ function bindAdminTabEvents(tabName) {
                 item.color = rarityObj.color;
               }
 
+              // Recalculate stats for the selected rarity
+              if (Equipment.rollStatsFor) {
+                item.stats = Equipment.rollStatsFor(rarityId, item.slot);
+                console.log(
+                  "[ADMIN] Recalculated stats for",
+                  rarityId,
+                  ":",
+                  item.stats,
+                );
+              }
+
               const success = Equipment.awardDrop(state, item, {
                 save: () => save(),
                 notify: showHudNotify,
