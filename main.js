@@ -1500,6 +1500,7 @@ function renderLeaderboard() {
           <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #c0c0c0; box-shadow:0 0 12px rgba(192,192,192,0.55); overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);">
             <img src="${getSafeAvatarUrl((t[1] && t[1].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
           </div>
+          <div style="font-size:0.8rem; font-weight:bold; margin-top:0.25rem; color:#c0c0c0; text-shadow: 0 0 6px rgba(192, 192, 192, 0.8), 0 0 8px rgba(192, 192, 192, 0.5); text-align:center; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${String((t[1] && t[1].name) || "Player").slice(0, 12)}</div>
           <div style="width:64px; height:36px; background:linear-gradient(180deg, #3b4a5a, #2a3947); border:2px solid #c0c0c0; border-top-left-radius:8px; border-top-right-radius:8px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:800;">2</div>
           <div style="margin-top:0.15rem; font-size:1.1rem;">🥈</div>
         </div>
@@ -1507,6 +1508,7 @@ function renderLeaderboard() {
           <div style="display:flex; align-items:center; justify-content:center; width:84px; height:84px; border-radius:50%; border:4px solid #ffd700; box-shadow:0 0 16px rgba(255,215,0,0.75); overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.22), transparent);">
             <img src="${getSafeAvatarUrl((t[0] && t[0].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
           </div>
+          <div style="font-size:0.9rem; font-weight:bold; margin-top:0.25rem; color:#ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.8), 0 0 12px rgba(255, 215, 0, 0.5); text-align:center; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${String((t[0] && t[0].name) || "Player").slice(0, 12)}</div>
           <div style="width:84px; height:52px; background:linear-gradient(180deg, #435a2a, #344a1f); border:3px solid #ffd700; border-top-left-radius:10px; border-top-right-radius:10px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:900; color:#ffec8a; text-shadow:0 1px 2px rgba(0,0,0,0.4);">1</div>
           <div style="margin-top:0.15rem; font-size:1.1rem;">👑 🥇</div>
         </div>
@@ -1514,6 +1516,7 @@ function renderLeaderboard() {
           <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #cd7f32; box-shadow:0 0 12px rgba(205,127,50,0.55); overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);">
             <img src="${getSafeAvatarUrl((t[2] && t[2].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
           </div>
+          <div style="font-size:0.8rem; font-weight:bold; margin-top:0.25rem; color:#cd7f32; text-shadow: 0 0 6px rgba(205, 127, 50, 0.8), 0 0 8px rgba(205, 127, 50, 0.5); text-align:center; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${String((t[2] && t[2].name) || "Player").slice(0, 12)}</div>
           <div style="width:64px; height:28px; background:linear-gradient(180deg, #4d3925, #3b2a1b); border:2px solid #cd7f32; border-top-left-radius:8px; border-top-right-radius:8px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:800;">3</div>
           <div style="margin-top:0.15rem; font-size:1.1rem;">🥉</div>
         </div>
