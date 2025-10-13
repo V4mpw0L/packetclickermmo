@@ -118,6 +118,26 @@ export function hideComboTotalHUD(timeoutMs = 2200) {
  * @param {string} [icon="✨"]
  * @param {number} [duration=1800]
  */
+/**
+ * Get current viewport information for scroll-aware positioning
+ * @returns {Object} viewport info with scrollY and viewportHeight
+ */
+function getViewportInfo() {
+  try {
+    const scrollY =
+      window.pageYOffset || document.documentElement.scrollTop || 0;
+    const viewportHeight =
+      window.innerHeight || document.documentElement.clientHeight || 0;
+    return {
+      scrollY: Math.max(0, scrollY),
+      viewportHeight: Math.max(300, viewportHeight),
+    };
+  } catch (e) {
+    // Fallback for edge cases
+    return { scrollY: 0, viewportHeight: 600 };
+  }
+}
+
 export function showHudNotify(msg, icon = "✨", duration = 1800) {
   if (typeof document === "undefined") return;
 
@@ -138,11 +158,14 @@ export function showHudNotify(msg, icon = "✨", duration = 1800) {
     document.querySelectorAll(".hud-notify").forEach((n) => n.remove());
   } catch (_) {}
 
+  // Get current scroll position to follow user
+  const viewport = getViewportInfo();
+
   const hud = document.createElement("div");
   hud.id = HUD_IDS.notify;
-  hud.className = "hud-notify";
-  hud.style.position = "fixed";
-  hud.style.top = "6%";
+  hud.className = "hud-notify hud-notify-follow";
+  hud.style.position = "absolute";
+  hud.style.top = `${viewport.scrollY + Math.max(30, viewport.viewportHeight * 0.06)}px`;
   hud.style.left = "50%";
   hud.style.transform = "translate(-50%, 0)";
   hud.style.padding = "10px 18px";
@@ -156,7 +179,8 @@ export function showHudNotify(msg, icon = "✨", duration = 1800) {
     "0 2px 12px var(--shadow-primary, rgba(0,0,0,0.35)), 0 0 0 1px rgba(255,255,255,0.08) inset";
   hud.style.zIndex = "1200";
   hud.style.pointerEvents = "none";
-  hud.style.maxWidth = "92vw";
+  hud.style.maxWidth = "90vw";
+  hud.style.wordWrap = "break-word";
   hud.style.textAlign = "center";
   hud.style.backdropFilter = "blur(6px)";
   hud.style.opacity = "0";

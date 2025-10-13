@@ -55,6 +55,26 @@
    * @param {string} themeId
    * @param {{themes?: any}} [opts]
    */
+  /**
+   * Get current viewport information for scroll-aware positioning
+   * @returns {Object} viewport info with scrollY and viewportHeight
+   */
+  function getViewportInfo() {
+    try {
+      const scrollY =
+        window.pageYOffset || document.documentElement.scrollTop || 0;
+      const viewportHeight =
+        window.innerHeight || document.documentElement.clientHeight || 0;
+      return {
+        scrollY: Math.max(0, scrollY),
+        viewportHeight: Math.max(300, viewportHeight),
+      };
+    } catch (e) {
+      // Fallback for edge cases
+      return { scrollY: 0, viewportHeight: 600 };
+    }
+  }
+
   function applyTheme(themeId, opts) {
     if (typeof document === "undefined") return;
 
@@ -129,9 +149,21 @@
       }
     }
 
+    // Get current scroll position to follow user
+    const viewport = getViewportInfo();
+
     const hud = document.createElement("div");
-    hud.className = "hud-notify";
+    hud.className = "hud-notify hud-notify-follow";
     hud.innerHTML = `<span style="font-size:1.3em;">${ico}</span> <span>${formattedMsg}</span>`;
+
+    // Position notification to follow user's scroll position
+    hud.style.position = "absolute";
+    hud.style.top = `${viewport.scrollY + Math.max(50, viewport.viewportHeight * 0.15)}px`;
+    hud.style.left = "50%";
+    hud.style.transform = "translate(-50%, 0)";
+    hud.style.zIndex = "1500";
+    hud.style.maxWidth = "90vw";
+    hud.style.wordWrap = "break-word";
 
     const closeBtn = document.createElement("button");
     closeBtn.innerHTML = "×";
@@ -170,9 +202,20 @@
     const modal = $("#modal");
     if (!backdrop || !modal) return;
 
+    // Get current scroll position to center modal in user's viewport
+    const viewport = getViewportInfo();
+
     backdrop.classList.remove("hidden");
     backdrop.setAttribute("aria-hidden", "false");
     modal.classList.remove("hidden");
+
+    // Position backdrop to follow scroll position
+    backdrop.style.position = "absolute";
+    backdrop.style.top = `${viewport.scrollY}px`;
+    backdrop.style.height = `${Math.max(viewport.viewportHeight, 400)}px`;
+    backdrop.style.width = "100%";
+    backdrop.style.left = "0";
+    backdrop.style.minHeight = "100vh";
 
     modal.setAttribute("role", "dialog");
     modal.setAttribute("aria-modal", "true");
@@ -258,6 +301,13 @@
 
     backdrop.classList.add("hidden");
     backdrop.setAttribute("aria-hidden", "true");
+
+    // Reset backdrop positioning
+    backdrop.style.position = "";
+    backdrop.style.top = "";
+    backdrop.style.height = "";
+    backdrop.style.width = "";
+    backdrop.style.left = "";
 
     modal.classList.add("hidden");
     modal.innerHTML = "";
