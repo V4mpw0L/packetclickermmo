@@ -19,6 +19,8 @@ if (typeof window !== "undefined") {
       setTab,
       renderTab,
       buyBoost,
+      showAdminPanel,
+      Equipment,
     });
   } catch (e) {
     // no-op
@@ -137,6 +139,7 @@ const state = {
     quadrupleClick: 0,
     megaCrit: 0,
     autoClicker: 0,
+    ultraCombo: 0,
   },
 
   // Random Events
@@ -2029,6 +2032,9 @@ function showSettings() {
         <div class="flex flex-col gap-2">
           <button id="settings-save-btn" class="neon-btn w-full">Save Settings</button>
           <button id="edit-profile-inside" class="neon-btn w-full">Edit Profile</button>
+          <div style="text-align: center; margin-top: 1rem;">
+            <button id="admin-secret-btn" style="background: none; border: none; color: #666; font-size: 12px; opacity: 0.5; cursor: pointer; padding: 4px 8px; border-radius: 3px;">⚙</button>
+          </div>
         </div>
 
         <div class="text-xs text-neon-gray mt-1 text-center">
@@ -2109,6 +2115,418 @@ function showSettings() {
     closeModal();
     setTimeout(() => window.showEditProfile(), 180);
   };
+
+  // Admin secret button
+  document.getElementById("admin-secret-btn").onclick = function () {
+    const pin = prompt("Enter admin PIN:");
+    if (pin === "ADM93") {
+      closeModal();
+      setTimeout(() => showAdminPanel(), 180);
+    } else if (pin !== null) {
+      alert("Invalid PIN");
+    }
+  };
+}
+
+// =============== ADMIN PANEL ===============
+function showAdminPanel() {
+  // Initialize Equipment system if needed
+  if (typeof Equipment !== "undefined" && Equipment.ensureStateShape) {
+    Equipment.ensureStateShape(state);
+  }
+
+  console.log("[ADMIN] Opening admin panel. Equipment available:", {
+    Equipment: !!Equipment,
+    rollDrop: Equipment ? typeof Equipment.rollDrop : "N/A",
+    awardDrop: Equipment ? typeof Equipment.awardDrop : "N/A",
+    ITEM_POOL:
+      Equipment && Equipment.ITEM_POOL ? Equipment.ITEM_POOL.length : 0,
+  });
+
+  showModal(
+    "🛡️ Admin Control Panel",
+    `
+      <div class="admin-panel" style="max-height: 70vh; overflow-y: auto;">
+        <div class="admin-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+          <button class="admin-tab-btn active" data-tab="items" style="padding: 0.5rem 1rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.8rem;">Items</button>
+          <button class="admin-tab-btn" data-tab="player" style="padding: 0.5rem 1rem; background: #4a5568; color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.8rem;">Player</button>
+          <button class="admin-tab-btn" data-tab="boosts" style="padding: 0.5rem 1rem; background: #4a5568; color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.8rem;">Boosts</button>
+          <button class="admin-tab-btn" data-tab="logs" style="padding: 0.5rem 1rem; background: #4a5568; color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.8rem;">Logs</button>
+          <button class="admin-tab-btn" data-tab="achievements" style="padding: 0.5rem 1rem; background: #4a5568; color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.8rem;">Achievements</button>
+        </div>
+
+        <div id="admin-content">
+          ${renderAdminItemsTab()}
+        </div>
+
+        <div style="margin-top: 1rem; text-align: center;">
+          <button id="admin-close-btn" class="neon-btn" style="background: #e53e3e;">Close Admin Panel</button>
+        </div>
+      </div>
+    `,
+  );
+
+  // Bind admin panel events
+  bindAdminPanelEvents();
+}
+
+function renderAdminItemsTab() {
+  return `
+    <div class="admin-tab-content" data-tab="items">
+      <div class="space-y-3">
+        <div class="neon-card" style="padding: 1rem;">
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">💎 Gem Management</h3>
+          <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+            <input type="number" id="admin-gem-amount" placeholder="Amount" style="padding: 0.5rem; background: #2d3748; border: 1px solid #4a5568; border-radius: 0.25rem; color: white; width: 120px;">
+            <button id="admin-add-gems" class="neon-btn" style="font-size: 0.8rem;">Add Gems</button>
+            <button id="admin-set-gems" class="neon-btn" style="font-size: 0.8rem;">Set Gems</button>
+          </div>
+          <div style="font-size: 0.9rem; color: #a0aec0;">Current Gems: <span id="admin-current-gems">${state.gems}</span></div>
+        </div>
+
+        <div class="neon-card" style="padding: 1rem;">
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">⚔️ Spawn Equipment</h3>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+            <select id="admin-rarity-select" style="padding: 0.5rem; background: #2d3748; border: 1px solid #4a5568; border-radius: 0.25rem; color: white;">
+              <option value="green">Common</option>
+              <option value="gold">Rare</option>
+              <option value="blue">Epic</option>
+              <option value="pink">Ultra</option>
+              <option value="animal">Animal</option>
+              <option value="celestial">Celestial</option>
+            </select>
+            <input type="number" id="admin-item-count" placeholder="Count" value="1" min="1" max="50" style="padding: 0.5rem; background: #2d3748; border: 1px solid #4a5568; border-radius: 0.25rem; color: white; width: 80px;">
+            <button id="admin-spawn-random" class="neon-btn" style="font-size: 0.8rem;">Spawn Random Items</button>
+          </div>
+
+          <div style="margin-bottom: 0.5rem;">
+            <select id="admin-specific-item" style="padding: 0.5rem; background: #2d3748; border: 1px solid #4a5568; border-radius: 0.25rem; color: white; width: 100%; margin-bottom: 0.5rem;">
+              <option value="">Select Specific Item</option>
+            </select>
+            <button id="admin-spawn-specific" class="neon-btn" style="font-size: 0.8rem; width: 100%;">Spawn Selected Item</button>
+          </div>
+        </div>
+
+        <div class="neon-card" style="padding: 1rem;">
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">🎒 Inventory Management</h3>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <button id="admin-clear-inventory" class="neon-btn" style="background: #e53e3e; font-size: 0.8rem;">Clear Inventory</button>
+            <button id="admin-auto-equip-best" class="neon-btn" style="font-size: 0.8rem;">Auto-Equip Best</button>
+          </div>
+          <div style="font-size: 0.9rem; color: #a0aec0;">Inventory Items: <span id="admin-inventory-count">${state.inventory.length}</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function bindAdminPanelEvents() {
+  // Tab switching
+  document.querySelectorAll(".admin-tab-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      // Update tab buttons
+      document.querySelectorAll(".admin-tab-btn").forEach((b) => {
+        b.classList.remove("active");
+        b.style.background = "#4a5568";
+      });
+      btn.classList.add("active");
+      btn.style.background = "var(--primary-color)";
+
+      // Switch tab content
+      const tabName = btn.dataset.tab;
+      let content = "";
+      switch (tabName) {
+        case "items":
+          content = renderAdminItemsTab();
+          break;
+        default:
+          content = "<div>Coming soon...</div>";
+          break;
+      }
+      document.getElementById("admin-content").innerHTML = content;
+
+      // Re-bind events for new content
+      bindAdminTabEvents(tabName);
+    });
+  });
+
+  // Initial tab events
+  bindAdminTabEvents("items");
+
+  // Close button
+  document.getElementById("admin-close-btn").onclick = () => {
+    closeModal();
+  };
+}
+
+function bindAdminTabEvents(tabName) {
+  if (tabName === "items") {
+    // Gem management
+    document.getElementById("admin-add-gems").onclick = () => {
+      const amount =
+        parseInt(document.getElementById("admin-gem-amount").value) || 0;
+      if (amount > 0) {
+        state.gems += amount;
+        document.getElementById("admin-current-gems").textContent = state.gems;
+        logAdminAction(`Added ${amount} gems`);
+        save();
+        updateTopBar();
+      }
+    };
+
+    document.getElementById("admin-set-gems").onclick = () => {
+      const amount =
+        parseInt(document.getElementById("admin-gem-amount").value) || 0;
+      state.gems = Math.max(0, amount);
+      document.getElementById("admin-current-gems").textContent = state.gems;
+      logAdminAction(`Set gems to ${state.gems}`);
+      save();
+      updateTopBar();
+    };
+
+    // Equipment spawning
+    populateItemSelect();
+
+    document.getElementById("admin-spawn-random").onclick = () => {
+      const rarityId = document.getElementById("admin-rarity-select").value;
+      const count =
+        parseInt(document.getElementById("admin-item-count").value) || 1;
+
+      console.log("[ADMIN] Attempting to spawn items:", {
+        rarityId,
+        count,
+        Equipment: !!Equipment,
+        inventoryBefore: state.inventory ? state.inventory.length : 0,
+      });
+
+      // Ensure inventory exists
+      if (!Array.isArray(state.inventory)) {
+        state.inventory = [];
+      }
+
+      if (
+        typeof Equipment !== "undefined" &&
+        Equipment &&
+        typeof Equipment.rollDrop === "function" &&
+        typeof Equipment.awardDrop === "function"
+      ) {
+        let successCount = 0;
+        for (let i = 0; i < count; i++) {
+          try {
+            const item = Equipment.rollDrop(state);
+            console.log("[ADMIN] Rolled item:", item);
+
+            if (item) {
+              // Override rarity to match selection
+              item.rarity = rarityId;
+              const rarityObj = Equipment.RARITIES
+                ? Equipment.RARITIES.find((r) => r.id === rarityId)
+                : null;
+              if (rarityObj) {
+                item.rarityName = rarityObj.name;
+                item.color = rarityObj.color;
+              }
+
+              const success = Equipment.awardDrop(state, item, {
+                save: () => save(),
+                notify: showHudNotify,
+              });
+              console.log(
+                "[ADMIN] Award result:",
+                success,
+                "Inventory after:",
+                state.inventory.length,
+              );
+              if (success) successCount++;
+            }
+          } catch (e) {
+            console.error("Failed to spawn item:", e);
+            alert(`Error spawning item: ${e.message}`);
+          }
+        }
+
+        document.getElementById("admin-inventory-count").textContent =
+          state.inventory.length;
+        logAdminAction(`Spawned ${successCount}/${count} ${rarityId} items`);
+        save();
+
+        // Force refresh the equipment tab if visible
+        const activeTab = document.querySelector(".tab-btn.active");
+        if (activeTab && activeTab.dataset.tab === "equipment") {
+          renderTab();
+        }
+
+        showHudNotify(`Spawned ${successCount} items!`, "⚔️");
+      } else {
+        alert("Equipment system not available!");
+        console.error("Equipment functions missing:", {
+          Equipment: !!Equipment,
+          rollDrop:
+            typeof Equipment !== "undefined" && Equipment
+              ? typeof Equipment.rollDrop
+              : "N/A",
+          awardDrop:
+            typeof Equipment !== "undefined" && Equipment
+              ? typeof Equipment.awardDrop
+              : "N/A",
+        });
+      }
+    };
+
+    document.getElementById("admin-spawn-specific").onclick = () => {
+      const itemId = document.getElementById("admin-specific-item").value;
+      const rarityId = document.getElementById("admin-rarity-select").value;
+
+      console.log("[ADMIN] Attempting to spawn specific item:", {
+        itemId,
+        rarityId,
+      });
+
+      if (!itemId) {
+        alert("Please select a specific item first!");
+        return;
+      }
+
+      if (
+        Equipment &&
+        typeof Equipment.rollDrop === "function" &&
+        typeof Equipment.awardDrop === "function"
+      ) {
+        try {
+          const baseItem = Equipment.ITEM_POOL?.find(
+            (item) => item.id === itemId,
+          );
+          console.log("[ADMIN] Found base item:", baseItem);
+          if (baseItem) {
+            const item = Equipment.rollDrop(state, {
+              rarity: { id: rarityId },
+              slot: baseItem.slot,
+            });
+            console.log("[ADMIN] Rolled specific item:", item);
+            if (item) {
+              item.name = baseItem.name;
+              item.icon = baseItem.icon;
+              const success = Equipment.awardDrop(state, item, {
+                save,
+                notify: showHudNotify,
+              });
+              console.log("[ADMIN] Award specific result:", success);
+              if (success) {
+                document.getElementById("admin-inventory-count").textContent =
+                  state.inventory.length;
+                logAdminAction(`Spawned ${rarityId} ${baseItem.name}`);
+                save();
+                // Force refresh the equipment tab if visible
+                if (document.querySelector('[data-tab="equipment"].active')) {
+                  renderTab();
+                }
+                alert(`Successfully spawned ${baseItem.name}!`);
+              } else {
+                alert("Failed to add item to inventory - might be full!");
+              }
+            } else {
+              alert("Failed to create item!");
+            }
+          } else {
+            alert("Base item not found!");
+          }
+        } catch (e) {
+          console.error("Failed to spawn specific item:", e);
+          alert(`Error: ${e.message}`);
+        }
+      } else {
+        alert("Equipment system not available!");
+      }
+    };
+
+    // Inventory management
+    document.getElementById("admin-clear-inventory").onclick = () => {
+      if (confirm("Clear entire inventory? This cannot be undone.")) {
+        const count = state.inventory.length;
+        state.inventory = [];
+        document.getElementById("admin-inventory-count").textContent = 0;
+        logAdminAction(`Cleared inventory (${count} items removed)`);
+        save();
+        if (Equipment && typeof Equipment.renderTab === "function") {
+          Equipment.renderTab(state);
+        }
+      }
+    };
+
+    document.getElementById("admin-auto-equip-best").onclick = () => {
+      if (Equipment && typeof Equipment.smartEquip === "function") {
+        let equipped = 0;
+        state.inventory.forEach((item) => {
+          if (Equipment.smartEquip(item.uuid)) {
+            equipped++;
+          }
+        });
+        logAdminAction(`Auto-equipped ${equipped} items`);
+        save();
+        if (typeof Equipment.renderTab === "function") {
+          Equipment.renderTab(state);
+        }
+      }
+    };
+  }
+}
+
+function populateItemSelect() {
+  const select = document.getElementById("admin-specific-item");
+  console.log("[ADMIN] Populating item select:", {
+    select: !!select,
+    Equipment: !!Equipment,
+    ITEM_POOL: Equipment ? !!Equipment.ITEM_POOL : "N/A",
+    itemCount:
+      Equipment && Equipment.ITEM_POOL ? Equipment.ITEM_POOL.length : 0,
+  });
+
+  if (select) {
+    select.innerHTML = '<option value="">Select Specific Item</option>';
+
+    if (Equipment && Equipment.ITEM_POOL) {
+      Equipment.ITEM_POOL.forEach((item) => {
+        const option = document.createElement("option");
+        option.value = item.id;
+        option.textContent = `${item.name} (${item.slot})`;
+        select.appendChild(option);
+      });
+      console.log("[ADMIN] Populated", Equipment.ITEM_POOL.length, "items");
+    } else {
+      const option = document.createElement("option");
+      option.value = "";
+      option.textContent = "Equipment system not available";
+      option.disabled = true;
+      select.appendChild(option);
+      console.warn("[ADMIN] Equipment system or ITEM_POOL not available");
+    }
+  } else {
+    console.error("[ADMIN] Could not find admin-specific-item select element");
+  }
+}
+
+// Admin logging system
+let adminLogs = [];
+
+function logAdminAction(action) {
+  const timestamp = new Date().toLocaleTimeString();
+  const logEntry = `[${timestamp}] ${action}`;
+  adminLogs.push(logEntry);
+
+  // Keep only last 100 logs
+  if (adminLogs.length > 100) {
+    adminLogs = adminLogs.slice(-100);
+  }
+
+  console.log("[ADMIN]", action);
+}
+
+function getAdminLogs() {
+  return adminLogs.length > 0 ? adminLogs : ["No admin actions logged yet."];
+}
+
+function clearAdminLogs() {
+  adminLogs = [];
 }
 
 // =============== RANDOM EVENTS ===============
