@@ -1,5 +1,38 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.24 - Enhanced Daily Rewards & UI Polish
+*Released: January 2025*
+
+### ✨ **Enhanced Daily Rewards System**
+- **Better Rewards** - Significantly increased gems and packets for all days (Day 7: 75 gems + 25,000 packets!)
+- **Bonus Messages** - Each day now has motivational bonus text ("Welcome Back!", "Weekly Champion!", etc.)
+- **Golden Glow Numbers** - Day numbers and reward amounts now have beautiful gold glow animation
+- **Enhanced Notifications** - Claim notifications show bonus messages and use gold glow effects
+
+### 🎯 **Achievement Cards Polish**
+- **Perfect Content Centering** - Emoji, title, and description perfectly centered
+- **Smart Text Fitting** - Optimized font sizes and line clamping to prevent text overflow
+- **Bottom Rewards** - Reward badges positioned at bottom while maintaining center alignment
+- **Mobile Optimization** - Even better spacing and sizing for mobile devices
+
+### 📊 **Game Stats Golden Glow**
+- **Packets/Click Numbers** - Click stats now have gold glow animation
+- **Packets/Sec Numbers** - Idle stats have beautiful golden effects
+- **Crit Stats** - Crit chance and multiplier numbers glow with gold
+- **Prestige Bonus** - Prestige bonus percentage gets gold glow treatment
+
+### 🔧 **Top Bar Controls Fix**
+- **Vertical Layout** - Settings and inventory buttons now stack vertically
+- **Mobile Safe** - Buttons properly contained within top bar boundaries
+- **Better Positioning** - No more cutoff issues on any screen size
+
+### 🎨 **UI Improvements**
+- **Collect Packets Button** - Larger text and icons for better visibility
+- **Green Stats Card** - Game stats wrapped in subtle green bordered container
+- **Consistent Styling** - All gold glow effects use unified animation system
+
+---
+
 ## Version 0.0.23 - Version Update
 *Released: January 2025*
 
