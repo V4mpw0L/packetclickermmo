@@ -1319,7 +1319,7 @@ export function renderTab(state) {
       const animationStyle = st.animation ? `animation: ${st.animation};` : "";
       const borderStyle =
         it.rarity === "celestial"
-          ? `border: ${st.border}; border-image: ${st.borderImage};`
+          ? `border: none; border-radius: 12px; box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080;`
           : `border-color:${st.color};`;
       return `
           <div class="neon-card" style="padding:.3rem; ${borderStyle} box-shadow:${st.glow}; ${animationStyle} display:flex; align-items:center; justify-content:center; width:100%; max-width:100%; margin:0; aspect-ratio:1/1;">
@@ -1371,24 +1371,19 @@ export function renderTab(state) {
       }
       @keyframes celestialRainbow {
         0% {
-          border-image: linear-gradient(0deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1;
-          box-shadow: 0 0 20px rgba(255,0,128,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, 0 0 20px rgba(255,0,128,0.8);
         }
         25% {
-          border-image: linear-gradient(90deg, #00ff80, #8000ff, #ff8000, #ff0080, #00ff80) 1;
-          box-shadow: 0 0 20px rgba(0,255,128,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #00ff80, 0 0 20px rgba(0,255,128,0.8);
         }
         50% {
-          border-image: linear-gradient(180deg, #8000ff, #ff8000, #ff0080, #00ff80, #8000ff) 1;
-          box-shadow: 0 0 20px rgba(128,0,255,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #8000ff, 0 0 20px rgba(128,0,255,0.8);
         }
         75% {
-          border-image: linear-gradient(270deg, #ff8000, #ff0080, #00ff80, #8000ff, #ff8000) 1;
-          box-shadow: 0 0 20px rgba(255,128,0,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff8000, 0 0 20px rgba(255,128,0,0.8);
         }
         100% {
-          border-image: linear-gradient(360deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080) 1;
-          box-shadow: 0 0 20px rgba(255,0,128,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, 0 0 20px rgba(255,0,128,0.8);
         }
       }
       @keyframes celestialTextOnly {
