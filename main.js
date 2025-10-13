@@ -407,7 +407,7 @@ function updateTopBar() {
   }
   const _avatarEl = document.getElementById("avatar");
   if (_avatarEl) {
-    _avatarEl.src = state.player.avatar;
+    _avatarEl.src = getSafeAvatarUrl(state.player.avatar);
     // Add error handling to fallback to default avatar if loading fails
     _avatarEl.onerror = function () {
       if (this.src !== DEFAULT_AVATAR) {
@@ -784,6 +784,28 @@ function renderUpgrades() {
   return `
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🛠️ Upgrades</h2>
+
+      <div class="bulk-options" style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+        ${renderButton({
+          id: "bulk-x10",
+          className: "bulk-btn",
+          label: "x10",
+          dataAttr: 'data-bulk="10"',
+        })}
+        ${renderButton({
+          id: "bulk-x100",
+          className: "bulk-btn",
+          label: "x100",
+          dataAttr: 'data-bulk="100"',
+        })}
+        ${renderButton({
+          id: "bulk-max",
+          className: "bulk-btn",
+          label: "MAX",
+          dataAttr: 'data-bulk="max"',
+        })}
+      </div>
+
       ${renderButton({
         id: "upgrade-click",
         className: "upgrade-btn",
@@ -833,6 +855,150 @@ function upgradeCost(type) {
   }
 
   return baseCost;
+}
+
+// Track selected bulk mode
+let selectedBulk = 1;
+
+function setBulkMode(amount) {
+  selectedBulk = amount;
+
+  // Update bulk button visuals
+  document.querySelectorAll(".bulk-btn").forEach((btn) => {
+    btn.classList.remove("active");
+  });
+
+  const activeBtn = document.querySelector(`[data-bulk="${amount}"]`);
+  if (activeBtn) {
+    activeBtn.classList.add("active");
+  }
+
+  // Update upgrade button labels
+  updateUpgradeButtonLabels();
+}
+
+function updateUpgradeButtonLabels() {
+  ["click", "idle", "crit"].forEach((type) => {
+    const btn = document.getElementById(`upgrade-${type}`);
+    if (!btn) return;
+
+    let quantity = selectedBulk;
+    if (selectedBulk === "max") {
+      quantity = maxAffordableUpgrades(type);
+    }
+
+    const cost =
+      quantity === 1 ? upgradeCost(type) : bulkUpgradeCost(type, quantity);
+
+    let effectText;
+    switch (type) {
+      case "click":
+        effectText = quantity === 1 ? "+1/click" : `+${quantity}/click`;
+        break;
+      case "idle":
+        effectText = quantity === 1 ? "+1/sec" : `+${quantity}/sec`;
+        break;
+      case "crit":
+        effectText = quantity === 1 ? "+2% crit" : `+${2 * quantity}% crit`;
+        break;
+    }
+
+    const label = `${effectText} — <span>${cost.toLocaleString("en-US")}</span> <span class="icon-packet"></span>`;
+    btn.innerHTML = label;
+
+    if (state.packets < cost) {
+      btn.classList.add("opacity-50");
+      btn.disabled = true;
+    } else {
+      btn.classList.remove("opacity-50");
+      btn.disabled = false;
+    }
+  });
+}
+
+function getUpgradeEffect(type) {
+  switch (type) {
+    case "click":
+      return 1;
+    case "idle":
+      return 1;
+    case "crit":
+      return 2;
+    default:
+      return 1;
+  }
+}
+
+function bulkUpgradeCost(type, quantity) {
+  if (quantity <= 1) return upgradeCost(type);
+
+  let totalCost = 0;
+  let currentLevel = state.upgrades[type];
+
+  for (let i = 0; i < quantity; i++) {
+    let baseCost;
+    switch (type) {
+      case "click":
+        baseCost = 10 + Math.floor((currentLevel + i) * 13.5);
+        break;
+      case "idle":
+        baseCost = 25 + Math.floor((currentLevel + i) * 18.2);
+        break;
+      case "crit":
+        baseCost = 40 + Math.floor((currentLevel + i) * 27.1);
+        break;
+      default:
+        baseCost = 0;
+    }
+
+    if (
+      state.randomEvent.active &&
+      state.randomEvent.type === "upgradeDiscount"
+    ) {
+      baseCost = Math.floor(baseCost * (state.randomEvent.multiplier || 0.5));
+    }
+
+    totalCost += baseCost;
+  }
+
+  return totalCost;
+}
+
+function maxAffordableUpgrades(type) {
+  let count = 0;
+  let totalCost = 0;
+  let currentLevel = state.upgrades[type];
+
+  while (totalCost <= state.packets && count < 1000) {
+    let baseCost;
+    switch (type) {
+      case "click":
+        baseCost = 10 + Math.floor((currentLevel + count) * 13.5);
+        break;
+      case "idle":
+        baseCost = 25 + Math.floor((currentLevel + count) * 18.2);
+        break;
+      case "crit":
+        baseCost = 40 + Math.floor((currentLevel + count) * 27.1);
+        break;
+      default:
+        return count;
+    }
+
+    if (
+      state.randomEvent.active &&
+      state.randomEvent.type === "upgradeDiscount"
+    ) {
+      baseCost = Math.floor(baseCost * (state.randomEvent.multiplier || 0.5));
+    }
+
+    if (totalCost + baseCost > state.packets) break;
+
+    totalCost += baseCost;
+    count++;
+  }
+
+  return count;
 }
 
 // Using imported HUD showHudNotify from ui/hud.js
@@ -1141,19 +1307,54 @@ function getSafeAvatarUrl(avatar) {
   if (!avatar || typeof avatar !== "string" || avatar.trim() === "") {
     return DEFAULT_AVATAR;
   }
+
   // Allow HTTP URLs
   if (avatar.startsWith("http")) {
     return avatar;
   }
-  // Allow data URLs but with size limits for performance
+
+  // Allow data URLs but with comprehensive validation
   if (avatar.startsWith("data:image/")) {
-    // Reject excessively large data URLs (> 1MB) to prevent performance issues
-    if (avatar.length > 1024 * 1024) {
-      console.warn("Avatar data URL too large, using default");
+    try {
+      // Check for proper data URL format
+      const dataUrlPattern =
+        /^data:image\/(png|jpg|jpeg|gif|webp|svg\+xml);base64,/i;
+      if (!dataUrlPattern.test(avatar)) {
+        console.warn("Invalid data URL format for avatar, using default");
+        return DEFAULT_AVATAR;
+      }
+
+      // Reject excessively large data URLs (> 1MB) to prevent performance issues
+      if (avatar.length > 1024 * 1024) {
+        console.warn("Avatar data URL too large, using default");
+        return DEFAULT_AVATAR;
+      }
+
+      // Additional validation: check if base64 part is valid
+      const base64Part = avatar.split(",")[1];
+      if (!base64Part || base64Part.length === 0) {
+        console.warn("Empty base64 data in avatar URL, using default");
+        return DEFAULT_AVATAR;
+      }
+
+      // Try to validate base64 (basic check for valid characters)
+      const base64Pattern = /^[A-Za-z0-9+/]*={0,2}$/;
+      if (!base64Pattern.test(base64Part)) {
+        console.warn("Invalid base64 data in avatar URL, using default");
+        return DEFAULT_AVATAR;
+      }
+
+      return avatar;
+    } catch (error) {
+      console.warn(
+        "Error validating avatar data URL:",
+        error.message,
+        "using default",
+      );
       return DEFAULT_AVATAR;
     }
-    return avatar;
   }
+
   // If it's not a valid URL format, use default
   return DEFAULT_AVATAR;
 }
@@ -1161,59 +1362,108 @@ function getSafeAvatarUrl(avatar) {
 function renderLeaderboard() {
   // Prefer live rows from Firebase when available; fallback to local bots
   let bots = [];
-  if (Array.isArray(state.leaderboardLive) && state.leaderboardLive.length) {
-    bots = state.leaderboardLive.slice();
-    // Ensure current player row is up-to-date locally (handles snapshot lag)
-    try {
-      const meId =
-        typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId
-          ? Leaderboard.getDeviceId()
-          : state.player.name;
-      const idx = bots.findIndex((b) => b && b.id === meId);
-      const meRow = {
-        id: meId,
-        name: state.player.name,
-        packets: state.packets,
-        avatar: state.player.avatar,
-      };
-      if (idx >= 0) bots[idx] = Object.assign({}, bots[idx], meRow);
-      else bots.push(meRow);
-    } catch (_) {
-      bots.push({
-        id: meId,
-        name: state.player.name,
-        packets: state.packets,
-        avatar: state.player.avatar,
-      });
-    }
-  } else {
-    // No live data yet; show current player only
-    bots = [
-      {
-        id:
+
+  try {
+    if (Array.isArray(state.leaderboardLive) && state.leaderboardLive.length) {
+      // Validate and sanitize all leaderboard data
+      bots = state.leaderboardLive
+        .slice()
+        .map((bot) => {
+          if (!bot || typeof bot !== "object") return null;
+          return {
+            id: bot.id || "unknown",
+            name: bot.name || "Player",
+            packets: Math.max(0, parseInt(bot.packets) || 0),
+            avatar: getSafeAvatarUrl(bot.avatar || ""),
+            updatedAt: bot.updatedAt || Date.now(),
+          };
+        })
+        .filter(Boolean); // Remove null entries
+
+      // Ensure current player row is up-to-date locally (handles snapshot lag)
+      try {
+        const meId =
           typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId
             ? Leaderboard.getDeviceId()
-            : state.player.name,
+            : state.player.name;
+        const idx = bots.findIndex((b) => b && b.id === meId);
+        const meRow = {
+          id: meId,
+          name: state.player.name,
+          packets: state.packets,
+          avatar: getSafeAvatarUrl(state.player.avatar),
+        };
+        if (idx >= 0) bots[idx] = Object.assign({}, bots[idx], meRow);
+        else bots.push(meRow);
+      } catch (error) {
+        console.warn("Error updating player row in leaderboard:", error);
+        bots.push({
+          id:
+            typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId
+              ? Leaderboard.getDeviceId()
+              : state.player.name,
+          name: state.player.name,
+          packets: state.packets,
+          avatar: getSafeAvatarUrl(state.player.avatar),
+        });
+      }
+    } else {
+      // No live data yet; show current player only
+      bots = [
+        {
+          id:
+            typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId
+              ? Leaderboard.getDeviceId()
+              : state.player.name,
+          name: state.player.name,
+          packets: state.packets,
+          avatar: getSafeAvatarUrl(state.player.avatar),
+        },
+      ];
+    }
+  } catch (error) {
+    console.error("Error processing leaderboard data:", error);
+    // Fallback to safe default
+    bots = [
+      {
+        id: "fallback",
         name: state.player.name,
         packets: state.packets,
-        avatar: state.player.avatar,
+        avatar: getSafeAvatarUrl(state.player.avatar),
       },
     ];
   }
   bots.sort((a, b) => b.packets - a.packets);
-  let html = bots
-    .slice(0, 10)
-    .map(
-      (p, idx) => `
+  let html = "";
+
+  try {
+    html = bots
+      .slice(0, 10)
+      .map((p, idx) => {
+        if (!p || typeof p !== "object") {
+          console.warn("Invalid leaderboard entry, skipping:", p);
+          return "";
+        }
+
+        const safeAvatar = getSafeAvatarUrl(p.avatar);
+        const safeName = String(p.name || "Player").slice(0, 24);
+        const safePackets = Math.max(0, parseInt(p.packets) || 0);
+
+        return `
     <li style="display: flex; gap: 0.75rem; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #273742;">
       <span style="width: 2rem; text-align: right; color: var(--secondary-color); font-weight: bold;">${idx === 0 ? "🥇 " : idx === 1 ? "🥈 " : idx === 2 ? "🥉 " : ""}${idx + 1}.</span>
-      <img src="${getSafeAvatarUrl(p.avatar)}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 2rem; height: 2rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "3px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"}; box-shadow: ${idx === 0 ? "0 0 14px rgba(255,215,0,0.6)" : idx === 1 ? "0 0 12px rgba(192,192,192,0.55)" : idx === 2 ? "0 0 12px rgba(205,127,50,0.55)" : "none"};" alt="" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}'; console.log('Avatar failed to load, using default')">
-      <span style="font-weight: 800; ${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary);" : "color: var(--text-primary);"}">${idx === 0 ? '<span class="crown-badge">👑</span>' : ""}${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) && isVIP() ? '<img src="src/assets/vip.png" alt="VIP" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;" aria-hidden="true"/>' : ""}${p.name}</span>
-      <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary); font-weight: bold; font-size: 1.05em;"><span class="icon-packet"></span> ${p.packets.toLocaleString("en-US")}</span>
+      <img src="${safeAvatar}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 2rem; height: 2rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "3px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"}; box-shadow: ${idx === 0 ? "0 0 14px rgba(255,215,0,0.6)" : idx === 1 ? "0 0 12px rgba(192,192,192,0.55)" : idx === 2 ? "0 0 12px rgba(205,127,50,0.55)" : "none"};" alt="" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}'; console.warn('Avatar failed to load for ${safeName}, using default');">
+      <span style="font-weight: 800; ${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary);" : "color: var(--text-primary);"}">${idx === 0 ? '<span class="crown-badge">👑</span>' : ""}${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) && isVIP() ? '<img src="src/assets/vip.png" alt="VIP" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;" aria-hidden="true"/>' : ""}${safeName}</span>
+      <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary); font-weight: bold; font-size: 1.05em;"><span class="icon-packet"></span> ${safePackets.toLocaleString("en-US")}</span>
     </li>
-  `,
-    )
-    .join("");
+  `;
+      })
+      .filter(Boolean) // Remove empty entries
+      .join("");
+  } catch (error) {
+    console.error("Error rendering leaderboard list:", error);
+    html = `<li style="padding: 1rem; text-align: center; color: var(--text-secondary);">Error loading leaderboard data</li>`;
+  }
   return `<div class="neon-card" style="padding: 1rem 0.5rem;">
     <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🏆 Leaderboard</h2>
     <style>
@@ -1240,21 +1490,21 @@ function renderLeaderboard() {
       <div class="podium-wrap" style="display:flex; justify-content:center; gap:1rem; align-items:flex-end; margin: 0.75rem 0 0.75rem 0;">
         <div class="podium-item" style="display:flex; flex-direction:column; align-items:center;">
           <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #c0c0c0; box-shadow:0 0 12px rgba(192,192,192,0.55); overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);">
-            <img src="${(t[1] && t[1].avatar) || DEFAULT_AVATAR}" alt="" style="width:100%; height:100%; object-fit:cover;" />
+            <img src="${getSafeAvatarUrl((t[1] && t[1].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
           </div>
           <div style="width:64px; height:36px; background:linear-gradient(180deg, #3b4a5a, #2a3947); border:2px solid #c0c0c0; border-top-left-radius:8px; border-top-right-radius:8px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:800;">2</div>
           <div style="margin-top:0.15rem; font-size:1.1rem;">🥈</div>
         </div>
         <div class="podium-item" style="display:flex; flex-direction:column; align-items:center; transform: translateY(-8px);">
           <div style="display:flex; align-items:center; justify-content:center; width:84px; height:84px; border-radius:50%; border:4px solid #ffd700; box-shadow:0 0 16px rgba(255,215,0,0.75); overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.22), transparent);">
-            <img src="${(t[0] && t[0].avatar) || DEFAULT_AVATAR}" alt="" style="width:100%; height:100%; object-fit:cover;" />
+            <img src="${getSafeAvatarUrl((t[0] && t[0].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
           </div>
           <div style="width:84px; height:52px; background:linear-gradient(180deg, #435a2a, #344a1f); border:3px solid #ffd700; border-top-left-radius:10px; border-top-right-radius:10px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:900; color:#ffec8a; text-shadow:0 1px 2px rgba(0,0,0,0.4);">1</div>
           <div style="margin-top:0.15rem; font-size:1.1rem;">👑 🥇</div>
         </div>
         <div class="podium-item" style="display:flex; flex-direction:column; align-items:center;">
           <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #cd7f32; box-shadow:0 0 12px rgba(205,127,50,0.55); overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);">
-            <img src="${(t[2] && t[2].avatar) || DEFAULT_AVATAR}" alt="" style="width:100%; height:100%; object-fit:cover;" />
+            <img src="${getSafeAvatarUrl((t[2] && t[2].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
           </div>
           <div style="width:64px; height:28px; background:linear-gradient(180deg, #4d3925, #3b2a1b); border:2px solid #cd7f32; border-top-left-radius:8px; border-top-right-radius:8px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:800;">3</div>
           <div style="margin-top:0.15rem; font-size:1.1rem;">🥉</div>
@@ -1499,7 +1749,9 @@ function showEditProfile() {
       state.player.avatar = uploadedAvatarDataUrl;
     } else if (selected === "__custom__") {
       // User selected existing custom avatar
-      state.player.avatar = customImg ? customImg.src : state.player.avatar;
+      state.player.avatar = customImg
+        ? getSafeAvatarUrl(customImg.src)
+        : state.player.avatar;
     } else if (selected && selected !== "__custom__") {
       // User selected a different pre-made avatar
       state.player.avatar = `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${encodeURIComponent(selected)}`;
@@ -1511,12 +1763,7 @@ function showEditProfile() {
     try {
       if (typeof Leaderboard !== "undefined" && Leaderboard.submit) {
         // Ensure avatar is valid before submitting
-        const avatarToSubmit =
-          state.player.avatar &&
-          typeof state.player.avatar === "string" &&
-          state.player.avatar.trim() !== ""
-            ? state.player.avatar
-            : DEFAULT_AVATAR;
+        const avatarToSubmit = getSafeAvatarUrl(state.player.avatar);
 
         Leaderboard.submit(
           {
@@ -2058,40 +2305,47 @@ function clickPacket(event) {
 }
 
 function upgrade(type) {
-  let cost = upgradeCost(type);
+  let quantity = selectedBulk;
+  if (selectedBulk === "max") {
+    quantity = maxAffordableUpgrades(type);
+  }
+
+  if (quantity <= 0) return;
+
+  let cost =
+    quantity === 1 ? upgradeCost(type) : bulkUpgradeCost(type, quantity);
   if (state.packets < cost) return;
+
   state.packets -= cost;
-  state.upgrades[type]++;
+  state.upgrades[type] += quantity;
+
   switch (type) {
     case "click":
-      state.perClick++;
+      state.perClick += quantity;
       break;
     case "idle":
-      state.perSec++;
+      state.perSec += quantity;
       break;
     case "crit":
-      state.critChance += 2;
+      state.critChance += 2 * quantity;
       break;
   }
 
-  // Update statistics
-  state.stats.totalUpgrades++;
+  state.stats.totalUpgrades += quantity;
 
   if (state.player.sound) playSound("upgrade");
   save();
   updateTopBar();
 
-  // Refresh the Upgrades tab so costs and levels update immediately
   if (activeTab === "upgrades") {
     renderTab();
   }
-  // Keep UI responsive on Game tab (no full rerender)
-  if (activeTab === "game") {
-    /* keep UI responsive - no full rerender on each click */
-  }
 
   checkAchievements();
-  showHudNotify("Upgrade purchased!", "🛠️");
+  showHudNotify(
+    `${quantity > 1 ? quantity + " upgrades" : "Upgrade"} purchased!`,
+    "🛠️",
+  );
 }
 
 // Comprehensive save migration function to update old saves
@@ -2914,6 +3168,18 @@ function bindTabEvents(tab) {
     if (ui) ui.onclick = () => upgrade("idle");
     let ucr = document.getElementById("upgrade-crit");
     if (ucr) ucr.onclick = () => upgrade("crit");
+
+    // Bind bulk mode buttons
+    document.querySelectorAll(".bulk-btn").forEach((btn) => {
+      btn.onclick = () => {
+        const bulk = btn.getAttribute("data-bulk");
+        setBulkMode(bulk === "max" ? "max" : parseInt(bulk));
+      };
+    });
+
+    // Set initial bulk mode and update labels
+    setBulkMode(1);
+    updateUpgradeButtonLabels();
   }
   if (tab === "shop") {
     document

@@ -477,6 +477,13 @@ body .modal-box .space-y-3 > * + * {
         padding: 0.5em 0.7em;
         min-width: 90px;
     }
+
+    /* Mobile bulk button adjustments */
+    .bulk-btn {
+        font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+        padding: 0.3rem 0.6rem;
+        min-width: 50px;
+    }
 }
 
 #gem-display {
@@ -1435,6 +1442,20 @@ body {
 .upgrade-btn {
     position: relative;
 }
+
+/* Bulk button styles */
+.bulk-btn {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+    margin: 0 0.2rem;
+    min-width: 60px;
+}
+
+.bulk-btn.active {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
 .gem-btn {
     flex-direction: column;
     align-items: center;
@@ -2348,6 +2369,7 @@ footer {
     }
 
     /* === FOCUS MANAGEMENT === */
+
     .tab-btn:focus-visible,
     .neon-btn:focus-visible,
     .upgrade-btn:focus-visible,
