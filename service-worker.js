@@ -1,4 +1,4 @@
-// Derive VERSION from constants UMD when available; fallback to 0.0.23
+// Derive VERSION from constants UMD when available; fallback to 0.0.25
 const VERSION = (() => {
   try {
     // Load constants to access Packet.data.APP_VERSION if available
@@ -15,7 +15,7 @@ const VERSION = (() => {
     console.log("[SW] Could not load constants, using fallback version");
     // ignore, fall back below
   }
-  return "0.0.24";
+  return "0.0.25";
 })();
 
 // Force update flag uses the same version from constants

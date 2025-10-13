@@ -1,5 +1,36 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.25 - New Cosmetic Skins & Enhanced Shop System
+*Released: January 2025*
+
+### 🎨 **New Cosmetic Skins**
+- **Cyber Punk Skin** - Futuristic cyber warrior avatar (18 gems)
+- **Neon Ghost Skin** - Glowing spectral hacker avatar (25 gems)
+- **Multi-Skin System** - Enhanced shop system to support multiple cosmetic skins
+- **New Achievements** - "Cyber Warrior" and "Spectral Hacker" achievements for new skins
+
+### ⚡ **Enhanced Temporary Boosts**
+- **Premium UI Redesign** - Luxury boost cards with grid layout and rarity system
+- **Green Theme Integration** - All elements follow consistent green color system
+- **Real-Time Timers** - Countdown timers update live on active boosts
+- **Gold Glow Effects** - All gem costs and timers have beautiful golden glow
+
+### 🏆 **Leaderboard Enhancements**
+- **Golden Numbers** - Rank positions and packet counts now have gold glow effects
+- **Premium Feel** - Enhanced visual consistency with rest of UI
+
+### 🎯 **UI Polish & Consistency**
+- **Notification X Button** - Now matches equipped item style (solid red, no green ring)
+- **Upgrade Level Badges** - Increased size and boldness for better visibility
+- **Equipment Sell Notifications** - Removed exclamation mark for cleaner messaging
+
+### 🔧 **System Improvements**
+- **Version Alignment** - All components updated to v0.0.25 across entire application
+- **Storage Migration** - Enhanced save system to support new cosmetic features
+- **Achievement Integration** - New skin achievements properly tracked and rewarded
+
+---
+
 ## Version 0.0.24 - Enhanced Daily Rewards & UI Polish
 *Released: January 2025*
 

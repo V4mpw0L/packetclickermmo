@@ -101,6 +101,12 @@
 
     if (!isObj(d.shop)) return false;
     if (!isBool(d.shop.skinBought)) return false;
+    if (typeof d.shop.skinElite !== "undefined" && !isBool(d.shop.skinElite))
+      return false;
+    if (typeof d.shop.skinCyber !== "undefined" && !isBool(d.shop.skinCyber))
+      return false;
+    if (typeof d.shop.skinNeon !== "undefined" && !isBool(d.shop.skinNeon))
+      return false;
 
     if (!Array.isArray(d.achievements)) return false;
 
@@ -233,7 +239,12 @@
       critMult: 2,
       upgrades: { click: 0, idle: 0, crit: 0 },
       gems: 0,
-      shop: { skinBought: false },
+      shop: {
+        skinBought: false,
+        skinElite: false,
+        skinCyber: false,
+        skinNeon: false,
+      },
       achievements: [],
       ads: true,
       prestige: {

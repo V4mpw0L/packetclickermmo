@@ -55,7 +55,7 @@
     var STORAGE_KEY = "packet_clicker_save_v3";
     var DEFAULT_AVATAR =
       "https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker";
-    var APP_VERSION = "0.0.24";
+    var APP_VERSION = "0.0.25";
 
     // Interaction tuning
     var COMBO_TIMEOUT = 1000; // ms to maintain click combo
@@ -392,6 +392,22 @@
         desc: "Unlocks Elite avatar",
       },
       {
+        id: "skinCyber",
+        label: "Cyber Punk Skin",
+        gems: 18,
+        type: "skin",
+        avatar: "CyberPunk",
+        desc: "Futuristic cyber warrior avatar",
+      },
+      {
+        id: "skinNeon",
+        label: "Neon Ghost Skin",
+        gems: 25,
+        type: "skin",
+        avatar: "NeonGhost",
+        desc: "Glowing spectral hacker avatar",
+      },
+      {
         id: "noAds",
         label: "Remove Ads",
         gems: 16,
@@ -712,6 +728,26 @@
           return !!(s && s.shop && s.shop.skinBought);
         },
         gem: 2,
+      },
+      {
+        id: "shopSkinCyber",
+        name: "Cyber Warrior",
+        emoji: "🤖",
+        desc: "Buy the Cyber Punk skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.skinCyber);
+        },
+        gem: 3,
+      },
+      {
+        id: "shopSkinNeon",
+        name: "Spectral Hacker",
+        emoji: "👻",
+        desc: "Buy the Neon Ghost skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.skinNeon);
+        },
+        gem: 4,
       },
       {
         id: "vip",

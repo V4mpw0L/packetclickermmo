@@ -110,7 +110,12 @@
         gems: 0,
 
         // Shop flags
-        shop: { skinBought: false },
+        shop: {
+          skinBought: false,
+          skinElite: false,
+          skinCyber: false,
+          skinNeon: false,
+        },
 
         // Progress
         achievements: [],
@@ -204,6 +209,12 @@
 
       if (!isObj(d.shop)) return false;
       if (!isBool(d.shop.skinBought)) return false;
+      if (typeof d.shop.skinElite !== "undefined" && !isBool(d.shop.skinElite))
+        return false;
+      if (typeof d.shop.skinCyber !== "undefined" && !isBool(d.shop.skinCyber))
+        return false;
+      if (typeof d.shop.skinNeon !== "undefined" && !isBool(d.shop.skinNeon))
+        return false;
 
       if (!Array.isArray(d.achievements)) return false;
 
@@ -308,7 +319,7 @@
       merged.upgrades.idle = Math.max(0, Number(merged.upgrades.idle) || 0);
       merged.upgrades.crit = Math.max(0, Number(merged.upgrades.crit) || 0);
 
-      // Ensure all equipment/inventory properties exist for v0.0.24+
+      // Ensure all equipment/inventory properties exist for v0.0.25+
       if (!Array.isArray(merged.inventory)) merged.inventory = [];
       if (!merged.equipment || typeof merged.equipment !== "object") {
         merged.equipment = {};

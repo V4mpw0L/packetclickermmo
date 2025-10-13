@@ -102,7 +102,12 @@ const state = {
   critMult: 2,
   upgrades: { click: 0, idle: 0, crit: 0 },
   gems: 0,
-  shop: { skinBought: false },
+  shop: {
+    skinBought: false,
+    skinElite: false,
+    skinCyber: false,
+    skinNeon: false,
+  },
   achievements: [],
   ads: true,
   // Prestige System
@@ -159,8 +164,12 @@ const state = {
 
 function getUnlockedAvatars() {
   let avatars = [{ seed: "Hacker", name: "Default" }];
-  if (state.shop.skinBought)
+  if (state.shop.skinBought || state.shop.skinElite)
     avatars.push({ seed: "EliteHacker", name: "Elite" });
+  if (state.shop.skinCyber)
+    avatars.push({ seed: "CyberPunk", name: "Cyber Punk" });
+  if (state.shop.skinNeon)
+    avatars.push({ seed: "NeonGhost", name: "Neon Ghost" });
   if (state.achievements.includes("vip"))
     avatars.push({ seed: "VIP", name: "VIP" });
   if (state.achievements.includes("adfree"))
@@ -284,7 +293,12 @@ function load() {
       critMult: 2,
       upgrades: { click: 0, idle: 0, crit: 0 },
       gems: 0,
-      shop: { skinBought: false },
+      shop: {
+        skinBought: false,
+        skinElite: false,
+        skinCyber: false,
+        skinNeon: false,
+      },
       achievements: [],
       ads: true,
     });
@@ -317,7 +331,12 @@ function load() {
       critMult: 2,
       upgrades: { click: 0, idle: 0, crit: 0 },
       gems: 0,
-      shop: { skinBought: false },
+      shop: {
+        skinBought: false,
+        skinElite: false,
+        skinCyber: false,
+        skinNeon: false,
+      },
       achievements: [],
       ads: true,
     });
@@ -1257,7 +1276,9 @@ function renderShop() {
   // Cosmetic Items Section
   let cosmeticItems = SHOP_ITEMS.filter((item) => item.type === "skin")
     .map((item) => {
-      let owned = state.shop.skinBought;
+      let owned =
+        state.shop[item.id] ||
+        (item.id === "skinElite" && state.shop.skinBought);
       return renderButton({
         className: `shop-cosmetic-btn ${owned ? "shop-owned" : ""}`,
         label: `<div class="shop-item-content">
@@ -1270,6 +1291,7 @@ function renderShop() {
               : `${item.gems}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
           }
         </div>
+        <div class="shop-item-desc">${item.desc}</div>
       </div>`,
         dataAttr: `data-shop-item="${item.id}"`,
         disabled: owned,
@@ -1947,7 +1969,7 @@ function showEditProfile() {
       }
     } catch (_) {}
     try {
-      window.VERSION = "0.0.23";
+      window.VERSION = "0.0.25";
     } catch (_) {}
 
     updateTopBar();
@@ -2066,7 +2088,7 @@ function showSettings() {
         // Persist and refresh UI
         save();
         try {
-          window.VERSION = "0.0.23";
+          window.VERSION = "0.0.25";
         } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {
@@ -2716,7 +2738,7 @@ function migrateSaveToCurrentVersion() {
       window.Packet &&
       window.Packet.data &&
       window.Packet.data.APP_VERSION) ||
-    "0.0.23";
+    "0.0.25";
 
   console.log(
     "[Migration] Checking save compatibility with version",
@@ -2842,6 +2864,9 @@ function migrateSaveToCurrentVersion() {
     state.shop = {};
   }
   if (typeof state.shop.skinBought !== "boolean") state.shop.skinBought = false;
+  if (typeof state.shop.skinElite !== "boolean") state.shop.skinElite = false;
+  if (typeof state.shop.skinCyber !== "boolean") state.shop.skinCyber = false;
+  if (typeof state.shop.skinNeon !== "boolean") state.shop.skinNeon = false;
 
   // Ensure core game values are properly set
   if (typeof state.packets !== "number") state.packets = 0;
@@ -3057,7 +3082,11 @@ function buyShopItem(itemId) {
     state.player.noAds = true;
     state.ads = false;
   }
-  if (item.type === "skin") state.shop.skinBought = true;
+  if (item.type === "skin") {
+    state.shop[item.id] = true;
+    // Legacy compatibility
+    if (item.id === "skinElite") state.shop.skinBought = true;
+  }
   if (item.type === "noAds") {
     state.player.noAds = true;
     state.ads = false;

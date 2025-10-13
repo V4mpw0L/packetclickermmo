@@ -2,7 +2,7 @@
 
 > **The Ultimate Cyberpunk Idle Clicker Experience - Now with 100 Items, Epic Combos & Equipment System!**
 
-[![Version 0.0.24](https://img.shields.io/badge/Version-0.0.24-brightgreen.svg)]()
+[![Version 0.0.25](https://img.shields.io/badge/Version-0.0.25-brightgreen.svg)]()
 [![PWA Ready](https://img.shields.io/badge/PWA-Ready-blue.svg)](https://web.dev/progressive-web-apps/)
 [![Mobile Optimized](https://img.shields.io/badge/Mobile-Optimized-success.svg)]()
 [![Anti-Cheat](https://img.shields.io/badge/Anti--Cheat-Protected-red.svg)]()
@@ -286,7 +286,14 @@ const THEMES = {
 
 ## 📊 **Version History**
 
-### **Version 0.0.24** (Latest)
+### **Version 0.0.25** (Latest)
+- ✅ **New Cosmetic Skins** - Added Cyber Punk and Neon Ghost premium skins with achievements
+- ✅ **Enhanced Boosts UI** - Premium power boosts page redesigned with grid layout and green theme
+- ✅ **Leaderboard Gold Glow** - Rank numbers and packet counts now have golden glow effects
+- ✅ **Notification Polish** - X button styling matches equipped items for consistency
+- ✅ **Multi-Skin System** - Improved shop system to support multiple cosmetic skins
+
+### **Version 0.0.24**
 - ✅ **Enhanced Daily Rewards** - Much better rewards with bonus messages and gold glow effects
 - ✅ **Achievement Card Polish** - Perfect content centering and text fitting
 - ✅ **Golden Glow Stats** - Game stats numbers now have beautiful gold glow animation

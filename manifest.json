@@ -1,6 +1,6 @@
 {
   "name": "Packet Clicker MMO",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "short_name": "Packet",
   "start_url": "./",
   "display": "standalone",
@@ -42,22 +42,7 @@
       "purpose": "any maskable"
     }
   ],
-  "screenshots": [
-    {
-      "src": "src/assets/screenshot-mobile.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Mobile gameplay view"
-    },
-    {
-      "src": "src/assets/screenshot-desktop.png",
-      "sizes": "1200x800",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Desktop gameplay view"
-    }
-  ],
+
   "scope": "./",
   "id": "/",
   "launch_handler": {
