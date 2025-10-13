@@ -15,7 +15,7 @@ const VERSION = (() => {
     console.log("[SW] Could not load constants, using fallback version");
     // ignore, fall back below
   }
-  return "0.0.21";
+  return "0.0.22";
 })();
 
 // Force update flag uses the same version from constants

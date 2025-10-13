@@ -1,5 +1,21 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.22 - Golden Glow & UI Polish
+*Released: January 2025*
+
+### ✨ **Golden Glow Effects**
+- **Combo & Total Packet Numbers** - Added beautiful gold glow effect to notification numbers
+- **Boost Timer Seconds** - All boost timer seconds now have consistent gold glow styling
+- **Event Timer Seconds** - Random event timers also feature the same golden glow effect
+- **Prestige Available Button** - Added animated rainbow border when prestige is available
+
+### 🔧 **Bug Fixes & Improvements**
+- **Fixed Gem Notifications** - Gem purchase/found/magnet notifications no longer show broken HTML
+- **Consistent Styling** - All timer displays now use unified gold glow appearance
+- **Visual Polish** - Enhanced visual feedback across all timer and notification systems
+
+---
+
 ## Version 0.0.21 - Celestial Rarity & Rainbow Effects
 *Released: January 2025*
 

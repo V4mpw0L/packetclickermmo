@@ -1776,7 +1776,7 @@ function showEditProfile() {
       }
     } catch (_) {}
     try {
-      window.VERSION = "0.0.21";
+      window.VERSION = "0.0.22";
     } catch (_) {}
 
     updateTopBar();
@@ -1895,7 +1895,7 @@ function showSettings() {
         // Persist and refresh UI
         save();
         try {
-          window.VERSION = "0.0.21";
+          window.VERSION = "0.0.22";
         } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {
@@ -1969,7 +1969,7 @@ function renderActiveEvent() {
 
   let event = RANDOM_EVENTS.find((e) => e.type === state.randomEvent.type);
   return `<div class="random-event">
-    ${event.type === "packetRain" ? '<span class="icon-packet"></span>' : "🎪"} ${event.name} - ${remaining}s remaining
+    ${event.type === "packetRain" ? '<span class="icon-packet"></span>' : "🎪"} ${event.name} - <span style="color:#ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">${remaining}s</span> remaining
   </div>`;
 }
 
@@ -2353,7 +2353,7 @@ function migrateSaveToCurrentVersion() {
       window.Packet &&
       window.Packet.data &&
       window.Packet.data.APP_VERSION) ||
-    "0.0.21";
+    "0.0.22";
 
   console.log(
     "[Migration] Checking save compatibility with version",
