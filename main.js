@@ -2063,10 +2063,7 @@ function clickPacket(event) {
     if (Math.random() * 100 < gemChance) {
       let gemsFound = Math.floor(Math.random() * 3) + 1; // 1-3 gems
       state.gems += gemsFound;
-      showHudNotify(
-        `+${gemsFound} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> (Found!)`,
-        "✨",
-      );
+      showHudNotify(`+${gemsFound} 💎 (Found!)`, "✨");
     }
   }
 
@@ -2585,10 +2582,7 @@ function idleTick() {
     let gemChance = state.prestige.gemMagnet * 0.1; // 0.1% per level per second
     if (Math.random() * 1000 < gemChance) {
       state.gems++;
-      showHudNotify(
-        '+1 <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> (Magnet!)',
-        "🧲",
-      );
+      showHudNotify("+1 💎 (Magnet!)", "🧲");
     }
   }
 
@@ -2679,10 +2673,7 @@ function buyGemPack(packId) {
   updateTopBar();
   renderTab();
   checkAchievements();
-  showHudNotify(
-    `+${pack.gems} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> (test)`,
-    '<img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/>',
-  );
+  showHudNotify(`+${pack.gems} 💎 (Purchased!)`, "💎");
 }
 
 function buyShopItem(itemId) {
