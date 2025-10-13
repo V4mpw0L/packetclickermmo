@@ -18,6 +18,7 @@ if (typeof window !== "undefined") {
       updateTopBar,
       setTab,
       renderTab,
+      buyBoost,
     });
   } catch (e) {
     // no-op
@@ -406,6 +407,23 @@ function getTabContent(tab) {
 }
 
 // ======= TOP BAR UPDATE & ALIGNMENT =======
+function updateActiveTab() {
+  // Update current tab if it needs dynamic updates (like boost timers)
+  if (activeTab === "boosts") {
+    const tabContent = document.getElementById("tab-content");
+    if (tabContent) {
+      // Check if any boosts are active before re-rendering
+      const hasActiveBoosts = Object.keys(state.boosts).some(
+        (boostId) => state.boosts[boostId] > Date.now(),
+      );
+      if (hasActiveBoosts) {
+        tabContent.innerHTML = getTabContent(activeTab);
+        bindTabEvents(activeTab);
+      }
+    }
+  }
+}
+
 function updateTopBar() {
   const playerNameEl = document.getElementById("player-name");
   if (isVIP()) {
@@ -490,36 +508,43 @@ function renderGame() {
   if (state.boosts.doublePackets > Date.now()) {
     let remaining = Math.ceil((state.boosts.doublePackets - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🚀 2x Packets (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">${remaining}s</span>)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">📦 3x Packets (<span class="event-number-glow">${remaining}s</span>)</span>`,
     );
-    totalMultiplier *= 2;
+    totalMultiplier *= 3;
   }
   if (state.boosts.quadrupleClick > Date.now()) {
     let remaining = Math.ceil(
       (state.boosts.quadrupleClick - Date.now()) / 1000,
     );
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🖱️ 4x Click Power (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">${remaining}s</span>)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">⚡ 8x Click (<span class="event-number-glow">${remaining}s</span>)</span>`,
     );
-    totalMultiplier *= 4;
+    totalMultiplier *= 8;
   }
   if (state.boosts.megaCrit > Date.now()) {
     let remaining = Math.ceil((state.boosts.megaCrit - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">✨ 50% Crit (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">${remaining}s</span>)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🌟 75% Crit (<span class="event-number-glow">${remaining}s</span>)</span>`,
     );
   }
   if (state.boosts.tripleGems > Date.now()) {
     let remaining = Math.ceil((state.boosts.tripleGems - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;"><span class="icon-packet"></span> 3x Gem Rate (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">${remaining}s</span>)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">✨ 5x Gems (<span class="event-number-glow">${remaining}s</span>)</span>`,
     );
   }
   if (state.boosts.autoClicker > Date.now()) {
     let remaining = Math.ceil((state.boosts.autoClicker - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🤖 +10/s Auto Clicker (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">${remaining}s</span>)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🤖 +25/s Cyber (<span class="event-number-glow">${remaining}s</span>)</span>`,
     );
+  }
+  if (state.boosts.ultraCombo > Date.now()) {
+    let remaining = Math.ceil((state.boosts.ultraCombo - Date.now()) / 1000);
+    boostPills.push(
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#fbbf24; background:linear-gradient(45deg, rgba(251,191,36,0.3), rgba(168,85,247,0.3)); font-weight:600; font-size:0.75rem; white-space:nowrap;">🚀 10x QUANTUM (<span class="event-number-glow">${remaining}s</span>)</span>`,
+    );
+    totalMultiplier *= 10;
   }
 
   // Prestige multiplier
@@ -549,7 +574,7 @@ function renderGame() {
   // Effective rates incl. boosts (match idleTick and clickPacket)
   let perSecBase = state.perSec;
   if (state.prestige.autoClicker > 0) perSecBase += state.prestige.autoClicker;
-  if (state.boosts.autoClicker > Date.now()) perSecBase += 10;
+  if (state.boosts.autoClicker > Date.now()) perSecBase += 25;
 
   const eq =
     typeof Equipment !== "undefined" && Equipment.computeBonuses
@@ -656,33 +681,162 @@ function renderBoosts() {
     }
   });
 
-  // Use modular renderButton for each boost
+  // Compact grid-based boost cards
   let boostItems = BOOST_SHOP.map((boost) => {
     const until = state.boosts[boost.id] || 0;
     const active = until > Date.now();
     const remaining = active ? Math.ceil((until - Date.now()) / 1000) : 0;
-    const label = `<div class="font-bold">${boost.name}</div>
-        <div class="text-sm opacity-75">${boost.gems} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/></div>
-        <div class="text-xs" style="color: #4a7c59; text-shadow: none; filter: none;">${boost.desc}${active ? ` — active (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">${remaining}s</span>)` : ""}</div>`;
-    return renderButton({
-      className: `gem-btn w-full mb-2 ${active ? "opacity-50" : ""}`,
-      label,
-      dataAttr: `data-boost="${boost.id}"`,
-      disabled: active,
-    });
+    const canAfford = state.gems >= boost.gems;
+
+    // Rarity colors and effects
+    const rarityStyles = {
+      common: {
+        border: "#4ade80",
+        glow: "rgba(74, 222, 128, 0.3)",
+        bg: "rgba(74, 222, 128, 0.05)",
+      },
+      uncommon: {
+        border: "#22d3ee",
+        glow: "rgba(34, 211, 238, 0.4)",
+        bg: "rgba(34, 211, 238, 0.08)",
+      },
+      rare: {
+        border: "#a855f7",
+        glow: "rgba(168, 85, 247, 0.5)",
+        bg: "rgba(168, 85, 247, 0.1)",
+      },
+      epic: {
+        border: "#f59e0b",
+        glow: "rgba(245, 158, 11, 0.6)",
+        bg: "rgba(245, 158, 11, 0.12)",
+      },
+      legendary: {
+        border: "#ef4444",
+        glow: "rgba(239, 68, 68, 0.7)",
+        bg: "rgba(239, 68, 68, 0.15)",
+      },
+      mythic: {
+        border: "#fbbf24",
+        glow: "rgba(251, 191, 36, 0.8)",
+        bg: "linear-gradient(45deg, rgba(251, 191, 36, 0.2), rgba(168, 85, 247, 0.2))",
+      },
+    };
+
+    const style = rarityStyles[boost.rarity] || rarityStyles.common;
+
+    return `
+      <div class="boost-card-compact"
+           style="
+             border: 2px solid ${style.border};
+             background: ${style.bg};
+             border-radius: 10px;
+             padding: 0.75rem;
+             box-shadow: 0 3px 12px ${style.glow}, 0 1px 6px rgba(0,0,0,0.3);
+             transition: all 0.3s ease;
+             cursor: ${active || !canAfford ? "not-allowed" : "pointer"};
+             opacity: ${active || !canAfford ? "0.6" : "1"};
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+             text-align: center;
+             height: 100%;
+             min-height: 200px;
+             justify-content: space-between;
+           "
+           onclick="${active || !canAfford ? "" : `buyBoost('${boost.id}')`}"
+           onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 18px ${style.glow}, 0 3px 10px rgba(0,0,0,0.4)'"
+           onmouseout="this.style.transform='translateY(0px)'; this.style.boxShadow='0 3px 12px ${style.glow}, 0 1px 6px rgba(0,0,0,0.3)'">
+
+        <div style="font-size: 2.2rem; margin-bottom: 0.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+          ${boost.icon}
+        </div>
+
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%;">
+          <div style="font-size: 0.9rem; font-weight: 800; color: ${style.border}; text-shadow: 0 1px 2px rgba(0,0,0,0.5); margin-bottom: 0.25rem; line-height: 1.2;">
+            ${boost.name.replace(/^[^A-Za-z]*\s*/, "")}
+          </div>
+
+          <div style="font-size: 0.7rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 0.5rem;">
+            ${boost.rarity}
+          </div>
+
+          <div style="font-size: 0.75rem; color: #e2e8f0; margin-bottom: 0.5rem; line-height: 1.3;">
+            ${boost.desc}
+          </div>
+        </div>
+
+        <div style="width: 100%; margin-top: auto;">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 0.25rem; padding: 0.4rem 0.6rem; background: rgba(0,0,0,0.4); border-radius: 999px; border: 1px solid ${style.border}40; margin-bottom: 0.5rem;">
+            <span class="event-number-glow" style="font-size: 1rem; font-weight: 800;">${boost.gems}</span>
+            <img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;" aria-hidden="true"/>
+          </div>
+
+          ${
+            active
+              ? `<div style="padding: 0.4rem; background: rgba(255, 215, 0, 0.15); border: 1px solid #fbbf24; border-radius: 6px; font-size: 0.7rem;">
+                  <div style="color: #fbbf24; font-weight: bold;">⚡ ACTIVE</div>
+                  <div style="color: #ffd700;"><span class="event-number-glow">${remaining}</span>s</div>
+                 </div>`
+              : !canAfford
+                ? `<div style="padding: 0.4rem; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 6px; font-size: 0.7rem; color: #ef4444; font-weight: bold;">
+                    NEED GEMS
+                   </div>`
+                : `<div style="padding: 0.4rem; background: ${style.bg}; border: 1px solid ${style.border}; border-radius: 6px; font-weight: bold; color: ${style.border}; font-size: 0.75rem;">
+                    ACTIVATE
+                   </div>`
+          }
+        </div>
+      </div>
+    `;
   }).join("");
 
   return `
-    <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">⚡ Temporary Boosts</h2>
+    <div class="neon-card px-3 py-4 mb-2" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #1a202c 100%); border: 2px solid #4caf50;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2 style="font-size: 2rem; font-weight: 900; background: linear-gradient(45deg, #4caf50, #22c55e, #16a34a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.5rem;">
+          ⚡ PREMIUM POWER BOOSTS ⚡
+        </h2>
+        <div style="font-size: 1rem; color: #a0aec0; font-style: italic; margin-bottom: 1rem;">
+          Supercharge your progress with exclusive gem-powered abilities
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(90deg, rgba(76, 175, 80, 0.1), rgba(34, 197, 94, 0.1)); border: 1px solid #4caf50; border-radius: 999px;">
+          <span style="color: #4caf50; font-weight: bold;">Your Gems:</span>
+          <span class="event-number-glow" style="font-size: 1.3rem; font-weight: 900;">${state.gems}</span>
+          <img src="src/assets/gem.png" alt="Gems" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/>
+        </div>
+      </div>
 
-      ${activeBoosts ? `<div class="mb-4">${activeBoosts}</div>` : ""}
+      ${
+        activeBoosts
+          ? `
+        <div style="margin-bottom: 2rem; padding: 1rem; background: linear-gradient(45deg, rgba(74, 222, 128, 0.1), rgba(34, 211, 238, 0.1)); border: 2px solid #22c55e; border-radius: 12px;">
+          <div style="text-align: center; color: #22c55e; font-weight: bold; font-size: 1.1rem; margin-bottom: 1rem;">
+            🔥 ACTIVE POWER-UPS 🔥
+          </div>
+          ${activeBoosts}
+        </div>
+      `
+          : ""
+      }
 
-      <div class="mb-2"><span class="text-neon-yellow font-bold">Available Boosts</span></div>
-      ${boostItems}
+      <div style="margin-bottom: 1.5rem;">
+        <div style="text-align: center; font-size: 1.2rem; font-weight: 800; color: #fbbf24; margin-bottom: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">
+          💎 AVAILABLE POWER BOOSTS 💎
+        </div>
+        <div style="text-align: center; font-size: 0.9rem; color: #94a3b8; margin-bottom: 1.5rem;">
+          Each boost stacks with your other bonuses for maximum power!
+        </div>
+      </div>
 
-      <div class="text-xs text-neon-gray mt-4 text-center">
-        Boosts stack with other bonuses for maximum effect!
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        ${boostItems}
+      </div>
+
+      <div style="text-align: center; padding: 1rem; background: linear-gradient(90deg, rgba(76, 175, 80, 0.1), rgba(34, 197, 94, 0.1)); border: 1px solid #4caf50; border-radius: 12px; margin-top: 1.5rem;">
+        <div style="color: #4caf50; font-weight: bold; margin-bottom: 0.25rem;">💫 PRO TIP</div>
+        <div style="color: #cbd5e0; font-size: 0.9rem;">
+          Combine multiple boosts for incredible synergy effects!
+        </div>
       </div>
     </div>
   `;
@@ -2152,10 +2306,13 @@ function clickPacket(event) {
 
   // Apply active boosts
   if (state.boosts.doublePackets > Date.now()) {
-    bonus *= 2;
+    bonus *= 3;
   }
   if (state.boosts.quadrupleClick > Date.now()) {
-    bonus *= 4;
+    bonus *= 8;
+  }
+  if (state.boosts.ultraCombo > Date.now()) {
+    bonus *= 10;
   }
 
   let critChance = state.critChance;
@@ -2170,7 +2327,7 @@ function clickPacket(event) {
     }
   } catch (_) {}
   if (state.boosts.megaCrit > Date.now()) {
-    critChance = 50; // 50% crit chance during boost
+    critChance = 75; // 75% crit chance during boost
   }
 
   // Check for critFrenzy event (forces all clicks to be critical)
@@ -2217,7 +2374,10 @@ function clickPacket(event) {
   // Gem find chance (prestige upgrade)
   let gemMultiplier = 1;
   if (state.boosts.tripleGems > Date.now()) {
-    gemMultiplier = 3;
+    gemMultiplier = 5;
+  }
+  if (state.boosts.ultraCombo > Date.now()) {
+    gemMultiplier *= 10;
   }
   if (state.randomEvent.active && state.randomEvent.type === "gemRush") {
     const evMult = Number(state.randomEvent.multiplier) || 10;
@@ -2752,7 +2912,10 @@ function idleTick() {
 
   // Apply active boosts
   if (state.boosts.doublePackets > Date.now()) {
-    bonus *= 2;
+    bonus *= 3;
+  }
+  if (state.boosts.ultraCombo > Date.now()) {
+    bonus *= 10;
   }
 
   let totalPerSec =
@@ -2777,7 +2940,7 @@ function idleTick() {
 
   // Temporary auto-clicker boost
   if (state.boosts.autoClicker > Date.now()) {
-    totalPerSec += 10; // 10 clicks per second
+    totalPerSec += 25; // 25 clicks per second
   }
 
   // Gem magnet from idle packets
@@ -3224,7 +3387,37 @@ function buyBoost(boostId) {
   state.gems -= boost.gems;
   state.boosts[boostId] = Date.now() + boost.duration;
 
-  showHudNotify(`${boost.name} activated!`, "⚡");
+  // Premium boost activation notification
+  const rarityEmojis = {
+    common: "✨",
+    uncommon: "💫",
+    rare: "🌟",
+    epic: "💥",
+    legendary: "🔥",
+    mythic: "🚀",
+  };
+
+  const emoji = rarityEmojis[boost.rarity] || "⚡";
+
+  showModal(
+    "🎉 BOOST ACTIVATED! 🎉",
+    `<div style="text-align: center;">
+      <div style="font-size: 3rem; margin: 1rem 0;">${boost.icon}</div>
+      <div style="font-size: 1.3rem; font-weight: bold; color: #fbbf24; margin-bottom: 0.5rem;">
+        ${boost.name}
+      </div>
+      <div style="color: #e2e8f0; margin-bottom: 1rem;">
+        ${boost.effect}
+      </div>
+      <div style="padding: 0.75rem; background: linear-gradient(45deg, rgba(251, 191, 36, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid #fbbf24; border-radius: 8px;">
+        <span style="color: #fbbf24; font-weight: bold;">Duration:</span>
+        <span class="event-number-glow" style="margin-left: 0.5rem;">${Math.floor(boost.duration / 60000)}m ${(boost.duration % 60000) / 1000}s</span>
+      </div>
+    </div>`,
+  );
+
+  showHudNotify(`${emoji} ${boost.name} ACTIVATED!`, boost.icon);
+
   save();
   updateTopBar();
   renderTab();
@@ -3611,6 +3804,7 @@ function init() {
   // document.getElementById("modal-backdrop").onclick = closeModal;
   setInterval(idleTick, 1000);
   setInterval(updateTopBar, 1000);
+  setInterval(updateActiveTab, 1000);
   setInterval(save, 10000);
 
   // Apply current theme
