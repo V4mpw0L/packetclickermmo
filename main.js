@@ -2409,7 +2409,7 @@ function migrateSaveToCurrentVersion() {
       window.Packet &&
       window.Packet.data &&
       window.Packet.data.APP_VERSION) ||
-    "0.0.22";
+    "0.0.23";
 
   console.log(
     "[Migration] Checking save compatibility with version",
