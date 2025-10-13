@@ -1818,7 +1818,7 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
                   : null);
               if (n)
                 n(
-                  `Sold <span style="font-size: 1.3em; font-weight: 900; color: #ffd700;">${itemsToRemove.length}</span> items for <span style="font-size: 1.3em; font-weight: 900; color: #ffd700;">${totalValue.toLocaleString("en-US")}</span> <span class="icon-packet" style="font-size: 1.3em; vertical-align: middle;"></span>!`,
+                  `Sold <span style="font-size: 1.3em; font-weight: 900; color: #ffd700;">${itemsToRemove.length}</span> items for <span style="font-size: 1.3em; font-weight: 900; color: #ffd700;">${totalValue.toLocaleString("en-US")}</span> <span class="icon-packet" style="font-size: 1.3em; vertical-align: middle;"></span>`,
                   '<span class="icon-packet" style="font-size: 1.5em;"></span>',
                 );
             });
