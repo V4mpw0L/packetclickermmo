@@ -429,6 +429,14 @@
         desc: "Glowing spectral hacker avatar",
       },
       {
+        id: "skinShadow",
+        label: "Shadow Ninja Skin",
+        gems: 32,
+        type: "skin",
+        avatar: "ShadowNinja",
+        desc: "Stealthy dark warrior avatar for elite hackers",
+      },
+      {
         id: "noAds",
         label: "Remove Ads",
         gems: 16,
@@ -768,7 +776,17 @@
         req: function (s) {
           return !!(s && s.shop && s.shop.skinNeon);
         },
-        gem: 4,
+        gems: 0,
+      },
+      {
+        id: "shopSkinShadow",
+        name: "Shadow Master",
+        emoji: "🥷",
+        desc: "Buy the Shadow Ninja skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.skinShadow);
+        },
+        gems: 0,
       },
       {
         id: "vip",

@@ -30,10 +30,14 @@ export function showComboTotalHUD(total, color = null) {
   if (!hud) {
     hud = document.createElement("div");
     hud.id = HUD_IDS.comboTotal;
-    hud.className = "combo-total-hud";
+    hud.className = "combo-total-hud combo-total-follow";
+
+    // Get current scroll position to follow user
+    const viewport = getViewportInfo();
+
     // Inline safety styles (in case CSS is unavailable)
-    hud.style.position = "fixed";
-    hud.style.top = "18%";
+    hud.style.position = "absolute";
+    hud.style.top = `${viewport.scrollY + viewport.viewportHeight * 0.18}px`;
     hud.style.left = "50%";
     hud.style.transform = "translate(-50%, 0)";
     hud.style.padding = "0.4rem 0.8rem";

@@ -107,6 +107,7 @@ const state = {
     skinElite: false,
     skinCyber: false,
     skinNeon: false,
+    skinShadow: false,
   },
   achievements: [],
   ads: true,
@@ -170,6 +171,8 @@ function getUnlockedAvatars() {
     avatars.push({ seed: "CyberPunk", name: "Cyber Punk" });
   if (state.shop.skinNeon)
     avatars.push({ seed: "NeonGhost", name: "Neon Ghost" });
+  if (state.shop.skinShadow)
+    avatars.push({ seed: "ShadowNinja", name: "Shadow Ninja" });
   if (state.achievements.includes("vip"))
     avatars.push({ seed: "VIP", name: "VIP" });
   if (state.achievements.includes("adfree"))
@@ -298,6 +301,7 @@ function load() {
         skinElite: false,
         skinCyber: false,
         skinNeon: false,
+        skinShadow: false,
       },
       achievements: [],
       ads: true,
@@ -336,6 +340,7 @@ function load() {
         skinElite: false,
         skinCyber: false,
         skinNeon: false,
+        skinShadow: false,
       },
       achievements: [],
       ads: true,
@@ -1452,13 +1457,15 @@ function showMobileCursorFeedback() {
   feedback.style.backgroundRepeat = "no-repeat";
   feedback.style.backgroundPosition = "center";
   feedback.style.transform = "translate(-50%, -50%) scale(0.8)";
+  feedback.style.position = "absolute";
   feedback.style.opacity = "0";
   feedback.style.transition = "all 200ms ease-out";
 
-  // Position at center of click button
+  // Position at center of click button with scroll offset
   const rect = btn.getBoundingClientRect();
+  const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
   feedback.style.left = rect.left + rect.width / 2 + "px";
-  feedback.style.top = rect.top + rect.height / 2 + "px";
+  feedback.style.top = rect.top + rect.height / 2 + scrollY + "px";
 
   document.body.appendChild(feedback);
 
@@ -1853,7 +1860,7 @@ function showEditProfile() {
        </label>
        <div class="mb-4">
          <span class="block mb-2 font-semibold">Avatar:</span>
-         <div class="flex flex-wrap gap-2 justify-center">${avatarList}
+         <div class="avatar-choice-row">${avatarList}
            <div id="custom-avatar-tile" class="avatar-choice${isCustomAvatar ? " selected" : ""}" data-seed="__custom__" style="${isCustomAvatar ? "" : "display:none;"}">
              <img id="custom-avatar-img" src="${isCustomAvatar ? state.player.avatar : ""}" alt="Custom" />
              <div class="avatar-name">Custom</div>
@@ -2494,6 +2501,8 @@ function clickPacket(event) {
     const clickBtn = document.getElementById("click-btn");
     if (clickBtn) {
       const rect = clickBtn.getBoundingClientRect();
+      const scrollY =
+        window.pageYOffset || document.documentElement.scrollTop || 0;
       const centerX = rect.left + rect.width / 2;
       const halfW = fxWidth / 2;
       const clampedCenter = Math.min(
@@ -2501,7 +2510,7 @@ function clickPacket(event) {
         Math.max(margin + halfW, centerX),
       );
       clickFX.style.left = clampedCenter + "px";
-      clickFX.style.top = rect.top - 20 + "px";
+      clickFX.style.top = rect.top + scrollY - 20 + "px";
       clickFX.style.visibility = "";
 
       // Critical hit effect indicator
@@ -2517,7 +2526,7 @@ function clickPacket(event) {
           state.packets - packetsBefore
         ).toLocaleString("en-US")}`;
         critFX.style.left = clampedCenter + "px";
-        critFX.style.top = rect.top - 50 + "px";
+        critFX.style.top = rect.top + scrollY - 50 + "px";
         document.body.appendChild(critFX);
         setTimeout(() => {
           if (critFX && critFX.parentNode)
@@ -2857,6 +2866,7 @@ function migrateSaveToCurrentVersion() {
   if (typeof state.shop.skinElite !== "boolean") state.shop.skinElite = false;
   if (typeof state.shop.skinCyber !== "boolean") state.shop.skinCyber = false;
   if (typeof state.shop.skinNeon !== "boolean") state.shop.skinNeon = false;
+  if (typeof state.shop.skinShadow !== "boolean") state.shop.skinShadow = false;
 
   // Ensure core game values are properly set
   if (typeof state.packets !== "number") state.packets = 0;

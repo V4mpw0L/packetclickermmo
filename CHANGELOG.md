@@ -36,8 +36,15 @@
 ### 🎯 **User Experience Revolution**
 - **Context-Aware Modals** - All confirmation dialogs appear at user's current scroll position
 - **Smart Notifications** - Purchase confirmations and feedback follow viewport location
-- **Never Miss Feedback** - No more missed notifications when scrolled down the page
+- **Scroll-Aware Effects** - Click effects, combo HUD, and cursor feedback follow button position
+- **Never Miss Feedback** - No more missed notifications or effects when scrolled down
 - **Professional UX** - Seamless interaction regardless of scroll state
+
+### 🎨 **Complete Cosmetic Collection**
+- **4th Premium Skin Added** - Shadow Ninja Skin (32💎) for elite hackers
+- **New Achievement** - "Shadow Master" 🥷 for Shadow Ninja skin owners
+- **Complete Set** - Elite, Cyber Punk, Neon Ghost, and Shadow Ninja skins available
+- **Stealthy Design** - Dark warrior avatar with premium pricing tier
 
 ### ✨ **New Theme Showcase**
 - **🌅 Sunset Glow** - Warm orange and red twilight magic for cozy evening sessions

@@ -1892,11 +1892,11 @@ ul li:last-child {
 
 /* === AVATAR SELECTION === */
 .avatar-choice-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(4rem, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: var(--spacing-md);
     margin: var(--spacing-md) 0;
-    justify-items: center;
 }
 
 .avatar-choice {
@@ -1927,6 +1927,11 @@ ul li:last-child {
     border-radius: 50%;
     background: var(--bg-primary);
     object-fit: cover;
+}
+
+/* Darken shadow ninja avatar */
+.avatar-choice[data-seed="ShadowNinja"] img {
+    filter: brightness(0.6) saturate(0.9);
 }
 
 .avatar-name {
@@ -2767,7 +2772,7 @@ footer {
    EFFECTS & COMBO FX SECTION
    ========================= */
 .click-effect {
-    position: fixed;
+    position: absolute;
     font-size: clamp(1.2rem, 4vw, 1.8rem);
     font-weight: bold;
     color: var(--primary-color);
@@ -2997,7 +3002,7 @@ body.ultra-active #click-btn::before {
 /* Lightning 3D outline for ANIMAL text */
 .click-effect.animal-combo {
     z-index: 2100;
-    position: fixed;
+    position: absolute;
     isolation: isolate;
     perspective: none;
     transform-style: flat;
@@ -3083,6 +3088,13 @@ body.ultra-active #click-btn::before {
         filter: brightness(1.4) saturate(1.6);
     }
 }
+
+/* Prevent horizontal scroll during animal combo shake and stop effects from expanding page height */
+body.animal-active {
+    overflow-x: hidden;
+    contain: paint; /* Stop pseudo-elements on click button from increasing scroll height */
+}
+
 /* Adjust ANIMAL click-effect sizing/color */
 body.animal-active .click-effect.ultra-combo {
     font-size: clamp(2.9rem, 9.5vw, 4.8rem);
@@ -3564,8 +3576,9 @@ body.animal-active #click-btn {
     pointer-events: auto;
 }
 
-/* Scroll-following notifications */
-.hud-notify-follow {
+/* Scroll-following notifications and combo HUD */
+.hud-notify-follow,
+.combo-total-follow {
     position: absolute !important;
     z-index: 1500 !important;
     max-width: 90vw;
@@ -3576,6 +3589,10 @@ body.animal-active #click-btn {
     opacity: 1;
     transform: translate(-50%, -10px) !important;
     pointer-events: auto;
+}
+
+.combo-total-follow {
+    z-index: 1400 !important;
 }
 
 .hud-close-btn {
@@ -3603,7 +3620,7 @@ body.animal-active #click-btn {
    ========================= */
 #combo-total-hud,
 .combo-total-hud {
-    position: fixed;
+    position: absolute;
     top: 18%;
     left: 50%;
     transform: translate(-50%, 0);
@@ -5013,10 +5030,15 @@ html {
         height: 14px;
     }
 
-    /* Scroll-following notifications on mobile */
-    .hud-notify-follow {
+    /* Scroll-following notifications and combo HUD on mobile */
+    .hud-notify-follow,
+    .combo-total-follow {
         position: absolute !important;
         z-index: 1500 !important;
+    }
+
+    .combo-total-follow {
+        z-index: 1400 !important;
     }
 
     /* Mobile cursor feedback animation */

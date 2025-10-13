@@ -107,6 +107,8 @@
       return false;
     if (typeof d.shop.skinNeon !== "undefined" && !isBool(d.shop.skinNeon))
       return false;
+    if (typeof d.shop.skinShadow !== "undefined" && !isBool(d.shop.skinShadow))
+      return false;
 
     if (!Array.isArray(d.achievements)) return false;
 
@@ -244,6 +246,7 @@
         skinElite: false,
         skinCyber: false,
         skinNeon: false,
+        skinShadow: false,
       },
       achievements: [],
       ads: true,
