@@ -4481,6 +4481,31 @@ main,
 /* Global zoom prevention */
 * {
     -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Prevent double-tap zoom on all elements */
+*,
+*:before,
+*:after {
+    touch-action: manipulation !important;
+}
+
+/* Additional zoom prevention for webkit browsers */
+html {
+    -webkit-text-size-adjust: none !important;
+    -ms-text-size-adjust: none !important;
+    text-size-adjust: none !important;
+}
+
+/* Disable zoom gestures completely */
+body {
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
 }
 
 /* iOS specific gentle fixes */
