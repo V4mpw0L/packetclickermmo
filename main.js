@@ -81,8 +81,8 @@ let _comboExpireAt = 0;
 function getPrestigeRequirement() {
   const baseRequirement = 50000;
   const level = state.prestige.level || 0;
-  // Each prestige increases requirement by 1.5x
-  return Math.floor(baseRequirement * Math.pow(1.5, level));
+  // Each prestige increases requirement by 2x
+  return Math.floor(baseRequirement * Math.pow(2, level));
 }
 
 const state = {
