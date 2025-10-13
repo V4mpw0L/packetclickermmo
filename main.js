@@ -1053,12 +1053,10 @@ function renderShop() {
   // Premium Gem Packs Section
   let gemStore = GEM_PACKS.map((p) =>
     renderButton({
-      className: "shop-premium-btn w-full mb-3",
+      className: "shop-premium-btn",
       label: `<div class="shop-premium-content">
-        <div class="shop-gem-info">
-          <div class="shop-gem-amount">${p.label}</div>
-          <div class="shop-gem-price">$${p.price.toFixed(2)}</div>
-        </div>
+        <div class="shop-gem-amount">${p.label}</div>
+        <div class="shop-gem-price">$${p.price.toFixed(2)}</div>
       </div>`,
       dataAttr: `data-gem-pack="${p.id}"`,
     }),
@@ -1069,19 +1067,16 @@ function renderShop() {
     .map((item) => {
       let owned = isVIP();
       return renderButton({
-        className: `shop-vip-btn w-full mb-2 ${owned ? "shop-owned" : ""}`,
+        className: `shop-vip-btn ${owned ? "shop-owned" : ""}`,
         label: `<div class="shop-item-content">
-        <div class="shop-item-icon"><img src="src/assets/vip.png" alt="VIP" style="height:1.5rem;width:1.5rem;" aria-hidden="true"/></div>
-        <div class="shop-item-info">
-          <div class="shop-item-name">${item.label}</div>
-          <div class="shop-item-desc">${item.desc}</div>
-          <div class="shop-item-price">
-            ${
-              owned
-                ? '<span class="shop-owned-text">✓ Active</span>'
-                : `${item.gems} <img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;margin-left:0.3rem;" aria-hidden="true"/>`
-            }
-          </div>
+        <div class="shop-item-icon"><img src="src/assets/vip.png" alt="VIP" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/></div>
+        <div class="shop-item-name">${item.label}</div>
+        <div class="shop-item-price">
+          ${
+            owned
+              ? '<span class="shop-owned-text">✓</span>'
+              : `${item.gems}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
+          }
         </div>
       </div>`,
         dataAttr: `data-shop-item="${item.id}"`,
@@ -1095,19 +1090,16 @@ function renderShop() {
     .map((item) => {
       let owned = state.shop.skinBought;
       return renderButton({
-        className: `shop-cosmetic-btn w-full mb-2 ${owned ? "shop-owned" : ""}`,
+        className: `shop-cosmetic-btn ${owned ? "shop-owned" : ""}`,
         label: `<div class="shop-item-content">
         <div class="shop-item-icon">🎨</div>
-        <div class="shop-item-info">
-          <div class="shop-item-name">${item.label}</div>
-          <div class="shop-item-desc">${item.desc}</div>
-          <div class="shop-item-price">
-            ${
-              owned
-                ? '<span class="shop-owned-text">✓ Owned</span>'
-                : `${item.gems} <img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;margin-left:0.3rem;" aria-hidden="true"/>`
-            }
-          </div>
+        <div class="shop-item-name">${item.label}</div>
+        <div class="shop-item-price">
+          ${
+            owned
+              ? '<span class="shop-owned-text">✓</span>'
+              : `${item.gems}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
+          }
         </div>
       </div>`,
         dataAttr: `data-shop-item="${item.id}"`,
@@ -1121,19 +1113,16 @@ function renderShop() {
     .map((item) => {
       let owned = state.player.noAds;
       return renderButton({
-        className: `shop-utility-btn w-full mb-2 ${owned ? "shop-owned" : ""}`,
+        className: `shop-utility-btn ${owned ? "shop-owned" : ""}`,
         label: `<div class="shop-item-content">
         <div class="shop-item-icon">🚫</div>
-        <div class="shop-item-info">
-          <div class="shop-item-name">${item.label}</div>
-          <div class="shop-item-desc">${item.desc}</div>
-          <div class="shop-item-price">
-            ${
-              owned
-                ? '<span class="shop-owned-text">✓ Active</span>'
-                : `${item.gems} <img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;margin-left:0.3rem;" aria-hidden="true"/>`
-            }
-          </div>
+        <div class="shop-item-name">${item.label}</div>
+        <div class="shop-item-price">
+          ${
+            owned
+              ? '<span class="shop-owned-text">✓</span>'
+              : `${item.gems}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
+          }
         </div>
       </div>`,
         dataAttr: `data-shop-item="${item.id}"`,
@@ -1151,15 +1140,12 @@ function renderShop() {
         </div>
         ${renderButton({
           id: "watch-ad-btn",
-          className: "shop-ad-btn w-full mb-2",
+          className: "shop-ad-btn",
           label: `<div class="shop-item-content">
             <div class="shop-item-icon">📺</div>
-            <div class="shop-item-info">
-              <div class="shop-item-name">Watch Advertisement</div>
-              <div class="shop-item-desc">Get 1 gem for free</div>
-              <div class="shop-item-price">
-                <span class="shop-free-text">FREE</span>
-              </div>
+            <div class="shop-item-name">Watch Ad</div>
+            <div class="shop-item-price">
+              <span class="shop-free-text">FREE</span>
             </div>
           </div>`,
         })}
