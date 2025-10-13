@@ -80,6 +80,12 @@
         gems: 150,
         price: 9.99,
       },
+      {
+        id: "mega",
+        label: "6000 Gems",
+        gems: 6000,
+        price: 99.99,
+      },
     ];
 
     // Daily rewards progression (7-day loop/cap) - Enhanced rewards!
@@ -368,22 +374,6 @@
         theme: "retro",
         desc: "Unlock retro amber theme",
       },
-      {
-        id: "premium_avatar1",
-        name: "Cyber Ninja",
-        gems: 30,
-        type: "avatar",
-        avatar: "CyberNinja",
-        desc: "Unlock exclusive avatar",
-      },
-      {
-        id: "premium_avatar2",
-        name: "Data Ghost",
-        gems: 45,
-        type: "avatar",
-        avatar: "DataGhost",
-        desc: "Unlock rare avatar",
-      },
     ];
 
     // Core shop items (gems-only, simulated in web build)
@@ -435,6 +425,46 @@
         type: "skin",
         avatar: "ShadowNinja",
         desc: "Stealthy dark warrior avatar for elite hackers",
+      },
+      {
+        id: "premium_avatar1",
+        label: "Cyber Ninja Skin",
+        gems: 30,
+        type: "skin",
+        avatar: "CyberNinja",
+        desc: "Unlock exclusive cyber warrior avatar",
+      },
+      {
+        id: "premium_avatar2",
+        label: "Data Ghost Skin",
+        gems: 45,
+        type: "skin",
+        avatar: "DataGhost",
+        desc: "Unlock rare spectral hacker avatar",
+      },
+      {
+        id: "premium_avatar3",
+        label: "Quantum Hacker Skin",
+        gems: 60,
+        type: "skin",
+        avatar: "QuantumHacker",
+        desc: "Master of digital realms avatar",
+      },
+      {
+        id: "premium_avatar4",
+        label: "Neon Samurai Skin",
+        gems: 75,
+        type: "skin",
+        avatar: "NeonSamurai",
+        desc: "Blade of electric honor avatar",
+      },
+      {
+        id: "premium_avatar5",
+        label: "Shadow Phoenix Skin",
+        gems: 90,
+        type: "skin",
+        avatar: "ShadowPhoenix",
+        desc: "Rise from digital ashes avatar",
       },
       {
         id: "noAds",
@@ -785,6 +815,56 @@
         desc: "Buy the Shadow Ninja skin",
         req: function (s) {
           return !!(s && s.shop && s.shop.skinShadow);
+        },
+        gems: 0,
+      },
+      {
+        id: "shopPremiumAvatar1",
+        name: "Cyber Warrior",
+        emoji: "🤖",
+        desc: "Buy the Cyber Ninja skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.premium_avatar1);
+        },
+        gems: 0,
+      },
+      {
+        id: "shopPremiumAvatar2",
+        name: "Digital Phantom",
+        emoji: "👤",
+        desc: "Buy the Data Ghost skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.premium_avatar2);
+        },
+        gems: 0,
+      },
+      {
+        id: "shopPremiumAvatar3",
+        name: "Quantum Master",
+        emoji: "⚛️",
+        desc: "Buy the Quantum Hacker skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.premium_avatar3);
+        },
+        gems: 0,
+      },
+      {
+        id: "shopPremiumAvatar4",
+        name: "Electric Blade",
+        emoji: "⚡",
+        desc: "Buy the Neon Samurai skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.premium_avatar4);
+        },
+        gems: 0,
+      },
+      {
+        id: "shopPremiumAvatar5",
+        name: "Phoenix Rising",
+        emoji: "🔥",
+        desc: "Buy the Shadow Phoenix skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.premium_avatar5);
         },
         gems: 0,
       },
