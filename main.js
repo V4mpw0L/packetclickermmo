@@ -572,7 +572,7 @@ function renderGame() {
       '<span class="finger-icon"></span> Collect Packets <span class="finger-icon"></span>',
     attrs: {
       style:
-        "min-width: clamp(200px, 60vw, 320px); min-height: clamp(80px, 15vh, 120px); font-size: clamp(1.2rem, 5vw, 2rem); touch-action: manipulation; -webkit-tap-highlight-color: transparent;",
+        "min-width: clamp(200px, 60vw, 320px); min-height: clamp(80px, 15vh, 120px); font-size: clamp(1.6rem, 6vw, 2.5rem); touch-action: manipulation; -webkit-tap-highlight-color: transparent;",
       "aria-label": "Collect Packets - Tap to earn",
     },
   });

@@ -209,8 +209,8 @@ footer {
 /* Reusable finger icon that uses the current combo finger image */
 .finger-icon {
     display: inline-block;
-    width: 1.2rem;
-    height: 1.2rem;
+    width: 2rem;
+    height: 2rem;
     background-image: var(--finger-img);
     background-size: contain;
     background-repeat: no-repeat;
