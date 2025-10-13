@@ -1234,13 +1234,14 @@ body .modal-box .space-y-3 > * + * {
     position: absolute;
     right: 0.5rem;
     top: 0.5rem;
-    font-size: 0.75rem;
+    font-size: 1rem;
     color: var(--secondary-color);
     background: rgba(0, 0, 0, 0.35);
-    padding: 0.1rem 0.4rem;
+    padding: 0.2rem 0.6rem;
     border-radius: 999px;
     border: 1px solid var(--border-color);
     pointer-events: none;
+    font-weight: 700;
 }
 
 /* Daily Rewards - nicer themed cards */

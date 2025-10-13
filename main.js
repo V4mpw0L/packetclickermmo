@@ -773,9 +773,9 @@ function renderBoosts() {
 
           ${
             active
-              ? `<div style="padding: 0.4rem; background: rgba(255, 215, 0, 0.15); border: 1px solid #fbbf24; border-radius: 6px; font-size: 0.7rem;">
-                  <div style="color: #fbbf24; font-weight: bold;">⚡ ACTIVE</div>
-                  <div style="color: #ffd700;"><span class="event-number-glow">${remaining}</span>s</div>
+              ? `<div style="padding: 0.4rem; background: rgba(76, 175, 80, 0.15); border: 1px solid #4caf50; border-radius: 6px; font-size: 0.7rem;">
+                  <div style="color: #4caf50; font-weight: bold;">⚡ ACTIVE</div>
+                  <div style="color: #22c55e;"><span class="event-number-glow">${remaining}</span>s</div>
                  </div>`
               : !canAfford
                 ? `<div style="padding: 0.4rem; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 6px; font-size: 0.7rem; color: #ef4444; font-weight: bold;">
