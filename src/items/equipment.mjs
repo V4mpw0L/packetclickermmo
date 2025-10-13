@@ -1556,7 +1556,7 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
             <span style="opacity:.9;">🎯 Will auto-equip to first available slot</span>
           </div>
           <div class="button-group" style="display:flex; gap:.5rem; margin-top:.6rem;">
-            <button class="neon-btn w-full" id="smart-equip-item-btn" data-index="${idx}">🧰 Quick Equip</button>
+            <button class="neon-btn w-full" id="smart-equip-item-btn" data-index="${idx}">Quick Equip</button>
             <button class="neon-btn w-full" id="sell-item-btn" data-index="${idx}" style="background: linear-gradient(135deg, #ff3040, #cc2030); border-color: #ff3040; color: white;">Sell for ${price} <span class="icon-packet"></span></button>
           </div>
         </div>
@@ -1585,7 +1585,7 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
             </select>
           </div>
           <div class="button-group" style="display:flex; gap:.5rem; margin-top:.6rem;">
-            <button class="neon-btn w-full" id="equip-item-btn" data-index="${idx}">🔄 Replace & Equip</button>
+            <button class="neon-btn w-full" id="equip-item-btn" data-index="${idx}">Replace & Equip</button>
             <button class="neon-btn w-full" id="sell-item-btn" data-index="${idx}" style="background: linear-gradient(135deg, #ff3040, #cc2030); border-color: #ff3040; color: white;">Sell for ${price} <span class="icon-packet"></span></button>
           </div>
         </div>
