@@ -2,7 +2,7 @@
 
 > **The Ultimate Cyberpunk Idle Clicker Experience - Now with 100 Items, Epic Combos & Equipment System!**
 
-[![Version 0.0.22](https://img.shields.io/badge/Version-0.0.22-brightgreen.svg)]()
+[![Version 0.0.23](https://img.shields.io/badge/Version-0.0.23-brightgreen.svg)]()
 [![PWA Ready](https://img.shields.io/badge/PWA-Ready-blue.svg)](https://web.dev/progressive-web-apps/)
 [![Mobile Optimized](https://img.shields.io/badge/Mobile-Optimized-success.svg)]()
 [![Anti-Cheat](https://img.shields.io/badge/Anti--Cheat-Protected-red.svg)]()
@@ -286,7 +286,7 @@ const THEMES = {
 
 ## 📊 **Version History**
 
-### **Version 0.0.20** (Latest)
+### **Version 0.0.23** (Latest)
 - ✅ **Firebase Storage Integration** - Custom avatar uploads sync across all devices
 - ✅ **UI Stability Fixes** - Fixed button shifting and layout issues
 - ✅ **Smart Equipment System** - Auto-equip to empty slots with dynamic UI

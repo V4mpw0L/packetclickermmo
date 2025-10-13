@@ -1788,7 +1788,7 @@ function showEditProfile() {
       }
     } catch (_) {}
     try {
-      window.VERSION = "0.0.22";
+      window.VERSION = "0.0.23";
     } catch (_) {}
 
     updateTopBar();
@@ -1907,7 +1907,7 @@ function showSettings() {
         // Persist and refresh UI
         save();
         try {
-          window.VERSION = "0.0.22";
+          window.VERSION = "0.0.23";
         } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {

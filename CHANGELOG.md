@@ -1,5 +1,15 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.23 - Version Update
+*Released: January 2025*
+
+### 🔄 **Version Management**
+- **Version Consistency** - Updated all components to v0.0.23 across the entire application
+- **Manifest Update** - PWA manifest version synchronized
+- **Code Alignment** - All version references properly updated for consistency
+
+---
+
 ## Version 0.0.22 - Golden Glow & UI Polish
 *Released: January 2025*
 
