@@ -1012,7 +1012,7 @@ function renderAchievements() {
       <div class="achievement-content" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
         <div class="achievement-name" style="text-align: center;">${ach.name}</div>
         <div class="achievement-desc" style="text-align: center;">${ach.desc}</div>
-        ${ach.gem ? `<div class="achievement-reward" style="text-align: center;">${unlocked ? "✓" : "+" + ach.gem} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/></div>` : ""}
+        ${ach.gem ? `<div class="achievement-reward" style="text-align: center;">${unlocked ? "✓" : "+" + ach.gem} 💎</div>` : ""}
       </div>
     </div>`;
   }).join("");
@@ -2716,10 +2716,7 @@ function watchAd() {
   updateTopBar();
   renderTab();
   checkAchievements();
-  showHudNotify(
-    '+1 <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> (Ad)',
-    "📺",
-  );
+  showHudNotify("+1 💎 (Ad)", "📺");
 }
 
 // =============== ACHIEVEMENTS CHECKER ===============
@@ -2732,12 +2729,9 @@ function checkAchievements() {
         updateTopBar();
         showModal(
           "Achievement!",
-          `You unlocked <b>${ach.name}</b>!<br>${ach.desc}<br>+${ach.gem} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/>`,
+          `You unlocked <b>${ach.name}</b>!<br>${ach.desc}<br>+${ach.gem} 💎`,
         );
-        showHudNotify(
-          `Achievement: ${ach.name} +${ach.gem} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/>`,
-          ach.emoji,
-        );
+        showHudNotify(`Achievement: ${ach.name} +${ach.gem} 💎`, ach.emoji);
       } else {
         showModal(
           "Achievement!",
@@ -3053,10 +3047,7 @@ function buyTheme(themeId) {
 
   // If not unlocked, try to buy it
   if (state.gems < (theme.cost || 0)) {
-    showHudNotify(
-      `Not enough gems! Need ${theme.cost} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/>`,
-      "❌",
-    );
+    showHudNotify(`Not enough gems! Need ${theme.cost} 💎`, "❌");
     return;
   }
 
@@ -3098,7 +3089,7 @@ function claimDailyReward() {
 
   showModal(
     "Daily Reward!",
-    `You received ${reward.gems.toLocaleString("en-US")} <img src="src/assets/gem.png" alt="Gems" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;" aria-hidden="true"/> and ${reward.packets.toLocaleString("en-US")} <span class="icon-packet"></span>!<br>Streak: ${state.dailyRewards.streak} days`,
+    `You received ${reward.gems.toLocaleString("en-US")} 💎 and ${reward.packets.toLocaleString("en-US")} <span class="icon-packet"></span>!<br>Streak: ${state.dailyRewards.streak} days`,
   );
   showHudNotify(`Day ${state.dailyRewards.streak} claimed!`, "📅");
 
