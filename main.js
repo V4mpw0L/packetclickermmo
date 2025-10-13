@@ -569,7 +569,7 @@ function renderGame() {
   if (state.boosts.ultraCombo > Date.now()) {
     let remaining = Math.ceil((state.boosts.ultraCombo - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#fbbf24; background:linear-gradient(45deg, rgba(251,191,36,0.3), rgba(168,85,247,0.3)); font-weight:600; font-size:0.75rem; white-space:nowrap;">🚀 10x QUANTUM (<span class="event-number-glow">${remaining}s</span>)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid #ff0080; border-radius:999px; animation: celestialTextOnly 3s linear infinite; background:linear-gradient(45deg, rgba(255,0,128,0.2), rgba(0,255,128,0.2), rgba(128,0,255,0.2), rgba(255,128,0,0.2)); font-weight:600; font-size:0.75rem; white-space:nowrap;">🚀 10x QUANTUM (<span style="animation: celestialTextOnly 3s linear infinite; font-weight:bold;">${remaining}s</span>)</span>`,
     );
     totalMultiplier *= 10;
   }
@@ -702,6 +702,10 @@ function renderBoosts() {
       } else if (boostType === "autoClicker") {
         color = "#ffe08a";
         emoji = "🤖";
+      } else if (boostType === "ultraCombo") {
+        // Use rainbow animation for celestial rarity
+        activeBoosts += `<div style="padding:.1rem .45rem; border:1px solid #ff0080; border-radius:999px; animation: celestialTextOnly 3s linear infinite; background:linear-gradient(45deg, rgba(255,0,128,0.2), rgba(0,255,128,0.2), rgba(128,0,255,0.2), rgba(255,128,0,0.2)); font-weight:600; font-size:0.875rem; margin-bottom:0.5rem; display:inline-block; white-space:nowrap;">🚀 ${boostInfo.name} active (<span style="font-weight:bold; transform:translateY(-1px); display:inline-block; animation: celestialTextOnly 3s linear infinite;">${remaining}s</span>)</div>`;
+        return; // Skip the regular activeBoosts append below
       }
 
       activeBoosts += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:${color}; background:rgba(0,0,0,.25); font-weight:600; font-size:0.875rem; margin-bottom:0.5rem; display:inline-block; white-space:nowrap;">${emoji} ${boostInfo.name} active (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">${remaining}s</span>)</div>`;
@@ -725,9 +729,11 @@ function renderBoosts() {
     let style;
     if (isCelestial) {
       style = {
-        border: "#ffffff",
-        glow: "rgba(255, 255, 255, 0.8)",
-        bg: "linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 0, 128, 0.1))",
+        border: "#ff0080",
+        glow: "rgba(255, 0, 128, 0.8)",
+        bg: "linear-gradient(45deg, rgba(255, 0, 128, 0.1), rgba(0, 255, 128, 0.1))",
+        animation: "celestialRainbow 3s linear infinite",
+        textAnimation: "celestialTextOnly 3s linear infinite",
       };
     } else {
       const glowAlpha = isAnimal ? 0.6 : 0.4;
@@ -746,11 +752,11 @@ function renderBoosts() {
     return `
       <div class="boost-card-compact"
            style="
-             border: 2px solid ${style.border};
+             ${isCelestial ? "border: none; animation: celestialRainbowRounded 3s linear infinite;" : `border: 2px solid ${style.border};`}
              background: ${style.bg};
              border-radius: 10px;
              padding: 0.75rem;
-             box-shadow: 0 3px 12px ${style.glow}, 0 1px 6px rgba(0,0,0,0.3);
+             box-shadow: ${isCelestial ? "" : `0 3px 12px ${style.glow}, 0 1px 6px rgba(0,0,0,0.3)`};
              transition: all 0.3s ease;
              cursor: ${active || !canAfford ? "not-allowed" : "pointer"};
              opacity: ${active || !canAfford ? "0.6" : "1"};
@@ -763,19 +769,19 @@ function renderBoosts() {
              justify-content: space-between;
            "
            onclick="${active || !canAfford ? "" : `buyBoost('${boost.id}')`}"
-           onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 18px ${style.glow}, 0 3px 10px rgba(0,0,0,0.4)'"
-           onmouseout="this.style.transform='translateY(0px)'; this.style.boxShadow='0 3px 12px ${style.glow}, 0 1px 6px rgba(0,0,0,0.3)'">
+           onmouseover="this.style.transform='translateY(-3px)'; ${isCelestial ? "" : `this.style.boxShadow='0 6px 18px ${style.glow}, 0 3px 10px rgba(0,0,0,0.4)'`}"
+           onmouseout="this.style.transform='translateY(0px)'; ${isCelestial ? "" : `this.style.boxShadow='0 3px 12px ${style.glow}, 0 1px 6px rgba(0,0,0,0.3)'`}">
 
         <div style="font-size: 2.2rem; margin-bottom: 0.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
           ${boost.icon}
         </div>
 
         <div style="flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%;">
-          <div style="font-size: 0.9rem; font-weight: 800; color: ${style.border}; text-shadow: 0 1px 2px rgba(0,0,0,0.5); margin-bottom: 0.25rem; line-height: 1.2;">
+          <div style="font-size: 0.9rem; font-weight: 800; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : `color: ${style.border};`} text-shadow: 0 1px 2px rgba(0,0,0,0.5); margin-bottom: 0.25rem; line-height: 1.2;">
             ${boost.name.replace(/^[^A-Za-z]*\s*/, "")}
           </div>
 
-          <div style="font-size: 0.7rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 0.5rem;">
+          <div style="font-size: 0.7rem; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : "color: #a0aec0;"} text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 0.5rem;">
             ${rarity.name}
           </div>
 
@@ -785,8 +791,8 @@ function renderBoosts() {
         </div>
 
         <div style="width: 100%; margin-top: auto;">
-          <div style="display: flex; align-items: center; justify-content: center; gap: 0.25rem; padding: 0.4rem 0.6rem; background: rgba(0,0,0,0.4); border-radius: 999px; border: 1px solid ${style.border}40; margin-bottom: 0.5rem;">
-            <span class="event-number-glow" style="font-size: 1rem; font-weight: 800;">${boost.gems.toLocaleString("en-US")}</span>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 0.25rem; padding: 0.4rem 0.6rem; background: rgba(0,0,0,0.4); border-radius: 999px; ${isCelestial ? "border: 1px solid #ff0080; animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${style.border}40;`} margin-bottom: 0.5rem;">
+            <span class="event-number-glow" style="font-size: 1rem; font-weight: 800; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : ""}">${boost.gems.toLocaleString("en-US")}</span>
             <img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;" aria-hidden="true"/>
           </div>
 
@@ -800,7 +806,7 @@ function renderBoosts() {
                 ? `<div style="padding: 0.4rem; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 6px; font-size: 0.7rem; color: #ef4444; font-weight: bold;">
                     NEED GEMS
                    </div>`
-                : `<div style="padding: 0.4rem; background: ${style.bg}; border: 1px solid ${style.border}; border-radius: 6px; font-weight: bold; color: ${style.border}; font-size: 0.75rem;">
+                : `<div style="padding: 0.4rem; background: ${style.bg}; ${isCelestial ? "border: 1px solid #ff0080; animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${style.border};`} border-radius: 6px; font-weight: bold; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : `color: ${style.border};`} font-size: 0.75rem;">
                     ACTIVATE
                    </div>`
           }
@@ -810,6 +816,25 @@ function renderBoosts() {
   }).join("");
 
   return `
+    <style>
+      @keyframes celestialRainbowRounded {
+        0% {
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, 0 0 20px rgba(255,0,128,0.8);
+        }
+        25% {
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #00ff80, 0 0 20px rgba(0,255,128,0.8);
+        }
+        50% {
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #8000ff, 0 0 20px rgba(128,0,255,0.8);
+        }
+        75% {
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff8000, 0 0 20px rgba(255,128,0,0.8);
+        }
+        100% {
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, 0 0 20px rgba(255,0,128,0.8);
+        }
+      }
+    </style>
     <div class="neon-card px-3 py-4 mb-2" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #1a202c 100%); border: 2px solid #4caf50;">
       <div style="text-align: center; margin-bottom: 2rem;">
         <h2 style="font-size: 2rem; font-weight: 900; background: linear-gradient(45deg, #4caf50, #22c55e, #16a34a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.5rem;">
