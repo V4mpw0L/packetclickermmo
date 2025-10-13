@@ -446,6 +446,13 @@ body .modal-box .space-y-3 > * + * {
         grid-template-areas:
             "center settings"
             "pills  pills";
+        /* Ensure proper spacing from device notch on iPhone */
+        top: max(env(safe-area-inset-top, 0px), 8px);
+    }
+
+    /* Adjust menu bar to account for top bar positioning */
+    .menu-bar {
+        margin-top: calc(env(safe-area-inset-top, 0px) + var(--spacing-sm));
     }
     .top-bar .user-info {
         display: flex;
@@ -1317,6 +1324,7 @@ body {
     border-radius: var(--border-radius-md);
     padding: var(--spacing-sm);
     margin-bottom: var(--spacing-md);
+    margin-top: env(safe-area-inset-top, 0px);
     box-shadow:
         0 1.5px 9px var(--shadow-primary),
         0 0.5px 4px #223c44cc;
@@ -2399,8 +2407,9 @@ footer {
         transform: translateX(-50%);
         text-align: center;
         max-width: min(92vw, 48rem);
-        white-space: normal;
-        word-break: break-word;
+        white-space: pre-line;
+        overflow: visible;
+        line-height: 1.2;
         background: transparent !important;
         min-width: 2.5em;
         min-height: 1.5em;
@@ -3399,12 +3408,19 @@ footer {
             grid-template-columns: repeat(3, 1fr);
             gap: 0.25rem;
             padding: 0.5rem;
+            /* Additional iPhone safe area spacing */
+            padding-top: max(0.5rem, calc(env(safe-area-inset-top) / 4));
         }
 
         .top-bar {
             flex-direction: column;
             gap: 0.5rem;
             text-align: center;
+            /* Ensure adequate spacing from iPhone notch */
+            padding-top: max(
+                var(--spacing-xs),
+                calc(env(safe-area-inset-top) + 8px)
+            );
         }
 
         .top-bar .user-info {
@@ -3609,6 +3625,23 @@ footer {
         padding-bottom: max(var(--spacing-sm), env(safe-area-inset-bottom));
         padding-left: max(var(--spacing-sm), env(safe-area-inset-left));
         padding-right: max(var(--spacing-sm), env(safe-area-inset-right));
+    }
+
+    /* Additional iPhone-specific menu positioning fix */
+    @media screen and (max-device-width: 430px) and (-webkit-min-device-pixel-ratio: 2) {
+        .menu-bar {
+            position: relative;
+            margin-top: max(
+                calc(env(safe-area-inset-top) + var(--spacing-sm)),
+                1rem
+            ) !important;
+        }
+
+        .top-bar {
+            position: sticky;
+            top: max(env(safe-area-inset-top, 0px), 12px) !important;
+            z-index: 100;
+        }
     }
 
     /* === UTILITY CLASSES TO REPLACE TAILWIND === */

@@ -331,7 +331,7 @@ export function handleComboEffect(clickCombo, amount, state) {
     const extra = Math.floor(amount * 0.88);
     safeAddPackets(extra);
     displayedGain += extra;
-    effectText = `<span class="animal-text-layer" style="color:#ff3040">ANIMAL! +${displayedGain} (${amount}+88%)</span>`;
+    effectText = `<span class="animal-text-layer" style="color:#ff3040">ANIMAL!\n+${displayedGain}\n(${amount}+88%)</span>`;
 
     if (hasDOM()) {
       try {
@@ -392,7 +392,7 @@ export function handleComboEffect(clickCombo, amount, state) {
     const extra = Math.floor(amount * 0.5);
     safeAddPackets(extra);
     displayedGain += extra;
-    effectText = `<span style="color:#ff4dff">ULTRA! +${displayedGain} (${amount}+50%)</span>`;
+    effectText = `<span style="color:#ff4dff">ULTRA!\n+${displayedGain}\n(${amount}+50%)</span>`;
 
     if (hasDOM()) {
       try {
@@ -434,7 +434,7 @@ export function handleComboEffect(clickCombo, amount, state) {
     const extra = Math.floor(amount * 0.25);
     safeAddPackets(extra);
     displayedGain += extra;
-    effectText = `MEGA! +${displayedGain} (${amount}+25%)`;
+    effectText = `MEGA!\n+${displayedGain}\n(${amount}+25%)`;
 
     // Shake the click button briefly on MEGA
     if (hasDOM()) {
@@ -449,7 +449,7 @@ export function handleComboEffect(clickCombo, amount, state) {
     const extra = Math.floor(amount * 0.1);
     safeAddPackets(extra);
     displayedGain += extra;
-    effectText = `${clickCombo}x +${displayedGain} (${amount}+10%)`;
+    effectText = `${clickCombo}x\n+${displayedGain}\n(${amount}+10%)`;
 
     // Light shake on standard combo
     if (hasDOM()) {

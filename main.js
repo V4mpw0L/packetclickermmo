@@ -1988,6 +1988,13 @@ function renderActiveEvent() {
 // =============== GAME LOGIC ===============
 
 function clickPacket(event) {
+  // Add click throttling to prevent performance issues
+  const clickTime = Date.now();
+  if (clickPacket._lastClick && clickTime - clickPacket._lastClick < 50) {
+    return; // Throttle to max 20 clicks per second
+  }
+  clickPacket._lastClick = clickTime;
+
   const packetsBefore = state.packets;
   let bonus = isVIP() ? 1.25 : 1;
 
@@ -2096,8 +2103,15 @@ function clickPacket(event) {
     showMobileCursorFeedback();
   }
 
-  // Modularized combo effect logic
-  if (!clickPacket._lastFxTime || Date.now() - clickPacket._lastFxTime > 80) {
+  // Modularized combo effect logic - increase throttling for better performance
+  const graphicsQuality = window.graphicsQuality || "high";
+  const fxThrottle =
+    graphicsQuality === "high" ? 120 : graphicsQuality === "medium" ? 100 : 80;
+
+  if (
+    !clickPacket._lastFxTime ||
+    Date.now() - clickPacket._lastFxTime > fxThrottle
+  ) {
     clickPacket._lastFxTime = Date.now();
 
     // Use modular effect handler
@@ -2249,55 +2263,85 @@ function clickPacket(event) {
       animationDuration = Math.max(800, baseDuration * 0.9);
     }
     // HIGH quality uses original baseDuration unchanged
-    setTimeout(() => {
-      if (clickFX.parentNode) {
-        document.body.removeChild(clickFX);
+    // Improved DOM cleanup with fallback
+    const cleanup = () => {
+      if (clickFX && clickFX.parentNode) {
+        try {
+          clickFX.parentNode.removeChild(clickFX);
+        } catch (e) {
+          console.warn("Failed to remove click effect:", e);
+        }
       }
-    }, animationDuration);
+    };
 
-    clickFX.addEventListener("animationend", () => {
-      if (clickFX.parentNode) {
-        clickFX.remove();
-      }
-    });
+    setTimeout(cleanup, animationDuration);
+
+    clickFX.addEventListener("animationend", cleanup, { once: true });
+
+    // Emergency cleanup to prevent DOM bloat
+    setTimeout(cleanup, Math.max(animationDuration * 2, 3000));
   }
 
-  // Restore instant responsiveness with escalating SFX
+  // Reduce sound effects on high graphics to prevent performance issues
   if (state.player.sound) {
+    const graphicsQuality = window.graphicsQuality || "high";
+
     if (crit) {
       playSound("crit");
-      if (clickCombo >= 120) {
-        setTimeout(() => playSound("crit"), 40);
-        setTimeout(() => playSound("click"), 80);
-        setTimeout(() => playSound("crit"), 120);
-        setTimeout(() => playSound("click"), 160);
-      } else if (clickCombo >= 50) {
-        setTimeout(() => playSound("crit"), 50);
-        setTimeout(() => playSound("click"), 100);
-      } else if (clickCombo >= 15) {
-        setTimeout(() => playSound("crit"), 60);
-        setTimeout(() => playSound("click"), 120);
-      } else if (clickCombo >= 5) {
-        setTimeout(() => playSound("crit"), 40);
+      // Reduce excessive sound effects on high graphics
+      if (graphicsQuality !== "high") {
+        if (clickCombo >= 120) {
+          setTimeout(() => playSound("crit"), 40);
+          setTimeout(() => playSound("click"), 80);
+          setTimeout(() => playSound("crit"), 120);
+          setTimeout(() => playSound("click"), 160);
+        } else if (clickCombo >= 50) {
+          setTimeout(() => playSound("crit"), 50);
+          setTimeout(() => playSound("click"), 100);
+        } else if (clickCombo >= 15) {
+          setTimeout(() => playSound("crit"), 60);
+          setTimeout(() => playSound("click"), 120);
+        } else if (clickCombo >= 5) {
+          setTimeout(() => playSound("crit"), 40);
+        }
+      } else {
+        // High graphics: reduce combo sound effects to prevent lag
+        if (clickCombo >= 50) {
+          setTimeout(() => playSound("crit"), 80);
+        } else if (clickCombo >= 15) {
+          setTimeout(() => playSound("crit"), 100);
+        }
       }
     } else {
       playSound("click");
-      if (clickCombo >= 120) {
-        animalCritBurst();
-        setTimeout(() => playSound("click"), 40);
-        setTimeout(() => playSound("click"), 80);
-        setTimeout(() => playSound("click"), 120);
-        setTimeout(() => playSound("click"), 160);
-        setTimeout(() => playSound("click"), 200);
-      } else if (clickCombo >= 50) {
-        setTimeout(() => playSound("click"), 50);
-        setTimeout(() => playSound("click"), 100);
-        setTimeout(() => playSound("click"), 150);
-      } else if (clickCombo >= 15) {
-        setTimeout(() => playSound("click"), 40);
-        setTimeout(() => playSound("click"), 80);
-      } else if (clickCombo >= 5) {
-        setTimeout(() => playSound("click"), 30);
+      if (graphicsQuality !== "high") {
+        if (clickCombo >= 120) {
+          animalCritBurst();
+          setTimeout(() => playSound("click"), 40);
+          setTimeout(() => playSound("click"), 80);
+          setTimeout(() => playSound("click"), 120);
+          setTimeout(() => playSound("click"), 160);
+          setTimeout(() => playSound("click"), 200);
+        } else if (clickCombo >= 50) {
+          setTimeout(() => playSound("click"), 50);
+          setTimeout(() => playSound("click"), 100);
+          setTimeout(() => playSound("click"), 150);
+        } else if (clickCombo >= 15) {
+          setTimeout(() => playSound("click"), 40);
+          setTimeout(() => playSound("click"), 80);
+        } else if (clickCombo >= 5) {
+          setTimeout(() => playSound("click"), 30);
+        }
+      } else {
+        // High graphics: minimal combo sounds to prevent performance issues
+        if (clickCombo >= 120) {
+          animalCritBurst();
+          setTimeout(() => playSound("click"), 60);
+        } else if (clickCombo >= 50) {
+          setTimeout(() => playSound("click"), 80);
+        } else if (clickCombo >= 15) {
+          setTimeout(() => playSound("click"), 60);
+        }
       }
     }
   }
@@ -3145,10 +3189,60 @@ function bindTabEvents(tab) {
   if (tab === "game") {
     let btn = document.getElementById("click-btn");
     if (btn) {
+      // Clear any existing handlers
       btn.onclick = null;
-      btn.onpointerdown = (e) => {
-        clickPacket(e);
+      btn.onpointerdown = null;
+      btn.onpointerup = null;
+
+      // Shared click state to prevent button getting stuck
+      if (!btn._clickState) {
+        btn._clickState = {
+          clicking: false,
+          lastClick: 0,
+        };
+      }
+
+      const handleClick = (e) => {
+        const clickTime = Date.now();
+        const state = btn._clickState;
+
+        // Prevent rapid firing and stuck state
+        if (state.clicking || clickTime - state.lastClick < 50) {
+          return;
+        }
+
+        state.clicking = true;
+        state.lastClick = clickTime;
+
+        try {
+          clickPacket(e);
+        } catch (error) {
+          console.warn("Click error:", error);
+        }
+
+        // Reset click state with timeout and immediate reset on pointerup
+        const resetState = () => {
+          state.clicking = false;
+        };
+
+        setTimeout(resetState, 100);
+
+        // Also reset on pointer events to prevent stuck state
+        const resetHandler = () => {
+          resetState();
+          document.removeEventListener("pointerup", resetHandler);
+          document.removeEventListener("pointercancel", resetHandler);
+        };
+
+        document.addEventListener("pointerup", resetHandler, { once: true });
+        document.addEventListener("pointercancel", resetHandler, {
+          once: true,
+        });
       };
+
+      btn.onpointerdown = handleClick;
+      btn.onclick = handleClick;
+
       // Ensure cursor matches current combo stage when entering the Game tab
       setCursorForCombo(typeof clickCombo === "number" ? clickCombo : 0);
     }
