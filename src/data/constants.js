@@ -162,7 +162,7 @@
         gems: 5,
         duration: 480000,
         icon: "📦",
-        rarity: "common",
+        rarity: "green",
         effect: "Multiplies packet gain by 3x",
       },
       {
@@ -172,7 +172,7 @@
         gems: 12,
         duration: 900000,
         icon: "💎",
-        rarity: "rare",
+        rarity: "gold",
         effect: "Dramatically increases gem discovery",
       },
       {
@@ -182,7 +182,7 @@
         gems: 8,
         duration: 300000,
         icon: "👆",
-        rarity: "uncommon",
+        rarity: "gold",
         effect: "Supercharges every click",
       },
       {
@@ -192,7 +192,7 @@
         gems: 18,
         duration: 240000,
         icon: "💥",
-        rarity: "epic",
+        rarity: "blue",
         effect: "Nearly guaranteed critical hits",
       },
       {
@@ -202,7 +202,7 @@
         gems: 25,
         duration: 180000,
         icon: "🔄",
-        rarity: "legendary",
+        rarity: "pink",
         effect: "Autonomous clicking powerhouse",
       },
       {
@@ -212,7 +212,7 @@
         gems: 50,
         duration: 120000,
         icon: "🌌",
-        rarity: "mythic",
+        rarity: "celestial",
         effect: "Ultimate power amplification",
       },
     ];

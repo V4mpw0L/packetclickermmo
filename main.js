@@ -715,41 +715,33 @@ function renderBoosts() {
     const remaining = active ? Math.ceil((until - Date.now()) / 1000) : 0;
     const canAfford = state.gems >= boost.gems;
 
-    // Rarity colors and effects
-    const rarityStyles = {
-      common: {
-        border: "#4ade80",
-        glow: "rgba(74, 222, 128, 0.3)",
-        bg: "rgba(74, 222, 128, 0.05)",
-      },
-      uncommon: {
-        border: "#22d3ee",
-        glow: "rgba(34, 211, 238, 0.4)",
-        bg: "rgba(34, 211, 238, 0.08)",
-      },
-      rare: {
-        border: "#a855f7",
-        glow: "rgba(168, 85, 247, 0.5)",
-        bg: "rgba(168, 85, 247, 0.1)",
-      },
-      epic: {
-        border: "#f59e0b",
-        glow: "rgba(245, 158, 11, 0.6)",
-        bg: "rgba(245, 158, 11, 0.12)",
-      },
-      legendary: {
-        border: "#ef4444",
-        glow: "rgba(239, 68, 68, 0.7)",
-        bg: "rgba(239, 68, 68, 0.15)",
-      },
-      mythic: {
-        border: "#fbbf24",
-        glow: "rgba(251, 191, 36, 0.8)",
-        bg: "linear-gradient(45deg, rgba(251, 191, 36, 0.2), rgba(168, 85, 247, 0.2))",
-      },
-    };
+    // Use equipment rarity system
+    const rarity =
+      Equipment.RARITIES.find((r) => r.id === boost.rarity) ||
+      Equipment.RARITIES[0];
+    const isCelestial = rarity.id === "celestial";
+    const isAnimal = rarity.id === "animal";
 
-    const style = rarityStyles[boost.rarity] || rarityStyles.common;
+    let style;
+    if (isCelestial) {
+      style = {
+        border: "#ffffff",
+        glow: "rgba(255, 255, 255, 0.8)",
+        bg: "linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 0, 128, 0.1))",
+      };
+    } else {
+      const glowAlpha = isAnimal ? 0.6 : 0.4;
+      const bgAlpha = isAnimal ? 0.15 : 0.08;
+      style = {
+        border: rarity.color,
+        glow: `${rarity.color}${Math.floor(glowAlpha * 255)
+          .toString(16)
+          .padStart(2, "0")}`,
+        bg: `${rarity.color}${Math.floor(bgAlpha * 255)
+          .toString(16)
+          .padStart(2, "0")}`,
+      };
+    }
 
     return `
       <div class="boost-card-compact"
@@ -784,7 +776,7 @@ function renderBoosts() {
           </div>
 
           <div style="font-size: 0.7rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 0.5rem;">
-            ${boost.rarity}
+            ${rarity.name}
           </div>
 
           <div style="font-size: 0.75rem; color: #e2e8f0; margin-bottom: 0.5rem; line-height: 1.3;">
@@ -4251,12 +4243,12 @@ function buyBoost(boostId) {
 
   // Premium boost activation notification
   const rarityEmojis = {
-    common: "✨",
-    uncommon: "💫",
-    rare: "🌟",
-    epic: "💥",
-    legendary: "🔥",
-    mythic: "🚀",
+    green: "✨",
+    gold: "🌟",
+    blue: "💥",
+    pink: "🔥",
+    animal: "🦄",
+    celestial: "🚀",
   };
 
   const emoji = rarityEmojis[boost.rarity] || "⚡";
