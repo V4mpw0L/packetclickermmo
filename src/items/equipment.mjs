@@ -1371,19 +1371,19 @@ export function renderTab(state) {
       }
       @keyframes celestialRainbow {
         0% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, 0 0 20px rgba(255,255,255,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, 0 0 20px rgba(255,0,128,0.8);
         }
         25% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #00ff80, 0 0 20px rgba(255,255,255,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #00ff80, 0 0 20px rgba(0,255,128,0.8);
         }
         50% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #8000ff, 0 0 20px rgba(255,255,255,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #8000ff, 0 0 20px rgba(128,0,255,0.8);
         }
         75% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff8000, 0 0 20px rgba(255,255,255,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff8000, 0 0 20px rgba(255,128,0,0.8);
         }
         100% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, 0 0 20px rgba(255,255,255,0.8);
+          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, 0 0 20px rgba(255,0,128,0.8);
         }
       }
       @keyframes celestialTextOnly {
