@@ -465,7 +465,7 @@ body .modal-box .space-y-3 > * + * {
     }
     #combo-total-hud,
     .combo-total-hud {
-        top: 7%;
+        top: 13%;
         font-size: clamp(1rem, 4vw, 1.2rem);
         min-width: 90px;
         padding: 0.25em 0.7em;
@@ -3217,7 +3217,7 @@ footer {
     #combo-total-hud,
     .combo-total-hud {
         position: fixed;
-        top: 12%;
+        top: 18%;
         left: 50%;
         transform: translate(-50%, 0);
         padding: clamp(0.25rem, 1vw, 0.5rem) clamp(0.5rem, 2vw, 1.2rem);
