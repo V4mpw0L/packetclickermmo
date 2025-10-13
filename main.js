@@ -1558,10 +1558,10 @@ function renderPrestige() {
     <div class="neon-card px-3 py-4 mb-2">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);"><img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1.2rem;height:1.2rem;vertical-align:middle;display:inline-block;margin-right:0.35rem;"/> Prestige</h2>
       <div class="text-center mb-4" style="display:flex; flex-direction:column; align-items:center; gap:.35rem;">
-        <div class="text-lg" style="font-weight:900;">Level ${state.prestige.level}</div>
+        <div class="text-lg" style="font-weight:900;">Level <span class="event-number-glow">${state.prestige.level}</span></div>
         <div class="text-sm text-neon-gray">
           <span style="display:inline-flex; align-items:center; gap:.35rem; padding:.2rem .55rem; border:1px solid var(--border-color); border-radius:999px; background:linear-gradient(135deg, rgba(0,0,0,.25), rgba(0,0,0,.05)); box-shadow:0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,.35);">
-            ${state.prestige.dataShards} <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>
+            <span class="event-number-glow">${state.prestige.dataShards}</span> <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>
           </span>
         </div>
       </div>
@@ -1579,7 +1579,7 @@ function renderPrestige() {
           </style>
           <div id="prestige-progress-fill" class="${state.packets >= prestigeRequirement ? "prestige-glow" : ""}" style="height:100%; width: ${Math.min(100, (state.packets / prestigeRequirement) * 100).toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); box-shadow: 0 0 10px var(--shadow-primary);"></div>
         </div>
-        <div id="prestige-progress-label" class="text-neon-gray" style="font-size:.8rem; margin-top:.25rem;">${state.packets.toLocaleString("en-US")} / ${prestigeRequirement.toLocaleString("en-US")}</div>
+        <div id="prestige-progress-label" class="text-neon-gray" style="font-size:.8rem; margin-top:.25rem;"><span class="event-number-glow">${state.packets.toLocaleString("en-US")}</span> / <span class="event-number-glow">${prestigeRequirement.toLocaleString("en-US")}</span></div>
       </div>
 
       ${
@@ -1589,8 +1589,8 @@ function renderPrestige() {
           <span style="color: #4a7c59; font-size: 0.8rem; opacity: 1; line-height: 1.2; text-shadow: none; filter: none;">Reset progress for permanent bonuses</span>
         </button>`
           : `<div class="text-center text-neon-gray mb-4" style="font-size:.9rem;">
-          Need 50,000 packets to prestige<br>
-          Current: ${state.packets.toLocaleString("en-US")}
+          Need <span class="event-number-glow">${prestigeRequirement.toLocaleString("en-US")}</span> packets to prestige<br>
+          Current: <span class="event-number-glow">${state.packets.toLocaleString("en-US")}</span>
         </div>`
       }
 
@@ -2666,9 +2666,13 @@ function idleTick() {
     // Live-update Prestige progress if that tab is open
     if (activeTab === "prestige") {
       try {
-        const pct = Math.min(100, (state.packets / 50000) * 100).toFixed(1);
+        const prestigeRequirement = getPrestigeRequirement();
+        const pct = Math.min(
+          100,
+          (state.packets / prestigeRequirement) * 100,
+        ).toFixed(1);
         const fill = document.getElementById("prestige-progress-fill");
-        const __eligible = state.packets >= 50000;
+        const __eligible = state.packets >= prestigeRequirement;
         if (fill) {
           fill.style.width = pct + "%";
           if (__eligible) fill.classList.add("prestige-glow");
@@ -2676,10 +2680,10 @@ function idleTick() {
         }
         const label = document.getElementById("prestige-progress-label");
         if (label)
-          label.textContent = `${state.packets.toLocaleString("en-US")} / 50,000`;
+          label.innerHTML = `<span class="event-number-glow">${state.packets.toLocaleString("en-US")}</span> / <span class="event-number-glow">${prestigeRequirement.toLocaleString("en-US")}</span>`;
 
         // If threshold crossed, re-render CTA section
-        const wasEligible = before >= 50000;
+        const wasEligible = before >= prestigeRequirement;
         const isEligible = __eligible;
         if (wasEligible !== isEligible) {
           renderTab();

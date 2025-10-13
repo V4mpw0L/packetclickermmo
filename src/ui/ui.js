@@ -100,13 +100,33 @@
     // Remove existing notifications to avoid stacking overflow
     document.querySelectorAll(".hud-notify").forEach((n) => n.remove());
 
+    // Check if this is an event-related notification
+    const isEventNotification =
+      msg.toLowerCase().includes("event") ||
+      msg.toLowerCase().includes("packet rain") ||
+      msg.toLowerCase().includes("gem rush") ||
+      msg.toLowerCase().includes("crit frenzy") ||
+      msg.toLowerCase().includes("upgrade discount") ||
+      msg.toLowerCase().includes("bonus packets") ||
+      ico === "⏰" ||
+      ico === "🎪";
+
     // Simple number formatting - only format if not already styled
     let formattedMsg = msg;
     if (!formattedMsg.includes("<span") && !formattedMsg.includes("style=")) {
-      formattedMsg = formattedMsg.replace(
-        /(\+?\d{1,3}(?:,\d{3})*)/g,
-        '<span style="color:#ffd700; font-weight:bold;">$1</span>',
-      );
+      if (isEventNotification) {
+        // Apply gold glow effect for event notifications - numbers, multipliers, percentages, and time units
+        formattedMsg = formattedMsg.replace(
+          /(\d+(?:\.\d+)?(?:x|%|s|sec|second|seconds|min|minute|minutes|hr|hour|hours)?\b)/g,
+          '<span class="event-number-glow">$1</span>',
+        );
+      } else {
+        // Regular gold color for non-event notifications
+        formattedMsg = formattedMsg.replace(
+          /(\+?\d{1,3}(?:,\d{3})*)/g,
+          '<span style="color:#ffd700; font-weight:bold;">$1</span>',
+        );
+      }
     }
 
     const hud = document.createElement("div");

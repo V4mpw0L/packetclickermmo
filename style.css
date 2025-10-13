@@ -811,6 +811,15 @@ body .modal-box .space-y-3 > * + * {
     }
 }
 
+.event-number-glow {
+    color: #ffd700;
+    font-weight: bold;
+    text-shadow:
+        0 0 8px rgba(255, 215, 0, 0.6),
+        0 0 12px rgba(255, 215, 0, 0.4);
+    animation: gold-glow 2s ease-in-out infinite;
+}
+
 /* === PROFESSIONAL SHOP STYLING === */
 .shop-header {
     display: flex;
@@ -4340,8 +4349,12 @@ button#prestige-btn,
 }
 
 /* === PRESTIGE NOW BUTTON RAINBOW BORDER & TEXT === */
-#do-prestige {
-    border: 3px solid;
+#do-prestige,
+#do-prestige.neon-btn,
+button#do-prestige,
+.neon-btn#do-prestige {
+    border: 3px solid !important;
+    border-radius: 12px !important;
     animation:
         celestialRainbow 3s ease-in-out infinite,
         celestialTextOnly 3s ease-in-out infinite;
