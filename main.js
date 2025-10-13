@@ -655,7 +655,8 @@ function renderGame() {
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🎮 Game</h2>
       ${clickBtn}
-      <div style="border: 1px solid #4caf50; border-radius: 8px; padding: 0.75rem; background: rgba(76, 175, 80, 0.05);">
+      <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; background: rgba(76, 175, 80, 0.05);">
+        <h3 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm); margin-bottom: 0.75rem;">${state.player.name || "Player"} Status</h3>
         <div class="flex justify-between items-center text-sm" style="gap: 0.5rem;">
           <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-weight:600;">Packets/Click: <span class="event-number-glow">${effectivePerClick.toLocaleString("en-US")}</span></span>
           <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600;">Packets/Sec: <span class="event-number-glow">${effectivePerSec.toLocaleString("en-US")}</span></span>
@@ -665,7 +666,16 @@ function renderGame() {
           <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600;">Crit Multiplier: <span class="event-number-glow">${state.critMult.toLocaleString("en-US")}x</span></span>
         </div>
       </div>
-      ${boostStatus}
+      ${
+        boostStatus
+          ? `<div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; background: rgba(76, 175, 80, 0.05);">
+        <h3 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm); margin-bottom: 0.75rem;">⚡ Temporary Boosts</h3>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          ${boostStatus}
+        </div>
+      </div>`
+          : ""
+      }
       ${renderActiveEvent()}
       ${prestigeBtn}
     </div>
@@ -1986,7 +1996,7 @@ function showEditProfile() {
       }
     } catch (_) {}
     try {
-      window.VERSION = "0.0.27";
+      window.VERSION = "0.0.28";
     } catch (_) {}
 
     updateTopBar();
@@ -2108,7 +2118,7 @@ function showSettings() {
         // Persist and refresh UI
         save();
         try {
-          window.VERSION = "0.0.27";
+          window.VERSION = "0.0.28";
         } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {
@@ -3587,7 +3597,7 @@ function migrateSaveToCurrentVersion() {
       window.Packet &&
       window.Packet.data &&
       window.Packet.data.APP_VERSION) ||
-    "0.0.27";
+    "0.0.28";
 
   console.log(
     "[Migration] Checking save compatibility with version",

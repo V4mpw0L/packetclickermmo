@@ -55,7 +55,7 @@
     var STORAGE_KEY = "packet_clicker_save_v3";
     var DEFAULT_AVATAR =
       "https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker";
-    var APP_VERSION = "0.0.27";
+    var APP_VERSION = "0.0.28";
 
     // Interaction tuning
     var COMBO_TIMEOUT = 1000; // ms to maintain click combo
@@ -208,9 +208,9 @@
       {
         id: "ultraCombo",
         name: "🚀 Quantum Boost",
-        desc: "10x ALL gains for 2 minutes",
+        desc: "10x ALL gains for 10 seconds",
         gems: 50,
-        duration: 120000,
+        duration: 10000,
         icon: "🌌",
         rarity: "celestial",
         effect: "Ultimate power amplification",

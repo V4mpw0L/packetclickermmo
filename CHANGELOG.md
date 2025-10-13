@@ -1,5 +1,30 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.28 - Game Page Enhancement & Celestial Boost Fix
+*Released: January 2025*
+
+### 🎮 **Game Page UI Enhancement**
+- **Player Status Header** - Added proper tab-title styling for Player Status section
+- **Temporary Boosts Card** - Created dedicated card with consistent header styling
+- **Improved Spacing** - Fixed boost pill spacing and layout organization
+- **Theme Consistency** - All headers now follow the system theme design pattern
+
+### 🌈 **Celestial Boost Rainbow System**
+- **Quantum Boost Rainbow Fix** - Active banners now display proper rainbow animation everywhere
+- **Game Page Banner** - Fixed brown/yellow color to use cycling rainbow animation
+- **Boosts Page Banner** - Added matching rainbow styling for consistency
+- **Complete Integration** - All celestial boosts use equipment rarity system colors
+
+### ⚡ **Quantum Boost Balance**
+- **Duration Adjustment** - Reduced from 2 minutes to 10 seconds for intense burst gameplay
+- **Cost Efficiency** - 50 gems for 10 seconds of 10x ALL gains creates exciting moments
+- **Strategic Timing** - Short duration encourages tactical use during key progression
+
+### 🎨 **Visual Polish**
+- **Consistent Headers** - All game sections use proper tab-title styling
+- **Rainbow Animations** - Perfect synchronization with equipment system
+- **Professional Layout** - Clean organization with proper spacing and borders
+
 ## Version 0.0.27 - UI Polish & Shadow Ninja Enhancement
 *Released: January 2025*
 

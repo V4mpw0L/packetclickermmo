@@ -2,7 +2,7 @@
 
 > **The Ultimate Cyberpunk Idle Clicker Experience - Now with 100 Items, Epic Combos & Equipment System!**
 
-[![Version 0.0.27](https://img.shields.io/badge/Version-0.0.27-brightgreen.svg)]()
+[![Version 0.0.28](https://img.shields.io/badge/Version-0.0.28-brightgreen.svg)]()
 [![PWA Ready](https://img.shields.io/badge/PWA-Ready-blue.svg)](https://web.dev/progressive-web-apps/)
 [![Mobile Optimized](https://img.shields.io/badge/Mobile-Optimized-success.svg)]()
 [![Anti-Cheat](https://img.shields.io/badge/Anti--Cheat-Protected-red.svg)]()
@@ -286,8 +286,11 @@ const THEMES = {
 
 ## 📊 **Version History**
 
-### **Version 0.0.27** (Latest)
-- ✅ **Theme System Surgical Enhancement** - Complete UI redesign with compact cards
+### **Version 0.0.28** (Latest)
+- ✅ **Game Page UI Enhancement** - Added proper tab-title headers for Player Status and Temporary Boosts
+- ✅ **Celestial Boost Rainbow Fix** - Quantum Boost now displays with proper rainbow animation on all pages
+- ✅ **Quantum Boost Duration** - Reduced from 2 minutes to 10 seconds for intense burst gameplay
+- ✅ **Temporary Boost Spacing** - Fixed layout spacing issues for better visual organization
 - ✅ **3 New Premium Themes** - Sunset Glow, Forest Depths, and Royal Purple
 - ✅ **Mobile Experience Enhanced** - Better responsive design and touch interactions
 - ✅ **Professional Card Design** - Smaller, elegant theme cards with improved layout
