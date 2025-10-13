@@ -1883,9 +1883,20 @@ function showDropToast(item, fallbackNotify) {
   const st = rarityStyles(item.rarity);
   const toast = document.createElement("div");
   toast.className = "drop-toast";
+
+  // Handle celestial rainbow border specially
+  const cardBorderStyle =
+    item.rarity === "celestial"
+      ? `border: ${st.border}; border-image: ${st.borderImage}; animation: ${st.animation};`
+      : `border: ${st.border};`;
+  const imgBorderStyle =
+    item.rarity === "celestial"
+      ? `border: ${st.border}; border-image: ${st.borderImage}; animation: ${st.animation};`
+      : `border: ${st.border};`;
+
   toast.innerHTML = `
-    <div class="card" style="border:${st.border}; box-shadow:${st.glow}, 0 6px 22px rgba(0,0,0,0.35);">
-      <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:6px;border:${st.border};box-shadow:${st.glow}" />
+    <div class="card" style="${cardBorderStyle} box-shadow:${st.glow}, 0 6px 22px rgba(0,0,0,0.35);">
+      <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:6px;${imgBorderStyle}box-shadow:${st.glow}" />
       <div>
         <div style="font-weight:900; color:${st.color}; font-size:1rem;">${item.name}</div>
         <div class="text-xs" style="margin-top:.15rem; color:${st.color}; opacity:0.8;">
