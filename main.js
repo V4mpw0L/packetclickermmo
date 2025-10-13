@@ -432,8 +432,8 @@ function updateTopBar() {
       if (typeof _avatarEl._baseShadow === "undefined") {
         _avatarEl._baseShadow = _avatarEl.style.boxShadow || "";
       }
-      // 2px ring in combo color + keep subtle base glow
-      _avatarEl.style.boxShadow = `0 0 0 2px ${comboColor}, 0 0 0 3px #1de9b611, 0 2px 8px #c4ebea33`;
+      // 3.5px ring in combo color + keep subtle base glow
+      _avatarEl.style.boxShadow = `0 0 0 3.5px ${comboColor}, 0 0 0 3px #1de9b611, 0 2px 8px #c4ebea33`;
     } else {
       // Reset to original when combo ends
       if (typeof _avatarEl._baseShadow !== "undefined") {
