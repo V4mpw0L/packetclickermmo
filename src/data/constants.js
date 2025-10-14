@@ -215,7 +215,7 @@
         id: "ultraCombo",
         name: "Quantum Boost",
         desc: "10x ALL gains for 30 seconds",
-        gems: 50,
+        gems: 999,
         duration: 30000,
         icon: "🌌",
         rarity: "celestial",
