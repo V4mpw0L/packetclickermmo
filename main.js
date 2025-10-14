@@ -1258,7 +1258,7 @@ function renderUpgrades() {
       ${renderButton({
         id: "upgrade-crit",
         className: "upgrade-btn",
-        label: `${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.critChance") : "+2% crit"} — <span>${upgradeCost("crit").toLocaleString("en-US")}</span> <span class="icon-packet"></span>`,
+        label: `${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.critChance") : "+0.5% crit"} — <span>${upgradeCost("crit").toLocaleString("en-US")}</span> <span class="icon-packet"></span>`,
         dataAttr: `data-level="${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.level") : "Lvl."} ${state.upgrades.crit}"`,
       })}
       <div class="text-neon-gray text-xs mt-1">
@@ -1348,7 +1348,7 @@ function updateUpgradeButtonLabels() {
         effectText = quantity === 1 ? "+1/sec" : `+${quantity}/sec`;
         break;
       case "crit":
-        effectText = quantity === 1 ? "+2% crit" : `+${2 * quantity}% crit`;
+        effectText = quantity === 1 ? "+0.5% crit" : `+${0.5 * quantity}% crit`;
         break;
     }
 
@@ -4315,7 +4315,7 @@ function upgrade(type) {
       state.perSec += quantity;
       break;
     case "crit":
-      state.critChance += 2 * quantity;
+      state.critChance += 0.5 * quantity;
       break;
   }
 
@@ -4341,7 +4341,7 @@ function upgrade(type) {
   const upgradeEffects = {
     click: `+${quantity}/click`,
     idle: `+${quantity}/sec`,
-    crit: `+${2 * quantity}% crit`,
+    crit: `+${0.5 * quantity}% crit`,
   };
 
   const modalHtml = `

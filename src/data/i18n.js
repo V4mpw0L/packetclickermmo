@@ -215,7 +215,7 @@
         title: "Upgrades",
         clickPower: "+1/click",
         idlePower: "+1/sec",
-        critChance: "+2% crit",
+        critChance: "+0.5% crit",
         bulkX1: "x1",
         bulkX10: "x10",
         bulkX100: "x100",
