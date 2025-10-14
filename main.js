@@ -506,27 +506,20 @@ function updateTopBar() {
       typeof clickCombo === "number" &&
       clickCombo >= 5 &&
       Date.now() <= (_comboExpireAt || 0);
+    // Avatar glow effects disabled for performance
     if (comboActive) {
-      if (typeof _avatarEl._baseShadow === "undefined") {
-        _avatarEl._baseShadow = _avatarEl.style.boxShadow || "";
-      }
-      // 3.5px ring in combo color + keep subtle base glow
-      _avatarEl.style.boxShadow = `0 0 0 3.5px ${comboColor}, 0 0 0 3px #1de9b611, 0 2px 8px #c4ebea33`;
+      // Keep border but remove glow effects
+      _avatarEl.style.border = `3.5px solid ${comboColor}`;
     } else {
-      // Reset to original when combo ends
-      if (typeof _avatarEl._baseShadow !== "undefined") {
-        _avatarEl.style.boxShadow = _avatarEl._baseShadow;
-        delete _avatarEl._baseShadow;
-      } else {
-        _avatarEl.style.boxShadow = "";
-      }
+      // Reset border when combo ends
+      _avatarEl.style.border = "";
     }
   }
   let badge = document.getElementById("vip-badge");
 
   // Pills to show under the name (centered by CSS)
   let packets = `<span class="ml-2 text-neon-green font-bold" id="packets-bar" style="font-size:1em;display:inline-block;min-width:65px;text-align:right;"><span class="icon-packet"></span> <span class="event-number-glow">${state.packets.toLocaleString("en-US")}</span></span>`;
-  let gemPill = `<span id="gem-pill-clickable" class="ml-2 text-neon-green font-bold" style="font-size:1em;display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .5rem;border:1px solid var(--border-color);border-radius:999px;background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));box-shadow:0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,0.35);cursor:pointer;transition:all 0.2s ease;"><img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/><span class="event-number-glow">${state.gems.toLocaleString("en-US")}</span></span>`;
+  let gemPill = `<span id="gem-pill-clickable" class="ml-2 text-neon-green font-bold" style="font-size:1em;display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .5rem;border:1px solid var(--border-color);border-radius:999px;background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));cursor:pointer;transition:all 0.2s ease;"><img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/><span class="event-number-glow">${state.gems.toLocaleString("en-US")}</span></span>`;
 
   if (isVIP()) {
     let ms = state.player.vipUntil - Date.now();
@@ -743,7 +736,7 @@ function renderBoosts() {
         return; // Skip the regular activeBoosts append below
       }
 
-      activeBoosts += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:${color}; background:rgba(0,0,0,.25); font-weight:600; font-size:0.875rem; margin-bottom:0.5rem; display:inline-block; white-space:nowrap;">${emoji} ${boostInfo.name} active (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">${remaining}s</span>)</div>`;
+      activeBoosts += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:${color}; background:rgba(0,0,0,.25); font-weight:600; font-size:0.875rem; margin-bottom:0.5rem; display:inline-block; white-space:nowrap;">${emoji} ${boostInfo.name} active (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block;">${remaining}s</span>)</div>`;
     }
   });
 
@@ -791,7 +784,7 @@ function renderBoosts() {
              background: ${style.bg};
              border-radius: 10px;
              padding: 0.75rem;
-             box-shadow: ${isCelestial ? "" : `0 3px 12px ${style.glow}, 0 1px 6px rgba(0,0,0,0.3)`};
+
              transition: all 0.3s ease;
              cursor: ${active || !canAfford ? "not-allowed" : "pointer"};
              opacity: ${active || !canAfford ? "0.6" : "1"};
@@ -804,15 +797,15 @@ function renderBoosts() {
              justify-content: space-between;
            "
            onclick="${active || !canAfford ? "" : `buyBoost('${boost.id}')`}"
-           onmouseover="this.style.transform='translateY(-3px)'; ${isCelestial ? "" : `this.style.boxShadow='0 6px 18px ${style.glow}, 0 3px 10px rgba(0,0,0,0.4)'`}"
-           onmouseout="this.style.transform='translateY(0px)'; ${isCelestial ? "" : `this.style.boxShadow='0 3px 12px ${style.glow}, 0 1px 6px rgba(0,0,0,0.3)'`}">
+           onmouseover="this.style.transform='translateY(-3px)'"
+           onmouseout="this.style.transform='translateY(0px)'">
 
-        <div style="font-size: 2.2rem; margin-bottom: 0.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+        <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">
           ${boost.icon}
         </div>
 
         <div style="flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%;">
-          <div style="font-size: 0.9rem; font-weight: 800; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : `color: ${style.border};`} text-shadow: 0 1px 2px rgba(0,0,0,0.5); margin-bottom: 0.25rem; line-height: 1.2;">
+          <div style="font-size: 0.9rem; font-weight: 800; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : `color: ${style.border};`} margin-bottom: 0.25rem; line-height: 1.2;">
             ${boost.name.replace(/^[^A-Za-z]*\s*/, "")}
           </div>
 
@@ -854,25 +847,25 @@ function renderBoosts() {
     <style>
       @keyframes celestialRainbowRounded {
         0% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, 0 0 20px rgba(255,0,128,0.8);
+          border: 2px solid #ff0080;
         }
         25% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #00ff80, 0 0 20px rgba(0,255,128,0.8);
+          border: 2px solid #00ff80;
         }
         50% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #8000ff, 0 0 20px rgba(128,0,255,0.8);
+          border: 2px solid #8000ff;
         }
         75% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff8000, 0 0 20px rgba(255,128,0,0.8);
+          border: 2px solid #ff8000;
         }
         100% {
-          box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080, 0 0 20px rgba(255,0,128,0.8);
+          border: 2px solid #ff0080;
         }
       }
     </style>
     <div class="neon-card px-3 py-4 mb-2" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #1a202c 100%); border: 2px solid #4caf50;">
       <div style="text-align: center; margin-bottom: 2rem;">
-        <h2 style="font-size: 2rem; font-weight: 900; background: linear-gradient(45deg, #4caf50, #22c55e, #16a34a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 2px 4px rgba(0,0,0,0.5); margin-bottom: 0.5rem;">
+        <h2 style="font-size: 2rem; font-weight: 900; background: linear-gradient(45deg, #4caf50, #22c55e, #16a34a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;">
           ⚡ PREMIUM POWER BOOSTS ⚡
         </h2>
         <div style="font-size: 1rem; color: #a0aec0; font-style: italic; margin-bottom: 1rem;">
@@ -899,7 +892,7 @@ function renderBoosts() {
       }
 
       <div style="margin-bottom: 1.5rem;">
-        <div style="text-align: center; font-size: 1.2rem; font-weight: 800; color: #fbbf24; margin-bottom: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">
+        <div style="text-align: center; font-size: 1.2rem; font-weight: 800; color: #fbbf24; margin-bottom: 1rem;">
           💎 AVAILABLE POWER BOOSTS 💎
         </div>
         <div style="text-align: center; font-size: 0.9rem; color: #94a3b8; margin-bottom: 1.5rem;">
@@ -1304,8 +1297,8 @@ function renderAchievements() {
           <span class="event-number-glow">${unlockedCount}</span> / <span class="event-number-glow">${totalCount}</span> Unlocked
         </div>
 
-        <div style="position:relative; height:8px; border-radius:999px; background:#22313f; border:1px solid var(--border-color); overflow:hidden; box-shadow: inset 0 1px 4px rgba(0,0,0,.5); margin:0 auto; max-width: 300px;">
-          <div style="height:100%; width: ${progressPercentage.toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); box-shadow: 0 0 6px var(--shadow-primary); transition: width 0.3s ease;"></div>
+        <div style="position:relative; height:8px; border-radius:999px; background:#22313f; border:1px solid var(--border-color); overflow:hidden; margin:0 auto; max-width: 300px;">
+          <div style="height:100%; width: ${progressPercentage.toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); transition: width 0.3s ease;"></div>
         </div>
       </div>
 
@@ -1717,8 +1710,8 @@ function renderLeaderboard() {
         return `
     <li style="display: flex; gap: 0.75rem; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #273742;">
       <span style="width: 2rem; text-align: right; color: var(--secondary-color); font-weight: bold;">${idx === 0 ? "🥇 " : idx === 1 ? "🥈 " : idx === 2 ? "🥉 " : ""}<span class="event-number-glow">${idx + 1}</span>.</span>
-      <img src="${safeAvatar}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 2rem; height: 2rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "3px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"}; box-shadow: ${idx === 0 ? "0 0 14px rgba(255,215,0,0.6)" : idx === 1 ? "0 0 12px rgba(192,192,192,0.55)" : idx === 2 ? "0 0 12px rgba(205,127,50,0.55)" : "none"};" alt="" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}'; console.warn('Avatar failed to load for ${safeName}, using default');">
-      <span style="font-weight: 800; ${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px; box-shadow: 0 0 14px var(--shadow-primary);" : "color: var(--text-primary);"}">${idx === 0 ? '<span class="crown-badge">👑</span>' : ""}${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) && isVIP() ? '<img src="src/assets/vip.png" alt="VIP" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;" aria-hidden="true"/>' : ""}${safeName}</span>
+      <img src="${safeAvatar}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 2rem; height: 2rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "3px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"};" alt="" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}'; console.warn('Avatar failed to load for ${safeName}, using default');">
+      <span style="font-weight: 800; ${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px;" : "color: var(--text-primary);"}">${idx === 0 ? '<span class="crown-badge">👑</span>' : ""}${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) && isVIP() ? '<img src="src/assets/vip.png" alt="VIP" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;" aria-hidden="true"/>' : ""}${safeName}</span>
       <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary); font-weight: bold; font-size: 1.05em;"><span class="icon-packet"></span> <span class="event-number-glow">${safePackets.toLocaleString("en-US")}</span></span>
     </li>
   `;
@@ -1733,47 +1726,47 @@ function renderLeaderboard() {
     <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🏆 Leaderboard</h2>
     <style>
       @keyframes medalPulse {
-        0% { box-shadow: 0 0 8px rgba(255,215,0,0.35), 0 0 0 0 rgba(255,215,0,0.0); }
-        100% { box-shadow: 0 0 14px rgba(255,215,0,0.7), 0 0 12px rgba(255,215,0,0.35); }
+        0% { transform: scale(1); }
+        100% { transform: scale(1.05); }
       }
       @keyframes medalPulseSilver {
-        0% { box-shadow: 0 0 8px rgba(192,192,192,0.3); }
-        100% { box-shadow: 0 0 14px rgba(192,192,192,0.65); }
+        0% { transform: scale(1); }
+        100% { transform: scale(1.05); }
       }
       @keyframes medalPulseBronze {
-        0% { box-shadow: 0 0 8px rgba(205,127,50,0.3); }
-        100% { box-shadow: 0 0 14px rgba(205,127,50,0.65); }
+        0% { transform: scale(1); }
+        100% { transform: scale(1.05); }
       }
       .medal-gold { animation: medalPulse 1.8s ease-in-out infinite alternate; }
       .medal-silver { animation: medalPulseSilver 2s ease-in-out infinite alternate; }
       .medal-bronze { animation: medalPulseBronze 2.2s ease-in-out infinite alternate; }
-      .crown-badge { margin-right: 0.25rem; filter: drop-shadow(0 0 4px rgba(255,215,0,0.8)); font-size: 1.15em; }
+      .crown-badge { margin-right: 0.25rem; font-size: 1.15em; }
     </style>
     ${(() => {
       const t = bots.slice(0, 3);
       return `
       <div class="podium-wrap" style="display:flex; justify-content:center; gap:1rem; align-items:flex-end; margin: 0.75rem 0 0.75rem 0;">
         <div class="podium-item" style="display:flex; flex-direction:column; align-items:center;">
-          <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #c0c0c0; box-shadow:0 0 12px rgba(192,192,192,0.55); overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);">
+          <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #c0c0c0; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);">
             <img src="${getSafeAvatarUrl((t[1] && t[1].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
           </div>
-          <div style="font-size:0.8rem; font-weight:bold; margin-top:0.25rem; color:#c0c0c0; text-shadow: 0 0 6px rgba(192, 192, 192, 0.8), 0 0 8px rgba(192, 192, 192, 0.5); text-align:center; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${String((t[1] && t[1].name) || "Player").slice(0, 12)}</div>
+          <div style="font-size:0.8rem; font-weight:bold; margin-top:0.25rem; color:#c0c0c0; text-align:center; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${String((t[1] && t[1].name) || "Player").slice(0, 12)}</div>
           <div style="width:64px; height:36px; background:linear-gradient(180deg, #3b4a5a, #2a3947); border:2px solid #c0c0c0; border-top-left-radius:8px; border-top-right-radius:8px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:800;">2</div>
           <div style="margin-top:0.15rem; font-size:1.1rem;">🥈</div>
         </div>
         <div class="podium-item" style="display:flex; flex-direction:column; align-items:center; transform: translateY(-8px);">
-          <div style="display:flex; align-items:center; justify-content:center; width:84px; height:84px; border-radius:50%; border:4px solid #ffd700; box-shadow:0 0 16px rgba(255,215,0,0.75); overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.22), transparent);">
+          <div style="display:flex; align-items:center; justify-content:center; width:84px; height:84px; border-radius:50%; border:4px solid #ffd700; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.22), transparent);">
             <img src="${getSafeAvatarUrl((t[0] && t[0].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
           </div>
-          <div style="font-size:0.9rem; font-weight:bold; margin-top:0.25rem; color:#ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.8), 0 0 12px rgba(255, 215, 0, 0.5); text-align:center; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${String((t[0] && t[0].name) || "Player").slice(0, 12)}</div>
-          <div style="width:84px; height:52px; background:linear-gradient(180deg, #435a2a, #344a1f); border:3px solid #ffd700; border-top-left-radius:10px; border-top-right-radius:10px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:900; color:#ffec8a; text-shadow:0 1px 2px rgba(0,0,0,0.4);">1</div>
+          <div style="font-size:0.9rem; font-weight:bold; margin-top:0.25rem; color:#ffd700; text-align:center; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${String((t[0] && t[0].name) || "Player").slice(0, 12)}</div>
+          <div style="width:84px; height:52px; background:linear-gradient(180deg, #435a2a, #344a1f); border:3px solid #ffd700; border-top-left-radius:10px; border-top-right-radius:10px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:900; color:#ffec8a;">1</div>
           <div style="margin-top:0.15rem; font-size:1.1rem;">👑 🥇</div>
         </div>
         <div class="podium-item" style="display:flex; flex-direction:column; align-items:center;">
-          <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #cd7f32; box-shadow:0 0 12px rgba(205,127,50,0.55); overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);">
+          <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #cd7f32; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);">
             <img src="${getSafeAvatarUrl((t[2] && t[2].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
           </div>
-          <div style="font-size:0.8rem; font-weight:bold; margin-top:0.25rem; color:#cd7f32; text-shadow: 0 0 6px rgba(205, 127, 50, 0.8), 0 0 8px rgba(205, 127, 50, 0.5); text-align:center; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${String((t[2] && t[2].name) || "Player").slice(0, 12)}</div>
+          <div style="font-size:0.8rem; font-weight:bold; margin-top:0.25rem; color:#cd7f32; text-align:center; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${String((t[2] && t[2].name) || "Player").slice(0, 12)}</div>
           <div style="width:64px; height:28px; background:linear-gradient(180deg, #4d3925, #3b2a1b); border:2px solid #cd7f32; border-top-left-radius:8px; border-top-right-radius:8px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:800;">3</div>
           <div style="margin-top:0.15rem; font-size:1.1rem;">🥉</div>
         </div>
@@ -1817,7 +1810,7 @@ function renderPrestige() {
       <div class="text-center mb-4" style="display:flex; flex-direction:column; align-items:center; gap:.35rem;">
         <div class="text-lg" style="font-weight:900;">Level <span class="event-number-glow">${state.prestige.level.toLocaleString("en-US")}</span></div>
         <div class="text-sm text-neon-gray">
-          <span style="display:inline-flex; align-items:center; gap:.35rem; padding:.2rem .55rem; border:1px solid var(--border-color); border-radius:999px; background:linear-gradient(135deg, rgba(0,0,0,.25), rgba(0,0,0,.05)); box-shadow:0 2px 10px var(--shadow-primary) inset, 0 1px 3px rgba(0,0,0,.35);">
+          <span style="display:inline-flex; align-items:center; gap:.35rem; padding:.2rem .55rem; border:1px solid var(--border-color); border-radius:999px; background:linear-gradient(135deg, rgba(0,0,0,.25), rgba(0,0,0,.05));">
             <span class="event-number-glow">${state.prestige.dataShards.toLocaleString("en-US")}</span> <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>
           </span>
         </div>
@@ -1825,16 +1818,16 @@ function renderPrestige() {
 
       <div class="mb-3" style="text-align:center;">
         <div class="text-neon-gray" style="font-size:.9rem; margin-bottom:.25rem;">Progress to next prestige</div>
-        <div style="position:relative; height:12px; border-radius:999px; background:#22313f; border:1px solid var(--border-color); overflow:hidden; box-shadow: inset 0 1px 6px rgba(0,0,0,.5);">
+        <div style="position:relative; height:12px; border-radius:999px; background:#22313f; border:1px solid var(--border-color); overflow:hidden;">
           <style>
             @keyframes prestigeReadyPulse {
-              0% { box-shadow: 0 0 6px var(--secondary-color); }
-              50% { box-shadow: 0 0 14px var(--primary-color); }
-              100% { box-shadow: 0 0 6px var(--secondary-color); }
+              0% { border-color: var(--secondary-color); }
+              50% { border-color: var(--primary-color); }
+              100% { border-color: var(--secondary-color); }
             }
             #prestige-progress-fill.prestige-glow { animation: prestigeReadyPulse 1.6s ease-in-out infinite; }
           </style>
-          <div id="prestige-progress-fill" class="${state.packets >= prestigeRequirement ? "prestige-glow" : ""}" style="height:100%; width: ${Math.min(100, (state.packets / prestigeRequirement) * 100).toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); box-shadow: 0 0 10px var(--shadow-primary);"></div>
+          <div id="prestige-progress-fill" class="${state.packets >= prestigeRequirement ? "prestige-glow" : ""}" style="height:100%; width: ${Math.min(100, (state.packets / prestigeRequirement) * 100).toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));"></div>
         </div>
         <div id="prestige-progress-label" class="text-neon-gray" style="font-size:.8rem; margin-top:.25rem;"><span class="event-number-glow">${state.packets.toLocaleString("en-US")}</span> / <span class="event-number-glow">${prestigeRequirement.toLocaleString("en-US")}</span></div>
       </div>
@@ -1871,7 +1864,7 @@ function renderDaily() {
     let claimed = index < streak;
     let current = index === streak && canClaim;
 
-    return `<div class="reward-row" style="display:flex; align-items:center; justify-content:space-between; padding: 0.5rem 0.75rem; border: 1px solid ${claimed ? "#3ba86b" : current ? "#d5b85a" : "#2e3a47"}; border-radius: 10px; background: linear-gradient(100deg, ${claimed ? "rgba(20,60,40,.5)" : current ? "rgba(60,50,20,.5)" : "rgba(28,36,46,.6)"} , rgba(0,0,0,0.15)); box-shadow: 0 1px 10px rgba(0,0,0,0.25) inset;">
+    return `<div class="reward-row" style="display:flex; align-items:center; justify-content:space-between; padding: 0.5rem 0.75rem; border: 1px solid ${claimed ? "#3ba86b" : current ? "#d5b85a" : "#2e3a47"}; border-radius: 10px; background: linear-gradient(100deg, ${claimed ? "rgba(20,60,40,.5)" : current ? "rgba(60,50,20,.5)" : "rgba(28,36,46,.6)"} , rgba(0,0,0,0.15));">
       <div style="display:flex; flex-direction:column; align-items:flex-start; gap:0.1rem;">
         <span style="font-weight:700; color:${claimed ? "#8ef1b2" : current ? "#ffe08a" : "var(--text-secondary)"};">Day <span class="event-number-glow">${reward.day}</span></span>
         ${reward.bonus ? `<span style="font-size:0.65rem; color:${claimed ? "#a8e6b8" : current ? "#f4e29f" : "#8e9aaf"}; font-style:italic;">${reward.bonus}</span>` : ""}
@@ -3077,7 +3070,7 @@ function renderActiveEvent() {
 
   let event = RANDOM_EVENTS.find((e) => e.type === state.randomEvent.type);
   return `<div class="random-event">
-    ${event.type === "packetRain" ? '<span class="icon-packet"></span>' : "🎪"} ${event.name} - <span style="color:#ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">${remaining}s</span> remaining
+    ${event.type === "packetRain" ? '<span class="icon-packet"></span>' : "🎪"} ${event.name} - <span style="color:#ffd700;">${remaining}s</span> remaining
   </div>`;
 }
 
@@ -3387,12 +3380,8 @@ function clickPacket(event) {
       _comboExpireAt = 0;
       const el = document.getElementById("avatar");
       if (el) {
-        if (typeof el._baseShadow !== "undefined") {
-          el.style.boxShadow = el._baseShadow;
-          delete el._baseShadow;
-        } else {
-          el.style.boxShadow = "";
-        }
+        // Avatar shadow effects disabled for performance
+        el.style.border = "";
       }
       // Remove mobile cursor feedback when combo ends
       const feedback = document.getElementById("mobile-cursor-feedback");
@@ -4193,7 +4182,7 @@ function playSound(type) {
 // =============== AD BANNER / SIMULATION ===============
 function showAdBanner() {
   return !state.player.noAds && state.ads
-    ? `<div class="mt-3 mb-1 text-center"><span class="inline-block px-4 py-2 bg-yellow-300 text-[#222c38] rounded font-bold" style="font-size:1em;box-shadow:0 2px 12px #faffc4a0">Ad Banner (Remove in Shop)</span></div>`
+    ? `<div class="mt-3 mb-1 text-center"><span class="inline-block px-4 py-2 bg-yellow-300 text-[#222c38] rounded font-bold" style="font-size:1em;">Ad Banner (Remove in Shop)</span></div>`
     : "";
 }
 

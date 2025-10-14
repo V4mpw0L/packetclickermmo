@@ -1224,9 +1224,8 @@ function rarityStyles(rarityId) {
     return {
       color: "#ffffff",
       border: "none",
-      borderForRounded:
-        "border: none; box-shadow: inset 0 0 0 2px transparent, 0 0 0 2px #ff0080;",
-      glow: "0 0 20px rgba(255,255,255,0.8)",
+      borderForRounded: "border: 2px solid #ff0080;",
+      glow: "none",
       animation: "celestialRainbow 3s linear infinite",
     };
   }
@@ -1234,7 +1233,7 @@ function rarityStyles(rarityId) {
   return {
     color: r.color,
     border: `1.5px solid ${r.color}`,
-    glow: isAnimal ? `0 0 15px ${r.color}88` : `0 0 10px ${r.color}55`,
+    glow: "none",
     animation: isAnimal ? "animalPulse 2s ease-in-out infinite" : "",
   };
 }
@@ -1258,7 +1257,7 @@ function slotHeaderHTML(item, slotName, slotId) {
   const imgAnimationStyle = st.animation ? `animation: ${st.animation};` : "";
   return `
     <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.4rem; flex:1; min-width:0; padding:.8rem; position:relative; text-align:center;">
-      <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:8px;${imgBorderStyle}box-shadow:${st.glow}; object-fit:cover; flex-shrink:0; ${imgAnimationStyle}" />
+      <img src="${item.icon}" alt="${item.name}" style="width:36px;height:36px;border-radius:8px;${imgBorderStyle} object-fit:cover; flex-shrink:0; ${imgAnimationStyle}" />
       <div style="flex:1; min-width:0; width:100%;">
         <div style="font-weight:800; ${item.rarity === "celestial" ? "animation: celestialTextOnly 3s linear infinite;" : `color:${st.color};`} line-height:1.1; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:.2rem;">${item.name}</div>
         <div class="text-xs" style="opacity:.85; color:${st.color}; line-height:1; margin-bottom:.3rem; ${item.rarity === "celestial" ? "animation: celestialTextOnly 3s linear infinite;" : ""}">${item.rarityName}</div>
@@ -1320,11 +1319,11 @@ export function renderTab(state) {
           ? `border: none; border-radius: 12px; ${st.borderForRounded}`
           : `border-color:${st.color};`;
       return `
-          <div class="neon-card" style="padding:.3rem; ${borderStyle} box-shadow:${st.glow}; ${animationStyle} display:flex; align-items:center; justify-content:center; width:100%; max-width:100%; margin:0; aspect-ratio:1/1;">
+          <div class="neon-card" style="padding:.3rem; ${borderStyle} ${animationStyle} display:flex; align-items:center; justify-content:center; width:100%; max-width:100%; margin:0; aspect-ratio:1/1;">
             <button class="neon-btn" data-open-item-index="${absIndex}" style="width:100%; height:100%; background: transparent; border:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.2rem; padding:.2rem;">
               <div style="position:relative; display:inline-block; width:72%; height:72%;">
                 <img src="${it.icon}" alt="${it.name}" style="width:100%;height:100%;border-radius:6px; box-sizing:border-box; object-fit:cover;" />
-                <span style="position:absolute; bottom:2px; right:2px; background: rgba(0,0,0,0.6); ${it.rarity === "celestial" ? "border: none; box-shadow: inset 0 0 0 1px transparent, 0 0 0 1px #ff0080, 0 0 6px rgba(255,0,128,0.8); animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:10px; padding:0 6px; font-size:.7rem; font-weight:800; ${it.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">x${it.q || 1}</span>
+                <span style="position:absolute; bottom:2px; right:2px; background: rgba(0,0,0,0.6); ${it.rarity === "celestial" ? "border: 1px solid #ff0080; animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${st.color};`} border-radius:10px; padding:0 6px; font-size:.7rem; font-weight:800; ${it.rarity === "celestial" ? "animation: celestialTextRainbow 3s linear infinite;" : `color:${st.color};`}">x${it.q || 1}</span>
               </div>
               <div style="font-size:.7rem; font-weight:700; text-align:center; line-height:1; ${it.rarity === "celestial" ? "animation: celestialTextOnly 3s linear infinite;" : `color:${st.color};`}">${it.rarityName}</div>
             </button>

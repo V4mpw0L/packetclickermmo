@@ -111,6 +111,9 @@ function releaseParticle(el) {
 export function startAnimalAura(clickCombo = 30) {
   if (!hasDOM()) return;
 
+  // DISABLED: Remove all animal particle effects for performance
+  return;
+
   // Check graphics quality - disable particles on low quality
   if (typeof window !== "undefined" && window.graphicsQuality === "low") {
     return;
@@ -337,14 +340,9 @@ export function handleComboEffect(clickCombo, amount, state) {
       try {
         const body = getBody();
         if (body) body.classList.add("animal-active");
-        // Button glow + shake during ANIMAL
+        // Button shake during ANIMAL (removed glow for performance)
         const clickBtn = byId("click-btn");
         if (clickBtn) {
-          if (typeof clickBtn._prevShadow === "undefined") {
-            clickBtn._prevShadow = clickBtn.style.boxShadow || "";
-          }
-          clickBtn.style.boxShadow =
-            "0 0 0.75rem rgba(255, 48, 64, 0.9), 0 0 1.75rem rgba(255, 48, 32, 0.7), 0 0 2.75rem rgba(255, 96, 0, 0.55)";
           clickBtn.classList.add("shake-element");
           setTimeout(() => clickBtn.classList.remove("shake-element"), 320);
         }
@@ -373,11 +371,6 @@ export function handleComboEffect(clickCombo, amount, state) {
             const s = byId("animal-sentinel");
             if (s && s.parentNode) s.parentNode.removeChild(s);
             stopAnimalAura();
-            const btn2 = byId("click-btn");
-            if (btn2 && typeof btn2._prevShadow !== "undefined") {
-              btn2.style.boxShadow = btn2._prevShadow;
-              delete btn2._prevShadow;
-            }
           } catch {
             // ignore
           }
