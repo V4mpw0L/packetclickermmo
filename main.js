@@ -793,12 +793,19 @@ function renderGame() {
       : typeof getEquipmentBonuses === "function"
         ? getEquipmentBonuses()
         : { perClick: 0, perSec: 0, critChance: 0 };
+  // Calculate effective values with bonuses
   let effectivePerClick = Math.floor(
     (state.perClick + (eq.perClick || 0)) * totalMultiplier,
   );
   let effectivePerSec = Math.floor(
     (perSecBase + (eq.perSec || 0)) * totalMultiplier,
   );
+
+  // Calculate effective crit multiplier (including prestige upgrades)
+  let effectiveCritMult = state.critMult;
+  if (state.prestige.megaCrits > 0) {
+    effectiveCritMult = 2 + state.prestige.megaCrits * 0.2; // Up to 3x
+  }
 
   // Use modular renderButton for click button - mobile optimized
   const clickBtn = renderButton({
@@ -858,7 +865,7 @@ function renderGame() {
           </div>
           <div style="padding:.5rem; border:1px solid var(--border-color); border-radius:8px; background:rgba(0,0,0,.25);">
             <div style="color:#ffd700; font-weight:600; font-size:0.8rem; margin-bottom:0.25rem;">Crit Multiplier</div>
-            <div><span class="event-number-glow" style="color:#ffd700 !important;">${state.critMult.toLocaleString("en-US")}x</span></div>
+            <div><span class="event-number-glow" style="color:#ffd700 !important;">${effectiveCritMult.toLocaleString("en-US")}x</span></div>
           </div>
         </div>
       </div>
