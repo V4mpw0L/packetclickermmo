@@ -1832,7 +1832,7 @@ function renderPrestige() {
             }
             #prestige-progress-fill.prestige-glow { animation: prestigeReadyPulse 1.6s ease-in-out infinite; }
           </style>
-          <div id="prestige-progress-fill" class="${state.packets >= prestigeRequirement ? "prestige-glow" : ""}" style="height:100%; width: ${Math.min(100, (state.packets / prestigeRequirement) * 100).toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));"></div>
+          <div id="prestige-progress-fill" class="${state.packets >= prestigeRequirement ? "prestige-glow" : ""}" style="height:100%; width: ${Math.min(100, (state.packets / prestigeRequirement) * 100).toFixed(1)}%; background: linear-gradient(90deg, #ff0080 0%, #00ff80 25%, #8000ff 50%, #ff8000 75%, #ff0080 100%); background-size: 400% 100%; animation: celestialRainbowBg 3s linear infinite;"></div>
         </div>
         <div id="prestige-progress-label" class="text-neon-gray" style="font-size:.8rem; margin-top:.25rem;"><span class="event-number-glow">${state.packets.toLocaleString("en-US")}</span> / <span class="event-number-glow">${prestigeRequirement.toLocaleString("en-US")}</span></div>
       </div>
