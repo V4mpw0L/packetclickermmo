@@ -1558,7 +1558,7 @@ function renderShop() {
       className: "shop-premium-btn",
       label: `<div class="shop-premium-content" style="min-height:64px;">
         <div class="shop-gem-amount" style="font-size:1.3rem;">${p.label}</div>
-        <div class="shop-gem-price" style="font-size:1.08rem;">$${p.price.toFixed(2)}</div>
+        <div class="shop-gem-price" style="font-size:1.08rem;"><img src="src/assets/dollar.png" alt="$" style="height:1.15rem;width:1.15rem;vertical-align:middle;display:inline-block;margin-right:0.1rem;" aria-hidden="true"/>${p.price.toFixed(2)}</div>
       </div>`,
       dataAttr: `data-gem-pack="${p.id}"`,
     }),
