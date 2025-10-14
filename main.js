@@ -1233,15 +1233,25 @@ function maxAffordableUpgrades(type) {
 
   while (totalCost <= state.packets && count < 1000) {
     let baseCost;
+    let level = currentLevel + count;
     switch (type) {
       case "click":
-        baseCost = 10 + Math.floor((currentLevel + count) * 13.5);
+        // Exponential scaling: 15 * 1.35^level + level^1.8 * 8
+        baseCost = Math.floor(
+          15 * Math.pow(1.35, level) + Math.pow(level, 1.8) * 8,
+        );
         break;
       case "idle":
-        baseCost = 25 + Math.floor((currentLevel + count) * 18.2);
+        // Exponential scaling: 50 * 1.42^level + level^1.9 * 15
+        baseCost = Math.floor(
+          50 * Math.pow(1.42, level) + Math.pow(level, 1.9) * 15,
+        );
         break;
       case "crit":
-        baseCost = 40 + Math.floor((currentLevel + count) * 27.1);
+        // Exponential scaling: 100 * 1.5^level + level^2.1 * 25
+        baseCost = Math.floor(
+          100 * Math.pow(1.5, level) + Math.pow(level, 2.1) * 25,
+        );
         break;
       default:
         return count;
