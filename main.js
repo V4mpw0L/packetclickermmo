@@ -512,7 +512,7 @@ function updateTopBar() {
     // Dynamic avatar border ring based on current combo color (mirrors combo HUD colors)
     let comboColor = "var(--primary-color)";
     if (typeof clickCombo === "number") {
-      if (clickCombo >= 120) comboColor = "#ff3040";
+      if (clickCombo >= 200) comboColor = "#ff3040";
       else if (clickCombo >= 50) comboColor = "#ff4dff";
       else if (clickCombo >= 15) comboColor = "var(--accent-color)";
       else if (clickCombo >= 5) comboColor = "var(--secondary-color)";
@@ -2083,7 +2083,7 @@ function showEditProfile() {
       }
     } catch (_) {}
     try {
-      window.VERSION = "0.0.31";
+      window.VERSION = "0.0.32";
     } catch (_) {}
 
     updateTopBar();
@@ -2205,7 +2205,7 @@ function showSettings() {
         // Persist and refresh UI
         save();
         try {
-          window.VERSION = "0.0.31";
+          window.VERSION = "0.0.32";
         } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {
@@ -3427,7 +3427,7 @@ function clickPacket(event) {
 
     // Show combo total HUD (modular)
     let color = null;
-    if (clickCombo >= 120) color = "#ff3040";
+    if (clickCombo >= 200) color = "#ff3040";
     else if (clickCombo >= 50) color = "#ff4dff";
     else if (clickCombo >= 15) color = "var(--accent-color)";
     else if (clickCombo >= 5) color = "var(--secondary-color)";
@@ -3699,7 +3699,7 @@ function clickPacket(event) {
       playSound("crit");
       // Reduce excessive sound effects on high graphics
       if (graphicsQuality !== "high") {
-        if (clickCombo >= 120) {
+        if (clickCombo >= 200) {
           setTimeout(() => playSound("crit"), 40);
           setTimeout(() => playSound("click"), 80);
           setTimeout(() => playSound("crit"), 120);
@@ -3724,7 +3724,7 @@ function clickPacket(event) {
     } else {
       playSound("click");
       if (graphicsQuality !== "high") {
-        if (clickCombo >= 120) {
+        if (clickCombo >= 200) {
           animalCritBurst();
           setTimeout(() => playSound("click"), 40);
           setTimeout(() => playSound("click"), 80);
@@ -3743,7 +3743,7 @@ function clickPacket(event) {
         }
       } else {
         // High graphics: minimal combo sounds to prevent performance issues
-        if (clickCombo >= 120) {
+        if (clickCombo >= 200) {
           animalCritBurst();
           setTimeout(() => playSound("click"), 60);
         } else if (clickCombo >= 50) {
@@ -3818,7 +3818,7 @@ function migrateSaveToCurrentVersion() {
       window.Packet &&
       window.Packet.data &&
       window.Packet.data.APP_VERSION) ||
-    "0.0.31";
+    "0.0.32";
 
   console.log(
     "[Migration] Checking save compatibility with version",

@@ -1,5 +1,32 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.32 - Smooth Animations & Visual Polish
+*Released: January 2025*
+
+### 🎨 **Animation Consistency Overhaul**
+- **Combo Fade Effects** - All combo tiers now use smooth gradual fade like green numbers and critical hits
+- **Yellow Combo** - Extended fade timing with smooth opacity transition (85% → 95% → 0%)
+- **Mega Combo** - Added gradual fade steps for silky smooth disappearance
+- **Ultra Combo** - Enhanced fade sequence matching green/critical smoothness
+- **Animal Combo** - Complete fade rework with smooth 3D wobble and gradual opacity decay
+
+### ✨ **CELESTIAL Button Polish**
+- **Sell All Button** - CELESTIAL rarity now uses smooth linear animation like progress bars
+- **Background Animation** - Switched from choppy ease-in-out to buttery smooth linear timing
+- **Performance Optimized** - Uses efficient background-position animation for 60fps smoothness
+- **Visual Consistency** - Matches the same beautiful animation as Achievements and Prestige progress bars
+
+### 🔧 **Animal Combo Threshold Fixes**
+- **Avatar Border** - Now correctly shows red border at 200+ clicks instead of 120+ clicks
+- **Combo HUD Colors** - Total packets display now uses proper animal combo color (#ff3040) at 200+ threshold
+- **Sound Effects** - Animal combo sound sequences now trigger at correct 200+ click threshold
+- **Visual Consistency** - All animal combo visual elements now synchronized with 200-click requirement
+
+### 🔧 **Technical Improvements**
+- **Animation Timing** - All combo effects now fade consistently over 15% of their duration
+- **Smooth Transitions** - Enhanced opacity curves for professional-quality visual feedback
+- **Performance Boost** - Optimized CELESTIAL animations use hardware-accelerated properties
+
 ## Version 0.0.30 - Rarity & Progression Balance
 *Released: January 2025*
 
