@@ -80,6 +80,16 @@ if (typeof window !== "undefined") {
   });
 }
 
+// Celestial cursor random changing
+let celestialCursorInterval = null;
+const celestialCursorTypes = [
+  "src/assets/green.webp",
+  "src/assets/gold.webp",
+  "src/assets/blue.webp",
+  "src/assets/pink.webp",
+  "src/assets/animal.webp",
+];
+
 // Global click feedback system - shows cursor anywhere user clicks
 function setupGlobalClickFeedback() {
   if (typeof document === "undefined") return;
@@ -1671,14 +1681,38 @@ function setCursorForCombo(combo) {
   try {
     const btn = document.getElementById("click-btn");
     if (!btn) return;
+
+    // Clear any existing celestial interval
+    if (celestialCursorInterval) {
+      clearInterval(celestialCursorInterval);
+      celestialCursorInterval = null;
+    }
+
     let file = "src/assets/green.webp"; // default
-    if (combo >= 500)
-      file = "src/assets/animal.webp"; // CELESTIAL uses special animal cursor
-    else if (combo >= 200) file = "src/assets/animal.webp";
+
+    if (combo >= 500) {
+      // CELESTIAL: Start random cursor changing
+      const randomizeCursor = () => {
+        const randomFile =
+          celestialCursorTypes[
+            Math.floor(Math.random() * celestialCursorTypes.length)
+          ];
+        btn.style.cursor = `url("${randomFile}") 6 0, pointer`;
+        btn.dataset.cursorImage = randomFile;
+      };
+
+      // Set initial random cursor
+      randomizeCursor();
+
+      // Change cursor every 300ms for celestial effect
+      celestialCursorInterval = setInterval(randomizeCursor, 300);
+      return; // Exit early for celestial
+    } else if (combo >= 200) file = "src/assets/animal.webp";
     else if (combo >= 50) file = "src/assets/pink.webp";
     else if (combo >= 15) file = "src/assets/blue.webp";
     else if (combo >= 5) file = "src/assets/gold.webp";
     else file = "src/assets/green.webp";
+
     // hotspot x=6 y=0 for pointer
     btn.style.cursor = `url("${file}") 6 0, pointer`;
 
@@ -2426,7 +2460,7 @@ function showEditProfile() {
       }
     } catch (_) {}
     try {
-      window.VERSION = "0.0.33";
+      window.VERSION = "0.0.34";
     } catch (_) {}
 
     updateTopBar();
@@ -2553,7 +2587,7 @@ function showSettings() {
         // Persist and refresh UI
         save();
         try {
-          window.VERSION = "0.0.33";
+          window.VERSION = "0.0.34";
         } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {
@@ -3828,6 +3862,11 @@ function clickPacket(event) {
       // Remove mobile cursor feedback when combo ends
       const feedback = document.getElementById("mobile-cursor-feedback");
       if (feedback) feedback.remove();
+      // Clear celestial cursor interval when combo ends
+      if (celestialCursorInterval) {
+        clearInterval(celestialCursorInterval);
+        celestialCursorInterval = null;
+      }
       // Remove celestial body classes when combo ends
       const body = document.body;
       if (body) {
@@ -4211,7 +4250,7 @@ function migrateSaveToCurrentVersion() {
       window.Packet &&
       window.Packet.data &&
       window.Packet.data.APP_VERSION) ||
-    "0.0.33";
+    "0.0.34";
 
   console.log(
     "[Migration] Checking save compatibility with version",

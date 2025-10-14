@@ -1,5 +1,22 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.34 - Celestial Combo Enhancement
+*Released: January 2025*
+
+### 🚀 **CELESTIAL Combo Cursor Enhancement**
+- **Random Cursor Animation** - CELESTIAL combo (500+ clicks) now features randomly changing cursors
+- **Dynamic Visual Effect** - Button cursor cycles through all available cursor types every 300ms
+- **Enhanced Feedback** - Creates an exciting, dynamic visual that matches the legendary CELESTIAL tier
+- **Proper Cleanup** - Interval management ensures smooth performance and proper resource cleanup
+- **Maintains Balance** - All other combo tiers remain unchanged with their static cursors
+
+### 🔧 **Technical Improvements**
+- **Interval Management** - Robust timer system prevents memory leaks
+- **Cursor System** - Enhanced cursor management with proper fallbacks
+- **Performance Optimized** - Efficient random selection and cleanup mechanisms
+
+---
+
 ## Version 0.0.33 - Avatar Upload System Overhaul
 *Released: January 2025*
 

@@ -2,7 +2,7 @@
 
 > **The Ultimate Cyberpunk Idle Clicker Experience - Now with 100 Items, Epic Combos & Equipment System!**
 
-[![Version 0.0.33](https://img.shields.io/badge/Version-0.0.33-brightgreen.svg)]()
+[![Version 0.0.34](https://img.shields.io/badge/Version-0.0.34-brightgreen.svg)]()
 [![PWA Ready](https://img.shields.io/badge/PWA-Ready-blue.svg)](https://web.dev/progressive-web-apps/)
 [![Mobile Optimized](https://img.shields.io/badge/Mobile-Optimized-success.svg)]()
 [![Anti-Cheat](https://img.shields.io/badge/Anti--Cheat-Protected-red.svg)]()
@@ -286,8 +286,9 @@ const THEMES = {
 
 ## 📊 **Version History**
 
-### **Version 0.0.33** (Latest)
-- ✅ **Avatar Upload System Overhaul** - Fixed custom avatar uploads with compression and Firebase Storage integration
+### **Version 0.0.34** (Latest)
+- 🚀 **CELESTIAL Combo Enhancement** - Dynamic randomly changing cursors for 500+ combo (cycles every 300ms)
+- ✅ **Enhanced Visual Feedback** - CELESTIAL combo now has truly unique visual identity matching its legendary status
 - ✅ **Rarity Rebalance** - Higher rarities now harder to obtain, Celestial items 50% rarer
 - ✅ **Upgrade Cost Scaling** - Exponential progression makes high-level upgrades significantly more expensive
 
