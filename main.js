@@ -932,7 +932,7 @@ function renderBoosts() {
             ${boost.name.replace(/^[^A-Za-z]*\s*/, "")}
           </div>
 
-          <div style="font-size: 0.7rem; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : "color: #a0aec0;"} text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 0.5rem;">
+          <div style="font-size: 0.7rem; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : `color: ${rarity.color};`} text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 0.5rem;">
             ${rarity.name}
           </div>
 
