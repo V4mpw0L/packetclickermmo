@@ -3087,15 +3087,32 @@ function triggerRandomEvent() {
       if (event.type === "bonusPackets") {
         let bonus = Math.floor(state.perSec * 60); // 1 minute worth
         state.packets += bonus;
-        showModal(
-          event.name,
+        showHudNotify(
           window.Packet && Packet.i18n
             ? Packet.i18n.t("events.bonusPackets.desc", { n: bonus })
             : `You gained ${bonus.toLocaleString("en-US")} packets!`,
+          "📦",
         );
         state.randomEvent.active = false;
       } else {
-        showModal(event.name, event.desc);
+        (() => {
+          let icon = "✨";
+          switch (event.type) {
+            case "packetRain":
+              icon = "⛈️";
+              break;
+            case "gemRush":
+              icon = "💎";
+              break;
+            case "critFrenzy":
+              icon = "✨";
+              break;
+            case "upgradeDiscount":
+              icon = "💸";
+              break;
+          }
+          showHudNotify(`${event.name} ${event.desc}`, icon);
+        })();
       }
 
       showHudNotify(event.name, "🎪");
@@ -3620,6 +3637,26 @@ function clickPacket(event) {
         const total = toMs(d) * count + toMs(dl);
         if (total > maxMs) maxMs = total;
       }
+
+      // If computed style is missing or returns a near-zero duration,
+      // fallback to class-based durations to match visual combo timing.
+      if (!maxMs || maxMs < 500) {
+        const cls = clickFX.className || "";
+        if (cls.includes("animal-combo")) {
+          maxMs = 1400;
+        } else if (cls.includes("ultra-combo")) {
+          maxMs = 2200;
+        } else if (cls.includes("mega-combo")) {
+          maxMs = 2000;
+        } else if (cls.includes("combo")) {
+          // plain combo (yellow)
+          maxMs = 1500;
+        } else {
+          // base green fallback
+          maxMs = 1200;
+        }
+      }
+
       // Clamp to reasonable bounds to avoid runaway timers
       animationDuration = Math.max(
         600,
@@ -4043,7 +4080,7 @@ function idleTick() {
   // Check if random events expired
   if (state.randomEvent.active && Date.now() > state.randomEvent.endTime) {
     state.randomEvent.active = false;
-    showHudNotify("Event ended!", "⏰");
+    showHudNotify("Random event finished!", "🏁");
   }
 
   if (totalPerSec > 0) {

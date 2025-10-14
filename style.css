@@ -2131,9 +2131,9 @@ footer {
         opacity: 1;
         transform: translate(-50%, -10px) scale(1.1);
     }
-    70% {
-        opacity: 0.8;
-        transform: translate(-50%, -60px) scale(1);
+    85% {
+        opacity: 0.95;
+        transform: translate(-50%, -70px) scale(1);
     }
     100% {
         opacity: 0;
@@ -2745,6 +2745,11 @@ body.ultra-active #click-btn::before {
     }
     45% {
         transform: translate(-50%, -28px) scale(1.02);
+        opacity: 1;
+    }
+    85% {
+        transform: translate(-50%, -46px) scale(1);
+        opacity: 0.9;
     }
     100% {
         transform: translate(-50%, -52px) scale(1);

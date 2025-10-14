@@ -1758,7 +1758,7 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
               break;
           }
 
-          return `<button class="neon-btn w-full mb-2" data-sell-rarity="${rarity}" style="${rarity === "celestial" ? "animation: celestialRainbow 3s linear infinite, celestialRainbowBg 3s linear infinite; background-size: 400% 400%; color: white; border-color: #ffffff;" : `background: ${backgroundColor}; color: ${textColor}; border-color: ${rarity === "all" ? "#666" : rarityById(rarity).color};`}">${label}</button>`;
+          return `<button class="neon-btn w-full mb-2" data-sell-rarity="${rarity}" style="${rarity === "celestial" ? "animation: celestialRainbow 3s ease-in-out infinite, celestialRainbowBg 3s ease-in-out infinite; background-size: 400% 400%; color: white; border-color: #ffffff;" : `background: ${backgroundColor}; color: ${textColor}; border-color: ${rarity === "all" ? "#666" : rarityById(rarity).color};`}">${label}</button>`;
         })
         .join("");
 
