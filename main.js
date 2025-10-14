@@ -2346,7 +2346,7 @@ function showEditProfile() {
              <div class="avatar-name-small">Custom</div>
            </div>
          </div>
-         <div class="flex gap-2 justify-center mt-2">
+         <div class="flex gap-2 justify-center mt-2" style="display:none;">
            <input type="file" id="avatar-upload" accept="image/*" style="display:none">
            <button type="button" id="avatar-upload-btn" class="neon-btn">Upload Picture</button>
          </div>
