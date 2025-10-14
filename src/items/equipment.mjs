@@ -1767,15 +1767,28 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
               break;
           }
 
-          return `<button class="neon-btn w-full mb-2" data-sell-rarity="${rarity}" style="${rarity === "celestial" ? "animation: celestialRainbow 3s linear infinite; background: linear-gradient(90deg, #ff0080 0%, #00ff80 25%, #8000ff 50%, #ff8000 75%, #ff0080 100%); background-size: 400% 100%; animation: celestialRainbow 3s linear infinite, celestialRainbowBg 3s linear infinite; color: white; border-color: #ffffff;" : `background: ${backgroundColor}; color: ${textColor}; border-color: ${rarity === "all" ? "#666" : rarityById(rarity).color};`}">${label}</button>`;
+          return `<button class="neon-btn mb-2" data-sell-rarity="${rarity}" style="flex: 1; margin-right: 0.5rem; ${rarity === "celestial" ? "animation: celestialRainbow 3s linear infinite; background: linear-gradient(90deg, #ff0080 0%, #00ff80 25%, #8000ff 50%, #ff8000 75%, #ff0080 100%); background-size: 400% 100%; animation: celestialRainbow 3s linear infinite, celestialRainbowBg 3s linear infinite; color: white; border-color: #ffffff;" : `background: ${backgroundColor}; color: ${textColor}; border-color: ${rarity === "all" ? "#666" : rarityById(rarity).color};`}">${label}</button>`;
         })
         .join("");
+
+      // Create 2-column grid layout for buttons
+      const buttonArray = optionButtons
+        .split("</button>")
+        .filter((btn) => btn.trim());
+      let gridButtons = "";
+      for (let i = 0; i < buttonArray.length; i += 2) {
+        const leftButton = buttonArray[i] + "</button>";
+        const rightButton = buttonArray[i + 1]
+          ? buttonArray[i + 1] + "</button>"
+          : "";
+        gridButtons += `<div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">${leftButton}${rightButton}</div>`;
+      }
 
       const html = `
         <div class="neon-card" style="padding:.75rem;">
           <div style="font-weight:900; margin-bottom: .75rem; text-align: center;">Sell Items</div>
           <div style="margin-bottom: .75rem;">Choose which items to sell:</div>
-          ${optionButtons}
+          ${gridButtons}
         </div>
       `;
 
