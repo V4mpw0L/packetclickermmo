@@ -33,7 +33,12 @@ const ASSETS_TO_CACHE = [
   "src/data/constants.js",
   "src/data/i18n.js",
   "src/utils/storage.js",
+  "src/utils/performance.mjs",
   "src/logic/bootstrap.js",
+
+  // Styles and patches
+  "src/styles/inventory-optimized.css",
+  "src/patches/performance-integration.mjs",
 
   // UI helpers (UMD) and new ES modules
   "src/ui/ui.js",
@@ -41,11 +46,41 @@ const ASSETS_TO_CACHE = [
   "src/ui/render.mjs",
   "src/effects/effects.mjs",
   "src/leaderboard/firebase.mjs",
+  "src/items/equipment.mjs",
+  "src/items/equipment-optimized.mjs",
 
-  // App icons and images
-  "src/assets/gem.png",
-  "src/assets/vip.png",
+  // Core app icons and images
+  "src/assets/packet-32.png",
+  "src/assets/packet-48.png",
+  "src/assets/packet-64.png",
+  "src/assets/packet-512.png",
   "src/assets/packet.webp",
+  "src/assets/gem.png",
+  "src/assets/gemm.png",
+  "src/assets/vip.png",
+  "src/assets/settings.webp",
+
+  // Audio
+  "src/assets/hit.wav",
+
+  // Cursor/combo effect assets
+  "src/assets/green.webp",
+  "src/assets/gold.webp",
+  "src/assets/blue.webp",
+  "src/assets/pink.webp",
+  "src/assets/animal.webp",
+
+  // Essential item icons (most commonly used)
+  "src/assets/items/I_Sapphire.png",
+  "src/assets/items/I_Diamond.png",
+  "src/assets/items/I_Ruby.png",
+  "src/assets/items/I_Amethist.png",
+  "src/assets/items/I_Jade.png",
+  "src/assets/items/I_Opal.png",
+  "src/assets/items/I_Agate.png",
+  "src/assets/items/I_GoldCoin.png",
+  "src/assets/items/I_SilverCoin.png",
+  "src/assets/items/I_BronzeCoin.png",
 ];
 
 self.addEventListener("install", (event) => {
