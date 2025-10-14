@@ -49,12 +49,12 @@ const ASSETS_TO_CACHE = [
   "src/items/equipment.mjs",
   "src/items/equipment-optimized.mjs",
 
-  // Core app icons and images
-  "src/assets/packet-32.png",
-  "src/assets/packet-48.png",
-  "src/assets/packet-64.png",
-  "src/assets/packet-512.png",
+  // Core app icons and images (packet.webp prioritized)
   "src/assets/packet.webp",
+  "src/assets/packet-512.png",
+  "src/assets/packet-64.png",
+  "src/assets/packet-48.png",
+  "src/assets/packet-32.png",
   "src/assets/gem.png",
   "src/assets/gemm.png",
   "src/assets/vip.png",

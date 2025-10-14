@@ -2,6 +2,18 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
+        <!-- Primary favicon using packet.webp -->
+        <link
+            rel="icon"
+            href="src/assets/packet.webp?v=0.0.35"
+            sizes="30x30"
+            type="image/webp"
+        />
+        <link
+            rel="shortcut icon"
+            href="src/assets/packet.webp?v=0.0.35"
+            type="image/webp"
+        />
         <title>PacketClickerMMO</title>
         <meta
             name="viewport"
@@ -23,7 +35,7 @@
         <meta name="MobileOptimized" content="320" />
 
         <!-- PWA / SEO / SOCIAL META -->
-        <link rel="manifest" href="manifest.json" />
+        <link rel="manifest" href="manifest.json?v=0.0.35" />
         <meta name="theme-color" content="#161a22" />
         <meta
             name="description"
@@ -34,41 +46,41 @@
             property="og:description"
             content="Cyberpunk idle MMO game: evolve, earn gems, compete, unlock skins and more!"
         />
-        <meta property="og:image" content="src/assets/packet.webp" />
+        <meta property="og:image" content="src/assets/packet.webp?v=0.0.35" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="./" />
         <link
             rel="icon"
-            href="src/assets/packet-32.png"
+            href="src/assets/packet-32.png?v=0.0.35"
             sizes="32x32"
             type="image/png"
         />
         <link
             rel="icon"
-            href="src/assets/packet-48.png"
+            href="src/assets/packet-48.png?v=0.0.35"
             sizes="48x48"
             type="image/png"
         />
         <link
             rel="icon"
-            href="src/assets/packet-64.png"
+            href="src/assets/packet-64.png?v=0.0.35"
             sizes="64x64"
             type="image/png"
         />
         <link
             rel="icon"
-            href="src/assets/packet-512.png"
+            href="src/assets/packet-512.png?v=0.0.35"
             sizes="512x512"
             type="image/png"
         />
         <link
             rel="apple-touch-icon"
-            href="src/assets/packet-512.png"
+            href="src/assets/packet-512.png?v=0.0.35"
             sizes="512x512"
         />
         <meta
             name="apple-touch-startup-image"
-            content="src/assets/packet-512.png"
+            content="src/assets/packet-512.png?v=0.0.35"
         />
 
         <!-- Custom CSS only - no external dependencies -->
@@ -846,6 +858,9 @@
                 applyLang();
             })();
         </script>
+
+        <!-- Packet.webp Favicon Refresh Script -->
+        <script src="refresh-favicon.js"></script>
 
         <!-- PWA: Register Service Worker -->
         <script>
