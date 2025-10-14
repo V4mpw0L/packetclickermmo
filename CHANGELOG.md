@@ -1,5 +1,27 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.30 - Rarity & Progression Balance
+*Released: January 2025*
+
+### 🎯 **Rarity System Rebalance**
+- **Celestial Items** - 50% rarer drop rate (0.01% → 0.005%) - now truly legendary
+- **Common Items** - Reduced frequency (70 → 60 weight) for better progression feel
+- **Rare & Epic** - Slightly reduced rates (22→20, 7→6) making higher tiers more meaningful
+- **Ultra Rare Tiers** - Animal and Ultra rarities maintain exclusivity with refined balance
+
+### ⚔️ **Upgrade Cost Overhaul**
+- **Exponential Scaling** - Replaced linear costs with exponential + polynomial growth
+- **Click Upgrades** - New formula: `15 × 1.35^level + level^1.8 × 8` (dramatically harder)
+- **Idle/Sec Upgrades** - New formula: `50 × 1.42^level + level^1.9 × 15` (strategic investment)
+- **Crit Upgrades** - New formula: `100 × 1.5^level + level^2.1 × 25` (premium progression)
+- **High-Level Challenge** - Level 30+ upgrades now cost hundreds of thousands of packets
+
+### 🎮 **Balance Impact**
+- **Strategic Depth** - Each upgrade becomes a meaningful investment decision
+- **Long-term Progression** - Prevents trivial advancement to max levels
+- **Rarity Excitement** - Celestial drops now cause genuine celebration
+- **Prestige Integration** - Works perfectly with v0.0.29 prestige rebalance
+
 ## Version 0.0.29 - Prestige Rebalance & Combo Challenge
 *Released: January 2025*
 
