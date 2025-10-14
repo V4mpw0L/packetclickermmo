@@ -84,6 +84,15 @@ if (typeof window !== "undefined") {
 function setupGlobalClickFeedback() {
   if (typeof document === "undefined") return;
 
+  // Available cursor types for random selection
+  const cursorTypes = [
+    "src/assets/green.webp",
+    "src/assets/gold.webp",
+    "src/assets/blue.webp",
+    "src/assets/pink.webp",
+    "src/assets/animal.webp",
+  ];
+
   // Add global click listener to entire document
   document.addEventListener("click", function (event) {
     // Skip if this is the collect packets button (it has its own perfect system)
@@ -99,7 +108,7 @@ function setupGlobalClickFeedback() {
       playSound("click");
     }
 
-    // Show green cursor feedback at click position (accounting for scroll)
+    // Show random cursor feedback at click position (accounting for scroll)
     const scrollX =
       window.pageXOffset || document.documentElement.scrollLeft || 0;
     const scrollY =
@@ -108,11 +117,15 @@ function setupGlobalClickFeedback() {
   });
 
   function showClickFeedback(x, y) {
+    // Pick a random cursor from the available types
+    const randomCursor =
+      cursorTypes[Math.floor(Math.random() * cursorTypes.length)];
+
     // Remove any existing feedback
     const existing = document.getElementById("global-click-feedback");
     if (existing) existing.remove();
 
-    // Create visual feedback element with default green cursor
+    // Create visual feedback element with random cursor
     const feedback = document.createElement("div");
     feedback.id = "global-click-feedback";
     feedback.style.position = "absolute";
@@ -121,7 +134,7 @@ function setupGlobalClickFeedback() {
     feedback.style.top = y - 26 + "px";
     feedback.style.width = "52px";
     feedback.style.height = "52px";
-    feedback.style.backgroundImage = 'url("src/assets/green.webp")';
+    feedback.style.backgroundImage = `url("${randomCursor}")`;
     feedback.style.backgroundSize = "contain";
     feedback.style.backgroundRepeat = "no-repeat";
     feedback.style.backgroundPosition = "center";
