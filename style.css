@@ -863,7 +863,7 @@ body .modal-box .space-y-3 > * + * {
 
 .shop-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
 }
 
@@ -875,7 +875,7 @@ body .modal-box .space-y-3 > * + * {
 
 @media (max-width: 480px) {
     .shop-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
@@ -903,7 +903,7 @@ body .modal-box .space-y-3 > * + * {
     gap: 0.3rem;
     padding: 0.5rem;
     text-align: center;
-    min-height: 90px;
+    min-height: 75px;
     aspect-ratio: 1;
     position: relative;
 }
@@ -936,13 +936,13 @@ body .modal-box .space-y-3 > * + * {
 }
 
 .shop-item-icon {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 1.3rem;
-    height: 1.3rem;
-    margin-bottom: 0.15rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-bottom: 0.1rem;
 }
 
 .shop-item-name {

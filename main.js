@@ -1314,92 +1314,133 @@ function renderAchievements() {
 
 // =============== SHOP PANEL ===============
 function renderShop() {
-  // Premium Gem Packs Section
-  let gemStore = GEM_PACKS.map((p) =>
+  // Ensure per-category paging state
+  state._shopPages = state._shopPages || { gems: 0, vip: 0, skin: 0, util: 0 };
+  const PAGE_SIZE = 6;
+
+  // Helpers
+  const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+  const paginate = (arr, size) => {
+    const total = Math.max(1, Math.ceil(arr.length / size));
+    return {
+      total,
+      slice(page) {
+        const p = clamp(page, 0, total - 1);
+        const start = p * size;
+        return { page: p, items: arr.slice(start, start + size) };
+      },
+    };
+  };
+  const section = (key, title, subtitle, buttonsHtmlArr) => {
+    const pager = paginate(buttonsHtmlArr, PAGE_SIZE);
+    const current = clamp(state._shopPages[key] || 0, 0, pager.total - 1);
+    state._shopPages[key] = current;
+    const { page, items } = pager.slice(current);
+    const grid = `<div class="shop-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap: .5rem;">${items.join("")}</div>`;
+    const pagerHtml =
+      pager.total > 1
+        ? `<div class="shop-pager" style="display:flex; align-items:center; justify-content:center; gap:.5rem; margin-top:.5rem;">
+            <button class="neon-btn text-xs" data-shop-category="${key}" data-shop-page="${clamp(page - 1, 0, pager.total - 1)}" ${page === 0 ? "disabled" : ""}>Prev</button>
+            <span class="text-neon-gray text-xs">Page ${page + 1} / ${pager.total}</span>
+            <button class="neon-btn text-xs" data-shop-category="${key}" data-shop-page="${clamp(page + 1, 0, pager.total - 1)}" ${page >= pager.total - 1 ? "disabled" : ""}>Next</button>
+          </div>`
+        : "";
+    return `<div class="shop-section">
+      <div class="shop-section-header">
+        <h3 class="shop-section-title">${title}</h3>
+        <div class="shop-section-subtitle">${subtitle}</div>
+      </div>
+      ${grid}
+      ${pager.total > 1 ? pagerHtml : ""}
+    </div>`;
+  };
+
+  // Premium Gem Packs Buttons (compact)
+  const gemButtons = GEM_PACKS.map((p) =>
     renderButton({
       className: "shop-premium-btn",
-      label: `<div class="shop-premium-content">
-        <div class="shop-gem-amount">${p.label}</div>
-        <div class="shop-gem-price">$${p.price.toFixed(2)}</div>
+      label: `<div class="shop-premium-content" style="min-height:64px;">
+        <div class="shop-gem-amount" style="font-size:1rem;">${p.label}</div>
+        <div class="shop-gem-price" style="font-size:.9rem;">$${p.price.toFixed(2)}</div>
       </div>`,
       dataAttr: `data-gem-pack="${p.id}"`,
     }),
-  ).join("");
+  );
 
-  // VIP Items Section
-  let vipItems = SHOP_ITEMS.filter((item) => item.type === "vip")
-    .map((item) => {
-      let owned = isVIP();
+  // VIP Items Buttons (compact)
+  const vipButtons = SHOP_ITEMS.filter((item) => item.type === "vip").map(
+    (item) => {
+      const owned = isVIP();
       return renderButton({
         className: `shop-vip-btn ${owned ? "shop-owned" : ""}`,
-        label: `<div class="shop-item-content">
-        <div class="shop-item-icon"><img src="src/assets/vip.png" alt="VIP" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/></div>
-        <div class="shop-item-name">${item.label}</div>
-        <div class="shop-item-price">
-          ${
-            owned
-              ? '<span class="shop-owned-text">✓</span>'
-              : `${item.gems.toLocaleString("en-US")}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
-          }
-        </div>
-      </div>`,
+        label: `<div class="shop-item-content" style="min-height:56px;">
+          <div class="shop-item-icon"><img src="src/assets/vip.png" alt="VIP" style="height:1rem;width:1rem;" aria-hidden="true"/></div>
+          <div class="shop-item-name" style="font-size:.75rem;">${item.label}</div>
+          <div class="shop-item-price" style="font-size:.7rem;">
+            ${
+              owned
+                ? '<span class="shop-owned-text">✓</span>'
+                : `${item.gems.toLocaleString("en-US")}<img src="src/assets/gem.png" alt="Gems" style="height:0.8rem;width:0.8rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
+            }
+          </div>
+        </div>`,
         dataAttr: `data-shop-item="${item.id}"`,
         disabled: owned,
       });
-    })
-    .join("");
+    },
+  );
 
-  // Cosmetic Items Section
-  let cosmeticItems = SHOP_ITEMS.filter((item) => item.type === "skin")
-    .map((item) => {
-      let owned =
+  // Cosmetic Items Buttons (compact)
+  const skinButtons = SHOP_ITEMS.filter((item) => item.type === "skin").map(
+    (item) => {
+      const owned =
         state.shop[item.id] ||
         (item.id === "skinElite" && state.shop.skinBought);
       return renderButton({
         className: `shop-cosmetic-btn ${owned ? "shop-owned" : ""}`,
-        label: `<div class="shop-item-content">
-        <div class="shop-item-icon">🎨</div>
-        <div class="shop-item-name">${item.label}</div>
-        <div class="shop-item-price">
-          ${
-            owned
-              ? '<span class="shop-owned-text">✓</span>'
-              : `${item.gems.toLocaleString("en-US")}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
-          }
-        </div>
-        <div class="shop-item-desc">${item.desc}</div>
-      </div>`,
+        label: `<div class="shop-item-content" style="min-height:56px;">
+          <div class="shop-item-icon">🎨</div>
+          <div class="shop-item-name" style="font-size:.75rem;">${item.label}</div>
+          <div class="shop-item-price" style="font-size:.7rem;">
+            ${
+              owned
+                ? '<span class="shop-owned-text">✓</span>'
+                : `${item.gems.toLocaleString("en-US")}<img src="src/assets/gem.png" alt="Gems" style="height:0.8rem;width:0.8rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
+            }
+          </div>
+          <div class="shop-item-desc" style="display:none;"></div>
+        </div>`,
         dataAttr: `data-shop-item="${item.id}"`,
         disabled: owned,
       });
-    })
-    .join("");
+    },
+  );
 
-  // Utility Items Section
-  let utilityItems = SHOP_ITEMS.filter((item) => item.type === "noAds")
-    .map((item) => {
-      let owned = state.player.noAds;
+  // Utility Items Buttons (compact)
+  const utilButtons = SHOP_ITEMS.filter((item) => item.type === "noAds").map(
+    (item) => {
+      const owned = state.player.noAds;
       return renderButton({
         className: `shop-utility-btn ${owned ? "shop-owned" : ""}`,
-        label: `<div class="shop-item-content">
-        <div class="shop-item-icon">🚫</div>
-        <div class="shop-item-name">${item.label}</div>
-        <div class="shop-item-price">
-          ${
-            owned
-              ? '<span class="shop-owned-text">✓</span>'
-              : `${item.gems.toLocaleString("en-US")}<img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
-          }
-        </div>
-      </div>`,
+        label: `<div class="shop-item-content" style="min-height:56px;">
+          <div class="shop-item-icon">🚫</div>
+          <div class="shop-item-name" style="font-size:.75rem;">${item.label}</div>
+          <div class="shop-item-price" style="font-size:.7rem;">
+            ${
+              owned
+                ? '<span class="shop-owned-text">✓</span>'
+                : `${item.gems.toLocaleString("en-US")}<img src="src/assets/gem.png" alt="Gems" style="height:0.8rem;width:0.8rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
+            }
+          </div>
+        </div>`,
         dataAttr: `data-shop-item="${item.id}"`,
         disabled: owned,
       });
-    })
-    .join("");
+    },
+  );
 
-  // Ad Section
-  let adBtn =
+  // Ad Section (unchanged)
+  const adBtn =
     !state.player.noAds && state.ads
       ? `<div class="shop-section">
         <div class="shop-section-header">
@@ -1408,10 +1449,10 @@ function renderShop() {
         ${renderButton({
           id: "watch-ad-btn",
           className: "shop-ad-btn",
-          label: `<div class="shop-item-content">
+          label: `<div class="shop-item-content" style="min-height:56px;">
             <div class="shop-item-icon">📺</div>
-            <div class="shop-item-name">Watch Ad</div>
-            <div class="shop-item-price">
+            <div class="shop-item-name" style="font-size:.75rem;">Watch Ad</div>
+            <div class="shop-item-price" style="font-size:.7rem;">
               <span class="shop-free-text">FREE</span>
             </div>
           </div>`,
@@ -1419,74 +1460,54 @@ function renderShop() {
       </div>`
       : "";
 
+  // Assemble sections with 3x2 grid and per-category pagination
+  const gemsSection = section(
+    "gems",
+    "💎 Premium Gems",
+    "Support development & get gems",
+    gemButtons,
+  );
+
+  const vipSection =
+    vipButtons.length > 0
+      ? section(
+          "vip",
+          "VIP Membership",
+          "Exclusive benefits & bonuses",
+          vipButtons,
+        )
+      : "";
+
+  const skinSection =
+    skinButtons.length > 0
+      ? section(
+          "skin",
+          "🎨 Cosmetics",
+          "Customize your appearance",
+          skinButtons,
+        )
+      : "";
+
+  const utilSection =
+    utilButtons.length > 0
+      ? section("util", "⚡ Utilities", "Enhance your experience", utilButtons)
+      : "";
+
   return `
     <div class="neon-card px-3 py-4 mb-2">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🏪 Premium Shop</h2>
 
-      <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
+      <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
         <div class="shop-balance">
           <img src="src/assets/gem.png" alt="Gems" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/>
           <span class="event-number-glow">${state.gems.toLocaleString("en-US")}</span>
         </div>
       </div>
 
-      <!-- Premium Gems Section -->
-      <div class="shop-section">
-        <div class="shop-section-header">
-          <h3 class="shop-section-title">💎 Premium Gems</h3>
-          <div class="shop-section-subtitle">Support development & get gems</div>
-        </div>
-        <div class="shop-grid">
-          ${gemStore}
-        </div>
-      </div>
-
-      <!-- VIP Section -->
-      ${
-        vipItems
-          ? `<div class="shop-section">
-        <div class="shop-section-header">
-          <h3 class="shop-section-title">VIP Membership</h3>
-          <div class="shop-section-subtitle">Exclusive benefits & bonuses</div>
-        </div>
-        <div class="shop-grid">
-          ${vipItems}
-        </div>
-      </div>`
-          : ""
-      }
-
-      <!-- Cosmetics Section -->
-      ${
-        cosmeticItems
-          ? `<div class="shop-section">
-        <div class="shop-section-header">
-          <h3 class="shop-section-title">🎨 Cosmetics</h3>
-          <div class="shop-section-subtitle">Customize your appearance</div>
-        </div>
-        <div class="shop-grid">
-          ${cosmeticItems}
-        </div>
-      </div>`
-          : ""
-      }
-
-      <!-- Utilities Section -->
-      ${
-        utilityItems
-          ? `<div class="shop-section">
-        <div class="shop-section-header">
-          <h3 class="shop-section-title">⚡ Utilities</h3>
-          <div class="shop-section-subtitle">Enhance your experience</div>
-        </div>
-        <div class="shop-grid">
-          ${utilityItems}
-        </div>
-      </div>`
-          : ""
-      }
-
-      <!-- Free Section -->
+      ${gemsSection}
+      ${vipSection}
+      ${skinSection}
+      ${utilSection}
       ${adBtn}
     </div>
   `;
@@ -2047,7 +2068,7 @@ function showEditProfile() {
       }
     } catch (_) {}
     try {
-      window.VERSION = "0.0.30";
+      window.VERSION = "0.0.31";
     } catch (_) {}
 
     updateTopBar();
@@ -2169,7 +2190,7 @@ function showSettings() {
         // Persist and refresh UI
         save();
         try {
-          window.VERSION = "0.0.30";
+          window.VERSION = "0.0.31";
         } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {
@@ -3649,7 +3670,7 @@ function migrateSaveToCurrentVersion() {
       window.Packet &&
       window.Packet.data &&
       window.Packet.data.APP_VERSION) ||
-    "0.0.30";
+    "0.0.31";
 
   console.log(
     "[Migration] Checking save compatibility with version",
@@ -4648,12 +4669,29 @@ function bindTabEvents(tab) {
         (btn) =>
           (btn.onclick = () => buyGemPack(btn.getAttribute("data-gem-pack"))),
       );
+
     document
       .querySelectorAll("[data-shop-item]")
       .forEach(
         (btn) =>
           (btn.onclick = () => buyShopItem(btn.getAttribute("data-shop-item"))),
       );
+
+    // Shop pagination controls (per category)
+    document.querySelectorAll("[data-shop-page]").forEach((btn) => {
+      btn.onclick = () => {
+        const cat = btn.getAttribute("data-shop-category");
+        const page = parseInt(btn.getAttribute("data-shop-page"), 10) || 0;
+        state._shopPages = state._shopPages || {};
+        state._shopPages[cat] = page;
+        const tabContent = document.getElementById("tab-content");
+        if (tabContent) {
+          tabContent.innerHTML = renderShop();
+          bindTabEvents("shop");
+        }
+      };
+    });
+
     let adbtn = document.getElementById("watch-ad-btn");
     if (adbtn) adbtn.onclick = watchAd;
   }

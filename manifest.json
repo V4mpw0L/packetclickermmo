@@ -1,6 +1,6 @@
 {
   "name": "Packet Clicker MMO",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "short_name": "Packet",
   "start_url": "./",
   "display": "standalone",
