@@ -2333,14 +2333,12 @@ img[src*="seed=ShadowNinja"] {
     border: 2px solid var(--primary-color);
     background: rgba(29, 233, 182, 0.1);
     box-shadow: 0 0 10px rgba(29, 233, 182, 0.3);
-    transform: scale(1.02);
     margin: 0px;
 }
 
 .avatar-choice-small:hover {
     border: 2px solid var(--secondary-color);
     background: rgba(247, 207, 92, 0.1);
-    transform: scale(1.02);
 }
 
 .avatar-name-small {
