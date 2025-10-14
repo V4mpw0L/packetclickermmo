@@ -213,10 +213,10 @@
       },
       {
         id: "ultraCombo",
-        name: "🚀 Quantum Boost",
-        desc: "10x ALL gains for 10 seconds",
+        name: "Quantum Boost",
+        desc: "10x ALL gains for 30 seconds",
         gems: 50,
-        duration: 10000,
+        duration: 30000,
         icon: "🌌",
         rarity: "celestial",
         effect: "Ultimate power amplification",

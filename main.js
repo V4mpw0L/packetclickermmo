@@ -80,6 +80,13 @@ if (typeof window !== "undefined") {
   });
 }
 
+// Helper function to format time as (0m00s)
+function formatTime(totalSeconds) {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `(${minutes}m${seconds.toString().padStart(2, "0")}s)`;
+}
+
 // Celestial cursor random changing
 let celestialCursorInterval = null;
 const celestialCursorTypes = [
@@ -719,7 +726,7 @@ function renderGame() {
   if (state.boosts.doublePackets > Date.now()) {
     let remaining = Math.ceil((state.boosts.doublePackets - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">📦 3x Packets <span style="color:#4ade80;">(</span><span class="event-number-glow">${remaining}s</span><span style="color:#4ade80;">)</span></span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">3x Packets <span class="event-number-glow">${formatTime(remaining)}</span></span>`,
     );
     totalMultiplier *= 3;
   }
@@ -728,32 +735,32 @@ function renderGame() {
       (state.boosts.quadrupleClick - Date.now()) / 1000,
     );
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">⚡ 8x Click <span style="color:#4ade80;">(</span><span class="event-number-glow">${remaining}s</span><span style="color:#4ade80;">)</span></span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">8x Click <span class="event-number-glow">${formatTime(remaining)}</span></span>`,
     );
     totalMultiplier *= 8;
   }
   if (state.boosts.megaCrit > Date.now()) {
     let remaining = Math.ceil((state.boosts.megaCrit - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🌟 75% Crit <span style="color:#4ade80;">(</span><span class="event-number-glow">${remaining}s</span><span style="color:#4ade80;">)</span></span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">75% Crit <span class="event-number-glow">${formatTime(remaining)}</span></span>`,
     );
   }
   if (state.boosts.tripleGems > Date.now()) {
     let remaining = Math.ceil((state.boosts.tripleGems - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">✨ 5x Gems <span style="color:#4ade80;">(</span><span class="event-number-glow">${remaining}s</span><span style="color:#4ade80;">)</span></span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">5x Gems <span class="event-number-glow">${formatTime(remaining)}</span></span>`,
     );
   }
   if (state.boosts.autoClicker > Date.now()) {
     let remaining = Math.ceil((state.boosts.autoClicker - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🤖 +25/s Cyber <span style="color:#4ade80;">(</span><span class="event-number-glow">${remaining}s</span><span style="color:#4ade80;">)</span></span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">+25/s Cyber <span class="event-number-glow">${formatTime(remaining)}</span></span>`,
     );
   }
   if (state.boosts.ultraCombo > Date.now()) {
     let remaining = Math.ceil((state.boosts.ultraCombo - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid #ff0080; border-radius:999px; animation: celestialTextOnly 3s linear infinite; background:linear-gradient(45deg, rgba(255,0,128,0.2), rgba(0,255,128,0.2), rgba(128,0,255,0.2), rgba(255,128,0,0.2)); font-weight:600; font-size:0.75rem; white-space:nowrap;">🚀 10x QUANTUM <span style="color:#4ade80;">(</span><span style="animation: celestialTextOnly 3s linear infinite; font-weight:bold;">${remaining}s</span><span style="color:#4ade80;">)</span></span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid #ff0080; border-radius:999px; animation: celestialTextOnly 3s linear infinite; background:linear-gradient(45deg, rgba(255,0,128,0.2), rgba(0,255,128,0.2), rgba(128,0,255,0.2), rgba(255,128,0,0.2)); font-weight:600; font-size:0.75rem; white-space:nowrap;">10x QUANTUM <span style="animation: celestialTextOnly 3s linear infinite; font-weight:bold;">${formatTime(remaining)}</span></span>`,
     );
     totalMultiplier *= 10;
   }
@@ -917,11 +924,11 @@ function renderBoosts() {
         emoji = "🤖";
       } else if (boostType === "ultraCombo") {
         // Use rainbow animation for celestial rarity
-        activeBoosts += `<div style="padding:.1rem .45rem; border:1px solid #ff0080; border-radius:999px; animation: celestialTextOnly 3s linear infinite; background:linear-gradient(45deg, rgba(255,0,128,0.2), rgba(0,255,128,0.2), rgba(128,0,255,0.2), rgba(255,128,0,0.2)); font-weight:600; font-size:0.875rem; margin-bottom:0.5rem; display:inline-block; white-space:nowrap;">🚀 ${boostInfo.name} active (<span style="font-weight:bold; transform:translateY(-1px); display:inline-block; animation: celestialTextOnly 3s linear infinite;">${remaining}s</span>)</div>`;
+        activeBoosts += `<div style="padding:.1rem .45rem; border:1px solid #ff0080; border-radius:999px; animation: celestialTextOnly 3s linear infinite; background:linear-gradient(45deg, rgba(255,0,128,0.2), rgba(0,255,128,0.2), rgba(128,0,255,0.2), rgba(255,128,0,0.2)); font-weight:600; font-size:0.875rem; margin-bottom:0.5rem; display:inline-block; white-space:nowrap;">${boostInfo.name} active <span style="font-weight:bold; transform:translateY(-1px); display:inline-block; animation: celestialTextOnly 3s linear infinite;">${formatTime(remaining)}</span></div>`;
         return; // Skip the regular activeBoosts append below
       }
 
-      activeBoosts += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:${color}; background:rgba(0,0,0,.25); font-weight:600; font-size:0.875rem; margin-bottom:0.5rem; display:inline-block; white-space:nowrap;">${emoji} ${boostInfo.name} active (<span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block;">${remaining}s</span>)</div>`;
+      activeBoosts += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:${color}; background:rgba(0,0,0,.25); font-weight:600; font-size:0.875rem; margin-bottom:0.5rem; display:inline-block; white-space:nowrap;">${boostInfo.name} active <span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block;">${formatTime(remaining)}</span></div>`;
     }
   });
 
@@ -1008,7 +1015,7 @@ function renderBoosts() {
             active
               ? `<div style="padding: 0.4rem; background: rgba(76, 175, 80, 0.15); border: 1px solid #4caf50; border-radius: 6px; font-size: 0.7rem;">
                   <div style="color: #4caf50; font-weight: bold;">⚡ ACTIVE</div>
-                  <div style="color: #22c55e;"><span class="event-number-glow">${remaining}</span>s</div>
+                  <div style="color: #22c55e;"><span class="event-number-glow">${formatTime(remaining)}</span></div>
                  </div>`
               : !canAfford
                 ? `<div style="padding: 0.4rem; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 6px; font-size: 0.7rem; color: #ef4444; font-weight: bold;">
@@ -1046,7 +1053,7 @@ function renderBoosts() {
     <div class="neon-card px-3 py-4 mb-2" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #1a202c 100%); border: 2px solid #4caf50;">
       <div style="text-align: center; margin-bottom: 2rem;">
         <h2 style="font-size: 2rem; font-weight: 900; background: linear-gradient(45deg, #4caf50, #22c55e, #16a34a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;">
-          ⚡ PREMIUM POWER BOOSTS ⚡
+          Temporary BOOSTS!
         </h2>
         <div style="font-size: 1rem; color: #a0aec0; font-style: italic; margin-bottom: 1rem;">
           Supercharge your progress with exclusive gem-powered abilities
@@ -3665,7 +3672,7 @@ function renderActiveEvent() {
 
   let event = RANDOM_EVENTS.find((e) => e.type === state.randomEvent.type);
   return `<div class="random-event">
-    ${event.type === "packetRain" ? '<span class="icon-packet"></span>' : "🎪"} ${event.name} - <span style="color:#ffd700;">${remaining}s</span> remaining
+    ${event.type === "packetRain" ? '<span class="icon-packet"></span>' : "🎪"} ${event.name} - <span style="color:#ffd700;">${formatTime(remaining)}</span> remaining
   </div>`;
 }
 
