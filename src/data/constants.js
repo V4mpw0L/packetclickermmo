@@ -491,6 +491,54 @@
         desc: "Unlock mystical aether mage avatar",
       },
       {
+        id: "premium_avatar9",
+        label: "Void Reaper Skin",
+        gems: 175,
+        type: "skin",
+        avatar: "VoidReaper",
+        desc: "Unlock dark void harvester avatar",
+      },
+      {
+        id: "premium_avatar10",
+        label: "Plasma Knight Skin",
+        gems: 200,
+        type: "skin",
+        avatar: "PlasmaKnight",
+        desc: "Unlock electric warrior avatar",
+      },
+      {
+        id: "premium_avatar11",
+        label: "Cyber Sphinx Skin",
+        gems: 225,
+        type: "skin",
+        avatar: "CyberSphinx",
+        desc: "Unlock ancient digital guardian avatar",
+      },
+      {
+        id: "premium_avatar12",
+        label: "Nova Wraith Skin",
+        gems: 250,
+        type: "skin",
+        avatar: "NovaWraith",
+        desc: "Unlock stellar phantom avatar",
+      },
+      {
+        id: "premium_avatar13",
+        label: "Quantum Beast Skin",
+        gems: 275,
+        type: "skin",
+        avatar: "QuantumBeast",
+        desc: "Unlock reality-bending creature avatar",
+      },
+      {
+        id: "premium_avatar14",
+        label: "Nexus Overlord Skin",
+        gems: 300,
+        type: "skin",
+        avatar: "NexusOverlord",
+        desc: "Unlock supreme digital ruler avatar",
+      },
+      {
         id: "noAds",
         label: "Remove Ads",
         gems: 16,
@@ -919,6 +967,66 @@
         desc: "Buy the Aether Mage skin",
         req: function (s) {
           return !!(s && s.shop && s.shop.premium_avatar8);
+        },
+        gems: 0,
+      },
+      {
+        id: "shopPremiumAvatar9",
+        name: "Void Reaper",
+        emoji: "💀",
+        desc: "Buy the Void Reaper skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.premium_avatar9);
+        },
+        gems: 0,
+      },
+      {
+        id: "shopPremiumAvatar10",
+        name: "Plasma Knight",
+        emoji: "⚡",
+        desc: "Buy the Plasma Knight skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.premium_avatar10);
+        },
+        gems: 0,
+      },
+      {
+        id: "shopPremiumAvatar11",
+        name: "Cyber Sphinx",
+        emoji: "🦅",
+        desc: "Buy the Cyber Sphinx skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.premium_avatar11);
+        },
+        gems: 0,
+      },
+      {
+        id: "shopPremiumAvatar12",
+        name: "Nova Wraith",
+        emoji: "👻",
+        desc: "Buy the Nova Wraith skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.premium_avatar12);
+        },
+        gems: 0,
+      },
+      {
+        id: "shopPremiumAvatar13",
+        name: "Quantum Beast",
+        emoji: "🐺",
+        desc: "Buy the Quantum Beast skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.premium_avatar13);
+        },
+        gems: 0,
+      },
+      {
+        id: "shopPremiumAvatar14",
+        name: "Nexus Overlord",
+        emoji: "👑",
+        desc: "Buy the Nexus Overlord skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.premium_avatar14);
         },
         gems: 0,
       },

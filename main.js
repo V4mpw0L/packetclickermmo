@@ -200,6 +200,18 @@ function getUnlockedAvatars() {
     avatars.push({ seed: "NeonViper", name: "Neon Viper" });
   if (state.shop.premium_avatar8)
     avatars.push({ seed: "AetherMage", name: "Aether Mage" });
+  if (state.shop.premium_avatar9)
+    avatars.push({ seed: "VoidReaper", name: "Void Reaper" });
+  if (state.shop.premium_avatar10)
+    avatars.push({ seed: "PlasmaKnight", name: "Plasma Knight" });
+  if (state.shop.premium_avatar11)
+    avatars.push({ seed: "CyberSphinx", name: "Cyber Sphinx" });
+  if (state.shop.premium_avatar12)
+    avatars.push({ seed: "NovaWraith", name: "Nova Wraith" });
+  if (state.shop.premium_avatar13)
+    avatars.push({ seed: "QuantumBeast", name: "Quantum Beast" });
+  if (state.shop.premium_avatar14)
+    avatars.push({ seed: "NexusOverlord", name: "Nexus Overlord" });
   if (state.achievements.includes("vip"))
     avatars.push({ seed: "VIP", name: "VIP" });
   if (state.achievements.includes("adfree"))
@@ -2907,6 +2919,12 @@ function bindAdminTabEvents(tabName) {
       state.shop.premium_avatar6 = true;
       state.shop.premium_avatar7 = true;
       state.shop.premium_avatar8 = true;
+      state.shop.premium_avatar9 = true;
+      state.shop.premium_avatar10 = true;
+      state.shop.premium_avatar11 = true;
+      state.shop.premium_avatar12 = true;
+      state.shop.premium_avatar13 = true;
+      state.shop.premium_avatar14 = true;
       logAdminAction(`Unlocked all skins`);
       save();
     };
@@ -4223,6 +4241,18 @@ function migrateSaveToCurrentVersion() {
     state.shop.premium_avatar7 = false;
   if (typeof state.shop.premium_avatar8 !== "boolean")
     state.shop.premium_avatar8 = false;
+  if (typeof state.shop.premium_avatar9 !== "boolean")
+    state.shop.premium_avatar9 = false;
+  if (typeof state.shop.premium_avatar10 !== "boolean")
+    state.shop.premium_avatar10 = false;
+  if (typeof state.shop.premium_avatar11 !== "boolean")
+    state.shop.premium_avatar11 = false;
+  if (typeof state.shop.premium_avatar12 !== "boolean")
+    state.shop.premium_avatar12 = false;
+  if (typeof state.shop.premium_avatar13 !== "boolean")
+    state.shop.premium_avatar13 = false;
+  if (typeof state.shop.premium_avatar14 !== "boolean")
+    state.shop.premium_avatar14 = false;
 
   // Ensure core game values are properly set
   if (typeof state.packets !== "number") state.packets = 0;
