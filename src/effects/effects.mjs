@@ -427,7 +427,7 @@ export function handleComboEffect(clickCombo, amount, state) {
     const extra = Math.floor(amount * 0.25);
     safeAddPackets(extra);
     displayedGain += extra;
-    effectText = `<span style="color:#ff6600; text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.6); font-weight: bold; animation: comboShake 0.2s ease-in-out;">MEGA!<br>+${displayedGain}<br>(${amount}+25%)</span>`;
+    effectText = `<span style="color:#00bcd4; text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.6); font-weight: bold; animation: comboShake 0.2s ease-in-out;">MEGA!<br>+${displayedGain}<br>(${amount}+25%)</span>`;
 
     // Shake the click button briefly on MEGA
     if (hasDOM()) {
