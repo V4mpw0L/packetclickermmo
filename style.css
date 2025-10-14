@@ -3115,13 +3115,13 @@ footer {
 .click-effect.combo {
     font-size: clamp(1.5rem, 5vw, 2.2rem);
     color: var(--secondary-color);
-    animation: comboEffect 1.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    animation: comboEffect 1.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
 .click-effect.mega-combo {
     font-size: clamp(1.8rem, 6vw, 2.8rem);
     color: var(--accent-color);
-    animation: megaComboEffect 2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    animation: megaComboEffect 1.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
 /* ULTRA combo: even more intense visuals than MEGA */
@@ -3129,7 +3129,7 @@ footer {
     font-size: clamp(2.2rem, 7.5vw, 3.6rem);
     color: #ff4dff; /* hot magenta for punch */
     letter-spacing: 0.5px;
-    animation: ultraComboEffect 2.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    animation: ultraComboEffect 1.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
 /* Stronger button shake and glow during ULTRA */
@@ -3316,7 +3316,7 @@ body.ultra-active #click-btn::before {
     font-size: clamp(2.9rem, 9.5vw, 4.8rem);
     color: #ff3040;
     /* Fallback neon glow if inner span is missing (red-focused, no black outline) */
-    animation: animal3DWobble 1.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    animation: animal3DWobble 1.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 .click-effect.animal-combo::before,
 .click-effect.animal-combo::after {
@@ -4573,6 +4573,14 @@ body.graphics-medium .click-effect {
     animation-duration: 0.8s !important;
 }
 
+/* Override for combo effects to match green text timing */
+body.graphics-medium .click-effect.combo,
+body.graphics-medium .click-effect.mega-combo,
+body.graphics-medium .click-effect.ultra-combo,
+body.graphics-medium .click-effect.animal-combo {
+    animation-duration: 1.2s !important;
+}
+
 body.graphics-medium .click-effect.combo {
     animation-duration: 0.9s !important;
 }
@@ -4604,6 +4612,14 @@ body.graphics-low .click-effect {
 
     font-size: clamp(1.1rem, 3.5vw, 1.6rem) !important;
     transform: translateX(-50%) translateZ(0) !important;
+}
+
+/* Override for combo effects to match green text timing */
+body.graphics-low .click-effect.combo,
+body.graphics-low .click-effect.mega-combo,
+body.graphics-low .click-effect.ultra-combo,
+body.graphics-low .click-effect.animal-combo {
+    animation-duration: 1.2s !important;
 }
 
 body.graphics-low .click-effect.combo {

@@ -3891,81 +3891,50 @@ function clickPacket(event) {
       }
     }
 
-    // Compute duration from actual CSS animation (fallback to sensible default)
-    let animationDuration = 1200;
+    // Use exact same cleanup system as critical hits for smooth fade-out
+    let __fxTimeout = null;
+    const __cleanupFx = () => {
+      if (clickFX && clickFX.parentNode) {
+        try {
+          clickFX.parentNode.removeChild(clickFX);
+        } catch (_) {}
+      }
+    };
     try {
-      const style = window.getComputedStyle(clickFX);
-      const durParts = (style.animationDuration || "").split(",");
-      const delayParts = (style.animationDelay || "").split(",");
-      const iters = (style.animationIterationCount || "").split(",");
+      const cs = window.getComputedStyle(clickFX);
+      const durs = (cs.animationDuration || "").split(",");
+      const delays = (cs.animationDelay || "").split(",");
+      const iters = (cs.animationIterationCount || "").split(",");
       const toMs = (v) =>
         v.endsWith("ms")
           ? parseFloat(v)
           : v.endsWith("s")
             ? parseFloat(v) * 1000
             : parseFloat(v) || 0;
-
-      let maxMs = 0;
-      for (let i = 0; i < durParts.length; i++) {
-        const d = durParts[i] ? durParts[i].trim() : "0s";
-        const dl = delayParts[i] ? delayParts[i].trim() : "0s";
+      let maxTotal = 0;
+      for (let i = 0; i < durs.length; i++) {
+        const d = durs[i] ? durs[i].trim() : "0s";
+        const dl = delays[i] ? delays[i].trim() : "0s";
         const it = iters[i] ? iters[i].trim() : "1";
         const count = it === "infinite" ? 1 : Math.max(1, parseFloat(it) || 1);
         const total = toMs(d) * count + toMs(dl);
-        if (total > maxMs) maxMs = total;
+        if (total > maxTotal) maxTotal = total;
       }
-
-      // If computed style is missing or returns a near-zero duration,
-      // fallback to class-based durations to match visual combo timing.
-      if (!maxMs || maxMs < 500) {
-        const cls = clickFX.className || "";
-        if (cls.includes("animal-combo")) {
-          maxMs = 1400;
-        } else if (cls.includes("ultra-combo")) {
-          maxMs = 2200;
-        } else if (cls.includes("mega-combo")) {
-          maxMs = 2000;
-        } else if (cls.includes("combo")) {
-          // plain combo (yellow)
-          maxMs = 1500;
-        } else {
-          // base green fallback
-          maxMs = 1200;
-        }
-      }
-
-      // Clamp to reasonable bounds to avoid runaway timers
-      animationDuration = Math.max(
-        600,
-        Math.min(4000, maxMs || animationDuration),
-      );
-    } catch (_) {}
-    // Improved DOM cleanup with fallback
-    const cleanup = () => {
-      if (clickFX && clickFX.parentNode) {
-        try {
-          clickFX.parentNode.removeChild(clickFX);
-        } catch (e) {
-          console.warn("Failed to remove click effect:", e);
-        }
-      }
-    };
-
-    const __fxTimeout = setTimeout(cleanup, animationDuration + 50);
-
+      const waitMs = Math.max(600, Math.min(4000, maxTotal || 1200)) + 40;
+      __fxTimeout = setTimeout(__cleanupFx, waitMs);
+    } catch (_) {
+      __fxTimeout = setTimeout(__cleanupFx, 1200);
+    }
     clickFX.addEventListener(
       "animationend",
       () => {
         try {
-          clearTimeout(__fxTimeout);
+          if (__fxTimeout) clearTimeout(__fxTimeout);
         } catch (_) {}
-        cleanup();
+        __cleanupFx();
       },
       { once: true },
     );
-
-    // Emergency cleanup to prevent DOM bloat
-    setTimeout(cleanup, Math.max(animationDuration * 2, 3000));
   }
 
   // Reduce sound effects on high graphics to prevent performance issues
