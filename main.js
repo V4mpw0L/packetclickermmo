@@ -758,19 +758,14 @@ function renderBoosts() {
     if (isCelestial) {
       style = {
         border: "#ff0080",
-        glow: "rgba(255, 0, 128, 0.8)",
         bg: "linear-gradient(45deg, rgba(255, 0, 128, 0.1), rgba(0, 255, 128, 0.1))",
         animation: "celestialRainbow 3s linear infinite",
         textAnimation: "celestialTextOnly 3s linear infinite",
       };
     } else {
-      const glowAlpha = isAnimal ? 0.6 : 0.4;
       const bgAlpha = isAnimal ? 0.15 : 0.08;
       style = {
         border: rarity.color,
-        glow: `${rarity.color}${Math.floor(glowAlpha * 255)
-          .toString(16)
-          .padStart(2, "0")}`,
         bg: `${rarity.color}${Math.floor(bgAlpha * 255)
           .toString(16)
           .padStart(2, "0")}`,
