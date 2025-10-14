@@ -467,6 +467,30 @@
         desc: "Rise from digital ashes avatar",
       },
       {
+        id: "premium_avatar6",
+        label: "Chrome Dragon Skin",
+        gems: 105,
+        type: "skin",
+        avatar: "ChromeDragon",
+        desc: "Unlock futuristic chrome dragon avatar",
+      },
+      {
+        id: "premium_avatar7",
+        label: "Neon Viper Skin",
+        gems: 120,
+        type: "skin",
+        avatar: "NeonViper",
+        desc: "Unlock venomous neon assassin avatar",
+      },
+      {
+        id: "premium_avatar8",
+        label: "Aether Mage Skin",
+        gems: 150,
+        type: "skin",
+        avatar: "AetherMage",
+        desc: "Unlock mystical aether mage avatar",
+      },
+      {
         id: "noAds",
         label: "Remove Ads",
         gems: 16,
@@ -865,6 +889,36 @@
         desc: "Buy the Shadow Phoenix skin",
         req: function (s) {
           return !!(s && s.shop && s.shop.premium_avatar5);
+        },
+        gems: 0,
+      },
+      {
+        id: "shopPremiumAvatar6",
+        name: "Chrome Dragon",
+        emoji: "🐉",
+        desc: "Buy the Chrome Dragon skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.premium_avatar6);
+        },
+        gems: 0,
+      },
+      {
+        id: "shopPremiumAvatar7",
+        name: "Neon Viper",
+        emoji: "🐍",
+        desc: "Buy the Neon Viper skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.premium_avatar7);
+        },
+        gems: 0,
+      },
+      {
+        id: "shopPremiumAvatar8",
+        name: "Aether Mage",
+        emoji: "🔮",
+        desc: "Buy the Aether Mage skin",
+        req: function (s) {
+          return !!(s && s.shop && s.shop.premium_avatar8);
         },
         gems: 0,
       },

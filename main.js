@@ -115,6 +115,9 @@ const state = {
     premium_avatar3: false,
     premium_avatar4: false,
     premium_avatar5: false,
+    premium_avatar6: false,
+    premium_avatar7: false,
+    premium_avatar8: false,
   },
   achievements: [],
   ads: true,
@@ -191,6 +194,12 @@ function getUnlockedAvatars() {
     avatars.push({ seed: "NeonSamurai", name: "Neon Samurai" });
   if (state.shop.premium_avatar5)
     avatars.push({ seed: "ShadowPhoenix", name: "Shadow Phoenix" });
+  if (state.shop.premium_avatar6)
+    avatars.push({ seed: "ChromeDragon", name: "Chrome Dragon" });
+  if (state.shop.premium_avatar7)
+    avatars.push({ seed: "NeonViper", name: "Neon Viper" });
+  if (state.shop.premium_avatar8)
+    avatars.push({ seed: "AetherMage", name: "Aether Mage" });
   if (state.achievements.includes("vip"))
     avatars.push({ seed: "VIP", name: "VIP" });
   if (state.achievements.includes("adfree"))
@@ -325,6 +334,9 @@ function load() {
         premium_avatar3: false,
         premium_avatar4: false,
         premium_avatar5: false,
+        premium_avatar6: false,
+        premium_avatar7: false,
+        premium_avatar8: false,
       },
       achievements: [],
       ads: true,
@@ -369,6 +381,9 @@ function load() {
         premium_avatar3: false,
         premium_avatar4: false,
         premium_avatar5: false,
+        premium_avatar6: false,
+        premium_avatar7: false,
+        premium_avatar8: false,
       },
       achievements: [],
       ads: true,
@@ -2640,6 +2655,9 @@ function bindAdminTabEvents(tabName) {
       state.shop.premium_avatar3 = true;
       state.shop.premium_avatar4 = true;
       state.shop.premium_avatar5 = true;
+      state.shop.premium_avatar6 = true;
+      state.shop.premium_avatar7 = true;
+      state.shop.premium_avatar8 = true;
       logAdminAction(`Unlocked all skins`);
       save();
     };
@@ -3461,14 +3479,51 @@ function clickPacket(event) {
         critFX.style.left = clampedCenter + "px";
         critFX.style.top = rect.top + scrollY - 50 + "px";
         document.body.appendChild(critFX);
-        setTimeout(() => {
-          if (critFX && critFX.parentNode)
-            critFX.parentNode.removeChild(critFX);
-        }, 900);
-        critFX.addEventListener("animationend", () => {
-          if (critFX && critFX.parentNode)
-            critFX.parentNode.removeChild(critFX);
-        });
+        // Compute removal based on CSS animation duration for smooth fade-out
+        let __critTimeout = null;
+        const __cleanupCrit = () => {
+          if (critFX && critFX.parentNode) {
+            try {
+              critFX.parentNode.removeChild(critFX);
+            } catch (_) {}
+          }
+        };
+        try {
+          const cs = window.getComputedStyle(critFX);
+          const durs = (cs.animationDuration || "").split(",");
+          const delays = (cs.animationDelay || "").split(",");
+          const iters = (cs.animationIterationCount || "").split(",");
+          const toMs = (v) =>
+            v.endsWith("ms")
+              ? parseFloat(v)
+              : v.endsWith("s")
+                ? parseFloat(v) * 1000
+                : parseFloat(v) || 0;
+          let maxTotal = 0;
+          for (let i = 0; i < durs.length; i++) {
+            const d = durs[i] ? durs[i].trim() : "0s";
+            const dl = delays[i] ? delays[i].trim() : "0s";
+            const it = iters[i] ? iters[i].trim() : "1";
+            const count =
+              it === "infinite" ? 1 : Math.max(1, parseFloat(it) || 1);
+            const total = toMs(d) * count + toMs(dl);
+            if (total > maxTotal) maxTotal = total;
+          }
+          const waitMs = Math.max(600, Math.min(4000, maxTotal || 1100)) + 40;
+          __critTimeout = setTimeout(__cleanupCrit, waitMs);
+        } catch (_) {
+          __critTimeout = setTimeout(__cleanupCrit, 1100);
+        }
+        critFX.addEventListener(
+          "animationend",
+          () => {
+            try {
+              if (__critTimeout) clearTimeout(__critTimeout);
+            } catch (_) {}
+            __cleanupCrit();
+          },
+          { once: true },
+        );
       }
     } else {
       const centerX = vw / 2;
@@ -3494,36 +3549,83 @@ function clickPacket(event) {
         critFX.style.left = clampedCenter + "px";
         critFX.style.top = "45%";
         document.body.appendChild(critFX);
-        setTimeout(() => {
-          if (critFX && critFX.parentNode)
-            critFX.parentNode.removeChild(critFX);
-        }, 900);
-        critFX.addEventListener("animationend", () => {
-          if (critFX && critFX.parentNode)
-            critFX.parentNode.removeChild(critFX);
-        });
+        // Compute removal based on CSS animation duration for smooth fade-out
+        let __critTimeout = null;
+        const __cleanupCrit = () => {
+          if (critFX && critFX.parentNode) {
+            try {
+              critFX.parentNode.removeChild(critFX);
+            } catch (_) {}
+          }
+        };
+        try {
+          const cs = window.getComputedStyle(critFX);
+          const durs = (cs.animationDuration || "").split(",");
+          const delays = (cs.animationDelay || "").split(",");
+          const iters = (cs.animationIterationCount || "").split(",");
+          const toMs = (v) =>
+            v.endsWith("ms")
+              ? parseFloat(v)
+              : v.endsWith("s")
+                ? parseFloat(v) * 1000
+                : parseFloat(v) || 0;
+          let maxTotal = 0;
+          for (let i = 0; i < durs.length; i++) {
+            const d = durs[i] ? durs[i].trim() : "0s";
+            const dl = delays[i] ? delays[i].trim() : "0s";
+            const it = iters[i] ? iters[i].trim() : "1";
+            const count =
+              it === "infinite" ? 1 : Math.max(1, parseFloat(it) || 1);
+            const total = toMs(d) * count + toMs(dl);
+            if (total > maxTotal) maxTotal = total;
+          }
+          const waitMs = Math.max(600, Math.min(4000, maxTotal || 1100)) + 40;
+          __critTimeout = setTimeout(__cleanupCrit, waitMs);
+        } catch (_) {
+          __critTimeout = setTimeout(__cleanupCrit, 1100);
+        }
+        critFX.addEventListener(
+          "animationend",
+          () => {
+            try {
+              if (__critTimeout) clearTimeout(__critTimeout);
+            } catch (_) {}
+            __cleanupCrit();
+          },
+          { once: true },
+        );
       }
     }
 
-    // Remove element after animation - only adjust for medium/low quality
-    const baseDuration =
-      clickCombo >= 50
-        ? 1200
-        : clickCombo >= 15
-          ? 900
-          : clickCombo >= 5
-            ? 1100
-            : 900;
+    // Compute duration from actual CSS animation (fallback to sensible default)
+    let animationDuration = 1200;
+    try {
+      const style = window.getComputedStyle(clickFX);
+      const durParts = (style.animationDuration || "").split(",");
+      const delayParts = (style.animationDelay || "").split(",");
+      const iters = (style.animationIterationCount || "").split(",");
+      const toMs = (v) =>
+        v.endsWith("ms")
+          ? parseFloat(v)
+          : v.endsWith("s")
+            ? parseFloat(v) * 1000
+            : parseFloat(v) || 0;
 
-    // Apply graphics quality modifier only for medium/low quality
-    const graphicsQuality = window.graphicsQuality || "high";
-    let animationDuration = baseDuration;
-    if (graphicsQuality === "medium") {
-      animationDuration = Math.max(600, baseDuration * 0.8);
-    } else if (graphicsQuality === "low") {
-      animationDuration = Math.max(800, baseDuration * 0.9);
-    }
-    // HIGH quality uses original baseDuration unchanged
+      let maxMs = 0;
+      for (let i = 0; i < durParts.length; i++) {
+        const d = durParts[i] ? durParts[i].trim() : "0s";
+        const dl = delayParts[i] ? delayParts[i].trim() : "0s";
+        const it = iters[i] ? iters[i].trim() : "1";
+        const count = it === "infinite" ? 1 : Math.max(1, parseFloat(it) || 1);
+        const total = toMs(d) * count + toMs(dl);
+        if (total > maxMs) maxMs = total;
+      }
+      // Clamp to reasonable bounds to avoid runaway timers
+      animationDuration = Math.max(
+        600,
+        Math.min(4000, maxMs || animationDuration),
+      );
+    } catch (_) {}
     // Improved DOM cleanup with fallback
     const cleanup = () => {
       if (clickFX && clickFX.parentNode) {
@@ -3535,9 +3637,18 @@ function clickPacket(event) {
       }
     };
 
-    setTimeout(cleanup, animationDuration);
+    const __fxTimeout = setTimeout(cleanup, animationDuration + 50);
 
-    clickFX.addEventListener("animationend", cleanup, { once: true });
+    clickFX.addEventListener(
+      "animationend",
+      () => {
+        try {
+          clearTimeout(__fxTimeout);
+        } catch (_) {}
+        cleanup();
+      },
+      { once: true },
+    );
 
     // Emergency cleanup to prevent DOM bloat
     setTimeout(cleanup, Math.max(animationDuration * 2, 3000));
@@ -3810,6 +3921,12 @@ function migrateSaveToCurrentVersion() {
     state.shop.premium_avatar4 = false;
   if (typeof state.shop.premium_avatar5 !== "boolean")
     state.shop.premium_avatar5 = false;
+  if (typeof state.shop.premium_avatar6 !== "boolean")
+    state.shop.premium_avatar6 = false;
+  if (typeof state.shop.premium_avatar7 !== "boolean")
+    state.shop.premium_avatar7 = false;
+  if (typeof state.shop.premium_avatar8 !== "boolean")
+    state.shop.premium_avatar8 = false;
 
   // Ensure core game values are properly set
   if (typeof state.packets !== "number") state.packets = 0;
