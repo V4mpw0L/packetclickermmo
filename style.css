@@ -195,10 +195,15 @@ main {
 /* Constrain major sections within a centered page width */
 .top-bar,
 .menu-bar,
-#tab-content,
 footer {
     width: 100%;
     max-width: var(--page-width);
+}
+
+/* Let tab-content stretch full width like top-bar and menu-bar overrides */
+#tab-content {
+    width: 100%;
+    max-width: 100%;
 }
 
 /* === ICONS === */
@@ -272,6 +277,12 @@ img[src="src/assets/packet-512.png"] {
     will-change: transform;
     contain: layout style;
     box-sizing: border-box;
+}
+
+/* Override neon-card width constraints when inside tab-content to match menu-bar behavior */
+#tab-content .neon-card {
+    width: 100%;
+    max-width: 100%;
 }
 
 /* Modal-specific sizing to prevent overflow on mobile and tighten inner cards */
