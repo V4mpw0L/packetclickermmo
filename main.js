@@ -1414,7 +1414,7 @@ function renderShop() {
       return renderButton({
         className: `shop-cosmetic-btn ${owned ? "shop-owned" : ""}`,
         label: `<div class="shop-item-content">
-          <div class="shop-item-icon">🎨</div>
+          <div class="shop-item-icon"><img src="https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${encodeURIComponent(item.avatar || "Hacker")}" alt="${item.label}" style="width:1.4rem;height:1.4rem;border-radius:50%;object-fit:cover;vertical-align:middle;display:inline-block;"/></div>
           <div class="shop-item-name" style="font-size:.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.label}</div>
           <div class="shop-item-price" style="font-size:.7rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
             ${
