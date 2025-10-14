@@ -217,6 +217,12 @@ const state = {
     premium_avatar6: false,
     premium_avatar7: false,
     premium_avatar8: false,
+    premium_avatar15: false,
+    premium_avatar16: false,
+    premium_avatar17: false,
+    premium_avatar18: false,
+    premium_avatar19: false,
+    premium_avatar20: false,
   },
   achievements: [],
   ads: true,
@@ -311,6 +317,18 @@ function getUnlockedAvatars() {
     avatars.push({ seed: "QuantumBeast", name: "Quantum Beast" });
   if (state.shop.premium_avatar14)
     avatars.push({ seed: "NexusOverlord", name: "Nexus Overlord" });
+  if (state.shop.premium_avatar15)
+    avatars.push({ seed: "StellarPhantom", name: "Stellar Phantom" });
+  if (state.shop.premium_avatar16)
+    avatars.push({ seed: "DigitalTitan", name: "Digital Titan" });
+  if (state.shop.premium_avatar17)
+    avatars.push({ seed: "PrismOracle", name: "Prism Oracle" });
+  if (state.shop.premium_avatar18)
+    avatars.push({ seed: "FluxAssassin", name: "Flux Assassin" });
+  if (state.shop.premium_avatar19)
+    avatars.push({ seed: "NeonLeviathan", name: "Neon Leviathan" });
+  if (state.shop.premium_avatar20)
+    avatars.push({ seed: "CosmicEmperor", name: "Cosmic Emperor" });
   if (state.achievements.includes("vip"))
     avatars.push({ seed: "VIP", name: "VIP" });
   if (state.achievements.includes("adfree"))
@@ -448,6 +466,12 @@ function load() {
         premium_avatar6: false,
         premium_avatar7: false,
         premium_avatar8: false,
+        premium_avatar15: false,
+        premium_avatar16: false,
+        premium_avatar17: false,
+        premium_avatar18: false,
+        premium_avatar19: false,
+        premium_avatar20: false,
       },
       achievements: [],
       ads: true,
@@ -495,6 +519,12 @@ function load() {
         premium_avatar6: false,
         premium_avatar7: false,
         premium_avatar8: false,
+        premium_avatar15: false,
+        premium_avatar16: false,
+        premium_avatar17: false,
+        premium_avatar18: false,
+        premium_avatar19: false,
+        premium_avatar20: false,
       },
       achievements: [],
       ads: true,
@@ -3060,6 +3090,12 @@ function bindAdminTabEvents(tabName) {
       state.shop.premium_avatar12 = true;
       state.shop.premium_avatar13 = true;
       state.shop.premium_avatar14 = true;
+      state.shop.premium_avatar15 = true;
+      state.shop.premium_avatar16 = true;
+      state.shop.premium_avatar17 = true;
+      state.shop.premium_avatar18 = true;
+      state.shop.premium_avatar19 = true;
+      state.shop.premium_avatar20 = true;
       logAdminAction(`Unlocked all skins`);
       save();
     };
@@ -4408,6 +4444,18 @@ function migrateSaveToCurrentVersion() {
     state.shop.premium_avatar13 = false;
   if (typeof state.shop.premium_avatar14 !== "boolean")
     state.shop.premium_avatar14 = false;
+  if (typeof state.shop.premium_avatar15 !== "boolean")
+    state.shop.premium_avatar15 = false;
+  if (typeof state.shop.premium_avatar16 !== "boolean")
+    state.shop.premium_avatar16 = false;
+  if (typeof state.shop.premium_avatar17 !== "boolean")
+    state.shop.premium_avatar17 = false;
+  if (typeof state.shop.premium_avatar18 !== "boolean")
+    state.shop.premium_avatar18 = false;
+  if (typeof state.shop.premium_avatar19 !== "boolean")
+    state.shop.premium_avatar19 = false;
+  if (typeof state.shop.premium_avatar20 !== "boolean")
+    state.shop.premium_avatar20 = false;
 
   // Ensure core game values are properly set
   if (typeof state.packets !== "number") state.packets = 0;
