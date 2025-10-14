@@ -844,21 +844,21 @@ function renderGame() {
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; text-align: center;">
           <div style="padding:.5rem; border:1px solid var(--border-color); border-radius:8px; background:rgba(0,0,0,.25);">
             <div style="color:#65ffda; font-weight:600; font-size:0.8rem; margin-bottom:0.25rem;">Packets/Click</div>
-            <div style="color:#4ade80;"><span class="event-number-glow">${effectivePerClick.toLocaleString("en-US")}</span></div>
+            <div><span class="event-number-glow" style="color:#65ffda !important;">${effectivePerClick.toLocaleString("en-US")}</span></div>
           </div>
           <div style="padding:.5rem; border:1px solid var(--border-color); border-radius:8px; background:rgba(0,0,0,.25);">
             <div style="color:#ffe08a; font-weight:600; font-size:0.8rem; margin-bottom:0.25rem;">Packets/Sec</div>
-            <div style="color:#4ade80;"><span class="event-number-glow">${effectivePerSec.toLocaleString("en-US")}</span></div>
+            <div><span class="event-number-glow" style="color:#ffe08a !important;">${effectivePerSec.toLocaleString("en-US")}</span></div>
           </div>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; text-align: center; margin-top: 0.75rem;">
           <div style="padding:.5rem; border:1px solid var(--border-color); border-radius:8px; background:rgba(0,0,0,.25);">
             <div style="color:#ff88ff; font-weight:600; font-size:0.8rem; margin-bottom:0.25rem;">Crit Chance</div>
-            <div style="color:#4ade80;"><span class="event-number-glow">${Math.min(100, state.critChance + (eq.critChance || 0))}%</span></div>
+            <div><span class="event-number-glow" style="color:#ff88ff !important;">${Math.min(100, state.critChance + (eq.critChance || 0))}%</span></div>
           </div>
           <div style="padding:.5rem; border:1px solid var(--border-color); border-radius:8px; background:rgba(0,0,0,.25);">
             <div style="color:#ffd700; font-weight:600; font-size:0.8rem; margin-bottom:0.25rem;">Crit Multiplier</div>
-            <div style="color:#4ade80;"><span class="event-number-glow">${state.critMult.toLocaleString("en-US")}x</span></div>
+            <div><span class="event-number-glow" style="color:#ffd700 !important;">${state.critMult.toLocaleString("en-US")}x</span></div>
           </div>
         </div>
       </div>
