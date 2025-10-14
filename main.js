@@ -1928,132 +1928,82 @@ function renderDaily() {
   // Calculate progress percentage for visual progress bar
   let progressPercent = Math.min((streak / 7) * 100, 100);
 
-  // Generate reward cards with cleaner mobile-first design
+  // Generate reward cards with neon styling
   let rewardCards = DAILY_REWARDS.map((reward, index) => {
     let claimed = index < streak;
     let current = index === streak && canClaim;
-    let locked = index >= streak && !current;
-
-    let statusClass = claimed
-      ? "daily-card-claimed"
-      : current
-        ? "daily-card-current"
-        : "daily-card-locked";
     let statusIcon = claimed ? "✓" : current ? "★" : index + 1;
 
     return `
-      <div class="daily-reward-card ${statusClass}" data-day="${index + 1}">
-        <div class="daily-card-header">
-          <div class="daily-day-badge">
-            <span class="daily-day-number">${statusIcon}</span>
+      <div style="border: 2px solid ${claimed ? "#4ade80" : current ? "#ffd700" : "var(--border-color)"}; border-radius: 8px; padding: 0.75rem; background: ${claimed ? "rgba(74, 222, 128, 0.1)" : current ? "rgba(255, 215, 0, 0.1)" : "rgba(0,0,0,.15)"}; text-align: center; position: relative; ${current ? "animation: dailyPulse 2s ease-in-out infinite;" : ""}" data-day="${index + 1}">
+        <div style="margin-bottom: 0.5rem;">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: ${claimed ? "#4ade80" : current ? "#ffd700" : "var(--border-color)"}; color: ${claimed || current ? "#000" : "#fff"}; display: flex; align-items: center; justify-content: center; font-weight: bold; margin: 0 auto;">
+            ${statusIcon}
           </div>
-          ${current ? '<div class="daily-pulse-dot"></div>' : ""}
+          ${current ? '<div style="position: absolute; top: -4px; right: -4px; width: 12px; height: 12px; background: #ffd700; border-radius: 50%; animation: dailyPulse 1s ease-in-out infinite;"></div>' : ""}
         </div>
 
-        <div class="daily-card-content">
-          <div class="daily-day-label">Day ${reward.day}</div>
+        <div style="margin-bottom: 0.5rem;">
+          <div style="font-size: 0.8rem; font-weight: bold; color: var(--text-primary); margin-bottom: 0.5rem;">Day ${reward.day}</div>
 
-          <div class="daily-rewards-list">
-            <div class="daily-reward-item">
-              <img src="src/assets/gem.png" alt="Gems" class="daily-reward-icon" />
-              <span class="daily-reward-amount">${reward.gems.toLocaleString()}</span>
+          <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.25rem;">
+              <img src="src/assets/gem.png" alt="Gems" style="width: 16px; height: 16px;" />
+              <span style="font-size: 0.8rem; color: #ffd700; font-weight: 600;">${reward.gems.toLocaleString()}</span>
             </div>
-            <div class="daily-reward-item">
-              <span class="icon-packet daily-reward-icon"></span>
-              <span class="daily-reward-amount">${reward.packets.toLocaleString()}</span>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.25rem;">
+              <span class="icon-packet" style="font-size: 0.8rem;"></span>
+              <span style="font-size: 0.8rem; color: #4ade80; font-weight: 600;">${reward.packets.toLocaleString()}</span>
             </div>
           </div>
 
-          ${
-            reward.bonus
-              ? `<div class="daily-bonus-text">${(() => {
-                  const bonusMap = {
-                    "Welcome Back!": "daily.bonuses.welcomeBack",
-                    "Building Momentum": "daily.bonuses.buildingMomentum",
-                    "Getting Stronger": "daily.bonuses.gettingStronger",
-                    "Power Surge": "daily.bonuses.powerSurge",
-                    "Dedication Pays Off": "daily.bonuses.dedicationPaysOff",
-                    "Almost There!": "daily.bonuses.almostThere",
-                    "🎉 WEEKLY CHAMPION!": "daily.bonuses.weeklyChampion",
-                  };
-                  const key = bonusMap[reward.bonus];
-                  return key && window.Packet && Packet.i18n
-                    ? Packet.i18n.t(key)
-                    : reward.bonus;
-                })()}</div>`
-              : ""
-          }
+          ${reward.bonus ? `<div style="font-size: 0.7rem; color: #f4e29f; font-style: italic; margin-top: 0.5rem;">${reward.bonus}</div>` : ""}
         </div>
-
-        ${current ? '<div class="daily-glow-effect"></div>' : ""}
       </div>
     `;
   }).join("");
 
   return `
-    <div class="daily-rewards-container">
-      <!-- Header Section -->
-      <div class="daily-header">
-        <div class="daily-title-section">
-          <h2 class="daily-main-title">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.title").replace(/^📅\s*/, "") : "Daily Rewards"}</h2>
-          <div class="daily-subtitle">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.subtitle") : "Build your streak for better rewards!"}</div>
-        </div>
+    <div class="neon-card px-3 py-4 mb-2">
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">📅 ${window.Packet && Packet.i18n ? Packet.i18n.t("daily.title").replace(/^📅\s*/, "") : "Daily Rewards"}</h2>
+      <div style="text-align: center; color: var(--text-secondary); margin-bottom: 1rem;">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.subtitle") : "Build your streak for better rewards!"}</div>
 
-        <!-- Streak Progress -->
-        <div class="daily-streak-container">
-          <div class="daily-streak-info">
-            <div class="daily-streak-number">${streak}</div>
-            <div class="daily-streak-label">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.dayStreak") : "Day Streak"}</div>
-          </div>
-          <div class="daily-progress-bar">
-            <div class="daily-progress-fill" style="width: ${progressPercent}%"></div>
-            <div class="daily-progress-text">${streak}/7</div>
-          </div>
+      <!-- Streak Progress -->
+      <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; background: rgba(76, 175, 80, 0.05); margin-bottom: 1rem; text-align: center;">
+        <div style="font-size: 2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 0.25rem;">${streak}</div>
+        <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.dayStreak") : "Day Streak"}</div>
+        <div style="position: relative; height: 8px; border-radius: 999px; background: #22313f; border: 1px solid var(--border-color); overflow: hidden; margin: 0 auto; max-width: 300px;">
+          <div style="height: 100%; width: ${progressPercent}%; background: linear-gradient(90deg, #ff0080 0%, #00ff80 25%, #8000ff 50%, #ff8000 75%, #ff0080 100%); background-size: 400% 100%; animation: celestialRainbowBg 3s linear infinite; transition: width 0.3s ease;"></div>
         </div>
+        <div style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 0.5rem;">${streak}/7 ${window.Packet && Packet.i18n ? Packet.i18n.t("daily.daysCompleted") : "days completed"}</div>
       </div>
 
-      <!-- Claim Button Section -->
       ${
         canClaim
           ? `
-        <div class="daily-claim-section">
-          <button id="claim-daily" class="daily-claim-btn">
-            <div class="daily-claim-icon">🎁</div>
-            <div class="daily-claim-content">
-              <div class="daily-claim-title">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.claimDay") : "Claim Day"} ${streak + 1}</div>
-              <div class="daily-claim-rewards">
-                <span class="daily-claim-gem">${nextReward.gems.toLocaleString()} 💎</span>
-                <span class="daily-claim-packet">${nextReward.packets.toLocaleString()} 📦</span>
-              </div>
-              ${
-                nextReward.bonus
-                  ? `<div class="daily-claim-bonus">${(() => {
-                      const bonusMap = {
-                        "Welcome Back!": "daily.bonuses.welcomeBack",
-                        "Building Momentum": "daily.bonuses.buildingMomentum",
-                        "Getting Stronger": "daily.bonuses.gettingStronger",
-                        "Power Surge": "daily.bonuses.powerSurge",
-                        "Dedication Pays Off":
-                          "daily.bonuses.dedicationPaysOff",
-                        "Almost There!": "daily.bonuses.almostThere",
-                        "🎉 WEEKLY CHAMPION!": "daily.bonuses.weeklyChampion",
-                      };
-                      const key = bonusMap[nextReward.bonus];
-                      return key && window.Packet && Packet.i18n
-                        ? Packet.i18n.t(key)
-                        : nextReward.bonus;
-                    })()}</div>`
-                  : ""
-              }
-            </div>
-          </button>
+        <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; background: rgba(76, 175, 80, 0.05); margin-bottom: 1rem; text-align: center;">
+          <div style="font-size: 1.2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 0.5rem;">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.claimDay") : "Claim Day"} ${streak + 1}</div>
+          <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 1rem;">
+            <span style="display: flex; align-items: center; gap: 0.25rem; color: #ffd700; font-weight: 600;">
+              ${nextReward.gems.toLocaleString()} <img src="src/assets/gem.png" alt="Gems" style="width: 16px; height: 16px;" />
+            </span>
+            <span style="display: flex; align-items: center; gap: 0.25rem; color: #4ade80; font-weight: 600;">
+              ${nextReward.packets.toLocaleString()} <span class="icon-packet" style="font-size: 0.8rem;"></span>
+            </span>
+          </div>
+          ${nextReward.bonus ? `<div style="color: #f4e29f; font-style: italic; margin-bottom: 1rem;">${nextReward.bonus}</div>` : ""}
+          ${renderButton({
+            id: "claim-daily",
+            className: "neon-btn",
+            label: `${window.Packet && Packet.i18n ? Packet.i18n.t("buttons.claimDaily", { n: streak + 1 }) : `Claim Day ${streak + 1} Reward!`}`,
+          })}
         </div>
       `
           : `
-        <div class="daily-cooldown-section">
-          <div class="daily-cooldown-icon">⏰</div>
-          <div class="daily-cooldown-text">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.comeBack") : "Come back tomorrow for your next reward!"}</div>
-          <div class="daily-cooldown-timer">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.nextRewardIn") : "Next reward available in"} ${(() => {
+        <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; background: rgba(76, 175, 80, 0.05); margin-bottom: 1rem; text-align: center;">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏰</div>
+          <div style="color: var(--text-primary); font-weight: bold; margin-bottom: 0.5rem;">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.comeBack") : "Come back tomorrow for your next reward!"}</div>
+          <div style="color: var(--text-secondary); font-size: 0.9rem;">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.nextRewardIn") : "Next reward available in"} ${(() => {
             const remaining = 86400000 - (now - lastClaim);
             const hours = Math.floor(remaining / 3600000);
             const minutes = Math.floor((remaining % 3600000) / 60000);
@@ -2064,15 +2014,22 @@ function renderDaily() {
       }
 
       <!-- Rewards Grid -->
-      <div class="daily-rewards-grid">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
         ${rewardCards}
       </div>
 
       <!-- Footer Tip -->
-      <div class="daily-footer-tip">
-        <div class="daily-tip-icon">💡</div>
-        <div class="daily-tip-text">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.tipDefault") : "Don't break your streak! Login daily to maximize rewards."}</div>
+      <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; background: rgba(76, 175, 80, 0.05); display: flex; align-items: center; gap: 0.5rem;">
+        <div style="font-size: 1.2rem;">💡</div>
+        <div style="color: var(--text-secondary); font-size: 0.9rem;">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.tipDefault") : "Don't break your streak! Login daily to maximize rewards."}</div>
       </div>
+
+      <style>
+        @keyframes dailyPulse {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.05); opacity: 0.9; }
+        }
+      </style>
     </div>
   `;
 }
