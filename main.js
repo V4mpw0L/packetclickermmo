@@ -1303,7 +1303,7 @@ function renderAchievements() {
         </div>
 
         <div style="position:relative; height:8px; border-radius:999px; background:#22313f; border:1px solid var(--border-color); overflow:hidden; margin:0 auto; max-width: 300px;">
-          <div style="height:100%; width: ${progressPercentage.toFixed(1)}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); transition: width 0.3s ease;"></div>
+          <div style="height:100%; width: ${progressPercentage.toFixed(1)}%; background: linear-gradient(90deg, #ff0080 0%, #00ff80 25%, #8000ff 50%, #ff8000 75%, #ff0080 100%); background-size: 400% 100%; animation: celestialRainbowBg 3s linear infinite; transition: width 0.3s ease;"></div>
         </div>
       </div>
 
@@ -3984,7 +3984,14 @@ function buyGemPack(packId) {
   state.gems += pack.gems;
   showModal(
     "Thank You!",
-    `You received <b>${pack.gems.toLocaleString("en-US")} 💎</b>!<br>Implement real payments for store publishing.`,
+    `<div style="text-align: center; padding: 1rem;">
+      <div style="margin-bottom: 1rem;">You received</div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 8px;">
+        <span class="event-number-glow" style="font-size: 1.5rem; font-weight: 900;">${pack.gems.toLocaleString("en-US")}</span>
+        <img src="src/assets/gem.png" alt="Gems" style="height:1.5rem;width:1.5rem;" aria-hidden="true"/>
+      </div>
+      <div style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic;">Implement real payments for store publishing.</div>
+    </div>`,
   );
   save();
   updateTopBar();
@@ -4018,6 +4025,21 @@ function buyShopItem(itemId) {
   updateTopBar();
   renderTab();
   checkAchievements();
+  showModal(
+    "Purchase Complete!",
+    `<div style="text-align: center; padding: 1rem;">
+      <div style="margin-bottom: 1rem;">You purchased</div>
+      <div style="font-weight: bold; font-size: 1.2rem; color: var(--primary-color); margin: 1rem 0;">${item.label}</div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 8px;">
+        <span style="color: var(--text-secondary);">Cost:</span>
+        <span class="event-number-glow" style="font-size: 1.3rem; font-weight: 900;">${item.gems.toLocaleString("en-US")}</span>
+        <img src="src/assets/gem.png" alt="Gems" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/>
+      </div>
+      ${item.type === "vip" ? '<div style="color: var(--text-secondary); font-size: 0.9rem;">Enjoy your VIP benefits!</div>' : ""}
+      ${item.type === "skin" ? '<div style="color: var(--text-secondary); font-size: 0.9rem;">Check your profile to equip your new look!</div>' : ""}
+      ${item.type === "noAds" ? '<div style="color: var(--text-secondary); font-size: 0.9rem;">Enjoy an ad-free experience!</div>' : ""}
+    </div>`,
+  );
   showHudNotify(
     `Purchased: ${item.label}`,
     item.type === "vip"
@@ -4031,7 +4053,17 @@ function buyShopItem(itemId) {
 }
 
 function watchAd() {
-  showModal("Ad watched!", "Simulate ad with SDK for monetization.");
+  showModal(
+    "Ad Watched!",
+    `<div style="text-align: center; padding: 1rem;">
+      <div style="margin-bottom: 1rem;">You earned</div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 8px;">
+        <span class="event-number-glow" style="font-size: 1.5rem; font-weight: 900;">1</span>
+        <img src="src/assets/gem.png" alt="Gems" style="height:1.5rem;width:1.5rem;" aria-hidden="true"/>
+      </div>
+      <div style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic;">Simulate ad with SDK for monetization.</div>
+    </div>`,
+  );
   state.gems += 1;
   save();
   updateTopBar();
@@ -4050,7 +4082,15 @@ function checkAchievements() {
         updateTopBar();
         showModal(
           "Achievement!",
-          `You unlocked <b>${ach.name}</b>!<br>${ach.desc}<br>+${ach.gem} 💎`,
+          `<div style="text-align: center; padding: 1rem;">
+            <div style="margin-bottom: 1rem;">You unlocked <strong>${ach.name}</strong>!</div>
+            <div style="margin-bottom: 1rem; color: var(--text-secondary);">${ach.desc}</div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 8px;">
+              <span style="color: var(--text-secondary);">Reward:</span>
+              <span class="event-number-glow" style="font-size: 1.3rem; font-weight: 900;">+${ach.gem}</span>
+              <img src="src/assets/gem.png" alt="Gems" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/>
+            </div>
+          </div>`,
         );
         showHudNotify(`Achievement: ${ach.name} +${ach.gem} 💎`, ach.emoji);
       } else {
@@ -4352,7 +4392,7 @@ function buyBoost(boostId) {
 
   showModal(
     "🎉 BOOST ACTIVATED! 🎉",
-    `<div style="text-align: center;">
+    `<div style="text-align: center; padding: 1rem;">
       <div style="font-size: 3rem; margin: 1rem 0;">${boost.icon}</div>
       <div style="font-size: 1.3rem; font-weight: bold; color: #fbbf24; margin-bottom: 0.5rem;">
         ${boost.name}
@@ -4360,9 +4400,14 @@ function buyBoost(boostId) {
       <div style="color: #e2e8f0; margin-bottom: 1rem;">
         ${boost.effect}
       </div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 8px;">
+        <span style="color: var(--text-secondary);">Cost:</span>
+        <span class="event-number-glow" style="font-size: 1.3rem; font-weight: 900;">${boost.gems.toLocaleString("en-US")}</span>
+        <img src="src/assets/gem.png" alt="Gems" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/>
+      </div>
       <div style="padding: 0.75rem; background: linear-gradient(45deg, rgba(251, 191, 36, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid #fbbf24; border-radius: 8px;">
         <span style="color: #fbbf24; font-weight: bold;">Duration:</span>
-        <span class="event-number-glow" style="margin-left: 0.5rem;">${Math.floor(boost.duration / 60000)}m ${(boost.duration % 60000) / 1000}s</span>
+        <span class="event-number-glow" style="margin-left: 0.5rem; font-size: 1.1rem; font-weight: 900;">${Math.floor(boost.duration / 60000)}m ${(boost.duration % 60000) / 1000}s</span>
       </div>
     </div>`,
   );
@@ -4410,6 +4455,21 @@ function buyTheme(themeId) {
   state.theme = themeId;
   save();
   applyTheme(themeId);
+
+  showModal(
+    "Theme Purchased!",
+    `<div style="text-align: center; padding: 1rem;">
+      <div style="margin-bottom: 1rem;">You purchased and activated</div>
+      <div style="font-weight: bold; font-size: 1.2rem; color: var(--primary-color); margin: 1rem 0;">${theme.name}</div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 8px;">
+        <span style="color: var(--text-secondary);">Cost:</span>
+        <span class="event-number-glow" style="font-size: 1.3rem; font-weight: 900;">${theme.cost.toLocaleString("en-US")}</span>
+        <img src="src/assets/gem.png" alt="Gems" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/>
+      </div>
+      <div style="color: var(--text-secondary); font-size: 0.9rem;">Your new theme is now active!</div>
+    </div>`,
+  );
+
   showHudNotify(`${theme.name} theme purchased and activated!`, "🎨");
   updateTopBar();
   renderTab();

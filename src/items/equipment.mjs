@@ -1654,6 +1654,27 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
               if (typeof save === "function") save();
               if (typeof rerender === "function") rerender();
               if (typeof window.closeModal === "function") window.closeModal();
+
+              // Show modal notification for item sale
+              if (hasDOM() && typeof window.showModal === "function") {
+                const rarity = rarityById(it.rarity);
+                const isCelestial = it.rarity === "celestial";
+
+                window.showModal(
+                  "Item Sold!",
+                  `<div style="text-align: center; padding: 1rem;">
+                    <div style="margin-bottom: 1rem;">You sold</div>
+                    <div style="font-weight: bold; font-size: 1.2rem; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : `color: ${rarity.color};`} margin: 1rem 0;">${it.name}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : `color: ${rarity.color};`}">${it.rarityName} Quality</div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 8px;">
+                      <span style="color: var(--text-secondary);">Earned:</span>
+                      <span class="event-number-glow" style="font-size: 1.5rem; font-weight: 900;">+${payout.toLocaleString("en-US")}</span>
+                      <span class="icon-packet" style="font-size: 1.2rem;"></span>
+                    </div>
+                  </div>`,
+                );
+              }
+
               const n =
                 notify ||
                 (hasDOM() && typeof window.showHudNotify === "function"
@@ -1795,6 +1816,41 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
               if (typeof save === "function") save();
               if (typeof rerender === "function") rerender();
               if (typeof window.closeModal === "function") window.closeModal();
+
+              // Show modal notification for batch sale
+              if (hasDOM() && typeof window.showModal === "function") {
+                const rarityDisplayName =
+                  targetRarity === "all"
+                    ? "All Items"
+                    : targetRarity === "animal"
+                      ? "Red Items"
+                      : targetRarity === "celestial"
+                        ? "Celestial Items"
+                        : `${targetRarity.charAt(0).toUpperCase() + targetRarity.slice(1)} Items`;
+
+                const isCelestial = targetRarity === "celestial";
+                const rarityColor =
+                  targetRarity === "all"
+                    ? "var(--primary-color)"
+                    : rarityById(targetRarity).color;
+
+                window.showModal(
+                  "Items Sold!",
+                  `<div style="text-align: center; padding: 1rem;">
+                    <div style="margin-bottom: 1rem;">You sold</div>
+                    <div style="font-weight: bold; font-size: 1.2rem; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : `color: ${rarityColor};`} margin: 1rem 0;">${rarityDisplayName}</div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 8px;">
+                      <span style="color: var(--text-secondary);">Items Sold:</span>
+                      <span class="event-number-glow" style="font-size: 1.3rem; font-weight: 900;">${itemsToRemove.length}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 8px;">
+                      <span style="color: var(--text-secondary);">Total Earned:</span>
+                      <span class="event-number-glow" style="font-size: 1.5rem; font-weight: 900;">+${totalValue.toLocaleString("en-US")}</span>
+                      <span class="icon-packet" style="font-size: 1.2rem;"></span>
+                    </div>
+                  </div>`,
+                );
+              }
 
               const n =
                 notify ||
