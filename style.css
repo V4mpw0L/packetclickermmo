@@ -1579,7 +1579,8 @@ body .modal-box .space-y-3 > * + * {
 }
 
 .daily-reward-amount {
-    color: var(--text-primary);
+    color: #ffd700;
+    font-weight: 600;
 }
 
 .daily-bonus-text {
