@@ -4050,10 +4050,48 @@ function upgrade(type) {
   }
 
   checkAchievements();
-  showHudNotify(
-    `${quantity > 1 ? quantity + " upgrades" : "Upgrade"} purchased!`,
-    "🛠️",
-  );
+
+  // Show upgrade success modal
+  const upgradeNames = {
+    click: "Packet/Click",
+    idle: "Packets/Second",
+    crit: "Critical Chance",
+  };
+
+  const upgradeEffects = {
+    click: `+${quantity}/click`,
+    idle: `+${quantity}/sec`,
+    crit: `+${2 * quantity}% crit`,
+  };
+
+  const modalHtml = `
+    <div class="neon-card" style="padding: 1.5rem; text-align: center; max-width: 400px;">
+      <div style="font-size: 1.5rem; margin-bottom: 1rem;">🛠️</div>
+      <div style="font-weight: bold; font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--primary-color);">
+        ${quantity > 1 ? "Upgrades" : "Upgrade"} Purchased!
+      </div>
+      <div style="margin-bottom: 1rem; color: var(--text-secondary);">
+        ${upgradeNames[type]} ${quantity > 1 ? `(x${quantity})` : ""}
+      </div>
+      <div style="padding: 0.75rem; background: rgba(74, 222, 128, 0.1); border: 1px solid #4ade80; border-radius: 8px; margin-bottom: 1rem;">
+        <div style="color: #4ade80; font-weight: bold; font-size: 1.1rem;">
+          ${upgradeEffects[type]}
+        </div>
+      </div>
+      <div style="font-size: 0.9rem; color: var(--text-secondary);">
+        Cost: ${cost.toLocaleString("en-US")} <span class="icon-packet"></span>
+      </div>
+    </div>
+  `;
+
+  if (typeof window.showModal === "function") {
+    window.showModal("Upgrade Complete", modalHtml);
+  } else {
+    showHudNotify(
+      `${quantity > 1 ? quantity + " upgrades" : "Upgrade"} purchased!`,
+      "🛠️",
+    );
+  }
 }
 
 // Comprehensive save migration function to update old saves
