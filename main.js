@@ -1032,31 +1032,43 @@ function renderThemes() {
 function renderUpgrades() {
   return `
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🛠️ Upgrades</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🛠️ ${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.title") : "Upgrades"}</h2>
 
       <div class="bulk-options" style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
         ${renderButton({
           id: "bulk-x1",
           className: "bulk-btn",
-          label: "x1",
+          label:
+            window.Packet && Packet.i18n
+              ? Packet.i18n.t("upgrades.bulkX1")
+              : "x1",
           dataAttr: 'data-bulk="1"',
         })}
         ${renderButton({
           id: "bulk-x10",
           className: "bulk-btn",
-          label: "x10",
+          label:
+            window.Packet && Packet.i18n
+              ? Packet.i18n.t("upgrades.bulkX10")
+              : "x10",
           dataAttr: 'data-bulk="10"',
         })}
         ${renderButton({
           id: "bulk-x100",
           className: "bulk-btn",
-          label: "x100",
+          label:
+            window.Packet && Packet.i18n
+              ? Packet.i18n.t("upgrades.bulkX100")
+              : "x100",
           dataAttr: 'data-bulk="100"',
         })}
         ${renderButton({
           id: "bulk-max",
           className: "bulk-btn",
-          label: "MAX",
+          label:
+            window.Packet && Packet.i18n
+              ? Packet.i18n.t("upgrades.bulkMax")
+              : "MAX",
           dataAttr: 'data-bulk="max"',
         })}
       </div>
@@ -1064,23 +1076,23 @@ function renderUpgrades() {
       ${renderButton({
         id: "upgrade-click",
         className: "upgrade-btn",
-        label: `+1/click — <span>${upgradeCost("click").toLocaleString("en-US")}</span> <span class="icon-packet"></span>`,
-        dataAttr: `data-level="Lvl. ${state.upgrades.click}"`,
+        label: `${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.clickPower") : "+1/click"} — <span>${upgradeCost("click").toLocaleString("en-US")}</span> <span class="icon-packet"></span>`,
+        dataAttr: `data-level="${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.level") : "Lvl."} ${state.upgrades.click}"`,
       })}
       ${renderButton({
         id: "upgrade-idle",
         className: "upgrade-btn",
-        label: `+1/sec — <span>${upgradeCost("idle").toLocaleString("en-US")}</span> <span class="icon-packet"></span>`,
-        dataAttr: `data-level="Lvl. ${state.upgrades.idle}"`,
+        label: `${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.idlePower") : "+1/sec"} — <span>${upgradeCost("idle").toLocaleString("en-US")}</span> <span class="icon-packet"></span>`,
+        dataAttr: `data-level="${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.level") : "Lvl."} ${state.upgrades.idle}"`,
       })}
       ${renderButton({
         id: "upgrade-crit",
         className: "upgrade-btn",
-        label: `+2% crit — <span>${upgradeCost("crit").toLocaleString("en-US")}</span> <span class="icon-packet"></span>`,
-        dataAttr: `data-level="Lvl. ${state.upgrades.crit}"`,
+        label: `${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.critChance") : "+2% crit"} — <span>${upgradeCost("crit").toLocaleString("en-US")}</span> <span class="icon-packet"></span>`,
+        dataAttr: `data-level="${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.level") : "Lvl."} ${state.upgrades.crit}"`,
       })}
       <div class="text-neon-gray text-xs mt-1">
-        Each upgrade increases cost. <span class="text-neon-yellow">Critical Hits</span> give 2x per click!
+        ${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.description") : "Each upgrade increases cost. Critical Hits give 2x per click!"}
       </div>
     </div>
   `;
@@ -1940,7 +1952,25 @@ function renderDaily() {
             </div>
           </div>
 
-          ${reward.bonus ? `<div class="daily-bonus-text">${reward.bonus}</div>` : ""}
+          ${
+            reward.bonus
+              ? `<div class="daily-bonus-text">${(() => {
+                  const bonusMap = {
+                    "Welcome Back!": "daily.bonuses.welcomeBack",
+                    "Building Momentum": "daily.bonuses.buildingMomentum",
+                    "Getting Stronger": "daily.bonuses.gettingStronger",
+                    "Power Surge": "daily.bonuses.powerSurge",
+                    "Dedication Pays Off": "daily.bonuses.dedicationPaysOff",
+                    "Almost There!": "daily.bonuses.almostThere",
+                    "🎉 WEEKLY CHAMPION!": "daily.bonuses.weeklyChampion",
+                  };
+                  const key = bonusMap[reward.bonus];
+                  return key && window.Packet && Packet.i18n
+                    ? Packet.i18n.t(key)
+                    : reward.bonus;
+                })()}</div>`
+              : ""
+          }
         </div>
 
         ${current ? '<div class="daily-glow-effect"></div>' : ""}
@@ -1954,14 +1984,14 @@ function renderDaily() {
       <div class="daily-header">
         <div class="daily-title-section">
           <h2 class="daily-main-title">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.title").replace(/^📅\s*/, "") : "Daily Rewards"}</h2>
-          <div class="daily-subtitle">Build your streak for better rewards!</div>
+          <div class="daily-subtitle">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.subtitle") : "Build your streak for better rewards!"}</div>
         </div>
 
         <!-- Streak Progress -->
         <div class="daily-streak-container">
           <div class="daily-streak-info">
             <div class="daily-streak-number">${streak}</div>
-            <div class="daily-streak-label">Day Streak</div>
+            <div class="daily-streak-label">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.dayStreak") : "Day Streak"}</div>
           </div>
           <div class="daily-progress-bar">
             <div class="daily-progress-fill" style="width: ${progressPercent}%"></div>
@@ -1978,12 +2008,31 @@ function renderDaily() {
           <button id="claim-daily" class="daily-claim-btn">
             <div class="daily-claim-icon">🎁</div>
             <div class="daily-claim-content">
-              <div class="daily-claim-title">Claim Day ${streak + 1}</div>
+              <div class="daily-claim-title">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.claimDay") : "Claim Day"} ${streak + 1}</div>
               <div class="daily-claim-rewards">
                 <span class="daily-claim-gem">${nextReward.gems.toLocaleString()} 💎</span>
                 <span class="daily-claim-packet">${nextReward.packets.toLocaleString()} 📦</span>
               </div>
-              ${nextReward.bonus ? `<div class="daily-claim-bonus">${nextReward.bonus}</div>` : ""}
+              ${
+                nextReward.bonus
+                  ? `<div class="daily-claim-bonus">${(() => {
+                      const bonusMap = {
+                        "Welcome Back!": "daily.bonuses.welcomeBack",
+                        "Building Momentum": "daily.bonuses.buildingMomentum",
+                        "Getting Stronger": "daily.bonuses.gettingStronger",
+                        "Power Surge": "daily.bonuses.powerSurge",
+                        "Dedication Pays Off":
+                          "daily.bonuses.dedicationPaysOff",
+                        "Almost There!": "daily.bonuses.almostThere",
+                        "🎉 WEEKLY CHAMPION!": "daily.bonuses.weeklyChampion",
+                      };
+                      const key = bonusMap[nextReward.bonus];
+                      return key && window.Packet && Packet.i18n
+                        ? Packet.i18n.t(key)
+                        : nextReward.bonus;
+                    })()}</div>`
+                  : ""
+              }
             </div>
           </button>
         </div>
@@ -1991,8 +2040,8 @@ function renderDaily() {
           : `
         <div class="daily-cooldown-section">
           <div class="daily-cooldown-icon">⏰</div>
-          <div class="daily-cooldown-text">Come back tomorrow for your next reward!</div>
-          <div class="daily-cooldown-timer">Next reward available in ${(() => {
+          <div class="daily-cooldown-text">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.comeBack") : "Come back tomorrow for your next reward!"}</div>
+          <div class="daily-cooldown-timer">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.nextRewardIn") : "Next reward available in"} ${(() => {
             const remaining = 86400000 - (now - lastClaim);
             const hours = Math.floor(remaining / 3600000);
             const minutes = Math.floor((remaining % 3600000) / 60000);
@@ -2010,7 +2059,7 @@ function renderDaily() {
       <!-- Footer Tip -->
       <div class="daily-footer-tip">
         <div class="daily-tip-icon">💡</div>
-        <div class="daily-tip-text">Don't break your streak! Login daily to maximize rewards.</div>
+        <div class="daily-tip-text">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.tipDefault") : "Don't break your streak! Login daily to maximize rewards."}</div>
       </div>
     </div>
   `;
@@ -2096,7 +2145,12 @@ function showEditProfile() {
           if (__bytes > 5242880) {
             uploadedAvatarDataUrl = null;
             try {
-              showHudNotify("Image too large (max 5MB)", "⚠️");
+              showHudNotify(
+                window.Packet && Packet.i18n
+                  ? Packet.i18n.t("notify.imageTooLarge")
+                  : "Image too large (max 5MB)",
+                "⚠️",
+              );
             } catch (_) {}
           }
         } catch (_) {}
@@ -2157,7 +2211,12 @@ function showEditProfile() {
 
     updateTopBar();
     closeModal();
-    showHudNotify("Profile updated!", "👤");
+    showHudNotify(
+      window.Packet && Packet.i18n
+        ? Packet.i18n.t("notify.profileUpdated")
+        : "Profile updated!",
+      "👤",
+    );
     try {
       renderTab();
     } catch (_) {}
@@ -2288,7 +2347,12 @@ function showSettings() {
         } catch (_) {}
         updateTopBar();
         renderTab();
-        showHudNotify("Settings saved!", "⚙️");
+        showHudNotify(
+          window.Packet && Packet.i18n
+            ? Packet.i18n.t("notify.settingsSaved")
+            : "Settings saved!",
+          "⚙️",
+        );
       } catch (_) {}
     };
   }
@@ -2561,9 +2625,18 @@ function bindAdminTabEvents(tabName) {
           renderTab();
         }
 
-        showHudNotify(`Spawned ${successCount} items!`, "⚔️");
+        showHudNotify(
+          window.Packet && Packet.i18n
+            ? Packet.i18n.t("notify.itemsSpawned", { count: successCount })
+            : `Spawned ${successCount} items!`,
+          "⚔️",
+        );
       } else {
-        alert("Equipment system not available!");
+        alert(
+          window.Packet && Packet.i18n
+            ? Packet.i18n.t("notify.equipmentNotAvailable")
+            : "Equipment system not available!",
+        );
         console.error("Equipment functions missing:", {
           Equipment: !!Equipment,
           rollDrop:
@@ -3422,7 +3495,12 @@ function clickPacket(event) {
     let luckyChance = state.prestige.luckyClicks * 1; // 1% per level
     if (Math.random() * 100 < luckyChance) {
       amount *= 10;
-      showHudNotify("LUCKY CLICK! 10x", "🍀");
+      showHudNotify(
+        window.Packet && Packet.i18n
+          ? Packet.i18n.t("notify.luckyClick")
+          : "LUCKY CLICK! 10x",
+        "🍀",
+      );
     }
   }
   state.packets += amount;
@@ -3449,7 +3527,12 @@ function clickPacket(event) {
     if (Math.random() * 100 < gemChance) {
       let gemsFound = Math.floor(Math.random() * 3) + 1; // 1-3 gems
       state.gems += gemsFound;
-      showHudNotify(`+${gemsFound} 💎 (Found!)`, "✨");
+      showHudNotify(
+        window.Packet && Packet.i18n
+          ? Packet.i18n.t("notify.gemsFound", { gems: gemsFound })
+          : `+${gemsFound} 💎 (Found!)`,
+        "✨",
+      );
     }
   }
 
@@ -4139,7 +4222,12 @@ function idleTick() {
     let gemChance = state.prestige.gemMagnet * 0.1; // 0.1% per level per second
     if (Math.random() * 1000 < gemChance) {
       state.gems++;
-      showHudNotify("+1 💎 (Magnet!)", "🧲");
+      showHudNotify(
+        window.Packet && Packet.i18n
+          ? Packet.i18n.t("notify.gemsMagnet")
+          : "+1 💎 (Magnet!)",
+        "🧲",
+      );
     }
   }
 
@@ -4149,7 +4237,12 @@ function idleTick() {
   // Check if random events expired
   if (state.randomEvent.active && Date.now() > state.randomEvent.endTime) {
     state.randomEvent.active = false;
-    showHudNotify("Random event finished!", "🏁");
+    showHudNotify(
+      window.Packet && Packet.i18n
+        ? Packet.i18n.t("notify.randomEventFinished")
+        : "Random event finished!",
+      "🏁",
+    );
   }
 
   if (totalPerSec > 0) {
@@ -4241,7 +4334,14 @@ function buyGemPack(packId) {
   updateTopBar();
   renderTab();
   checkAchievements();
-  showHudNotify(`+${pack.gems.toLocaleString("en-US")} 💎 (Purchased!)`, "💎");
+  showHudNotify(
+    window.Packet && Packet.i18n
+      ? Packet.i18n.t("notify.gemsPurchased", {
+          gems: pack.gems.toLocaleString("en-US"),
+        })
+      : `+${pack.gems.toLocaleString("en-US")} 💎 (Purchased!)`,
+    "💎",
+  );
 }
 
 function buyShopItem(itemId) {
@@ -4313,7 +4413,12 @@ function watchAd() {
   updateTopBar();
   renderTab();
   checkAchievements();
-  showHudNotify("+1 💎 (Ad)", "📺");
+  showHudNotify(
+    window.Packet && Packet.i18n
+      ? Packet.i18n.t("notify.gemsAd")
+      : "+1 💎 (Ad)",
+    "📺",
+  );
 }
 
 // =============== ACHIEVEMENTS CHECKER ===============
@@ -4680,7 +4785,12 @@ function buyTheme(themeId) {
     state.theme = themeId;
     save();
     applyTheme(themeId);
-    showHudNotify(`${theme.name} theme activated!`, "🎨");
+    showHudNotify(
+      window.Packet && Packet.i18n
+        ? Packet.i18n.t("notify.themeActivated", { name: theme.name })
+        : `${theme.name} theme activated!`,
+      "🎨",
+    );
     updateTopBar();
     renderTab();
     return;
@@ -4688,7 +4798,12 @@ function buyTheme(themeId) {
 
   // If not unlocked, try to buy it
   if (state.gems < (theme.cost || 0)) {
-    showHudNotify(`Not enough gems! Need ${theme.cost} 💎`, "❌");
+    showHudNotify(
+      window.Packet && Packet.i18n
+        ? Packet.i18n.t("notify.themeNotEnoughGems", { cost: theme.cost })
+        : `Not enough gems! Need ${theme.cost} 💎`,
+      "❌",
+    );
     return;
   }
 
@@ -4714,7 +4829,12 @@ function buyTheme(themeId) {
     </div>`,
   );
 
-  showHudNotify(`${theme.name} theme purchased and activated!`, "🎨");
+  showHudNotify(
+    window.Packet && Packet.i18n
+      ? Packet.i18n.t("notify.themePurchased", { name: theme.name })
+      : `${theme.name} theme purchased and activated!`,
+    "🎨",
+  );
   updateTopBar();
   renderTab();
 }
@@ -4748,7 +4868,24 @@ function claimDailyReward() {
     `You received <span class="event-number-glow">${reward.gems.toLocaleString("en-US")}</span> 💎 and <span class="event-number-glow">${reward.packets.toLocaleString("en-US")}</span> <span class="icon-packet"></span>!<br>Streak: <span class="event-number-glow">${state.dailyRewards.streak}</span> days${reward.bonus ? `<br><span style="color:#f4e29f; font-style:italic; font-size:0.9rem;">${reward.bonus}</span>` : ""}`,
   );
   showHudNotify(
-    `Day ${state.dailyRewards.streak} claimed! ${reward.bonus || ""}`,
+    window.Packet && Packet.i18n
+      ? Packet.i18n.t("notify.dailyClaimed", {
+          n: state.dailyRewards.streak,
+          bonus: (() => {
+            const bonusMap = {
+              "Welcome Back!": "daily.bonuses.welcomeBack",
+              "Building Momentum": "daily.bonuses.buildingMomentum",
+              "Getting Stronger": "daily.bonuses.gettingStronger",
+              "Power Surge": "daily.bonuses.powerSurge",
+              "Dedication Pays Off": "daily.bonuses.dedicationPaysOff",
+              "Almost There!": "daily.bonuses.almostThere",
+              "🎉 WEEKLY CHAMPION!": "daily.bonuses.weeklyChampion",
+            };
+            const key = bonusMap[reward.bonus];
+            return key ? Packet.i18n.t(key) : reward.bonus;
+          })(),
+        })
+      : `Day ${state.dailyRewards.streak} claimed! ${reward.bonus || ""}`,
     "📅",
   );
 
@@ -5323,7 +5460,12 @@ function setPlayerName() {
       "🎮",
     );
   } else {
-    showHudNotify("Please enter a valid name!", "⚠️");
+    showHudNotify(
+      window.Packet && Packet.i18n
+        ? Packet.i18n.t("notify.enterValidName")
+        : "Please enter a valid name!",
+      "⚠️",
+    );
   }
 }
 
@@ -5331,7 +5473,12 @@ function skipNameSetup() {
   localStorage.setItem("packet_clicker_name_prompted", "true");
   window.__NAME_PROMPT_LOCK__ = false;
   closeModal();
-  showHudNotify("Welcome to Packet Clicker! Click to start!", "🎮");
+  showHudNotify(
+    window.Packet && Packet.i18n
+      ? Packet.i18n.t("notify.welcomeMessage")
+      : "Welcome to Packet Clicker! Click to start!",
+    "🎮",
+  );
 }
 
 window.onload = init;
