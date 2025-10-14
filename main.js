@@ -613,7 +613,9 @@ function updateTopBar() {
     // Dynamic avatar border ring based on current combo color (mirrors combo HUD colors)
     let comboColor = "var(--primary-color)";
     if (typeof clickCombo === "number") {
-      if (clickCombo >= 200) comboColor = "#ff3040";
+      if (clickCombo >= 500)
+        comboColor = "celestial"; // Special rainbow animation
+      else if (clickCombo >= 200) comboColor = "#ff3040";
       else if (clickCombo >= 50) comboColor = "#ff4dff";
       else if (clickCombo >= 15) comboColor = "var(--accent-color)";
       else if (clickCombo >= 5) comboColor = "var(--secondary-color)";
@@ -624,11 +626,19 @@ function updateTopBar() {
       Date.now() <= (_comboExpireAt || 0);
     // Avatar glow effects disabled for performance
     if (comboActive) {
-      // Keep border but remove glow effects
-      _avatarEl.style.border = `3.5px solid ${comboColor}`;
+      // Special handling for celestial combo
+      if (comboColor === "celestial") {
+        _avatarEl.style.border = "3.5px solid #ff0080";
+        _avatarEl.style.borderRadius = "50%";
+        _avatarEl.style.animation = "celestialBorderOnly 3s linear infinite";
+      } else {
+        _avatarEl.style.border = `3.5px solid ${comboColor}`;
+        _avatarEl.style.animation = "";
+      }
     } else {
       // Reset border when combo ends
       _avatarEl.style.border = "";
+      _avatarEl.style.animation = "";
     }
   }
   let badge = document.getElementById("vip-badge");
@@ -1662,7 +1672,9 @@ function setCursorForCombo(combo) {
     const btn = document.getElementById("click-btn");
     if (!btn) return;
     let file = "src/assets/green.webp"; // default
-    if (combo >= 200) file = "src/assets/animal.webp";
+    if (combo >= 500)
+      file = "src/assets/animal.webp"; // CELESTIAL uses special animal cursor
+    else if (combo >= 200) file = "src/assets/animal.webp";
     else if (combo >= 50) file = "src/assets/pink.webp";
     else if (combo >= 15) file = "src/assets/blue.webp";
     else if (combo >= 5) file = "src/assets/gold.webp";
@@ -3793,7 +3805,9 @@ function clickPacket(event) {
 
     // Show combo total HUD (modular)
     let color = null;
-    if (clickCombo >= 200) color = "#ff3040";
+    if (clickCombo >= 500)
+      color = "celestial"; // Special rainbow animation
+    else if (clickCombo >= 200) color = "#ff3040";
     else if (clickCombo >= 50) color = "#ff4dff";
     else if (clickCombo >= 15) color = "var(--accent-color)";
     else if (clickCombo >= 5) color = "var(--secondary-color)";
@@ -3809,10 +3823,16 @@ function clickPacket(event) {
       if (el) {
         // Avatar shadow effects disabled for performance
         el.style.border = "";
+        el.style.animation = "";
       }
       // Remove mobile cursor feedback when combo ends
       const feedback = document.getElementById("mobile-cursor-feedback");
       if (feedback) feedback.remove();
+      // Remove celestial body classes when combo ends
+      const body = document.body;
+      if (body) {
+        body.classList.remove("celestial-active");
+      }
     }, COMBO_TIMEOUT + 200);
 
     // Show floating effect

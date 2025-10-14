@@ -63,12 +63,23 @@ export function showComboTotalHUD(total, color = null) {
     document.body.appendChild(hud);
   }
 
-  const c =
-    color ||
-    getComputedStyle(hud).getPropertyValue("color") ||
-    "var(--primary-color)";
-  hud.style.color = c;
-  hud.style.borderColor = c;
+  // Handle special celestial color with rainbow animation
+  let c;
+  if (color === "celestial") {
+    hud.style.animation =
+      "celestialTextOnly 3s linear infinite, celestialBorderOnly 3s linear infinite";
+    hud.style.border = "2px solid #ff0080";
+    hud.style.color = "#ff0080"; // Fallback color
+    c = "#ff0080"; // Set c for template usage
+  } else {
+    hud.style.animation = "";
+    c =
+      color ||
+      getComputedStyle(hud).getPropertyValue("color") ||
+      "var(--primary-color)";
+    hud.style.color = c;
+    hud.style.border = `2px solid ${c}`;
+  }
 
   // Get combo count from global clickCombo if available
   const comboCount = (typeof window !== "undefined" && window.clickCombo) || 0;

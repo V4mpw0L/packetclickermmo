@@ -329,7 +329,26 @@ export function handleComboEffect(clickCombo, amount, state) {
     }
   };
 
-  if (clickCombo >= 200) {
+  if (clickCombo >= 500) {
+    effectClass = "celestial-combo";
+    const extra = Math.floor(amount * 0.99);
+    safeAddPackets(extra);
+    displayedGain += extra;
+    effectText = `<span class="celestial-text-layer" style="animation: celestialTextOnly 3s linear infinite; text-shadow: 0 0 10px rgba(255,0,128,0.8), 0 0 20px rgba(255,0,128,0.6), 0 0 30px rgba(255,0,128,0.4), 0 0 40px rgba(0,255,128,0.3), 2px 2px 4px rgba(0,0,0,0.8); font-weight: bold;">CELESTIAL!<br>+${displayedGain}<br>(${amount}+99%)</span>`;
+
+    if (hasDOM()) {
+      try {
+        const body = getBody();
+        if (body) body.classList.add("celestial-active");
+        // Button shake during CELESTIAL
+        const clickBtn = byId("click-btn");
+        if (clickBtn) {
+          clickBtn.classList.add("shake-element");
+          setTimeout(() => clickBtn.classList.remove("shake-element"), 350);
+        }
+      } catch (_) {}
+    }
+  } else if (clickCombo >= 200) {
     effectClass = "animal-combo";
     const extra = Math.floor(amount * 0.6);
     safeAddPackets(extra);
