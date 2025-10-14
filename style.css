@@ -2611,55 +2611,37 @@ footer {
 
 @keyframes comboEffect {
     0% {
-        opacity: 1;
-        transform: translate(-50%, 0) scale(0.5) rotate(-5deg);
+        transform: translate(-50%, 0) scale(0.9);
+        opacity: 0;
     }
-    20% {
+    15% {
+        transform: translate(-50%, -6px) scale(1.15);
         opacity: 1;
-        transform: translate(-50%, -15px) scale(1.3) rotate(2deg);
     }
-    40% {
-        opacity: 1;
-        transform: translate(-50%, -30px) scale(1.1) rotate(-1deg);
-    }
-    70% {
-        opacity: 1;
-        transform: translate(-50%, -60px) scale(1) rotate(0.2deg);
-    }
-    85% {
-        opacity: 0.95;
-        transform: translate(-50%, -85px) scale(0.9) rotate(0.5deg);
+    45% {
+        transform: translate(-50%, -16px) scale(1);
     }
     100% {
+        transform: translate(-50%, -28px) scale(1);
         opacity: 0;
-        transform: translate(-50%, -100px) scale(0.8) rotate(1deg);
     }
 }
 
 @keyframes megaComboEffect {
     0% {
-        opacity: 1;
-        transform: translate(-50%, 0) scale(0.3) rotate(-10deg);
+        transform: translate(-50%, 0) scale(0.9);
+        opacity: 0;
     }
     15% {
+        transform: translate(-50%, -6px) scale(1.15);
         opacity: 1;
-        transform: translate(-50%, -20px) scale(1.5) rotate(5deg);
     }
-    40% {
-        opacity: 1;
-        transform: translate(-50%, -50px) scale(1.2) rotate(-2deg);
-    }
-    70% {
-        opacity: 1;
-        transform: translate(-50%, -80px) scale(1) rotate(-1deg);
-    }
-    85% {
-        opacity: 0.95;
-        transform: translate(-50%, -100px) scale(0.9) rotate(0deg);
+    45% {
+        transform: translate(-50%, -16px) scale(1);
     }
     100% {
+        transform: translate(-50%, -28px) scale(1);
         opacity: 0;
-        transform: translate(-50%, -120px) scale(0.7) rotate(-1deg);
     }
 }
 
@@ -3212,27 +3194,18 @@ body.ultra-active #click-btn::before {
 /* ULTRA keyframes */
 @keyframes ultraComboEffect {
     0% {
-        transform: translate(-50%, 0) scale(0.95);
+        transform: translate(-50%, 0) scale(0.9);
         opacity: 0;
     }
-    12% {
-        transform: translate(-50%, -10px) scale(1.18);
+    15% {
+        transform: translate(-50%, -6px) scale(1.15);
         opacity: 1;
     }
     45% {
-        transform: translate(-50%, -28px) scale(1.02);
-        opacity: 1;
-    }
-    70% {
-        transform: translate(-50%, -38px) scale(1.01);
-        opacity: 1;
-    }
-    85% {
-        transform: translate(-50%, -46px) scale(1);
-        opacity: 0.95;
+        transform: translate(-50%, -16px) scale(1);
     }
     100% {
-        transform: translate(-50%, -52px) scale(1);
+        transform: translate(-50%, -28px) scale(1);
         opacity: 0;
     }
 }
@@ -3348,57 +3321,35 @@ body.ultra-active #click-btn::before {
 
 @keyframes animal3DWobble {
     0% {
-        transform: translateX(-50%) rotateX(6deg) rotateY(-4deg) translateZ(0);
+        transform: translate(-50%, 0) scale(0.9);
+        opacity: 0;
+    }
+    15% {
+        transform: translate(-50%, -6px) scale(1.15);
         opacity: 1;
     }
-    30% {
-        transform: translateX(-50%) rotateX(-2deg) rotateY(3deg) translateZ(2px);
-        opacity: 1;
-    }
-    50% {
-        transform: translateX(-50%) rotateX(-4deg) rotateY(6deg) translateZ(4px);
-        opacity: 1;
-    }
-    70% {
-        transform: translateX(-50%) rotateX(2deg) rotateY(-2deg) translateZ(2px);
-        opacity: 1;
-    }
-    85% {
-        transform: translateX(-50%) rotateX(4deg) rotateY(-3deg) translateZ(1px);
-        opacity: 0.95;
+    45% {
+        transform: translate(-50%, -16px) scale(1);
     }
     100% {
-        transform: translateX(-50%) rotateX(6deg) rotateY(-4deg) translateZ(0);
+        transform: translate(-50%, -28px) scale(1);
         opacity: 0;
     }
 }
 @keyframes celestialComboEffect {
     0% {
-        transform: translateX(-50%) scale(0.9);
-        opacity: 1;
+        transform: translate(-50%, 0) scale(0.9);
+        opacity: 0;
     }
     15% {
-        transform: translateX(-50%) scale(1.3);
+        transform: translate(-50%, -6px) scale(1.15);
         opacity: 1;
     }
     45% {
-        transform: translateX(-50%) scale(1.1);
-        opacity: 1;
-    }
-    75% {
-        transform: translateX(-50%) scale(1.05);
-        opacity: 1;
-    }
-    85% {
-        transform: translateX(-50%) scale(1);
-        opacity: 0.95;
-    }
-    95% {
-        transform: translateX(-50%) scale(0.95);
-        opacity: 0.3;
+        transform: translate(-50%, -16px) scale(1);
     }
     100% {
-        transform: translateX(-50%) scale(0.9);
+        transform: translate(-50%, -28px) scale(1);
         opacity: 0;
     }
 }
