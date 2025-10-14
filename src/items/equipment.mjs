@@ -68,21 +68,21 @@ export const RARITIES = [
     id: "green",
     name: "Common",
     color: "#8ef1b2",
-    weight: 70,
+    weight: 60,
     border: "1px solid rgba(142,241,178,0.8)",
   },
   {
     id: "gold",
     name: "Rare",
     color: "#ffd34d",
-    weight: 22,
+    weight: 20,
     border: "1px solid rgba(255,211,77,0.9)",
   },
   {
     id: "blue",
     name: "Epic",
     color: "#6bd7e8",
-    weight: 7,
+    weight: 6,
     border: "1px solid rgba(107,215,232,0.9)",
   },
   {
@@ -103,7 +103,7 @@ export const RARITIES = [
     id: "celestial",
     name: "Celestial",
     color: "#ffffff",
-    weight: 0.01,
+    weight: 0.005,
     border: "2px solid #ffffff",
   },
 ];
