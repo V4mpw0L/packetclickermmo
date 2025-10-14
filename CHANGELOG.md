@@ -1,5 +1,27 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.35 - Avatar System Expansion & UI Polish
+*Released: January 2025*
+
+### 🖼️ **Avatar Shop Expansion**
+- **6 New Premium Avatars** - Added Stellar Phantom, Digital Titan, Prism Oracle, Flux Assassin, Neon Leviathan, and Cosmic Emperor
+- **Progressive Pricing** - New avatars range from 325-450 gems following existing pattern
+- **Complete Integration** - All new avatars work with existing systems (save/load, admin panel, achievements)
+
+### 🎨 **Edit Profile Improvements**
+- **Compact Avatar Selection** - Smaller 40px avatars in organized 4x2 grid layout
+- **Smart Pagination** - 8 avatars per page with proper navigation controls
+- **Auto-Save on Selection** - Avatars save instantly when clicked, no manual save button needed
+- **Enhanced UI/UX** - Improved visual feedback, hover states, and mobile optimization
+- **Upload Button Hidden** - Temporarily disabled custom avatar uploads for cleaner interface
+
+### 🔧 **Technical Improvements**
+- **Layout Stability** - Fixed avatar border clipping and layout shifting issues
+- **Proper State Management** - Enhanced save migration for new avatar properties
+- **Performance Optimized** - Efficient pagination and selection systems
+
+---
+
 ## Version 0.0.34 - Celestial Combo Enhancement
 *Released: January 2025*
 
