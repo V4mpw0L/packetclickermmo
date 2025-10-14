@@ -1635,8 +1635,8 @@ function getSafeAvatarUrl(avatar) {
         return DEFAULT_AVATAR;
       }
 
-      // Reject excessively large data URLs (> 1MB) to prevent performance issues
-      if (avatar.length > 1024 * 1024) {
+      // Reject excessively large data URLs (> 200KB) to prevent performance issues
+      if (avatar.length > 200000) {
         console.warn("Avatar data URL too large, using default");
         return DEFAULT_AVATAR;
       }
@@ -2072,6 +2072,68 @@ function showEditProfile() {
     typeof state.player.avatar === "string" &&
     (state.player.avatar.startsWith("data:") ||
       !state.player.avatar.includes("dicebear.com"));
+
+  // Migrate legacy large custom avatars
+  if (
+    isCustomAvatar &&
+    state.player.avatar.startsWith("data:") &&
+    state.player.avatar.length > 200000
+  ) {
+    console.log(
+      "[Profile] Migrating large legacy avatar, size:",
+      state.player.avatar.length,
+    );
+    try {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+
+      img.onload = function () {
+        const maxSize = 256;
+        let { width, height } = img;
+
+        if (width > height) {
+          if (width > maxSize) {
+            height = (height * maxSize) / width;
+            width = maxSize;
+          }
+        } else {
+          if (height > maxSize) {
+            width = (width * maxSize) / height;
+            height = maxSize;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressed = canvas.toDataURL("image/jpeg", 0.7);
+        if (compressed.length <= 200000) {
+          state.player.avatar = compressed;
+          save();
+          console.log(
+            "[Profile] Legacy avatar compressed from",
+            img.naturalWidth + "x" + img.naturalHeight,
+            "to",
+            width + "x" + height,
+          );
+        } else {
+          console.warn(
+            "[Profile] Could not compress legacy avatar enough, keeping original",
+          );
+        }
+      };
+
+      img.onerror = function () {
+        console.warn("[Profile] Failed to load legacy avatar for compression");
+      };
+
+      img.src = state.player.avatar;
+    } catch (e) {
+      console.warn("[Profile] Error migrating legacy avatar:", e);
+    }
+  }
   let currentSeed =
     state.player.avatar.split("seed=")[1]?.split("&")[0] || "Hacker";
   let avatarList = avatars
@@ -2133,27 +2195,78 @@ function showEditProfile() {
     fileInput.onchange = function () {
       const file = fileInput.files && fileInput.files[0];
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function (ev) {
-        uploadedAvatarDataUrl = String(ev.target && ev.target.result) || null;
-        // Enforce 5MB max for uploaded avatars (prevent huge data URLs)
+
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
         try {
-          var __data = uploadedAvatarDataUrl || "";
-          var __idx = __data.indexOf(",") + 1;
-          var __b64len = __idx > 0 ? __data.length - __idx : 0;
-          var __bytes = Math.ceil((__b64len * 3) / 4);
-          if (__bytes > 5242880) {
-            uploadedAvatarDataUrl = null;
-            try {
-              showHudNotify(
-                window.Packet && Packet.i18n
-                  ? Packet.i18n.t("notify.imageTooLarge")
-                  : "Image too large (max 5MB)",
-                "⚠️",
-              );
-            } catch (_) {}
-          }
+          showHudNotify(
+            window.Packet && Packet.i18n
+              ? Packet.i18n.t("notify.invalidFileType")
+              : "Please upload an image file",
+            "⚠️",
+          );
         } catch (_) {}
+        return;
+      }
+
+      // Validate file size (2MB limit for better performance)
+      if (file.size > 2 * 1024 * 1024) {
+        try {
+          showHudNotify(
+            window.Packet && Packet.i18n
+              ? Packet.i18n.t("notify.imageTooLarge")
+              : "Image too large (max 2MB)",
+            "⚠️",
+          );
+        } catch (_) {}
+        return;
+      }
+
+      // Create canvas for image compression
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+
+      img.onload = function () {
+        // Set maximum dimensions (256x256 for avatars)
+        const maxSize = 256;
+        let { width, height } = img;
+
+        if (width > height) {
+          if (width > maxSize) {
+            height = (height * maxSize) / width;
+            width = maxSize;
+          }
+        } else {
+          if (height > maxSize) {
+            width = (width * maxSize) / height;
+            height = maxSize;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Convert to compressed data URL (JPEG with 0.8 quality for smaller size)
+        uploadedAvatarDataUrl = canvas.toDataURL("image/jpeg", 0.8);
+
+        // Final size check after compression
+        const compressedSize = uploadedAvatarDataUrl.length;
+        if (compressedSize > 100000) {
+          // 100KB limit for data URL
+          try {
+            showHudNotify(
+              window.Packet && Packet.i18n
+                ? Packet.i18n.t("notify.imageStillTooLarge")
+                : "Image still too large after compression",
+              "⚠️",
+            );
+          } catch (_) {}
+          uploadedAvatarDataUrl = null;
+          return;
+        }
+
         if (uploadedAvatarDataUrl && customTile && customImg) {
           customImg.src = uploadedAvatarDataUrl;
           customTile.style.display = "";
@@ -2161,7 +2274,32 @@ function showEditProfile() {
             .querySelectorAll(".avatar-choice")
             .forEach((e) => e.classList.remove("selected"));
           customTile.classList.add("selected");
+
+          try {
+            showHudNotify(
+              window.Packet && Packet.i18n
+                ? Packet.i18n.t("notify.avatarUploaded")
+                : "Avatar uploaded successfully!",
+              "✅",
+            );
+          } catch (_) {}
         }
+      };
+
+      img.onerror = function () {
+        try {
+          showHudNotify(
+            window.Packet && Packet.i18n
+              ? Packet.i18n.t("notify.invalidImage")
+              : "Invalid image file",
+            "⚠️",
+          );
+        } catch (_) {}
+      };
+
+      const reader = new FileReader();
+      reader.onload = function (ev) {
+        img.src = ev.target.result;
       };
       reader.readAsDataURL(file);
     };
@@ -2206,7 +2344,7 @@ function showEditProfile() {
       }
     } catch (_) {}
     try {
-      window.VERSION = "0.0.32";
+      window.VERSION = "0.0.33";
     } catch (_) {}
 
     updateTopBar();
@@ -2333,7 +2471,7 @@ function showSettings() {
         // Persist and refresh UI
         save();
         try {
-          window.VERSION = "0.0.32";
+          window.VERSION = "0.0.33";
         } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {
@@ -3970,7 +4108,7 @@ function migrateSaveToCurrentVersion() {
       window.Packet &&
       window.Packet.data &&
       window.Packet.data.APP_VERSION) ||
-    "0.0.32";
+    "0.0.33";
 
   console.log(
     "[Migration] Checking save compatibility with version",

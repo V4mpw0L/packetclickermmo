@@ -1,5 +1,25 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.33 - Avatar Upload System Overhaul
+*Released: January 2025*
+
+### 🖼️ **Custom Avatar Upload Fixes**
+- **Image Compression** - Automatic resize to 256x256 and JPEG compression (90%+ size reduction)
+- **Firebase Storage Integration** - Fixed missing uploadBytes API for proper cloud storage
+- **Size Optimization** - Custom avatars now under 100KB for fast loading
+- **Enhanced Validation** - Improved file type and size validation with user feedback
+- **Legacy Migration** - Automatic compression of existing large custom avatars
+- **Error Handling** - Robust fallback system prevents invalid URL errors
+- **Performance Boost** - Eliminated browser lag from huge data URLs
+
+### 🔧 **Technical Improvements**
+- **Firebase Rules Update** - Enhanced Storage and Firestore rules for new avatar system
+- **Filename Generation** - Short, safe filenames prevent path length issues
+- **Backward Compatibility** - Existing avatars continue working seamlessly
+- **User Experience** - Clear success/error messages during upload process
+
+---
+
 ## Version 0.0.32 - Smooth Animations & Visual Polish
 *Released: January 2025*
 

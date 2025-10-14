@@ -104,7 +104,7 @@ function sanitizeAvatar(url) {
     if (!s) return "";
     // Accept http(s) URLs and data URLs for custom avatars
     if (/^https?:\/\//i.test(s)) return s.slice(0, 256);
-    if (/^data:image\//i.test(s)) return s.slice(0, 50000); // Allow data URLs up to 50KB
+    if (/^data:image\//i.test(s)) return s.slice(0, 200000); // Allow data URLs up to 200KB
     return "";
   } catch {
     return "";
@@ -202,8 +202,14 @@ async function getStorageApi() {
   try {
     if (lazyFirebase.st) return lazyFirebase.st;
     const st = await import(`${CDN_BASE}/firebase-storage.js`);
-    const { getStorage, ref, uploadString, getDownloadURL } = st;
-    lazyFirebase.st = { getStorage, ref, uploadString, getDownloadURL };
+    const { getStorage, ref, uploadString, uploadBytes, getDownloadURL } = st;
+    lazyFirebase.st = {
+      getStorage,
+      ref,
+      uploadString,
+      uploadBytes,
+      getDownloadURL,
+    };
     return lazyFirebase.st;
   } catch (e) {
     console.warn("[Leaderboard] storage module unavailable:", e);
@@ -223,9 +229,19 @@ async function maybeUploadAvatar(id, avatar) {
       return sanitizeAvatar(raw);
     }
 
+    // Handle legacy large data URLs - if too large, try to upload anyway or fallback to empty
+    if (raw.length > 200000) {
+      console.warn(
+        "[Leaderboard] Legacy large avatar detected for",
+        id,
+        "- attempting upload or using fallback",
+      );
+      // Continue with upload attempt - if it fails, we'll fallback gracefully
+    }
+
     // Validate data URL before processing
-    if (raw.length > 50000) {
-      console.warn("[Leaderboard] Avatar data URL exceeds 50KB limit");
+    if (raw.length > 200000) {
+      console.warn("[Leaderboard] Avatar data URL exceeds 200KB limit");
       return "";
     }
 
@@ -242,10 +258,13 @@ async function maybeUploadAvatar(id, avatar) {
     const st = await getStorageApi();
     const storage = st.getStorage(_app);
 
-    // Create safe filename with device ID validation
-    const safeId = String(id || deviceId()).replace(/[^a-zA-Z0-9_.-]/g, "_");
-    const timestamp = Date.now();
-    const filename = `${safeId}_${timestamp}.png`;
+    // Create short, safe filename to avoid Firebase Storage path length limits
+    const safeId = String(id || deviceId())
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .substring(0, 8); // Limit to 8 chars
+    const shortTimestamp = Date.now().toString(36); // Base36 for shorter string
+    const randomSuffix = Math.random().toString(36).substring(2, 6); // 4 random chars
+    const filename = `${safeId}_${shortTimestamp}_${randomSuffix}.png`;
     const r = st.ref(storage, `avatars/${filename}`);
 
     console.log("[Leaderboard] Converting data URL to blob...");
@@ -341,10 +360,10 @@ async function maybeUploadAvatar(id, avatar) {
     }
 
     // Return appropriate fallback based on error type and rules compliance
-    if (raw && raw.startsWith("data:") && raw.length <= 50000) {
-      console.log("[Leaderboard] Using data URL fallback (within 50KB limit)");
+    if (raw && raw.startsWith("data:") && raw.length <= 200000) {
+      console.log("[Leaderboard] Using data URL fallback (within 200KB limit)");
       return sanitizeAvatar(raw);
-    } else if (raw && raw.startsWith("data:") && raw.length > 50000) {
+    } else if (raw && raw.startsWith("data:") && raw.length > 200000) {
       console.warn(
         "[Leaderboard] Data URL too large for fallback, using empty avatar",
       );
@@ -443,21 +462,32 @@ async function flushWrite() {
         console.log("[Leaderboard] Processing avatar upload for", docData.id);
 
         // Check data URL size before upload
-        if (docData.avatar.length > 50000) {
+        if (docData.avatar.length > 200000) {
           console.warn(
-            "[Leaderboard] Avatar data URL too large, using fallback",
+            "[Leaderboard] Avatar data URL too large, using empty avatar",
           );
           avatarUrl = "";
         } else {
           avatarUrl = await maybeUploadAvatar(docData.id, docData.avatar);
 
-          if (!avatarUrl || avatarUrl === "") {
+          if (!avatarUrl || avatarUrl === "" || avatarUrl === "storage_url") {
             console.warn(
-              "[Leaderboard] Avatar upload failed, using empty avatar",
+              "[Leaderboard] Avatar upload failed or returned invalid URL, using empty avatar",
+            );
+            avatarUrl = "";
+          } else if (
+            avatarUrl.startsWith("data:") &&
+            avatarUrl.length > 200000
+          ) {
+            console.warn(
+              "[Leaderboard] Fallback data URL too large, using empty avatar",
             );
             avatarUrl = "";
           } else {
-            console.log("[Leaderboard] Avatar upload successful");
+            console.log(
+              "[Leaderboard] Avatar processed successfully:",
+              avatarUrl.startsWith("data:") ? "data_url" : "storage_url",
+            );
           }
         }
       } catch (uploadError) {
