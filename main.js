@@ -2282,16 +2282,52 @@ function showEditProfile() {
   }
   let currentSeed =
     state.player.avatar.split("seed=")[1]?.split("&")[0] || "Hacker";
-  let avatarList = avatars
-    .map(
-      (a) => `
-    <div class="avatar-choice${a.seed === currentSeed ? " selected" : ""}" data-seed="${a.seed}">
-      <img src="https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${a.seed}" alt="${a.name}" />
-      <div class="avatar-name">${a.name}</div>
+
+  // Pagination for avatars
+  const AVATARS_PER_PAGE = 8;
+  const totalPages = Math.ceil(avatars.length / AVATARS_PER_PAGE);
+  let currentPage = 0;
+
+  // Find current page based on selected avatar
+  const currentIndex = avatars.findIndex((a) => a.seed === currentSeed);
+  if (currentIndex >= 0) {
+    currentPage = Math.floor(currentIndex / AVATARS_PER_PAGE);
+  }
+
+  const renderAvatarPage = (page) => {
+    const start = page * AVATARS_PER_PAGE;
+    const end = start + AVATARS_PER_PAGE;
+    const pageAvatars = avatars.slice(start, end);
+
+    return pageAvatars
+      .map(
+        (a) => `
+      <div class="avatar-choice-small${a.seed === currentSeed ? " selected" : ""}" data-seed="${a.seed}">
+        <img src="https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${a.seed}" alt="${a.name}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" />
+        <div class="avatar-name-small">${a.name}</div>
+      </div>
+    `,
+      )
+      .join("");
+  };
+
+  const avatarPagination =
+    totalPages > 1
+      ? `
+    <div class="avatar-pagination" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:0.5rem;">
+      <button type="button" id="avatar-prev-btn" style="padding:0.25rem 0.5rem;font-size:0.7rem;background:rgba(29,233,182,0.2);border:1px solid var(--primary-color);color:var(--primary-color);border-radius:4px;cursor:pointer;transition:all 0.2s;" ${currentPage === 0 ? "disabled" : ""}>‹</button>
+      <span style="font-size:0.75rem;color:#bbb;font-weight:600;">Page ${currentPage + 1} / ${totalPages}</span>
+      <button type="button" id="avatar-next-btn" style="padding:0.25rem 0.5rem;font-size:0.7rem;background:rgba(29,233,182,0.2);border:1px solid var(--primary-color);color:var(--primary-color);border-radius:4px;cursor:pointer;transition:all 0.2s;" ${currentPage >= totalPages - 1 ? "disabled" : ""}>›</button>
     </div>
-  `,
-    )
-    .join("");
+  `
+      : "";
+
+  let avatarList = `
+    <div id="avatar-container" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;max-height:200px;overflow:hidden;">
+      ${renderAvatarPage(currentPage)}
+    </div>
+    ${avatarPagination}
+  `;
   showModal(
     "Edit Profile",
     `
@@ -2303,10 +2339,11 @@ function showEditProfile() {
        </label>
        <div class="mb-4">
          <span class="block mb-2 font-semibold">Avatar:</span>
-         <div class="avatar-choice-row">${avatarList}
-           <div id="custom-avatar-tile" class="avatar-choice${isCustomAvatar ? " selected" : ""}" data-seed="__custom__" style="${isCustomAvatar ? "" : "display:none;"}">
-             <img id="custom-avatar-img" src="${isCustomAvatar ? state.player.avatar : ""}" alt="Custom" />
-             <div class="avatar-name">Custom</div>
+         ${avatarList}
+         <div id="custom-avatar-container" style="margin-top:0.75rem;display:${isCustomAvatar ? "block" : "none"};">
+           <div id="custom-avatar-tile" class="avatar-choice-small${isCustomAvatar ? " selected" : ""}" data-seed="__custom__" style="margin:0 auto;width:fit-content;">
+             <img id="custom-avatar-img" src="${isCustomAvatar ? state.player.avatar : ""}" alt="Custom" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" />
+             <div class="avatar-name-small">Custom</div>
            </div>
          </div>
          <div class="flex gap-2 justify-center mt-2">
@@ -2322,14 +2359,83 @@ function showEditProfile() {
 
   let uploadedAvatarDataUrl = null;
 
-  document.querySelectorAll(".avatar-choice").forEach((el) => {
-    el.onclick = () => {
-      document
-        .querySelectorAll(".avatar-choice")
-        .forEach((e) => e.classList.remove("selected"));
-      el.classList.add("selected");
+  // Auto-save avatar selection function
+  const selectAvatar = (seed) => {
+    document
+      .querySelectorAll(".avatar-choice-small")
+      .forEach((e) => e.classList.remove("selected"));
+    document.querySelector(`[data-seed="${seed}"]`)?.classList.add("selected");
+
+    // Auto-save avatar
+    if (seed === "__custom__") {
+      if (uploadedAvatarDataUrl) {
+        state.player.avatar = uploadedAvatarDataUrl;
+      }
+    } else {
+      state.player.avatar = `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${seed}`;
+    }
+    save();
+    updateTopBar();
+    showHudNotify("Avatar saved!", "✅");
+  };
+
+  // Avatar selection event handlers
+  const bindAvatarEvents = () => {
+    document.querySelectorAll(".avatar-choice-small").forEach((el) => {
+      el.onclick = () => selectAvatar(el.dataset.seed);
+    });
+  };
+
+  // Initial binding
+  bindAvatarEvents();
+
+  // Pagination handlers
+  let currentAvatarPage = currentPage;
+  const updateAvatarPage = (page) => {
+    currentAvatarPage = page;
+    const container = document.getElementById("avatar-container");
+    if (container) {
+      container.innerHTML = renderAvatarPage(page);
+      bindAvatarEvents();
+    }
+
+    const prevBtn = document.getElementById("avatar-prev-btn");
+    const nextBtn = document.getElementById("avatar-next-btn");
+    if (prevBtn) {
+      prevBtn.disabled = page === 0;
+      prevBtn.style.opacity = page === 0 ? "0.4" : "1";
+      prevBtn.style.cursor = page === 0 ? "not-allowed" : "pointer";
+    }
+    if (nextBtn) {
+      nextBtn.disabled = page >= totalPages - 1;
+      nextBtn.style.opacity = page >= totalPages - 1 ? "0.4" : "1";
+      nextBtn.style.cursor = page >= totalPages - 1 ? "not-allowed" : "pointer";
+    }
+
+    // Update page text
+    const pageText = document.querySelector(".avatar-pagination span");
+    if (pageText) {
+      pageText.textContent = `Page ${page + 1} / ${totalPages}`;
+    }
+  };
+
+  const prevBtn = document.getElementById("avatar-prev-btn");
+  const nextBtn = document.getElementById("avatar-next-btn");
+  if (prevBtn) {
+    prevBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (currentAvatarPage > 0) updateAvatarPage(currentAvatarPage - 1);
     };
-  });
+  }
+  if (nextBtn) {
+    nextBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (currentAvatarPage < totalPages - 1)
+        updateAvatarPage(currentAvatarPage + 1);
+    };
+  }
   const uploadBtn = document.getElementById("avatar-upload-btn");
   const fileInput = document.getElementById("avatar-upload");
   const customTile = document.getElementById("custom-avatar-tile");
@@ -2415,17 +2521,19 @@ function showEditProfile() {
 
         if (uploadedAvatarDataUrl && customTile && customImg) {
           customImg.src = uploadedAvatarDataUrl;
-          customTile.style.display = "";
-          document
-            .querySelectorAll(".avatar-choice")
-            .forEach((e) => e.classList.remove("selected"));
-          customTile.classList.add("selected");
+          const customContainer = document.getElementById(
+            "custom-avatar-container",
+          );
+          if (customContainer) customContainer.style.display = "block";
+
+          // Auto-save the custom avatar
+          selectAvatar("__custom__");
 
           try {
             showHudNotify(
               window.Packet && Packet.i18n
                 ? Packet.i18n.t("notify.avatarUploaded")
-                : "Avatar uploaded successfully!",
+                : "Avatar uploaded and saved!",
               "✅",
             );
           } catch (_) {}
@@ -2453,54 +2561,35 @@ function showEditProfile() {
   document.getElementById("profile-form").onsubmit = function (e) {
     e.preventDefault();
     let newName = document.getElementById("profile-name").value.trim();
-    let selectedEl = document.querySelector(".avatar-choice.selected");
-    let selected = selectedEl ? selectedEl.getAttribute("data-seed") : null;
-    if (newName) state.player.name = newName.slice(0, 14);
+    if (newName) {
+      state.player.name = newName.slice(0, 14);
+      save();
 
-    // Only change avatar if user explicitly selected a different one
-    if (uploadedAvatarDataUrl) {
-      // User uploaded a new custom avatar
-      state.player.avatar = uploadedAvatarDataUrl;
-    } else if (selected === "__custom__") {
-      // User selected existing custom avatar
-      state.player.avatar = customImg
-        ? getSafeAvatarUrl(customImg.src)
-        : state.player.avatar;
-    } else if (selected && selected !== "__custom__") {
-      // User selected a different pre-made avatar
-      state.player.avatar = `https://api.dicebear.com/8.x/bottts-neutral/svg?seed=${encodeURIComponent(selected)}`;
+      // Update leaderboard with new name
+      try {
+        if (typeof Leaderboard !== "undefined" && Leaderboard.submit) {
+          const avatarToSubmit = getSafeAvatarUrl(state.player.avatar);
+          Leaderboard.submit(
+            {
+              name: state.player.name,
+              avatar: avatarToSubmit,
+              packets: state.packets,
+            },
+            { throttleMs: 0 },
+          );
+        }
+      } catch (_) {}
+
+      updateTopBar();
+      showHudNotify(
+        window.Packet && Packet.i18n
+          ? Packet.i18n.t("notify.profileUpdated")
+          : "Profile updated!",
+        "👤",
+      );
     }
-    // If no selection made, keep current avatar unchanged
 
-    save();
-    // Push profile changes (including avatar) to leaderboard immediately
-    try {
-      if (typeof Leaderboard !== "undefined" && Leaderboard.submit) {
-        // Ensure avatar is valid before submitting
-        const avatarToSubmit = getSafeAvatarUrl(state.player.avatar);
-
-        Leaderboard.submit(
-          {
-            name: state.player.name,
-            avatar: avatarToSubmit,
-            packets: state.packets,
-          },
-          { throttleMs: 0 },
-        );
-      }
-    } catch (_) {}
-    try {
-      window.VERSION = "0.0.34";
-    } catch (_) {}
-
-    updateTopBar();
     closeModal();
-    showHudNotify(
-      window.Packet && Packet.i18n
-        ? Packet.i18n.t("notify.profileUpdated")
-        : "Profile updated!",
-      "👤",
-    );
     try {
       renderTab();
     } catch (_) {}

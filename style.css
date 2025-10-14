@@ -2314,6 +2314,82 @@ img[src*="seed=ShadowNinja"] {
     text-align: center;
 }
 
+/* Small avatar choices for edit profile */
+.avatar-choice-small {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    min-height: 70px;
+}
+
+.avatar-choice-small.selected {
+    border: 2px solid var(--primary-color);
+    background: rgba(29, 233, 182, 0.1);
+    box-shadow: 0 0 10px rgba(29, 233, 182, 0.3);
+    transform: scale(1.05);
+}
+
+.avatar-choice-small:hover {
+    border: 2px solid var(--secondary-color);
+    background: rgba(247, 207, 92, 0.1);
+    transform: scale(1.02);
+}
+
+.avatar-name-small {
+    margin-top: 0.25rem;
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-align: center;
+    max-width: 60px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.avatar-choice-small.selected .avatar-name-small {
+    color: var(--primary-color);
+}
+
+.avatar-pagination button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    background: rgba(29, 233, 182, 0.2);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 28px;
+    height: 28px;
+}
+
+.avatar-pagination button:hover:not(:disabled) {
+    background: rgba(29, 233, 182, 0.4);
+    transform: scale(1.05);
+}
+
+.avatar-pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: rgba(100, 100, 100, 0.2);
+    border-color: #666;
+    color: #666;
+}
+
+.avatar-pagination span {
+    font-size: 0.75rem;
+    color: #bbb;
+    font-weight: 600;
+    user-select: none;
+}
+
 /* === MODAL SYSTEM === */
 .modal-backdrop {
     position: absolute;
