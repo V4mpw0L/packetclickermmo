@@ -2326,13 +2326,15 @@ img[src*="seed=ShadowNinja"] {
     padding: 0.5rem;
     background: rgba(0, 0, 0, 0.2);
     min-height: 70px;
+    margin: 2px;
 }
 
 .avatar-choice-small.selected {
     border: 2px solid var(--primary-color);
     background: rgba(29, 233, 182, 0.1);
     box-shadow: 0 0 10px rgba(29, 233, 182, 0.3);
-    transform: scale(1.05);
+    transform: scale(1.02);
+    margin: 0px;
 }
 
 .avatar-choice-small:hover {
