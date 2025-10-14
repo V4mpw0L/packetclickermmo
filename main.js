@@ -63,6 +63,9 @@ if (typeof document !== "undefined") {
       document.body.classList.add("graphics-high");
       window.graphicsQuality = "high";
     }
+
+    // Global click feedback system
+    setupGlobalClickFeedback();
   });
 }
 
@@ -76,6 +79,79 @@ if (typeof window !== "undefined") {
     enumerable: true,
   });
 }
+
+// Global click feedback system - shows cursor anywhere user clicks
+function setupGlobalClickFeedback() {
+  if (typeof document === "undefined") return;
+
+  // Add global click listener to entire document
+  document.addEventListener("click", function (event) {
+    // Skip if this is the collect packets button (it has its own perfect system)
+    if (
+      event.target &&
+      event.target.closest &&
+      event.target.closest("#click-btn")
+    )
+      return;
+
+    // Play click sound for any click
+    if (state && state.player && state.player.sound) {
+      playSound("click");
+    }
+
+    // Show green cursor feedback at click position (accounting for scroll)
+    const scrollX =
+      window.pageXOffset || document.documentElement.scrollLeft || 0;
+    const scrollY =
+      window.pageYOffset || document.documentElement.scrollTop || 0;
+    showClickFeedback(event.clientX + scrollX, event.clientY + scrollY);
+  });
+
+  function showClickFeedback(x, y) {
+    // Remove any existing feedback
+    const existing = document.getElementById("global-click-feedback");
+    if (existing) existing.remove();
+
+    // Create visual feedback element with default green cursor
+    const feedback = document.createElement("div");
+    feedback.id = "global-click-feedback";
+    feedback.style.position = "absolute";
+    feedback.style.pointerEvents = "none";
+    feedback.style.left = x - 26 + "px"; // Center the 52px cursor
+    feedback.style.top = y - 26 + "px";
+    feedback.style.width = "52px";
+    feedback.style.height = "52px";
+    feedback.style.backgroundImage = 'url("src/assets/green.webp")';
+    feedback.style.backgroundSize = "contain";
+    feedback.style.backgroundRepeat = "no-repeat";
+    feedback.style.backgroundPosition = "center";
+    feedback.style.zIndex = "3000";
+    feedback.style.opacity = "1";
+    feedback.style.transform = "scale(0.8)";
+    feedback.style.transition = "all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1)";
+
+    document.body.appendChild(feedback);
+
+    // Animate and fade out like collect packets feedback
+    requestAnimationFrame(() => {
+      feedback.style.transform = "scale(1.2) translateY(-20px)";
+      feedback.style.opacity = "0.8";
+
+      setTimeout(() => {
+        feedback.style.transform = "scale(1.4) translateY(-40px)";
+        feedback.style.opacity = "0";
+      }, 200);
+    });
+
+    // Remove element after animation
+    setTimeout(() => {
+      if (feedback && feedback.parentNode) {
+        feedback.parentNode.removeChild(feedback);
+      }
+    }, 800);
+  }
+}
+
 /* Using global COMBO_TIMEOUT from constants UMD */
 // Track combo expiry to sync avatar border ring with combo HUD
 let _comboExpireAt = 0;
