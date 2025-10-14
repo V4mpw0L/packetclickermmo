@@ -690,13 +690,25 @@ function renderGame() {
       ${clickBtn}
       <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; background: rgba(76, 175, 80, 0.05);">
         <h3 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm); margin-bottom: 0.75rem;">${state.player.name || "Player"} Status</h3>
-        <div class="flex justify-between items-center text-sm" style="gap: 0.5rem;">
-          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-weight:600;">Packets/Click: <span style="color:#4ade80;">(</span><span class="event-number-glow">${effectivePerClick.toLocaleString("en-US")}</span><span style="color:#4ade80;">)</span></span>
-          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600;">Packets/Sec: <span style="color:#4ade80;">(</span><span class="event-number-glow">${effectivePerSec.toLocaleString("en-US")}</span><span style="color:#4ade80;">)</span></span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; text-align: center;">
+          <div style="padding:.5rem; border:1px solid var(--border-color); border-radius:8px; background:rgba(0,0,0,.25);">
+            <div style="color:#65ffda; font-weight:600; font-size:0.8rem; margin-bottom:0.25rem;">Packets/Click</div>
+            <div style="color:#4ade80;"><span class="event-number-glow">${effectivePerClick.toLocaleString("en-US")}</span></div>
+          </div>
+          <div style="padding:.5rem; border:1px solid var(--border-color); border-radius:8px; background:rgba(0,0,0,.25);">
+            <div style="color:#ffe08a; font-weight:600; font-size:0.8rem; margin-bottom:0.25rem;">Packets/Sec</div>
+            <div style="color:#4ade80;"><span class="event-number-glow">${effectivePerSec.toLocaleString("en-US")}</span></div>
+          </div>
         </div>
-        <div class="flex justify-between items-center text-sm" style="gap: 0.5rem; margin-top: 0.5rem;">
-          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600;">Crit Chance: <span style="color:#4ade80;">(</span><span class="event-number-glow">${Math.min(100, state.critChance + (eq.critChance || 0))}%</span><span style="color:#4ade80;">)</span></span>
-          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600;">Crit Multiplier: <span style="color:#4ade80;">(</span><span class="event-number-glow">${state.critMult.toLocaleString("en-US")}x</span><span style="color:#4ade80;">)</span></span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; text-align: center; margin-top: 0.75rem;">
+          <div style="padding:.5rem; border:1px solid var(--border-color); border-radius:8px; background:rgba(0,0,0,.25);">
+            <div style="color:#ff88ff; font-weight:600; font-size:0.8rem; margin-bottom:0.25rem;">Crit Chance</div>
+            <div style="color:#4ade80;"><span class="event-number-glow">${Math.min(100, state.critChance + (eq.critChance || 0))}%</span></div>
+          </div>
+          <div style="padding:.5rem; border:1px solid var(--border-color); border-radius:8px; background:rgba(0,0,0,.25);">
+            <div style="color:#ffd700; font-weight:600; font-size:0.8rem; margin-bottom:0.25rem;">Crit Multiplier</div>
+            <div style="color:#4ade80;"><span class="event-number-glow">${state.critMult.toLocaleString("en-US")}x</span></div>
+          </div>
         </div>
       </div>
       ${
