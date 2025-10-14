@@ -1,0 +1,647 @@
+/**
+ * Optimized Inventory System CSS
+ * Performance-focused styles for mobile devices
+ */
+
+/* === PERFORMANCE BASE === */
+.equipment-container {
+  contain: layout style;
+  max-width: 100%;
+  padding: var(--spacing-md);
+  box-sizing: border-box;
+}
+
+.equipment-container * {
+  box-sizing: border-box;
+}
+
+/* === EQUIPMENT SLOTS === */
+.equipment-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.equipment-slot {
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-sm);
+  transition: border-color 0.2s ease;
+  contain: layout style;
+  min-height: 85px;
+  position: relative;
+}
+
+.equipment-slot-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  opacity: 0.6;
+  height: 100%;
+}
+
+.slot-icon {
+  width: 32px;
+  height: 32px;
+  border: 2px dashed var(--border-color);
+  border-radius: 50%;
+  opacity: 0.5;
+}
+
+.slot-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.equipment-slot-filled {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  height: 100%;
+}
+
+.slot-item-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--border-radius-sm);
+  object-fit: cover;
+  contain: layout;
+  image-rendering: -webkit-optimize-contrast;
+  flex-shrink: 0;
+}
+
+.slot-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.slot-item-name {
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slot-item-stats {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.unequip-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 48, 64, 0.8);
+  border: 1px solid #ff3040;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.unequip-btn:hover {
+  background: rgba(255, 48, 64, 1);
+}
+
+/* === EQUIPMENT STATS === */
+.equipment-stats {
+  background: linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1));
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+}
+
+.stats-title {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  opacity: 0.8;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.stat-pill {
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.25);
+  font-weight: 600;
+  font-size: var(--font-size-xs);
+  min-width: 70px;
+}
+
+.stat-click { color: #65ffda; }
+.stat-sec { color: #ffe08a; }
+.stat-crit { color: #ff88ff; }
+
+/* === INVENTORY HEADER === */
+.inventory-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.inventory-title {
+  font-weight: 800;
+  font-size: var(--font-size-sm);
+}
+
+.inventory-count {
+  font-size: var(--font-size-xs);
+  padding: 0.15rem 0.55rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));
+  opacity: 0.9;
+}
+
+/* === INVENTORY PROGRESS === */
+.inventory-progress {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: #22313f;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  margin-bottom: var(--spacing-sm);
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #ff0080 0%, #00ff80 25%, #8000ff 50%, #ff8000 75%, #ff0080 100%);
+  background-size: 400% 100%;
+  transition: width 0.3s ease;
+  animation: progressRainbow 3s linear infinite;
+}
+
+@keyframes progressRainbow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 400% 50%; }
+}
+
+/* === INVENTORY ACTIONS === */
+.inventory-actions {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.sell-all-btn {
+  background: linear-gradient(135deg, #ff3040, #cc2030);
+  border: 1px solid #ff3040;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sell-all-btn:hover {
+  background: linear-gradient(135deg, #ff5060, #dd3040);
+  transform: translateY(-1px);
+}
+
+/* === INVENTORY GRID (Standard) === */
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  box-sizing: border-box;
+}
+
+/* Mobile responsive grid */
+@media (max-width: 480px) {
+  .inventory-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-xs);
+  }
+}
+
+@media (max-width: 360px) {
+  .inventory-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* === VIRTUAL SCROLLING === */
+.inventory-virtual-container {
+  height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  background: var(--bg-card);
+
+  /* Performance optimizations */
+  transform: translateZ(0);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  contain: strict;
+}
+
+.inventory-virtual-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.inventory-virtual-container::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.2);
+  border-radius: 4px;
+}
+
+.inventory-virtual-container::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+  opacity: 0.6;
+}
+
+.virtual-scroll-container {
+  position: relative;
+  contain: strict;
+  overflow: hidden;
+}
+
+.virtual-items {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  position: absolute;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Mobile responsive virtual grid */
+@media (max-width: 480px) {
+  .virtual-items {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 360px) {
+  .virtual-items {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* === INVENTORY ITEMS === */
+.inventory-item {
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: 0.3rem;
+  aspect-ratio: 1/1;
+  position: relative;
+
+  /* Performance optimizations */
+  contain: layout style;
+  will-change: transform;
+  backface-visibility: hidden;
+
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.inventory-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.item-btn {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.2rem;
+  cursor: pointer;
+  color: inherit;
+  font-family: inherit;
+}
+
+.item-icon-wrapper {
+  position: relative;
+  width: 72%;
+  height: 72%;
+  flex-shrink: 0;
+}
+
+.item-icon {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  object-fit: cover;
+
+  /* Performance optimizations */
+  contain: layout;
+  image-rendering: -webkit-optimize-contrast;
+  loading: lazy;
+  decoding: async;
+}
+
+.item-quantity {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: rgba(0,0,0,0.8);
+  border: 1px solid;
+  border-radius: 10px;
+  padding: 0 6px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.item-rarity {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
+/* === RARITY ANIMATIONS === */
+.celestial-animated {
+  animation: celestialRainbow 3s linear infinite;
+}
+
+.animal-animated {
+  animation: animalPulse 2s ease-in-out infinite;
+}
+
+@keyframes celestialRainbow {
+  0% { border-color: #ff0080; }
+  25% { border-color: #00ff80; }
+  50% { border-color: #8000ff; }
+  75% { border-color: #ff8000; }
+  100% { border-color: #ff0080; }
+}
+
+@keyframes animalPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(255, 48, 64, 0.4);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 10px rgba(255, 48, 64, 0.6);
+  }
+}
+
+/* === ITEM MODAL === */
+.item-modal {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.item-display {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.modal-item-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--border-radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.item-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-name {
+  font-weight: 900;
+  font-size: var(--font-size-lg);
+  margin: 0 0 var(--spacing-xs) 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.item-rarity {
+  font-size: var(--font-size-sm);
+  margin: 0 0 var(--spacing-sm) 0;
+  opacity: 0.9;
+}
+
+.item-stats {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.stat-tag {
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.25);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+/* === MODAL ACTIONS === */
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.slot-select {
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--border-radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+.modal-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: var(--touch-target-sm);
+}
+
+.modal-btn:hover {
+  background: var(--primary-color);
+  color: var(--bg-primary);
+  transform: translateY(-1px);
+}
+
+.modal-btn.sell-btn {
+  background: linear-gradient(135deg, #ff3040, #cc2030);
+  border-color: #ff3040;
+  color: white;
+}
+
+.modal-btn.sell-btn:hover {
+  background: linear-gradient(135deg, #ff5060, #dd3040);
+}
+
+/* === REDUCED MOTION === */
+@media (prefers-reduced-motion: reduce) {
+  .celestial-animated,
+  .animal-animated,
+  .progress-bar {
+    animation: none;
+  }
+
+  .inventory-item:hover,
+  .modal-btn:hover,
+  .sell-all-btn:hover,
+  .unequip-btn:hover {
+    transform: none;
+  }
+
+  * {
+    transition: none !important;
+  }
+}
+
+/* === LOW PERFORMANCE MODE === */
+.performance-low .celestial-animated,
+.performance-low .animal-animated {
+  animation: none;
+}
+
+.performance-low .inventory-item {
+  will-change: auto;
+  backface-visibility: visible;
+}
+
+.performance-low .progress-bar {
+  background: var(--primary-color);
+  animation: none;
+}
+
+/* === HIGH CONTRAST MODE === */
+@media (prefers-contrast: high) {
+  .inventory-item {
+    border-width: 3px;
+  }
+
+  .item-quantity {
+    background: black;
+    color: white;
+    border-width: 2px;
+  }
+
+  .stat-pill,
+  .stat-tag {
+    border-width: 2px;
+    background: black;
+  }
+}
+
+/* === DARK MODE ENHANCEMENTS === */
+@media (prefers-color-scheme: dark) {
+  .inventory-progress {
+    background: #1a2027;
+  }
+
+  .item-quantity {
+    background: rgba(0,0,0,0.9);
+  }
+}
+
+/* === MOBILE OPTIMIZATIONS === */
+@media (max-width: 768px) {
+  .equipment-container {
+    padding: var(--spacing-sm);
+  }
+
+  .equipment-grid {
+    gap: var(--spacing-xs);
+  }
+
+  .equipment-slot {
+    min-height: 70px;
+    padding: var(--spacing-xs);
+  }
+
+  .slot-item-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .inventory-virtual-container {
+    height: 300px;
+  }
+
+  .modal-btn {
+    min-height: 48px; /* Ensure touch targets are accessible */
+  }
+}
+
+/* === PERFORMANCE HINT CLASSES === */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.contain-layout {
+  contain: layout;
+}
+
+.contain-style {
+  contain: style;
+}
+
+.contain-paint {
+  contain: paint;
+}
+
+.contain-strict {
+  contain: strict;
+}
