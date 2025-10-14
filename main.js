@@ -568,7 +568,7 @@ function renderGame() {
   if (state.boosts.doublePackets > Date.now()) {
     let remaining = Math.ceil((state.boosts.doublePackets - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">📦 3x Packets (<span class="event-number-glow">${remaining}s</span>)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">📦 3x Packets <span style="color:#4ade80;">(</span><span class="event-number-glow">${remaining}s</span><span style="color:#4ade80;">)</span></span>`,
     );
     totalMultiplier *= 3;
   }
@@ -577,32 +577,32 @@ function renderGame() {
       (state.boosts.quadrupleClick - Date.now()) / 1000,
     );
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">⚡ 8x Click (<span class="event-number-glow">${remaining}s</span>)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">⚡ 8x Click <span style="color:#4ade80;">(</span><span class="event-number-glow">${remaining}s</span><span style="color:#4ade80;">)</span></span>`,
     );
     totalMultiplier *= 8;
   }
   if (state.boosts.megaCrit > Date.now()) {
     let remaining = Math.ceil((state.boosts.megaCrit - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🌟 75% Crit (<span class="event-number-glow">${remaining}s</span>)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🌟 75% Crit <span style="color:#4ade80;">(</span><span class="event-number-glow">${remaining}s</span><span style="color:#4ade80;">)</span></span>`,
     );
   }
   if (state.boosts.tripleGems > Date.now()) {
     let remaining = Math.ceil((state.boosts.tripleGems - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">✨ 5x Gems (<span class="event-number-glow">${remaining}s</span>)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">✨ 5x Gems <span style="color:#4ade80;">(</span><span class="event-number-glow">${remaining}s</span><span style="color:#4ade80;">)</span></span>`,
     );
   }
   if (state.boosts.autoClicker > Date.now()) {
     let remaining = Math.ceil((state.boosts.autoClicker - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🤖 +25/s Cyber (<span class="event-number-glow">${remaining}s</span>)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">🤖 +25/s Cyber <span style="color:#4ade80;">(</span><span class="event-number-glow">${remaining}s</span><span style="color:#4ade80;">)</span></span>`,
     );
   }
   if (state.boosts.ultraCombo > Date.now()) {
     let remaining = Math.ceil((state.boosts.ultraCombo - Date.now()) / 1000);
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid #ff0080; border-radius:999px; animation: celestialTextOnly 3s linear infinite; background:linear-gradient(45deg, rgba(255,0,128,0.2), rgba(0,255,128,0.2), rgba(128,0,255,0.2), rgba(255,128,0,0.2)); font-weight:600; font-size:0.75rem; white-space:nowrap;">🚀 10x QUANTUM (<span style="animation: celestialTextOnly 3s linear infinite; font-weight:bold;">${remaining}s</span>)</span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid #ff0080; border-radius:999px; animation: celestialTextOnly 3s linear infinite; background:linear-gradient(45deg, rgba(255,0,128,0.2), rgba(0,255,128,0.2), rgba(128,0,255,0.2), rgba(255,128,0,0.2)); font-weight:600; font-size:0.75rem; white-space:nowrap;">🚀 10x QUANTUM <span style="color:#4ade80;">(</span><span style="animation: celestialTextOnly 3s linear infinite; font-weight:bold;">${remaining}s</span><span style="color:#4ade80;">)</span></span>`,
     );
     totalMultiplier *= 10;
   }
@@ -611,7 +611,7 @@ function renderGame() {
   if (state.prestige.level > 0) {
     totalMultiplier *= 1 + state.prestige.level * 0.03;
     boostPills.push(
-      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#c084fc; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;"><img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:0.85rem;height:0.85rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Bonus: <span class="event-number-glow">+${state.prestige.level * 3}%</span></span>`,
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#c084fc; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;"><img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:0.85rem;height:0.85rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;"/> Prestige Bonus: <span style="color:#4ade80;">(</span><span class="event-number-glow">+${state.prestige.level * 3}%</span><span style="color:#4ade80;">)</span></span>`,
     );
   }
 
@@ -691,12 +691,12 @@ function renderGame() {
       <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; background: rgba(76, 175, 80, 0.05);">
         <h3 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm); margin-bottom: 0.75rem;">${state.player.name || "Player"} Status</h3>
         <div class="flex justify-between items-center text-sm" style="gap: 0.5rem;">
-          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-weight:600;">Packets/Click: <span class="event-number-glow">${effectivePerClick.toLocaleString("en-US")}</span></span>
-          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600;">Packets/Sec: <span class="event-number-glow">${effectivePerSec.toLocaleString("en-US")}</span></span>
+          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#65ffda; background:rgba(0,0,0,.25); font-weight:600;">Packets/Click: <span style="color:#4ade80;">(</span><span class="event-number-glow">${effectivePerClick.toLocaleString("en-US")}</span><span style="color:#4ade80;">)</span></span>
+          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffe08a; background:rgba(0,0,0,.25); font-weight:600;">Packets/Sec: <span style="color:#4ade80;">(</span><span class="event-number-glow">${effectivePerSec.toLocaleString("en-US")}</span><span style="color:#4ade80;">)</span></span>
         </div>
         <div class="flex justify-between items-center text-sm" style="gap: 0.5rem; margin-top: 0.5rem;">
-          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600;">Crit Chance: <span class="event-number-glow">${Math.min(100, state.critChance + (eq.critChance || 0))}%</span></span>
-          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600;">Crit Multiplier: <span class="event-number-glow">${state.critMult.toLocaleString("en-US")}x</span></span>
+          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ff88ff; background:rgba(0,0,0,.25); font-weight:600;">Crit Chance: <span style="color:#4ade80;">(</span><span class="event-number-glow">${Math.min(100, state.critChance + (eq.critChance || 0))}%</span><span style="color:#4ade80;">)</span></span>
+          <span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#ffd700; background:rgba(0,0,0,.25); font-weight:600;">Crit Multiplier: <span style="color:#4ade80;">(</span><span class="event-number-glow">${state.critMult.toLocaleString("en-US")}x</span><span style="color:#4ade80;">)</span></span>
         </div>
       </div>
       ${

@@ -1427,19 +1427,28 @@ export function renderTab(state) {
       }
       @keyframes celestialRainbowBg {
         0% {
-          background: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080);
+          background: linear-gradient(
+            90deg,
+            #ff0080 0%,
+            #00ff80 25%,
+            #8000ff 50%,
+            #ff8000 75%,
+            #ff0080 100%
+          );
+          background-size: 400% 100%;
+          background-position: 0% 50%;
         }
         25% {
-          background: linear-gradient(135deg, #00ff80, #8000ff, #ff8000, #ff0080, #00ff80);
+          background-position: 25% 50%;
         }
         50% {
-          background: linear-gradient(225deg, #8000ff, #ff8000, #ff0080, #00ff80, #8000ff);
+          background-position: 50% 50%;
         }
         75% {
-          background: linear-gradient(315deg, #ff8000, #ff0080, #00ff80, #8000ff, #ff8000);
+          background-position: 75% 50%;
         }
         100% {
-          background: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000, #ff0080);
+          background-position: 100% 50%;
         }
       }
     </style>
@@ -1469,8 +1478,8 @@ export function renderTab(state) {
         <span style="font-weight:800;">Inventory</span>
         <span class="text-xs event-number-glow" style="opacity:.9; padding:.15rem .55rem; border:1px solid var(--border-color); border-radius:999px; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">${Math.min(totalItems, capacity)}/${capacity}</span>
       </div>
-      <div style="position:relative; height:10px; border-radius:999px; background:#22313f; border:1px solid var(--border-color); overflow:hidden; margin-bottom:.25rem;">
-        <div style="height:100%; width:${percent}%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));"></div>
+      <div style="position:relative; height:8px; border-radius:999px; background:#22313f; border:1px solid var(--border-color); overflow:hidden; margin-bottom:.25rem;">
+        <div style="height:100%; width: ${percent}%; background: linear-gradient(90deg, #ff0080 0%, #00ff80 25%, #8000ff 50%, #ff8000 75%, #ff0080 100%); background-size: 400% 100%; animation: celestialRainbowBg 3s linear infinite; transition: width 0.3s ease;"></div>
       </div>
       <div class="text-xs event-number-glow" style="text-align:center; margin:.15rem 0 .35rem; letter-spacing:.02em; font-weight:700;">${percent}%</div>
       <div style="display: flex; justify-content: center; margin-bottom: .5rem;">
@@ -1758,7 +1767,7 @@ export function bindEvents(root, { state, save, rerender, notify } = {}) {
               break;
           }
 
-          return `<button class="neon-btn w-full mb-2" data-sell-rarity="${rarity}" style="${rarity === "celestial" ? "animation: celestialRainbow 3s linear infinite, celestialRainbowBg 3s linear infinite; color: white; border-color: #ffffff; transition: all 0.3s ease;" : `background: ${backgroundColor}; color: ${textColor}; border-color: ${rarity === "all" ? "#666" : rarityById(rarity).color};`}">${label}</button>`;
+          return `<button class="neon-btn w-full mb-2" data-sell-rarity="${rarity}" style="${rarity === "celestial" ? "animation: celestialRainbow 3s linear infinite; background: linear-gradient(90deg, #ff0080 0%, #00ff80 25%, #8000ff 50%, #ff8000 75%, #ff0080 100%); background-size: 400% 100%; animation: celestialRainbow 3s linear infinite, celestialRainbowBg 3s linear infinite; color: white; border-color: #ffffff;" : `background: ${backgroundColor}; color: ${textColor}; border-color: ${rarity === "all" ? "#666" : rarityById(rarity).color};`}">${label}</button>`;
         })
         .join("");
 
