@@ -1398,10 +1398,10 @@ function renderShop() {
         (item.id === "skinElite" && state.shop.skinBought);
       return renderButton({
         className: `shop-cosmetic-btn ${owned ? "shop-owned" : ""}`,
-        label: `<div class="shop-item-content" style="min-height:56px;">
+        label: `<div class="shop-item-content">
           <div class="shop-item-icon">🎨</div>
-          <div class="shop-item-name" style="font-size:.75rem;">${item.label}</div>
-          <div class="shop-item-price" style="font-size:.7rem;">
+          <div class="shop-item-name" style="font-size:.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.label}</div>
+          <div class="shop-item-price" style="font-size:.7rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
             ${
               owned
                 ? '<span class="shop-owned-text">✓</span>'

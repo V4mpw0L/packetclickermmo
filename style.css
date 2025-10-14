@@ -1024,10 +1024,40 @@ body .modal-box .space-y-3 > * + * {
     transition: all 0.3s ease;
 }
 
+/* Ensure cosmetic tiles are uniform squares and text doesn't wrap */
+.shop-cosmetic-btn .shop-item-content {
+    min-height: 75px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.4rem;
+    text-align: center;
+}
+
+.shop-cosmetic-btn .shop-item-icon {
+    font-size: 1.1rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-bottom: 0.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .shop-cosmetic-btn .shop-item-name,
-.shop-cosmetic-btn .shop-item-desc,
 .shop-cosmetic-btn .shop-item-price {
     color: #1a1a1a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.1;
+    max-width: 100%;
+}
+
+.shop-cosmetic-btn .shop-item-desc {
+    display: none;
 }
 
 .shop-cosmetic-btn:hover:not(.shop-owned) {
