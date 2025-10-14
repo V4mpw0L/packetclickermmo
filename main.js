@@ -2323,7 +2323,7 @@ function showEditProfile() {
       : "";
 
   let avatarList = `
-    <div id="avatar-container" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;max-height:200px;overflow:hidden;padding:4px;">
+    <div id="avatar-container" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;max-height:200px;overflow:hidden;padding:4px 8px 4px 4px;">
       ${renderAvatarPage(currentPage)}
     </div>
     ${avatarPagination}

@@ -2326,7 +2326,7 @@ img[src*="seed=ShadowNinja"] {
     padding: 0.5rem;
     background: rgba(0, 0, 0, 0.2);
     min-height: 70px;
-    margin: 2px;
+    margin: 2px 4px 2px 2px;
 }
 
 .avatar-choice-small.selected {
