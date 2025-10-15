@@ -273,7 +273,7 @@
         id: "xpBoostCelestial",
         name: "🌟 Celestial Wisdom",
         desc: "50% XP gain for 30 seconds",
-        gems: 150,
+        gems: 999,
         duration: 30000,
         icon: "⭐",
         rarity: "celestial",
