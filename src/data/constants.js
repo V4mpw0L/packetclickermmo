@@ -138,13 +138,13 @@
 
     // Daily rewards progression (7-day loop/cap) - Enhanced rewards!
     var DAILY_REWARDS = [
-      { day: 1, gems: 3, packets: 250, bonus: "Welcome Back!" },
-      { day: 2, gems: 6, packets: 500, bonus: "Building Momentum" },
-      { day: 3, gems: 10, packets: 1000, bonus: "Getting Stronger" },
-      { day: 4, gems: 15, packets: 2500, bonus: "Power Surge" },
-      { day: 5, gems: 25, packets: 5000, bonus: "Dedication Pays Off" },
-      { day: 6, gems: 40, packets: 10000, bonus: "Almost There!" },
-      { day: 7, gems: 75, packets: 25000, bonus: "🎉 WEEKLY CHAMPION!" },
+      { day: 1, gems: 10, packets: 1000, bonus: "Welcome Back!" },
+      { day: 2, gems: 25, packets: 2500, bonus: "Building Momentum" },
+      { day: 3, gems: 50, packets: 5000, bonus: "Getting Stronger" },
+      { day: 4, gems: 100, packets: 15000, bonus: "Power Surge" },
+      { day: 5, gems: 200, packets: 35000, bonus: "Dedication Pays Off" },
+      { day: 6, gems: 350, packets: 75000, bonus: "Almost There!" },
+      { day: 7, gems: 500, packets: 150000, bonus: "🎉 WEEKLY CHAMPION!" },
     ];
 
     // Prestige upgrades catalog

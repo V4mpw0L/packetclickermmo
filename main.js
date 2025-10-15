@@ -2366,30 +2366,29 @@ function renderDaily() {
     let statusIcon = claimed ? "✓" : current ? "★" : index + 1;
 
     return `
-      <div style="border: 2px solid ${claimed ? "#4ade80" : current ? "#ffd700" : "var(--border-color)"}; border-radius: 8px; padding: 0.75rem; background: ${claimed ? "rgba(74, 222, 128, 0.1)" : current ? "rgba(255, 215, 0, 0.1)" : "rgba(0,0,0,.15)"}; text-align: center; position: relative; ${current ? "animation: dailyPulse 2s ease-in-out infinite;" : ""}" data-day="${index + 1}">
-        <div style="margin-bottom: 0.5rem;">
-          <div style="width: 32px; height: 32px; border-radius: 50%; background: ${claimed ? "#4ade80" : current ? "#ffd700" : "var(--border-color)"}; color: ${claimed || current ? "#000" : "#fff"}; display: flex; align-items: center; justify-content: center; font-weight: bold; margin: 0 auto;">
+      <div style="border: 2px solid ${claimed ? "#4ade80" : current ? "#ffd700" : "var(--border-color)"}; border-radius: 12px; padding: 1rem; background: ${claimed ? "rgba(74, 222, 128, 0.1)" : current ? "rgba(255, 215, 0, 0.1)" : "rgba(0,0,0,.15)"}; text-align: center; position: relative; ${current ? "animation: dailyPulse 2s ease-in-out infinite;" : ""}" data-day="${index + 1}">
+        <div style="margin-bottom: 1rem;">
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: ${claimed ? "#4ade80" : current ? "#ffd700" : "var(--border-color)"}; color: ${claimed || current ? "#000" : "#fff"}; display: flex; align-items: center; justify-content: center; font-weight: bold; margin: 0 auto; font-size: 1.2rem;">
             ${statusIcon}
           </div>
           ${current ? '<div style="position: absolute; top: -4px; right: -4px; width: 12px; height: 12px; background: #ffd700; border-radius: 50%; animation: dailyPulse 1s ease-in-out infinite;"></div>' : ""}
         </div>
 
-        <div style="margin-bottom: 0.5rem;">
-          <div style="font-size: 0.8rem; font-weight: bold; color: var(--text-primary); margin-bottom: 0.5rem;">Day ${reward.day}</div>
+        <div style="font-size: 0.9rem; font-weight: bold; color: var(--text-primary); margin-bottom: 1rem;">Day ${reward.day}</div>
 
-          <div style="display: flex; flex-direction: column; gap: 0.25rem;">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 0.25rem;">
-              <img src="src/assets/gem.png" alt="Gems" style="width: 16px; height: 16px;" />
-              <span style="font-size: 0.8rem; color: #ffd700; font-weight: 600;">${reward.gems.toLocaleString()}</span>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 0.25rem;">
-              <span class="icon-packet" style="font-size: 0.8rem;"></span>
-              <span style="font-size: 0.8rem; color: #4ade80; font-weight: 600;">${reward.packets.toLocaleString()}</span>
-            </div>
-          </div>
-
-          ${reward.bonus ? `<div style="font-size: 0.7rem; color: #f4e29f; font-style: italic; margin-top: 0.5rem;">${reward.bonus}</div>` : ""}
+        <!-- Beautiful Gem Card -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.75rem; padding: 0.75rem; background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05)); border: 1px solid #ffd700; border-radius: 8px; box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);">
+          <img src="src/assets/gem.png" alt="Gems" style="width: 20px; height: 20px;" />
+          <span style="font-size: 1rem; color: #ffd700; font-weight: 700;">${reward.gems.toLocaleString()}</span>
         </div>
+
+        <!-- Beautiful Packets Card -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; padding: 0.75rem; background: linear-gradient(135deg, rgba(29, 233, 182, 0.1), rgba(29, 233, 182, 0.05)); border: 1px solid var(--primary-color); border-radius: 8px; box-shadow: 0 0 8px rgba(29, 233, 182, 0.2);">
+          <span class="icon-packet" style="font-size: 1rem;"></span>
+          <span style="font-size: 1rem; color: var(--primary-color); font-weight: 700;">${reward.packets.toLocaleString()}</span>
+        </div>
+
+        ${reward.bonus ? `<div style="font-size: 0.8rem; color: #f4e29f; font-style: italic; font-weight: 600;">${reward.bonus}</div>` : ""}
       </div>
     `;
   }).join("");
@@ -2412,17 +2411,30 @@ function renderDaily() {
       ${
         canClaim
           ? `
-        <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; background: rgba(76, 175, 80, 0.05); margin-bottom: 1rem; text-align: center;">
-          <div style="font-size: 1.2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 0.5rem;">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.claimDay") : "Claim Day"} ${streak + 1}</div>
+        <div style="border: 2px solid var(--primary-color); border-radius: 12px; padding: 1.5rem; background: linear-gradient(135deg, rgba(29, 233, 182, 0.1), rgba(29, 233, 182, 0.05)); margin-bottom: 1rem; text-align: center; box-shadow: 0 0 20px rgba(29, 233, 182, 0.2);">
+          <div style="font-size: 1.3rem; font-weight: bold; color: var(--primary-color); margin-bottom: 1rem;">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.claimDay") : "Claim Day"} ${streak + 1}</div>
+
           <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 1rem;">
-            <span style="display: flex; align-items: center; gap: 0.25rem; color: #ffd700; font-weight: 600;">
-              ${nextReward.gems.toLocaleString()} <img src="src/assets/gem.png" alt="Gems" style="width: 16px; height: 16px;" />
-            </span>
-            <span style="display: flex; align-items: center; gap: 0.25rem; color: #4ade80; font-weight: 600;">
-              ${nextReward.packets.toLocaleString()} <span class="icon-packet" style="font-size: 0.8rem;"></span>
-            </span>
+            <!-- Beautiful Gem Reward Card -->
+            <div style="flex: 1; max-width: 180px; padding: 1rem; background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05)); border: 2px solid #ffd700; border-radius: 10px; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);">
+              <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <img src="src/assets/gem.png" alt="Gems" style="width: 24px; height: 24px;" />
+                <span style="font-size: 1.2rem; color: #ffd700; font-weight: 700;">${nextReward.gems.toLocaleString()}</span>
+              </div>
+              <div style="font-size: 0.8rem; color: #ffd700; opacity: 0.8;">Gems</div>
+            </div>
+
+            <!-- Beautiful Packet Reward Card -->
+            <div style="flex: 1; max-width: 180px; padding: 1rem; background: linear-gradient(135deg, rgba(29, 233, 182, 0.15), rgba(29, 233, 182, 0.05)); border: 2px solid var(--primary-color); border-radius: 10px; box-shadow: 0 0 15px rgba(29, 233, 182, 0.3);">
+              <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <span class="icon-packet" style="font-size: 1.2rem;"></span>
+                <span style="font-size: 1.2rem; color: var(--primary-color); font-weight: 700;">${nextReward.packets.toLocaleString()}</span>
+              </div>
+              <div style="font-size: 0.8rem; color: var(--primary-color); opacity: 0.8;">Packets</div>
+            </div>
           </div>
-          ${nextReward.bonus ? `<div style="color: #f4e29f; font-style: italic; margin-bottom: 1rem;">${nextReward.bonus}</div>` : ""}
+
+          ${nextReward.bonus ? `<div style="color: #f4e29f; font-style: italic; margin-bottom: 1rem; font-weight: 600; font-size: 1rem;">${nextReward.bonus}</div>` : ""}
           ${renderButton({
             id: "claim-daily",
             className: "neon-btn",
