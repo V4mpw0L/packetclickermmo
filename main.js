@@ -715,39 +715,22 @@ function getLevelInfo() {
       window.Packet.data.getLevelFromXP) ||
     calculateLevelFromXP;
 
-  const result = getLevelFromXP(state.level.totalXP);
-  console.log(
-    "[Level Debug] Total XP:",
-    state.level.totalXP,
-    "Level Info:",
-    result,
-  );
-  return result;
+  return getLevelFromXP(state.level.totalXP);
 }
 
 function updateLevelDisplay() {
   const levelInfo = getLevelInfo();
-  console.log("[Level Debug] Updating display with:", levelInfo);
 
   // Update level display
   const levelDisplay = document.getElementById("level-display");
   if (levelDisplay) {
     levelDisplay.textContent = `Lv. ${levelInfo.level}`;
-    console.log(
-      "[Level Debug] Updated level display to:",
-      levelDisplay.textContent,
-    );
-  } else {
-    console.error("[Level Debug] Could not find level-display element");
   }
 
   // Update XP display
   const xpDisplay = document.getElementById("level-xp-display");
   if (xpDisplay) {
     xpDisplay.textContent = `${levelInfo.currentXP}/${levelInfo.xpRequired}`;
-    console.log("[Level Debug] Updated XP display to:", xpDisplay.textContent);
-  } else {
-    console.error("[Level Debug] Could not find level-xp-display element");
   }
 
   // Update progress bar
@@ -755,7 +738,6 @@ function updateLevelDisplay() {
   if (progressFill) {
     const percentage = (levelInfo.currentXP / levelInfo.xpRequired) * 100;
     progressFill.style.width = `${Math.min(100, percentage)}%`;
-    console.log("[Level Debug] Updated progress bar to:", percentage + "%");
 
     // Add glow effect when close to leveling up (80%+)
     if (percentage >= 80) {
@@ -766,8 +748,6 @@ function updateLevelDisplay() {
       progressFill.style.boxShadow = "0 0 8px rgba(29, 233, 182, 0.4)";
       progressFill.style.animation = "";
     }
-  } else {
-    console.error("[Level Debug] Could not find level-progress-fill element");
   }
 
   // Update state level for consistency
@@ -779,30 +759,12 @@ function gainXP(amount) {
     state.level = { currentLevel: 1, totalXP: 0 };
   }
 
-  console.log(
-    "[XP Debug] Gaining XP:",
-    amount,
-    "Current total XP:",
-    state.level.totalXP,
-  );
   const oldLevelInfo = getLevelInfo();
   state.level.totalXP += amount;
   const newLevelInfo = getLevelInfo();
-  console.log(
-    "[XP Debug] Old level:",
-    oldLevelInfo.level,
-    "New level:",
-    newLevelInfo.level,
-  );
 
   // Check for level up
   if (newLevelInfo.level > oldLevelInfo.level) {
-    console.log(
-      "[Level Debug] LEVEL UP! From",
-      oldLevelInfo.level,
-      "to",
-      newLevelInfo.level,
-    );
     showHudNotify(`Level Up! Reached Level ${newLevelInfo.level}!`, "⭐");
     if (state.player.sound) playSound("upgrade");
 
@@ -1075,9 +1037,6 @@ function renderGame() {
       }
       ${renderActiveEvent()}
       ${prestigeBtn}
-      <div style="margin-top: 1rem; padding: 0.5rem; background: rgba(255,0,0,0.1); border: 1px solid #ff4444; border-radius: 8px;">
-        <button id="test-level-btn" class="neon-btn" style="width: 100%; font-size: 0.9rem;">🧪 Test Level System (+50 XP)</button>
-      </div>
     </div>
     ${adBanner}
   `;
@@ -4104,13 +4063,6 @@ function clickPacket(event) {
   const baseXP = 1; // Base XP per click
   const bonusXP = Math.floor(amount / 10); // 1 bonus XP per 10 packets gained
   const xpGained = baseXP + bonusXP;
-  console.log("[Click Debug] Packets gained:", amount, "XP to gain:", xpGained);
-
-  // Force ensure level system is initialized before gaining XP
-  if (!state.level) {
-    console.log("[Click Debug] Initializing level system on click");
-    state.level = { currentLevel: 1, totalXP: 0 };
-  }
 
   gainXP(xpGained);
 
@@ -5882,28 +5834,7 @@ function init() {
   window.save = save;
 
   // Initialize level display and then update top bar
-  console.log("[Init Debug] Initializing level display...");
-
-  // Wait for DOM to be ready before updating level display
   setTimeout(() => {
-    console.log("[Init Debug] Checking if level elements exist...");
-    const levelDisplay = document.getElementById("level-display");
-    const xpDisplay = document.getElementById("level-xp-display");
-    const progressFill = document.getElementById("level-progress-fill");
-    const container = document.getElementById("level-progress-container");
-
-    console.log("[Init Debug] Level elements found:", {
-      levelDisplay: !!levelDisplay,
-      xpDisplay: !!xpDisplay,
-      progressFill: !!progressFill,
-      container: !!container,
-    });
-
-    if (container) {
-      container.style.display = "flex";
-      console.log("[Init Debug] Made level container visible");
-    }
-
     updateLevelDisplay();
     updateTopBar();
   }, 100);
@@ -5917,18 +5848,6 @@ function init() {
   document.addEventListener("click", (e) => {
     if (e.target.closest("#gem-pill-clickable")) {
       setTab("shop");
-    }
-  });
-
-  // Temporary test button for level system debugging
-  document.addEventListener("click", (e) => {
-    if (e.target.id === "test-level-btn") {
-      console.log("[Test] Testing level system...");
-      if (!state.level) {
-        state.level = { currentLevel: 1, totalXP: 0 };
-      }
-      gainXP(50);
-      console.log("[Test] Added 50 XP, total XP now:", state.level.totalXP);
     }
   });
 
