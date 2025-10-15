@@ -2009,7 +2009,7 @@ function renderShop() {
   // Assemble sections with 3x2 grid and per-category pagination
   const gemsSection = section(
     "gems",
-    "💎 Premium Gems",
+    "Premium Gems",
     "Support development & get gems",
     gemButtons,
   );
@@ -2026,17 +2026,12 @@ function renderShop() {
 
   const skinSection =
     skinButtons.length > 0
-      ? section(
-          "skin",
-          "🎨 Cosmetics",
-          "Customize your appearance",
-          skinButtons,
-        )
+      ? section("skin", "Cosmetics", "Customize your appearance", skinButtons)
       : "";
 
   const utilSection =
     utilButtons.length > 0
-      ? section("util", "⚡ Utilities", "Enhance your experience", utilButtons)
+      ? section("util", "Utilities", "Enhance your experience", utilButtons)
       : "";
 
   return `
