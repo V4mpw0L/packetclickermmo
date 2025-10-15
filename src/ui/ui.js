@@ -164,17 +164,11 @@
     hud.style.zIndex = "1500";
     hud.style.maxWidth = "90vw";
     hud.style.wordWrap = "break-word";
-
-    const closeBtn = document.createElement("button");
-    closeBtn.innerHTML = "×";
-    closeBtn.className = "hud-close-btn";
-    addTrackedEvent(closeBtn, "click", function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (hud && hud.parentNode) hud.parentNode.removeChild(hud);
-    });
-
-    hud.appendChild(closeBtn);
+    hud.style.textAlign = "center";
+    hud.style.display = "flex";
+    hud.style.alignItems = "center";
+    hud.style.justifyContent = "center";
+    hud.style.gap = "0.5rem";
     document.body.appendChild(hud);
 
     // Animate in

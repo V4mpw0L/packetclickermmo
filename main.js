@@ -21,6 +21,10 @@ if (typeof window !== "undefined") {
       buyBoost,
       showAdminPanel,
       Equipment,
+      gainXP,
+      showLevelUpModal,
+      getLevelInfo,
+      updateLevelDisplay,
     });
   } catch (e) {
     // no-op
@@ -765,7 +769,6 @@ function gainXP(amount) {
 
   // Check for level up
   if (newLevelInfo.level > oldLevelInfo.level) {
-    showHudNotify(`Level Up! Reached Level ${newLevelInfo.level}!`, "⭐");
     if (state.player.sound) playSound("upgrade");
 
     // Visual celebration for level up
@@ -777,11 +780,99 @@ function gainXP(amount) {
       }, 1000);
     }
 
+    // Show beautiful level up modal
+    showLevelUpModal(newLevelInfo.level, oldLevelInfo.level);
+
     // Check for level-based achievements
     checkAchievements();
   }
 
   updateLevelDisplay();
+}
+
+// Beautiful Level Up Modal
+function showLevelUpModal(newLevel, oldLevel) {
+  const levelDiff = newLevel - oldLevel;
+
+  // Create special level up modal that auto-closes
+  if (typeof document === "undefined") return;
+
+  const backdrop = document.getElementById("modal-backdrop");
+  const modal = document.getElementById("modal");
+  if (!backdrop || !modal) return;
+
+  // Get current scroll position to center modal
+  const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+  const viewportHeight =
+    window.innerHeight || document.documentElement.clientHeight || 600;
+
+  backdrop.classList.remove("hidden");
+  backdrop.setAttribute("aria-hidden", "false");
+  modal.classList.remove("hidden");
+
+  // Position backdrop to follow scroll position
+  backdrop.style.position = "absolute";
+  backdrop.style.top = `${scrollY}px`;
+  backdrop.style.height = `${Math.max(viewportHeight, 400)}px`;
+  backdrop.style.width = "100%";
+  backdrop.style.left = "0";
+
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("tabindex", "-1");
+
+  const title = levelDiff > 1 ? `🌟 Multiple Level Up!` : `⭐ Level Up!`;
+
+  modal.innerHTML = `
+    <div style="text-align: center; padding: 2rem;">
+      <div style="font-size: 4rem; margin-bottom: 1rem; animation: levelUpCelebration 2s ease-in-out infinite;">
+        ${levelDiff > 1 ? "🌟" : "⭐"}
+      </div>
+      <h2 style="font-size: 2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 1rem; text-shadow: 0 0 10px rgba(29, 233, 182, 0.5);">
+        ${title}
+      </h2>
+      <div style="font-size: 1.3rem; font-weight: bold; color: var(--text-primary); margin-bottom: 0.5rem;">
+        ${levelDiff > 1 ? `Levels ${oldLevel} → ${newLevel}!` : `Level ${newLevel}!`}
+      </div>
+      <div style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1rem;">
+        ${levelDiff > 1 ? `Amazing! You gained ${levelDiff} levels!` : "Congratulations on reaching the next level!"}
+      </div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin: 1.5rem 0; padding: 1rem; background: linear-gradient(135deg, rgba(29, 233, 182, 0.15), rgba(29, 233, 182, 0.05)); border: 2px solid var(--primary-color); border-radius: 12px; box-shadow: 0 0 20px rgba(29, 233, 182, 0.3);">
+        <span style="font-size: 1.5rem;">🎯</span>
+        <span style="color: var(--text-primary); font-weight: 600;">Keep clicking to gain more XP!</span>
+      </div>
+      <div style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic; margin-top: 1rem;">
+        This modal will close automatically in 3 seconds...
+      </div>
+    </div>
+  `;
+
+  // Auto-close after 3 seconds
+  setTimeout(() => {
+    if (backdrop && modal) {
+      backdrop.classList.add("hidden");
+      backdrop.setAttribute("aria-hidden", "true");
+      modal.classList.add("hidden");
+    }
+  }, 3000);
+
+  // Allow manual close by clicking backdrop
+  const closeOnClick = (e) => {
+    if (e.target === backdrop) {
+      backdrop.classList.add("hidden");
+      backdrop.setAttribute("aria-hidden", "true");
+      modal.classList.add("hidden");
+      backdrop.removeEventListener("click", closeOnClick);
+    }
+  };
+  backdrop.addEventListener("click", closeOnClick);
+
+  // Focus modal
+  setTimeout(() => {
+    if (typeof modal.focus === "function") {
+      modal.focus();
+    }
+  }, 100);
 }
 
 function updateTopBar() {
