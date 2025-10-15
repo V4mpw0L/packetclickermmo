@@ -825,9 +825,33 @@ function gainXP(amount) {
       console.warn("[Level Up] Failed to submit to leaderboard:", e);
     }
 
-    // Update HUD immediately
+    // Update HUD and force leaderboard display refresh immediately
     updateTopBar();
     if (typeof renderTab === "function") renderTab();
+
+    // Force immediate leaderboard display update with current data
+    if (state.leaderboardLive && Array.isArray(state.leaderboardLive)) {
+      const myId =
+        typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId
+          ? Leaderboard.getDeviceId()
+          : state.player.name;
+      const myIndex = state.leaderboardLive.findIndex(
+        (p) => p && p.id === myId,
+      );
+      if (myIndex >= 0) {
+        // Update my entry immediately with new level
+        state.leaderboardLive[myIndex] = {
+          ...state.leaderboardLive[myIndex],
+          level: newLevelInfo.level,
+          prestigeLevel: state.prestige.level,
+          packets: state.packets,
+        };
+        // Force leaderboard re-render
+        if (activeTab === "leaderboard" && typeof renderTab === "function") {
+          renderTab();
+        }
+      }
+    }
   }
 
   updateLevelDisplay();
@@ -978,7 +1002,7 @@ function updateTopBar() {
   let badge = document.getElementById("vip-badge");
 
   // Pills to show under the name (centered by CSS)
-  let packets = `<span class="ml-2 text-neon-green font-bold" id="packets-bar" style="font-size:1em;display:inline-block;min-width:65px;text-align:right;"><span class="icon-packet"></span> <span class="event-number-glow">${state.packets.toLocaleString("en-US")}</span></span>`;
+  let packets = `<span class="ml-2 text-neon-green font-bold" id="packets-bar" style="font-size:1em;display:inline-block;min-width:65px;text-align:right;"><span class="icon-packet"></span> <span class="event-number-glow">${formatCompactNumber(state.packets)}</span></span>`;
   let gemPill = `<span id="gem-pill-clickable" class="ml-2 text-neon-green font-bold" style="font-size:1em;display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .5rem;border:1px solid var(--border-color);border-radius:999px;background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));cursor:pointer;transition:all 0.2s ease;"><img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/><span class="event-number-glow">${state.gems.toLocaleString("en-US")}</span></span>`;
 
   if (isVIP()) {
@@ -5603,9 +5627,31 @@ function doPrestige() {
     console.warn("[Prestige] Failed to submit to leaderboard:", e);
   }
 
-  // Update HUD immediately
+  // Update HUD and force leaderboard display refresh immediately
   updateTopBar();
   if (typeof renderTab === "function") renderTab();
+
+  // Force immediate leaderboard display update with current data
+  if (state.leaderboardLive && Array.isArray(state.leaderboardLive)) {
+    const myId =
+      typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId
+        ? Leaderboard.getDeviceId()
+        : state.player.name;
+    const myIndex = state.leaderboardLive.findIndex((p) => p && p.id === myId);
+    if (myIndex >= 0) {
+      // Update my entry immediately with new prestige level
+      state.leaderboardLive[myIndex] = {
+        ...state.leaderboardLive[myIndex],
+        level: getLevelInfo().level,
+        prestigeLevel: state.prestige.level,
+        packets: state.packets,
+      };
+      // Force leaderboard re-render
+      if (activeTab === "leaderboard" && typeof renderTab === "function") {
+        renderTab();
+      }
+    }
+  }
 }
 
 function buyPrestigeUpgrade(upgradeId) {
