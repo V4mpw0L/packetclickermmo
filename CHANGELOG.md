@@ -1,6 +1,6 @@
 # 📝 Changelog - Packet Clicker
 
-## Version 0.0.36 - Avatar System Expansion & UI Polish
+## Version 0.0.37 - Avatar System Expansion & UI Polish
 *Released: January 2025*
 
 ### 🖼️ **Avatar Shop Expansion**

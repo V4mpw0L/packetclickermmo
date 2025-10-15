@@ -352,7 +352,7 @@
       merged.upgrades.idle = Math.max(0, Number(merged.upgrades.idle) || 0);
       merged.upgrades.crit = Math.max(0, Number(merged.upgrades.crit) || 0);
 
-      // Ensure level system properties exist for v0.0.36+
+      // Ensure level system properties exist for v0.0.37+
       if (!merged.level || typeof merged.level !== "object") {
         merged.level = defaults.level;
       }
@@ -362,7 +362,7 @@
       );
       merged.level.totalXP = Math.max(0, Number(merged.level.totalXP) || 0);
 
-      // Ensure all equipment/inventory properties exist for v0.0.36+
+      // Ensure all equipment/inventory properties exist for v0.0.37+
       if (!Array.isArray(merged.inventory)) merged.inventory = [];
       if (!merged.equipment || typeof merged.equipment !== "object") {
         merged.equipment = {};
