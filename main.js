@@ -2160,14 +2160,15 @@ function showMobileCursorFeedback() {
 // =============== LEADERBOARD TAB ===============
 // Helper function to format large numbers compactly
 function formatCompactNumber(num) {
-  if (num >= 1e12) return (num / 1e12).toFixed(3) + "T";
+  if (num >= 1e12)
+    return (num / 1e12).toFixed(3) + '<span style="color: #a855f7;">T</span>';
   if (num >= 1e9)
-    return (
-      (num / 1e9).toFixed(3) +
-      '<span style="color: #ffd700; text-shadow: 0 0 8px #ffd700, 0 0 16px #ffd700;">B</span>'
-    );
+    return (num / 1e9).toFixed(3) + '<span style="color: #22d3ee;">B</span>';
   if (num >= 1e6)
-    return (num / 1e6).toFixed(3) + '<span style="color: #ffd700;">M</span>';
+    return (
+      (num / 1e6).toFixed(3) +
+      '<span style="color: #ffd700; text-shadow: 0 0 4px #ffd700;">M</span>'
+    );
   if (num >= 1e3)
     return (num / 1e3).toFixed(3) + '<span style="color: #c0c0c0;">K</span>';
   return num.toLocaleString("en-US");
