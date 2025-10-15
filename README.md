@@ -2,7 +2,7 @@
 
 > **The Ultimate Cyberpunk Idle Clicker Experience - Now with 100 Items, Epic Combos & Equipment System!**
 
-[![Version 0.0.35](https://img.shields.io/badge/Version-0.0.35-brightgreen.svg)]()
+[![Version 0.0.36](https://img.shields.io/badge/Version-0.0.36-brightgreen.svg)]()
 [![PWA Ready](https://img.shields.io/badge/PWA-Ready-blue.svg)](https://web.dev/progressive-web-apps/)
 [![Mobile Optimized](https://img.shields.io/badge/Mobile-Optimized-success.svg)]()
 [![Anti-Cheat](https://img.shields.io/badge/Anti--Cheat-Protected-red.svg)]()
@@ -286,7 +286,7 @@ const THEMES = {
 
 ## 📊 **Version History**
 
-### **Version 0.0.35** (Latest)
+### **Version 0.0.36** (Latest)
 - 🖼️ **Avatar Shop Expansion** - 6 new premium avatars (Stellar Phantom, Digital Titan, Prism Oracle, Flux Assassin, Neon Leviathan, Cosmic Emperor)
 - 🎨 **Edit Profile Improvements** - Compact avatar selection with pagination, auto-save on click, enhanced UI/UX
 - ✅ **Smart Avatar Management** - Instant save when selecting avatars, no manual save button needed
