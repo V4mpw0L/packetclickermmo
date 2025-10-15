@@ -6049,31 +6049,17 @@ function init() {
   }
   // Initialize Firebase leaderboard (uses module defaults); fallback to local bots on error
   try {
-    console.log("[DEBUG] Starting Leaderboard initialization...");
-    console.log("[DEBUG] Leaderboard module:", typeof Leaderboard);
-
     // Init unconditionally; module merges defaults and handles dynamic import
     Leaderboard.init({ collection: "leaderboard" });
-    console.log("[DEBUG] Leaderboard.init completed");
 
     // Live subscription (keeps UI in sync across devices)
     Leaderboard.subscribe(function (rows) {
-      console.log("[DEBUG] Leaderboard subscription received:", rows);
-      if (Array.isArray(rows) && rows.length > 0) {
-        console.log("[DEBUG] First player data:", {
-          name: rows[0].name,
-          packets: rows[0].packets,
-          level: rows[0].level,
-          prestigeLevel: rows[0].prestigeLevel,
-        });
-      }
       state.leaderboardLive = Array.isArray(rows) ? rows : [];
 
       // Immediately update HUD when leaderboard data changes
       if (typeof updateTopBar === "function") updateTopBar();
       if (typeof renderTab === "function") renderTab();
     });
-    console.log("[DEBUG] Leaderboard.subscribe completed");
 
     // Expose Leaderboard to window for debugging
     if (typeof window !== "undefined") {
@@ -6107,8 +6093,6 @@ function init() {
         level: getLevelInfo().level,
         prestigeLevel: state.prestige.level,
       };
-
-      console.log("[DEBUG] Regular leaderboard submission:", currentData);
 
       Leaderboard.submit(currentData, { throttleMs: 20000 });
     };

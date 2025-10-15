@@ -567,30 +567,6 @@ async function flushWrite() {
       prestigeLevel: payload.prestigeLevel,
     });
 
-    // Additional detailed logging for level/prestige debugging
-    console.log("[Leaderboard] DETAILED payload debug:", {
-      name: payload.name,
-      packets: payload.packets,
-      level: payload.level,
-      prestigeLevel: payload.prestigeLevel,
-      deviceId: payload.deviceId,
-      levelType: typeof payload.level,
-      prestigeType: typeof payload.prestigeLevel,
-      allKeys: Object.keys(payload),
-      exactPayload: payload,
-    });
-
-    console.log("[Leaderboard] EXACT KEYS BEING SENT:", Object.keys(payload));
-    console.log("[Leaderboard] REQUIRED BY RULES:", [
-      "name",
-      "packets",
-      "avatar",
-      "updatedAt",
-      "deviceId",
-      "level",
-      "prestigeLevel",
-    ]);
-
     await setDoc(ref, payload, { merge: true });
 
     if (!_lastWriteMs) {
@@ -699,28 +675,13 @@ function subscribe(callback, opts = {}) {
             const d = doc.data() || {};
             const avatar = sanitizeAvatar(d.avatar);
 
-            // Debug: Show EXACTLY what's in each document
-            console.log(`[Leaderboard] RAW DOCUMENT ${doc.id}:`, d);
-            console.log(`[Leaderboard] LEVEL CHECK:`, {
-              level: d.level,
-              levelType: typeof d.level,
-              prestigeLevel: d.prestigeLevel,
-              prestigeType: typeof d.prestigeLevel,
-              hasLevel: "level" in d,
-              hasPrestige: "prestigeLevel" in d,
-            });
-
             rows.push({
               id: doc.id,
               name: sanitizeName(d.name),
               packets: clamp(d.packets, 0, Number.MAX_SAFE_INTEGER),
               avatar: avatar,
-              level: clamp(d.level != null ? d.level : 1, 1, 999),
-              prestigeLevel: clamp(
-                d.prestigeLevel != null ? d.prestigeLevel : 0,
-                0,
-                1000,
-              ),
+              level: clamp(d.level || 1, 1, 999),
+              prestigeLevel: clamp(d.prestigeLevel || 0, 0, 1000),
               updatedAt: d.updatedAt?.toMillis
                 ? d.updatedAt.toMillis()
                 : nowTs(),
