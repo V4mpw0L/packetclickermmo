@@ -37,7 +37,7 @@ export function showComboTotalHUD(total, color = null, totalXP = null) {
 
     // Inline safety styles (in case CSS is unavailable)
     hud.style.position = "absolute";
-    hud.style.top = `${viewport.scrollY + Math.max(160, viewport.viewportHeight * 0.32)}px`;
+    hud.style.top = `${viewport.scrollY + Math.max(140, viewport.viewportHeight * 0.28)}px`;
     hud.style.left = "50%";
     hud.style.transform = "translate(-50%, 0)";
     hud.style.padding = "0.4rem 0.8rem";
