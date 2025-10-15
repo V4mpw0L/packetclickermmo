@@ -3095,7 +3095,7 @@ function showSettings() {
         // Persist and refresh UI
         save();
         try {
-          window.VERSION = "0.0.40";
+          window.VERSION = "0.0.41";
         } catch (_) {}
         // Force-apply language to DOM immediately (best effort)
         try {
@@ -4796,7 +4796,7 @@ function migrateSaveToCurrentVersion() {
       window.Packet &&
       window.Packet.data &&
       window.Packet.data.APP_VERSION) ||
-    "0.0.40";
+    "0.0.41";
 
   console.log(
     "[Migration] Checking save compatibility with version",
@@ -4920,7 +4920,7 @@ function migrateSaveToCurrentVersion() {
   if (typeof state.player.vipUntil !== "number") state.player.vipUntil = 0;
   if (typeof state.player.noAds !== "boolean") state.player.noAds = false;
 
-  // Ensure level system exists (v0.0.40+)
+  // Ensure level system exists (v0.0.41+)
   if (!state.level || typeof state.level !== "object") {
     state.level = {
       currentLevel: 1,
