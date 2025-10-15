@@ -2385,10 +2385,16 @@ function renderPrestige() {
     <div class="neon-card px-3 py-4 mb-2">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">Prestige</h2>
       <div class="text-center mb-4" style="display:flex; flex-direction:column; align-items:center; gap:.35rem;">
-        <div class="text-lg" style="font-weight:900;">Level <span class="event-number-glow">${state.prestige.level.toLocaleString("en-US")}</span></div>
-        <div class="text-sm text-neon-gray">
-          <span style="display:inline-flex; align-items:center; gap:.35rem; padding:.2rem .55rem; border:1px solid var(--border-color); border-radius:999px; background:linear-gradient(135deg, rgba(0,0,0,.25), rgba(0,0,0,.05));">
-            <span class="event-number-glow">${state.prestige.dataShards.toLocaleString("en-US")}</span> <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.1rem;height:1.1rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.9rem; color: #c084fc; font-weight: 700; padding: 0.3rem 0.6rem; background: rgba(192, 132, 252, 0.2); border: 1px solid rgba(192, 132, 252, 0.4); border-radius: 12px;">
+            <img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1rem;height:1rem;"/>
+            <span style="font-size: 0.85rem; font-weight: 600;">Prestige</span>
+            <span class="event-number-glow">Level ${state.prestige.level.toLocaleString("en-US")}</span>
+          </div>
+        </div>
+        <div class="text-lg text-neon-gray">
+          <span style="display:inline-flex; align-items:center; gap:.5rem; padding:.4rem .8rem; border:2px solid rgba(192, 132, 252, 0.4); border-radius:999px; background:rgba(192, 132, 252, 0.15); color:#c084fc; font-size:1.1rem; font-weight:700;">
+            <span class="event-number-glow" style="color:#c084fc; font-size:1.2rem;">${state.prestige.dataShards.toLocaleString("en-US")}</span> <img src="src/assets/items/I_Sapphire.png" alt="Data Shards" style="width:1.3rem;height:1.3rem;vertical-align:middle;display:inline-block;margin-left:0.25rem;"/>
           </span>
         </div>
       </div>
