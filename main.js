@@ -2130,7 +2130,7 @@ function renderPrestige() {
         </div>`
       }
 
-      <div class="mb-2" style="text-align:center;"><span class="text-neon-yellow font-bold">Prestige Upgrades</span></div>
+      <div class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm); text-align: center; margin-bottom: 0.5rem;">Prestige Upgrades</div>
       <div class="prestige-upgrades" style="display:grid; grid-template-columns: 1fr; gap:.5rem;">
         ${upgrades}
       </div>
