@@ -1146,7 +1146,7 @@ function renderGame() {
       ${
         boostStatus
           ? `<div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; background: rgba(76, 175, 80, 0.05);">
-        <h3 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm); margin-bottom: 0.75rem;">⚡ Temporary Boosts</h3>
+        <h3 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm); margin-bottom: 0.75rem;">Temporary Boosts</h3>
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
           ${boostStatus}
         </div>
