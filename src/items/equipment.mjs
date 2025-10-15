@@ -1453,7 +1453,7 @@ export function renderTab(state) {
       }
     </style>
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🧰 Equipment</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">Equipment</h2>
       <div class="text-neon-gray text-sm mb-3" style="text-align:center; margin:.5rem auto 1rem; padding:.35rem .75rem; border:1px solid var(--border-color); border-radius:999px; width:fit-content; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">
         Equip items to gain bonuses ·
         <span style="color:${rarityById("green").color}">Green</span> ·
