@@ -853,23 +853,11 @@ function showLevelUpModal(newLevel, oldLevel) {
         <span style="font-size: 1.2rem;">🎯</span>
         <span style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem;">Keep clicking to gain more XP!</span>
       </div>
-      <div style="color: var(--text-secondary); font-size: 0.8rem; font-style: italic; margin-bottom: 1rem;">
+      <div style="color: var(--text-secondary); font-size: 0.8rem; font-style: italic; margin-top: 1rem;">
         This modal will close automatically in 3 seconds...
       </div>
-      <button id="levelup-close-btn" class="neon-btn w-full" style="margin-top: 0.5rem;">Close</button>
     </div>
   `;
-
-  // Add close button functionality
-  const closeBtn = modal.querySelector("#levelup-close-btn");
-  if (closeBtn) {
-    closeBtn.onclick = () => {
-      backdrop.classList.add("hidden");
-      backdrop.setAttribute("aria-hidden", "true");
-      modal.classList.add("hidden");
-      backdrop.removeEventListener("click", closeOnClick);
-    };
-  }
 
   // Auto-close after 3 seconds
   const autoCloseTimeout = setTimeout(() => {
@@ -884,7 +872,6 @@ function showLevelUpModal(newLevel, oldLevel) {
   // Allow manual close by clicking backdrop
   const closeOnClick = (e) => {
     if (e.target === backdrop) {
-      clearTimeout(autoCloseTimeout);
       backdrop.classList.add("hidden");
       backdrop.setAttribute("aria-hidden", "true");
       modal.classList.add("hidden");
