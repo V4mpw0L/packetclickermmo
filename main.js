@@ -794,6 +794,31 @@ function gainXP(amount) {
 
     // Check for level-based achievements
     checkAchievements();
+
+    // Immediately update leaderboard with new level (only when level actually changes)
+    try {
+      if (typeof Leaderboard !== "undefined" && Leaderboard.submit) {
+        console.log("[Level Up] Submitting level change to leaderboard:", {
+          oldLevel: oldLevelInfo.level,
+          newLevel: newLevelInfo.level,
+          prestigeLevel: state.prestige.level,
+        });
+
+        const avatarToSubmit = getSafeAvatarUrl(state.player.avatar);
+        Leaderboard.submit(
+          {
+            name: state.player.name,
+            avatar: avatarToSubmit,
+            packets: state.packets,
+            level: newLevelInfo.level,
+            prestigeLevel: state.prestige.level,
+          },
+          { throttleMs: 0 },
+        );
+      }
+    } catch (e) {
+      console.warn("[Level Up] Failed to submit to leaderboard:", e);
+    }
   }
 
   updateLevelDisplay();
@@ -5538,6 +5563,31 @@ function doPrestige() {
   updateTopBar();
   renderTab();
   checkAchievements();
+
+  // Immediately update leaderboard with new prestige level
+  try {
+    if (typeof Leaderboard !== "undefined" && Leaderboard.submit) {
+      console.log("[Prestige] Submitting prestige change to leaderboard:", {
+        prestigeLevel: state.prestige.level,
+        packetsReset: 0,
+        level: getLevelInfo().level,
+      });
+
+      const avatarToSubmit = getSafeAvatarUrl(state.player.avatar);
+      Leaderboard.submit(
+        {
+          name: state.player.name,
+          avatar: avatarToSubmit,
+          packets: state.packets, // This will be 0 after prestige reset
+          level: getLevelInfo().level,
+          prestigeLevel: state.prestige.level,
+        },
+        { throttleMs: 0 },
+      );
+    }
+  } catch (e) {
+    console.warn("[Prestige] Failed to submit to leaderboard:", e);
+  }
 }
 
 function buyPrestigeUpgrade(upgradeId) {

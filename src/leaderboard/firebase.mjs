@@ -428,8 +428,11 @@ function submit(
       prestigeLevel: clamp(prestigeLevel || 0, 0, 1000),
       updatedAt: nowTs(),
     };
+
     // Skip if packets, level, and prestige haven't changed (avoid spam)
+    // BUT allow immediate submission when throttleMs is 0 (level/prestige updates)
     if (
+      throttleMs > 0 &&
       docData.packets === _lastSentPackets &&
       docData.level === _lastSentLevel &&
       docData.prestigeLevel === _lastSentPrestige &&
@@ -437,11 +440,25 @@ function submit(
     ) {
       return;
     }
+
     _pendingDoc = docData;
 
     if (_writeTimer) clearTimeout(_writeTimer);
-    const delay = Math.max(_backoffMs || 0, throttleMs);
-    _writeTimer = setTimeout(flushWrite, delay);
+
+    // For immediate updates (throttleMs = 0), ignore backoff
+    const delay = throttleMs === 0 ? 0 : Math.max(_backoffMs || 0, throttleMs);
+
+    if (delay === 0) {
+      // Immediate submission for level/prestige changes
+      console.log("[Leaderboard] Immediate submission triggered", {
+        level: docData.level,
+        prestigeLevel: docData.prestigeLevel,
+        packets: docData.packets,
+      });
+      flushWrite();
+    } else {
+      _writeTimer = setTimeout(flushWrite, delay);
+    }
   } catch (e) {
     console.warn("[Leaderboard] submit error:", e);
   }
