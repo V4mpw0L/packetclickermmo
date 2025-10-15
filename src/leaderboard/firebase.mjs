@@ -67,7 +67,9 @@ let _ready = false;
 let _writeTimer = null;
 let _pendingDoc = null;
 let _lastWriteMs = 0;
-let _lastSentPackets = -1;
+let _lastSentPackets = null;
+let _lastSentLevel = null;
+let _lastSentPrestige = null;
 let _backoffMs = 0;
 
 // Subscription
@@ -426,9 +428,11 @@ function submit(
       prestigeLevel: clamp(prestigeLevel || 0, 0, 1000),
       updatedAt: nowTs(),
     };
-    // Skip if packets hasn't changed (avoid spam)
+    // Skip if packets, level, and prestige haven't changed (avoid spam)
     if (
       docData.packets === _lastSentPackets &&
+      docData.level === _lastSentLevel &&
+      docData.prestigeLevel === _lastSentPrestige &&
       nowTs() - _lastWriteMs < throttleMs
     ) {
       return;
@@ -568,6 +572,8 @@ async function flushWrite() {
 
     _lastWriteMs = nowTs();
     _lastSentPackets = docData.packets;
+    _lastSentLevel = docData.level;
+    _lastSentPrestige = docData.prestigeLevel;
 
     // Reset backoff on success
     _backoffMs = 0;

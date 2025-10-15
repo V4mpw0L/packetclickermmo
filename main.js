@@ -5981,14 +5981,28 @@ function init() {
   }
   // Initialize Firebase leaderboard (uses module defaults); fallback to local bots on error
   try {
+    console.log("[DEBUG] Starting Leaderboard initialization...");
+    console.log("[DEBUG] Leaderboard module:", typeof Leaderboard);
+
     // Init unconditionally; module merges defaults and handles dynamic import
     Leaderboard.init({ collection: "leaderboard" });
+    console.log("[DEBUG] Leaderboard.init completed");
 
     // Live subscription (keeps UI in sync across devices)
     Leaderboard.subscribe(function (rows) {
       state.leaderboardLive = Array.isArray(rows) ? rows : [];
       if (typeof renderTab === "function") renderTab();
     });
+    console.log("[DEBUG] Leaderboard.subscribe completed");
+
+    // Expose Leaderboard to window for debugging
+    if (typeof window !== "undefined") {
+      window.Leaderboard = Leaderboard;
+      console.log(
+        "[DEBUG] Leaderboard exposed to window:",
+        !!window.Leaderboard,
+      );
+    }
 
     // Periodic, throttled submit (module also throttles internally)
     if (window.__lbTimer) clearInterval(window.__lbTimer);
@@ -6045,8 +6059,14 @@ function init() {
     // React to connectivity changes
     try {
       window.addEventListener("online", __lbSafeSubmit);
-    } catch (_) {}
-  } catch (_) {}
+    } catch (error) {
+      console.error("[DEBUG] Leaderboard initialization failed:", error);
+      console.log("[DEBUG] Falling back without leaderboard functionality");
+    }
+  } catch (error) {
+    console.error("[DEBUG] Main leaderboard initialization failed:", error);
+    console.log("[DEBUG] Leaderboard will not be available");
+  }
   // Expose state/save globally so UI helpers can persist theme changes
   window.state = state;
   window.save = save;
