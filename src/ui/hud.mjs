@@ -23,7 +23,7 @@ let _notifyHideTimer = null;
  * @param {number} total - Total value to display.
  * @param {string|null} color - Optional CSS color for text/border.
  */
-export function showComboTotalHUD(total, color = null) {
+export function showComboTotalHUD(total, color = null, totalXP = null) {
   if (typeof document === "undefined") return;
 
   let hud = document.getElementById(HUD_IDS.comboTotal);
@@ -94,7 +94,9 @@ export function showComboTotalHUD(total, color = null) {
       <div style="margin-bottom: 0.3rem;">COMBO:</div>
       <div style="padding: 0.15rem 0.4rem; ${numberBorderStyle} border-radius: 999px; background: rgba(0,0,0,0.25); font-weight: bold; margin-bottom: 0.6rem; display: inline-block; color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">x${comboCount}</div>
       <div style="margin-bottom: 0.3rem;">Total Packets:</div>
-      <div style="padding: 0.15rem 0.4rem; ${numberBorderStyle} border-radius: 999px; background: rgba(0,0,0,0.25); font-weight: bold; display: inline-block; color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">+${Number(total || 0).toLocaleString()}</div>
+      <div style="padding: 0.15rem 0.4rem; ${numberBorderStyle} border-radius: 999px; background: rgba(0,0,0,0.25); font-weight: bold; margin-bottom: 0.6rem; display: inline-block; color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">+${Number(total || 0).toLocaleString()}</div>
+      <div style="margin-bottom: 0.3rem;">Total EXP:</div>
+      <div style="padding: 0.15rem 0.4rem; ${numberBorderStyle} border-radius: 999px; background: rgba(0,0,0,0.25); font-weight: bold; display: inline-block; color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">+${Number(totalXP || 0).toLocaleString()}</div>
     </div>
   `;
 

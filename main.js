@@ -4169,6 +4169,12 @@ function clickPacket(event) {
 
   gainXP(xpGained);
 
+  // Track combo XP total
+  if (clickCombo <= 1) {
+    clickPacket._comboXPTotal = 0;
+  }
+  clickPacket._comboXPTotal = (clickPacket._comboXPTotal || 0) + xpGained;
+
   // Update statistics
   state.stats.totalClicks++;
   state.stats.totalPackets += amount;
@@ -4249,13 +4255,18 @@ function clickPacket(event) {
     else if (clickCombo >= 50) color = "#ff4dff";
     else if (clickCombo >= 15) color = "var(--accent-color)";
     else if (clickCombo >= 5) color = "var(--secondary-color)";
-    showComboTotalHUD(clickPacket._comboTotal, color);
+    showComboTotalHUD(
+      clickPacket._comboTotal,
+      color,
+      clickPacket._comboXPTotal,
+    );
 
     // Hide combo HUD after timeout
     if (clickPacket._comboHideTimer) clearTimeout(clickPacket._comboHideTimer);
     clickPacket._comboHideTimer = setTimeout(() => {
       hideComboTotalHUD(0);
       clickPacket._comboTotal = 0;
+      clickPacket._comboXPTotal = 0;
       _comboExpireAt = 0;
       const el = document.getElementById("avatar");
       if (el) {
