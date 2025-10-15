@@ -168,6 +168,76 @@
                 />
                 <span id="player-name">Player</span>
                 <span id="vip-badge"></span>
+                <!-- Level Progress Bar -->
+                <div
+                    id="level-progress-container"
+                    style="
+                        display: flex !important;
+                        align-items: center;
+                        gap: 0.5rem;
+                        margin-top: 0.5rem;
+                        font-size: 0.8rem;
+                        width: 100%;
+                        justify-content: center;
+                        background: rgba(0, 0, 0, 0.3);
+                        padding: 0.25rem 0.5rem;
+                        border-radius: 8px;
+                        border: 1px solid rgba(29, 233, 182, 0.3);
+                    "
+                >
+                    <span
+                        id="level-display"
+                        style="
+                            color: var(--primary-color);
+                            font-weight: bold;
+                            min-width: 2.5rem;
+                            font-size: 0.9rem;
+                        "
+                        >Lv. 1</span
+                    >
+                    <div
+                        style="
+                            flex: 1;
+                            height: 12px;
+                            background: rgba(255, 255, 255, 0.1);
+                            border-radius: 6px;
+                            overflow: hidden;
+                            border: 1px solid rgba(29, 233, 182, 0.5);
+                            position: relative;
+                            max-width: 120px;
+                        "
+                    >
+                        <div
+                            id="level-progress-fill"
+                            style="
+                                height: 100%;
+                                width: 0%;
+                                background: linear-gradient(
+                                    90deg,
+                                    #1de9b6,
+                                    #00bcd4,
+                                    #1de9b6
+                                );
+                                background-size: 200% 100%;
+                                animation: shimmer 3s ease-in-out infinite;
+                                border-radius: 5px;
+                                transition: width 0.3s ease;
+                                box-shadow: 0 0 8px rgba(29, 233, 182, 0.6);
+                            "
+                        ></div>
+                    </div>
+                    <span
+                        id="level-xp-display"
+                        style="
+                            color: var(--text-primary);
+                            font-size: 0.75rem;
+                            min-width: 3.5rem;
+                            text-align: right;
+                            font-weight: 600;
+                        "
+                        >0/100</span
+                    >
+                </div>
             </div>
             <div class="controls">
                 <span id="gem-display">

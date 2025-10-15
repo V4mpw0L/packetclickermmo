@@ -57,6 +57,54 @@
       "https://api.dicebear.com/8.x/bottts-neutral/svg?seed=Hacker";
     var APP_VERSION = "0.0.36";
 
+    // Level System Configuration
+    var LEVEL_SYSTEM = {
+      // Base XP required for level 1
+      BASE_XP: 100,
+      // Exponential scaling factor for XP requirements
+      XP_SCALING: 1.5,
+      // XP gained per packet collected
+      XP_PER_PACKET: 1,
+      // Maximum level (for display purposes)
+      MAX_LEVEL: 999,
+    };
+
+    // Level calculation functions
+    function getXPRequired(level) {
+      if (level <= 1) return LEVEL_SYSTEM.BASE_XP;
+      return Math.floor(
+        LEVEL_SYSTEM.BASE_XP * Math.pow(LEVEL_SYSTEM.XP_SCALING, level - 1),
+      );
+    }
+
+    function getTotalXPRequired(level) {
+      var total = 0;
+      for (var i = 1; i <= level; i++) {
+        total += getXPRequired(i);
+      }
+      return total;
+    }
+
+    function getLevelFromXP(totalXP) {
+      var level = 1;
+      var accumulatedXP = 0;
+
+      while (level <= LEVEL_SYSTEM.MAX_LEVEL) {
+        var xpForThisLevel = getXPRequired(level);
+        if (accumulatedXP + xpForThisLevel > totalXP) {
+          break;
+        }
+        accumulatedXP += xpForThisLevel;
+        level++;
+      }
+
+      return {
+        level: level,
+        currentXP: totalXP - accumulatedXP,
+        xpRequired: getXPRequired(level),
+      };
+    }
+
     // Interaction tuning
     var COMBO_TIMEOUT = 1000; // ms to maintain click combo
 
@@ -1184,6 +1232,57 @@
         },
         gem: 25,
       },
+      // Level-based achievements
+      {
+        id: "level5",
+        name: "Getting Started",
+        emoji: "⭐",
+        desc: "Reach Level 5",
+        req: function (s) {
+          return (s && s.level && s.level.currentLevel) >= 5;
+        },
+        gem: 2,
+      },
+      {
+        id: "level10",
+        name: "Rising Star",
+        emoji: "🌟",
+        desc: "Reach Level 10",
+        req: function (s) {
+          return (s && s.level && s.level.currentLevel) >= 10;
+        },
+        gem: 5,
+      },
+      {
+        id: "level25",
+        name: "Experienced",
+        emoji: "💫",
+        desc: "Reach Level 25",
+        req: function (s) {
+          return (s && s.level && s.level.currentLevel) >= 25;
+        },
+        gem: 10,
+      },
+      {
+        id: "level50",
+        name: "Elite Player",
+        emoji: "⚡",
+        desc: "Reach Level 50",
+        req: function (s) {
+          return (s && s.level && s.level.currentLevel) >= 50;
+        },
+        gem: 25,
+      },
+      {
+        id: "level100",
+        name: "Legendary",
+        emoji: "🔥",
+        desc: "Reach Level 100",
+        req: function (s) {
+          return (s && s.level && s.level.currentLevel) >= 100;
+        },
+        gem: 50,
+      },
     ];
 
     return {
@@ -1191,6 +1290,10 @@
       DEFAULT_AVATAR: DEFAULT_AVATAR,
       APP_VERSION: APP_VERSION,
       COMBO_TIMEOUT: COMBO_TIMEOUT,
+      LEVEL_SYSTEM: LEVEL_SYSTEM,
+      getXPRequired: getXPRequired,
+      getTotalXPRequired: getTotalXPRequired,
+      getLevelFromXP: getLevelFromXP,
       GEM_PACKS: GEM_PACKS,
       DAILY_REWARDS: DAILY_REWARDS,
       PRESTIGE_UPGRADES: PRESTIGE_UPGRADES,

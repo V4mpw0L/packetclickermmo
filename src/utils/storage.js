@@ -109,6 +109,12 @@
         // Currency
         gems: 0,
 
+        // Level System
+        level: {
+          currentLevel: 1,
+          totalXP: 0,
+        },
+
         // Shop flags
         shop: {
           skinBought: false,
@@ -345,6 +351,16 @@
       merged.upgrades.click = Math.max(0, Number(merged.upgrades.click) || 0);
       merged.upgrades.idle = Math.max(0, Number(merged.upgrades.idle) || 0);
       merged.upgrades.crit = Math.max(0, Number(merged.upgrades.crit) || 0);
+
+      // Ensure level system properties exist for v0.0.36+
+      if (!merged.level || typeof merged.level !== "object") {
+        merged.level = defaults.level;
+      }
+      merged.level.currentLevel = Math.max(
+        1,
+        Number(merged.level.currentLevel) || 1,
+      );
+      merged.level.totalXP = Math.max(0, Number(merged.level.totalXP) || 0);
 
       // Ensure all equipment/inventory properties exist for v0.0.36+
       if (!Array.isArray(merged.inventory)) merged.inventory = [];
