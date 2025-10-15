@@ -1,6 +1,6 @@
 # 📝 Changelog - PacketClickerMMO
 
-## Version 0.0.39 - Enhanced Theme System & Visual Improvements
+## Version 0.0.40 - Enhanced Theme System & Visual Improvements
 *Released: January 2025*
 
 ### 🎨 **Enhanced Theme System**
