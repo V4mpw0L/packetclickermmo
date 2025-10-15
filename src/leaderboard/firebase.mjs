@@ -660,16 +660,61 @@ function subscribe(callback, opts = {}) {
   (async () => {
     try {
       const { _db } = await lazyFirebase();
-      const { collection, query, orderBy, limit, onSnapshot } = lazyFirebase.fs;
+      const {
+        collection,
+        query,
+        orderBy,
+        limit,
+        onSnapshot,
+        getDocsFromServer,
+      } = lazyFirebase.fs;
       const q = query(
         collection(_db, _collection),
         orderBy("packets", "desc"),
         limit(limitN),
       );
 
+      // Force initial server fetch to bypass cache completely
+      console.log("[Leaderboard] Forcing fresh server data...");
+      const serverSnap = await getDocsFromServer(q);
+      const serverRows = [];
+      serverSnap.forEach((doc) => {
+        const d = doc.data() || {};
+        const avatar = sanitizeAvatar(d.avatar);
+
+        // Debug what server actually returns
+        console.log(`[SERVER] ${d.name}:`, {
+          level: d.level,
+          prestigeLevel: d.prestigeLevel,
+          packets: d.packets,
+          levelType: typeof d.level,
+          prestigeType: typeof d.prestigeLevel,
+        });
+
+        serverRows.push({
+          id: doc.id,
+          name: sanitizeName(d.name),
+          packets: clamp(d.packets, 0, Number.MAX_SAFE_INTEGER),
+          avatar: avatar,
+          level: clamp(d.level || 1, 1, 999),
+          prestigeLevel: clamp(d.prestigeLevel || 0, 0, 1000),
+          updatedAt: d.updatedAt?.toMillis ? d.updatedAt.toMillis() : nowTs(),
+        });
+      });
+
+      console.log("[Leaderboard] Server data processed, calling callback");
+      cb(serverRows);
+
+      // Now start real-time subscription
       _unsubscribe = onSnapshot(
         q,
         (snap) => {
+          // Skip if from cache
+          if (snap.metadata.fromCache) {
+            console.log("[Leaderboard] Skipping cached snapshot");
+            return;
+          }
+
           const rows = [];
           snap.forEach((doc) => {
             const d = doc.data() || {};
@@ -689,7 +734,7 @@ function subscribe(callback, opts = {}) {
           });
 
           console.log(
-            "[Leaderboard] real-time update:",
+            "[Leaderboard] Real-time update:",
             rows.length,
             "players",
           );
@@ -697,17 +742,15 @@ function subscribe(callback, opts = {}) {
         },
         (err) => {
           console.error("[Leaderboard] subscribe error:", err);
-          // Switch to fallback if snapshot fails
           startFallback(cb, limitN);
         },
       );
     } catch (e) {
-      // No Firebase yet: start fallback
+      console.error("[Leaderboard] Server fetch failed:", e);
       startFallback(cb, limitN);
     }
   })();
 
-  // Return unified unsubscribe
   return unsubscribe;
 }
 

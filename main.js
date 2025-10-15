@@ -6142,25 +6142,9 @@ function init() {
 
       Leaderboard.submit(currentData, { throttleMs: 20000 });
     };
-
-    // Immediate submit once after init so other devices see us quickly (no throttle)
-    // Ensure avatar is valid before submitting
-    const avatarToSubmit =
-      state.player.avatar &&
-      typeof state.player.avatar === "string" &&
-      state.player.avatar.trim() !== ""
-        ? state.player.avatar
-        : DEFAULT_AVATAR;
-
-    Leaderboard.submit(
-      {
-        name: state.player.name,
-        avatar: avatarToSubmit,
-        packets: state.packets,
-        level: getLevelInfo().level,
-        prestigeLevel: state.prestige.level,
-      },
-      { throttleMs: 0 },
+    // Skip immediate submission to avoid rate limit - let server fetch handle initial data
+    console.log(
+      "[Init] Skipping immediate submission, waiting for server fetch",
     );
 
     // Keep in sync periodically (module throttles internally)
