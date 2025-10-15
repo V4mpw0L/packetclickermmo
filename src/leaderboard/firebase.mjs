@@ -412,13 +412,18 @@ function isReady() {
  * Throttled write; merges existing doc by deviceId
  * Write at most every throttleMs, with exponential backoff on failures
  */
-function submit({ name, packets, avatar } = {}, { throttleMs = 20000 } = {}) {
+function submit(
+  { name, packets, avatar, level, prestigeLevel } = {},
+  { throttleMs = 20000 } = {},
+) {
   try {
     const docData = {
       id: deviceId(),
       name: sanitizeName(name),
       packets: clamp(packets, 0, Number.MAX_SAFE_INTEGER),
       avatar: sanitizeAvatar(avatar),
+      level: clamp(level || 1, 1, 999),
+      prestigeLevel: clamp(prestigeLevel || 0, 0, 1000),
       updatedAt: nowTs(),
     };
     // Skip if packets hasn't changed (avoid spam)
@@ -527,6 +532,8 @@ async function flushWrite() {
       name: docData.name,
       packets: docData.packets,
       avatar: avatarUrl || "", // Ensure string type
+      level: docData.level,
+      prestigeLevel: docData.prestigeLevel,
       updatedAt: serverTimestamp(),
       deviceId: docData.id,
     };
@@ -538,6 +545,8 @@ async function flushWrite() {
           ? "data_url"
           : payload.avatar
         : "empty",
+      level: payload.level,
+      prestigeLevel: payload.prestigeLevel,
     });
 
     await setDoc(ref, payload, { merge: true });
@@ -546,6 +555,8 @@ async function flushWrite() {
       console.log("[Leaderboard] First write successful", {
         id: docData.id,
         packets: docData.packets,
+        level: docData.level,
+        prestigeLevel: docData.prestigeLevel,
         avatar: avatarUrl
           ? avatarUrl.startsWith("data:")
             ? "data_url"
