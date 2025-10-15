@@ -665,6 +665,8 @@ function subscribe(callback, opts = {}) {
               name: sanitizeName(d.name),
               packets: clamp(d.packets, 0, Number.MAX_SAFE_INTEGER),
               avatar: avatar,
+              level: clamp(d.level || 1, 1, 999),
+              prestigeLevel: clamp(d.prestigeLevel || 0, 0, 1000),
               updatedAt: d.updatedAt?.toMillis
                 ? d.updatedAt.toMillis()
                 : nowTs(),
@@ -706,6 +708,8 @@ function startFallback(cb, limitN) {
         name: sanitizeName(st?.player?.name || "Player"),
         packets: clamp(st?.packets || 0, 0, Number.MAX_SAFE_INTEGER),
         avatar: sanitizeAvatar(st?.player?.avatar || ""),
+        level: clamp(st?.level?.currentLevel || 1, 1, 999),
+        prestigeLevel: clamp(st?.prestige?.level || 0, 0, 1000),
         updatedAt: nowTs(),
       };
       cb([me].slice(0, limitN));
