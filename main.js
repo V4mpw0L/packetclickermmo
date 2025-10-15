@@ -1110,7 +1110,7 @@ function renderBoosts() {
 
       <div style="margin-bottom: 1.5rem;">
         <div style="text-align: center; font-size: 1.2rem; font-weight: 800; color: #fbbf24; margin-bottom: 1rem;">
-          💎 AVAILABLE POWER BOOSTS 💎
+          AVAILABLE POWER BOOSTS
         </div>
         <div style="text-align: center; font-size: 0.9rem; color: #94a3b8; margin-bottom: 1.5rem;">
           Each boost stacks with your other bonuses for maximum power!
