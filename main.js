@@ -1206,39 +1206,48 @@ function renderBoosts() {
     }
   });
 
+  // Sort boosts by rarity (common to celestial like equipment)
+  const rarityOrder = ["green", "gold", "blue", "pink", "animal", "celestial"];
+  const sortedBoosts = [...BOOST_SHOP].sort((a, b) => {
+    const aIndex = rarityOrder.indexOf(a.rarity);
+    const bIndex = rarityOrder.indexOf(b.rarity);
+    return aIndex - bIndex;
+  });
+
   // Compact grid-based boost cards
-  let boostItems = BOOST_SHOP.map((boost) => {
-    const until = state.boosts[boost.id] || 0;
-    const active = until > Date.now();
-    const remaining = active ? Math.ceil((until - Date.now()) / 1000) : 0;
-    const canAfford = state.gems >= boost.gems;
+  let boostItems = sortedBoosts
+    .map((boost) => {
+      const until = state.boosts[boost.id] || 0;
+      const active = until > Date.now();
+      const remaining = active ? Math.ceil((until - Date.now()) / 1000) : 0;
+      const canAfford = state.gems >= boost.gems;
 
-    // Use equipment rarity system
-    const rarity =
-      Equipment.RARITIES.find((r) => r.id === boost.rarity) ||
-      Equipment.RARITIES[0];
-    const isCelestial = rarity.id === "celestial";
-    const isAnimal = rarity.id === "animal";
+      // Use equipment rarity system
+      const rarity =
+        Equipment.RARITIES.find((r) => r.id === boost.rarity) ||
+        Equipment.RARITIES[0];
+      const isCelestial = rarity.id === "celestial";
+      const isAnimal = rarity.id === "animal";
 
-    let style;
-    if (isCelestial) {
-      style = {
-        border: "#ff0080",
-        bg: "linear-gradient(45deg, rgba(255, 0, 128, 0.1), rgba(0, 255, 128, 0.1))",
-        animation: "celestialRainbow 3s linear infinite",
-        textAnimation: "celestialTextOnly 3s linear infinite",
-      };
-    } else {
-      const bgAlpha = isAnimal ? 0.15 : 0.08;
-      style = {
-        border: rarity.color,
-        bg: `${rarity.color}${Math.floor(bgAlpha * 255)
-          .toString(16)
-          .padStart(2, "0")}`,
-      };
-    }
+      let style;
+      if (isCelestial) {
+        style = {
+          border: "#ff0080",
+          bg: "linear-gradient(45deg, rgba(255, 0, 128, 0.1), rgba(0, 255, 128, 0.1))",
+          animation: "celestialRainbow 3s linear infinite",
+          textAnimation: "celestialTextOnly 3s linear infinite",
+        };
+      } else {
+        const bgAlpha = isAnimal ? 0.15 : 0.08;
+        style = {
+          border: rarity.color,
+          bg: `${rarity.color}${Math.floor(bgAlpha * 255)
+            .toString(16)
+            .padStart(2, "0")}`,
+        };
+      }
 
-    return `
+      return `
       <div class="boost-card-compact"
            style="
              ${isCelestial ? "border: none; animation: celestialRainbowRounded 3s linear infinite;" : `border: 2px solid ${style.border};`}
@@ -1302,7 +1311,8 @@ function renderBoosts() {
         </div>
       </div>
     `;
-  }).join("");
+    })
+    .join("");
 
   return `
     <style>
