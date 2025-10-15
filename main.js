@@ -821,7 +821,7 @@ function showLevelUpModal(newLevel, oldLevel) {
   modal.setAttribute("aria-modal", "true");
   modal.setAttribute("tabindex", "-1");
 
-  const title = levelDiff > 1 ? `🌟 Multiple Level Up!` : `⭐ Level Up!`;
+  const title = levelDiff > 1 ? `Multiple Level Up!` : `Level Up!`;
 
   modal.innerHTML = `
     <div style="text-align: center; padding: 2rem;">
