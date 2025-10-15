@@ -184,6 +184,8 @@
           quadrupleClick: 0,
           megaCrit: 0,
           autoClicker: 0,
+          xpBoostCelestial: 0,
+          xpBoostCommon: 0,
         },
 
         // Random Event

@@ -734,7 +734,7 @@ function updateLevelDisplay() {
   // Update XP display
   const xpDisplay = document.getElementById("level-xp-display");
   if (xpDisplay) {
-    xpDisplay.textContent = `${levelInfo.currentXP}/${levelInfo.xpRequired}`;
+    xpDisplay.textContent = `${levelInfo.currentXP.toLocaleString()}/${levelInfo.xpRequired.toLocaleString()}`;
   }
 
   // Update progress bar
@@ -763,8 +763,17 @@ function gainXP(amount) {
     state.level = { currentLevel: 1, totalXP: 0 };
   }
 
+  // Apply XP boosts
+  let boostedAmount = amount;
+  if (state.boosts.xpBoostCelestial > Date.now()) {
+    boostedAmount *= 1.5; // 50% boost
+  }
+  if (state.boosts.xpBoostCommon > Date.now()) {
+    boostedAmount *= 1.05; // 5% boost
+  }
+
   const oldLevelInfo = getLevelInfo();
-  state.level.totalXP += amount;
+  state.level.totalXP += Math.round(boostedAmount);
   const newLevelInfo = getLevelInfo();
 
   // Check for level up
@@ -1021,6 +1030,20 @@ function renderGame() {
     );
     totalMultiplier *= 10;
   }
+  if (state.boosts.xpBoostCelestial > Date.now()) {
+    let remaining = Math.ceil(
+      (state.boosts.xpBoostCelestial - Date.now()) / 1000,
+    );
+    boostPills.push(
+      `<span style="padding:.1rem .45rem; border:1px solid #ff0080; border-radius:999px; animation: celestialTextOnly 3s linear infinite; background:linear-gradient(45deg, rgba(255,0,128,0.2), rgba(0,255,128,0.2), rgba(128,0,255,0.2), rgba(255,128,0,0.2)); font-weight:600; font-size:0.75rem; white-space:nowrap;">⭐ +50% XP <span style="animation: celestialTextOnly 3s linear infinite; font-weight:bold;">${formatTime(remaining)}</span></span>`,
+    );
+  }
+  if (state.boosts.xpBoostCommon > Date.now()) {
+    let remaining = Math.ceil((state.boosts.xpBoostCommon - Date.now()) / 1000);
+    boostPills.push(
+      `<span style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:#4ade80; background:rgba(0,0,0,.25); font-weight:600; font-size:0.75rem; white-space:nowrap;">📖 +5% XP <span class="event-number-glow">${formatTime(remaining)}</span></span>`,
+    );
+  }
 
   // Prestige multiplier
   if (state.prestige.level > 0) {
@@ -1183,6 +1206,13 @@ function renderBoosts() {
         // Use rainbow animation for celestial rarity
         activeBoosts += `<div style="padding:.1rem .45rem; border:1px solid #ff0080; border-radius:999px; animation: celestialTextOnly 3s linear infinite; background:linear-gradient(45deg, rgba(255,0,128,0.2), rgba(0,255,128,0.2), rgba(128,0,255,0.2), rgba(255,128,0,0.2)); font-weight:600; font-size:0.875rem; margin-bottom:0.5rem; display:inline-block; white-space:nowrap;">${boostInfo.name} active <span style="font-weight:bold; transform:translateY(-1px); display:inline-block; animation: celestialTextOnly 3s linear infinite;">${formatTime(remaining)}</span></div>`;
         return; // Skip the regular activeBoosts append below
+      } else if (boostType === "xpBoostCelestial") {
+        // Use rainbow animation for celestial XP boost
+        activeBoosts += `<div style="padding:.1rem .45rem; border:1px solid #ff0080; border-radius:999px; animation: celestialTextOnly 3s linear infinite; background:linear-gradient(45deg, rgba(255,0,128,0.2), rgba(0,255,128,0.2), rgba(128,0,255,0.2), rgba(255,128,0,0.2)); font-weight:600; font-size:0.875rem; margin-bottom:0.5rem; display:inline-block; white-space:nowrap;">⭐ ${boostInfo.name} active <span style="font-weight:bold; transform:translateY(-1px); display:inline-block; animation: celestialTextOnly 3s linear infinite;">${formatTime(remaining)}</span></div>`;
+        return; // Skip the regular activeBoosts append below
+      } else if (boostType === "xpBoostCommon") {
+        color = "#4ade80";
+        emoji = "📖";
       }
 
       activeBoosts += `<div style="padding:.1rem .45rem; border:1px solid var(--border-color); border-radius:999px; color:${color}; background:rgba(0,0,0,.25); font-weight:600; font-size:0.875rem; margin-bottom:0.5rem; display:inline-block; white-space:nowrap;">${boostInfo.name} active <span style="color:#ffd700; font-weight:bold; transform:translateY(-1px); display:inline-block;">${formatTime(remaining)}</span></div>`;
@@ -3807,6 +3837,14 @@ function renderAdminBoostsTab() {
             <div>Ultra Combo</div>
             <div style="font-size: 0.8rem; color: #a0aec0;">${state.boosts.ultraCombo > Date.now() ? Math.ceil((state.boosts.ultraCombo - Date.now()) / 1000).toLocaleString("en-US") + "s" : "Inactive"}</div>
             <button class="admin-boost-btn" data-boost="ultraCombo" style="padding: 0.25rem 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.7rem;">Toggle</button>
+
+            <div>XP Boost (Celestial)</div>
+            <div style="font-size: 0.8rem; color: #a0aec0;">${state.boosts.xpBoostCelestial > Date.now() ? Math.ceil((state.boosts.xpBoostCelestial - Date.now()) / 1000).toLocaleString("en-US") + "s" : "Inactive"}</div>
+            <button class="admin-boost-btn" data-boost="xpBoostCelestial" style="padding: 0.25rem 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.7rem;">Toggle</button>
+
+            <div>XP Boost (Common)</div>
+            <div style="font-size: 0.8rem; color: #a0aec0;">${state.boosts.xpBoostCommon > Date.now() ? Math.ceil((state.boosts.xpBoostCommon - Date.now()) / 1000).toLocaleString("en-US") + "s" : "Inactive"}</div>
+            <button class="admin-boost-btn" data-boost="xpBoostCommon" style="padding: 0.25rem 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.7rem;">Toggle</button>
           </div>
         </div>
 
@@ -4747,6 +4785,9 @@ function migrateSaveToCurrentVersion() {
     quadrupleClick: 0,
     megaCrit: 0,
     autoClicker: 0,
+    ultraCombo: 0,
+    xpBoostCelestial: 0,
+    xpBoostCommon: 0,
   };
   Object.keys(boostDefaults).forEach((key) => {
     if (typeof state.boosts[key] !== "number") {

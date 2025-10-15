@@ -269,6 +269,26 @@
         rarity: "celestial",
         effect: "Ultimate power amplification",
       },
+      {
+        id: "xpBoostCelestial",
+        name: "🌟 Celestial Wisdom",
+        desc: "50% XP gain for 30 seconds",
+        gems: 150,
+        duration: 30000,
+        icon: "⭐",
+        rarity: "celestial",
+        effect: "Divine knowledge acceleration",
+      },
+      {
+        id: "xpBoostCommon",
+        name: "📚 Study Guide",
+        desc: "5% XP gain for 5 minutes",
+        gems: 3,
+        duration: 300000,
+        icon: "📖",
+        rarity: "green",
+        effect: "Steady learning enhancement",
+      },
     ];
 
     // Theme catalog
