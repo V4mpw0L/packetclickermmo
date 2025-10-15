@@ -1051,7 +1051,7 @@ function renderBoosts() {
                 ? `<div style="padding: 0.4rem; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 6px; font-size: 0.7rem; color: #ef4444; font-weight: bold;">
                     NEED GEMS
                    </div>`
-                : `<div style="padding: 0.4rem; background: ${style.bg}; ${isCelestial ? "border: 1px solid #ff0080; animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${style.border};`} border-radius: 6px; font-weight: bold; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : `color: ${style.border};`} font-size: 0.75rem;">
+                : `<div style="padding: 0.4rem; background: ${style.bg}; ${isCelestial ? "border: 1px solid; animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${style.border};`} border-radius: 6px; font-weight: bold; ${isCelestial ? "animation: celestialTextRainbow 3s linear infinite;" : `color: ${style.border};`} font-size: 0.75rem;">
                     ACTIVATE
                    </div>`
           }
