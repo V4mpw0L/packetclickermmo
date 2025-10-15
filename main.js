@@ -1082,7 +1082,7 @@ function renderBoosts() {
     </style>
     <div class="neon-card px-3 py-4 mb-2" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #1a202c 100%); border: 2px solid #4caf50;">
       <div style="text-align: center; margin-bottom: 2rem;">
-        <h2 style="font-size: 2rem; font-weight: 900; background: linear-gradient(45deg, #4caf50, #22c55e, #16a34a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;">
+        <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm); font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem;">
           Temporary BOOSTS!
         </h2>
         <div style="font-size: 1rem; color: #a0aec0; font-style: italic; margin-bottom: 1rem;">
@@ -1109,7 +1109,7 @@ function renderBoosts() {
       }
 
       <div style="margin-bottom: 1.5rem;">
-        <div style="text-align: center; font-size: 1.2rem; font-weight: 800; color: #fbbf24; margin-bottom: 1rem;">
+        <div class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm); text-align: center; font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem;">
           AVAILABLE POWER BOOSTS
         </div>
         <div style="text-align: center; font-size: 0.9rem; color: #94a3b8; margin-bottom: 1.5rem;">
