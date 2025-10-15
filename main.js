@@ -2100,6 +2100,15 @@ function showMobileCursorFeedback() {
 }
 
 // =============== LEADERBOARD TAB ===============
+// Helper function to format large numbers compactly
+function formatCompactNumber(num) {
+  if (num >= 1e12) return (num / 1e12).toFixed(1) + "T";
+  if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";
+  if (num >= 1e6) return (num / 1e6).toFixed(1) + "M";
+  if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
+  return num.toLocaleString("en-US");
+}
+
 // Helper function to safely handle avatar URLs
 function getSafeAvatarUrl(avatar) {
   if (!avatar || typeof avatar !== "string" || avatar.trim() === "") {
@@ -2174,6 +2183,8 @@ function renderLeaderboard() {
             packets: Math.max(0, parseInt(bot.packets) || 0),
             avatar: getSafeAvatarUrl(bot.avatar || ""),
             updatedAt: bot.updatedAt || Date.now(),
+            level: Math.max(1, parseInt(bot.level) || 1),
+            prestigeLevel: Math.max(0, parseInt(bot.prestigeLevel) || 0),
           };
         })
         .filter(Boolean); // Remove null entries
@@ -2190,6 +2201,8 @@ function renderLeaderboard() {
           name: state.player.name,
           packets: state.packets,
           avatar: getSafeAvatarUrl(state.player.avatar),
+          level: getLevelInfo().level,
+          prestigeLevel: state.prestige.level,
         };
         if (idx >= 0) bots[idx] = Object.assign({}, bots[idx], meRow);
         else bots.push(meRow);
@@ -2203,6 +2216,8 @@ function renderLeaderboard() {
           name: state.player.name,
           packets: state.packets,
           avatar: getSafeAvatarUrl(state.player.avatar),
+          level: getLevelInfo().level,
+          prestigeLevel: state.prestige.level,
         });
       }
     } else {
@@ -2216,6 +2231,8 @@ function renderLeaderboard() {
           name: state.player.name,
           packets: state.packets,
           avatar: getSafeAvatarUrl(state.player.avatar),
+          level: getLevelInfo().level,
+          prestigeLevel: state.prestige.level,
         },
       ];
     }
@@ -2228,6 +2245,8 @@ function renderLeaderboard() {
         name: state.player.name,
         packets: state.packets,
         avatar: getSafeAvatarUrl(state.player.avatar),
+        level: getLevelInfo().level,
+        prestigeLevel: state.prestige.level,
       },
     ];
   }
@@ -2246,13 +2265,19 @@ function renderLeaderboard() {
         const safeAvatar = getSafeAvatarUrl(p.avatar);
         const safeName = String(p.name || "Player").slice(0, 24);
         const safePackets = Math.max(0, parseInt(p.packets) || 0);
+        const safeLevel = Math.max(1, parseInt(p.level) || 1);
+        const safePrestigeLevel = Math.max(0, parseInt(p.prestigeLevel) || 0);
 
         return `
-    <li style="display: flex; gap: 0.75rem; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #273742;">
-      <span style="width: 2rem; text-align: right; color: var(--secondary-color); font-weight: bold;">${idx === 0 ? "🥇 " : idx === 1 ? "🥈 " : idx === 2 ? "🥉 " : ""}<span class="event-number-glow">${idx + 1}</span>.</span>
-      <img src="${safeAvatar}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 2rem; height: 2rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "3px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"};" alt="" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}'; console.warn('Avatar failed to load for ${safeName}, using default');">
-      <span style="font-weight: 800; ${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.15rem 0.5rem; border-radius: 999px;" : "color: var(--text-primary);"}">${idx === 0 ? '<span class="crown-badge">👑</span>' : ""}${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) && isVIP() ? '<img src="src/assets/vip.png" alt="VIP" style="height:1rem;width:1rem;vertical-align:middle;display:inline-block;margin-right:0.25rem;" aria-hidden="true"/>' : ""}${safeName}</span>
-      <span style="margin-left: auto; font-family: monospace; color: var(--text-secondary); font-weight: bold; font-size: 1.05em;"><span class="icon-packet"></span> <span class="event-number-glow">${safePackets.toLocaleString("en-US")}</span></span>
+    <li style="display: flex; gap: 0.5rem; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid #273742;">
+      <span style="width: 1.8rem; text-align: right; color: var(--secondary-color); font-weight: bold; font-size: 0.85em;">${idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : ""}<span class="event-number-glow" style="font-size: 0.9em;">${idx + 1}</span></span>
+      <img src="${safeAvatar}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 1.8rem; height: 1.8rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "2px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"};" alt="" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}'; console.warn('Avatar failed to load for ${safeName}, using default');">
+      <div style="display: flex; align-items: center; gap: 0.35rem; flex: 1; min-width: 0;">
+        <span style="font-size: 0.65rem; color: #ffd700; font-weight: 600; padding: 0.1rem 0.3rem; background: rgba(0,0,0,0.4); border-radius: 8px; white-space: nowrap;">${safeLevel}</span>
+        <span style="font-weight: 700; font-size: 0.9em; ${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) ? "color: var(--bg-secondary); background: linear-gradient(90deg, #c4ebea 33%, #faffc4 100%); border: 1px solid var(--primary-color); padding: 0.1rem 0.4rem; border-radius: 12px;" : "color: var(--text-primary);"} overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 1;">${safeName}</span>
+        ${safePrestigeLevel > 0 ? `<div style="display: flex; align-items: center; gap: 0.15rem; font-size: 0.65rem; color: #c084fc; font-weight: 600; padding: 0.1rem 0.25rem; background: rgba(192, 132, 252, 0.2); border: 1px solid rgba(192, 132, 252, 0.4); border-radius: 8px; white-space: nowrap; flex-shrink: 0;"><img src="src/assets/items/I_Sapphire.png" alt="P" style="width:0.7rem;height:0.7rem;"/> ${safePrestigeLevel}</div>` : ""}
+      </div>
+      <span style="font-family: monospace; color: var(--text-secondary); font-weight: bold; font-size: 0.85em; white-space: nowrap; flex-shrink: 0;"><span class="icon-packet"></span> <span class="event-number-glow">${formatCompactNumber(safePackets)}</span></span>
     </li>
   `;
       })
@@ -2290,7 +2315,11 @@ function renderLeaderboard() {
           <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #c0c0c0; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);">
             <img src="${getSafeAvatarUrl((t[1] && t[1].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
           </div>
-          <div style="font-size:0.8rem; font-weight:bold; margin-top:0.25rem; color:#c0c0c0; text-align:center; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${String((t[1] && t[1].name) || "Player").slice(0, 12)}</div>
+          <div style="font-size:0.8rem; font-weight:bold; margin-top:0.25rem; color:#c0c0c0; text-align:center; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+            <div style="font-size:0.65rem; color:#ffd700; margin-bottom:0.15rem; padding:0.1rem 0.3rem; background:rgba(0,0,0,0.4); border-radius:8px;">Lvl ${Math.max(1, parseInt((t[1] && t[1].level) || 1))}</div>
+            ${String((t[1] && t[1].name) || "Player").slice(0, 12)}
+            ${Math.max(0, parseInt((t[1] && t[1].prestigeLevel) || 0)) > 0 ? `<div style="font-size:0.6rem; color:#c084fc; margin-top:0.15rem; padding:0.1rem 0.25rem; background:rgba(192, 132, 252, 0.2); border:1px solid rgba(192, 132, 252, 0.4); border-radius:8px; display:flex; align-items:center; justify-content:center; gap:0.1rem;"><img src="src/assets/items/I_Sapphire.png" alt="P" style="width:0.7rem;height:0.7rem;"/> Lvl ${Math.max(0, parseInt((t[1] && t[1].prestigeLevel) || 0))}</div>` : ""}
+          </div>
           <div style="width:64px; height:36px; background:linear-gradient(180deg, #3b4a5a, #2a3947); border:2px solid #c0c0c0; border-top-left-radius:8px; border-top-right-radius:8px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:800;">2</div>
           <div style="margin-top:0.15rem; font-size:1.1rem;">🥈</div>
         </div>
@@ -2298,15 +2327,23 @@ function renderLeaderboard() {
           <div style="display:flex; align-items:center; justify-content:center; width:84px; height:84px; border-radius:50%; border:4px solid #ffd700; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.22), transparent);">
             <img src="${getSafeAvatarUrl((t[0] && t[0].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
           </div>
-          <div style="font-size:0.9rem; font-weight:bold; margin-top:0.25rem; color:#ffd700; text-align:center; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${String((t[0] && t[0].name) || "Player").slice(0, 12)}</div>
+          <div style="font-size:0.9rem; font-weight:bold; margin-top:0.25rem; color:#ffd700; text-align:center; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+            <div style="font-size:0.7rem; color:#ffd700; margin-bottom:0.15rem; padding:0.1rem 0.35rem; background:rgba(0,0,0,0.4); border-radius:8px;">Lvl ${Math.max(1, parseInt((t[0] && t[0].level) || 1))}</div>
+            ${String((t[0] && t[0].name) || "Player").slice(0, 12)}
+            ${Math.max(0, parseInt((t[0] && t[0].prestigeLevel) || 0)) > 0 ? `<div style="font-size:0.65rem; color:#c084fc; margin-top:0.15rem; padding:0.1rem 0.3rem; background:rgba(192, 132, 252, 0.2); border:1px solid rgba(192, 132, 252, 0.4); border-radius:8px; display:flex; align-items:center; justify-content:center; gap:0.15rem;"><img src="src/assets/items/I_Sapphire.png" alt="P" style="width:0.8rem;height:0.8rem;"/> Lvl ${Math.max(0, parseInt((t[0] && t[0].prestigeLevel) || 0))}</div>` : ""}
+          </div>
           <div style="width:84px; height:52px; background:linear-gradient(180deg, #435a2a, #344a1f); border:3px solid #ffd700; border-top-left-radius:10px; border-top-right-radius:10px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:900; color:#ffec8a;">1</div>
-          <div style="margin-top:0.15rem; font-size:1.1rem;">👑 🥇</div>
+          <div style="margin-top:0.15rem; font-size:1.1rem;">🥇</div>
         </div>
         <div class="podium-item" style="display:flex; flex-direction:column; align-items:center;">
           <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #cd7f32; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);">
             <img src="${getSafeAvatarUrl((t[2] && t[2].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
           </div>
-          <div style="font-size:0.8rem; font-weight:bold; margin-top:0.25rem; color:#cd7f32; text-align:center; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${String((t[2] && t[2].name) || "Player").slice(0, 12)}</div>
+          <div style="font-size:0.8rem; font-weight:bold; margin-top:0.25rem; color:#cd7f32; text-align:center; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+            <div style="font-size:0.65rem; color:#ffd700; margin-bottom:0.15rem; padding:0.1rem 0.3rem; background:rgba(0,0,0,0.4); border-radius:8px;">Lvl ${Math.max(1, parseInt((t[2] && t[2].level) || 1))}</div>
+            ${String((t[2] && t[2].name) || "Player").slice(0, 12)}
+            ${Math.max(0, parseInt((t[2] && t[2].prestigeLevel) || 0)) > 0 ? `<div style="font-size:0.6rem; color:#c084fc; margin-top:0.15rem; padding:0.1rem 0.25rem; background:rgba(192, 132, 252, 0.2); border:1px solid rgba(192, 132, 252, 0.4); border-radius:8px; display:flex; align-items:center; justify-content:center; gap:0.1rem;"><img src="src/assets/items/I_Sapphire.png" alt="P" style="width:0.7rem;height:0.7rem;"/> Lvl ${Math.max(0, parseInt((t[2] && t[2].prestigeLevel) || 0))}</div>` : ""}
+          </div>
           <div style="width:64px; height:28px; background:linear-gradient(180deg, #4d3925, #3b2a1b); border:2px solid #cd7f32; border-top-left-radius:8px; border-top-right-radius:8px; margin-top:0.25rem; display:flex; align-items:center; justify-content:center; font-weight:800;">3</div>
           <div style="margin-top:0.15rem; font-size:1.1rem;">🥉</div>
         </div>
@@ -2884,6 +2921,8 @@ function showEditProfile() {
               name: state.player.name,
               avatar: avatarToSubmit,
               packets: state.packets,
+              level: getLevelInfo().level,
+              prestigeLevel: state.prestige.level,
             },
             { throttleMs: 0 },
           );
@@ -5965,6 +6004,8 @@ function init() {
               ? state.player.avatar
               : DEFAULT_AVATAR,
           packets: state.packets,
+          level: getLevelInfo().level,
+          prestigeLevel: state.prestige.level,
         },
         { throttleMs: 20000 },
       );
@@ -5984,6 +6025,8 @@ function init() {
         name: state.player.name,
         avatar: avatarToSubmit,
         packets: state.packets,
+        level: getLevelInfo().level,
+        prestigeLevel: state.prestige.level,
       },
       { throttleMs: 0 },
     );
