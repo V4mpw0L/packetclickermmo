@@ -696,6 +696,7 @@ function subscribe(callback, opts = {}) {
               avatar: d.avatar ? "present" : "missing",
               deviceId: d.deviceId,
               updatedAt: d.updatedAt,
+              allFields: Object.keys(d),
             });
 
             rows.push({
@@ -703,8 +704,12 @@ function subscribe(callback, opts = {}) {
               name: sanitizeName(d.name),
               packets: clamp(d.packets, 0, Number.MAX_SAFE_INTEGER),
               avatar: avatar,
-              level: clamp(d.level || 1, 1, 999),
-              prestigeLevel: clamp(d.prestigeLevel || 0, 0, 1000),
+              level: clamp(typeof d.level === "number" ? d.level : 1, 1, 999),
+              prestigeLevel: clamp(
+                typeof d.prestigeLevel === "number" ? d.prestigeLevel : 0,
+                0,
+                1000,
+              ),
               updatedAt: d.updatedAt?.toMillis
                 ? d.updatedAt.toMillis()
                 : nowTs(),
