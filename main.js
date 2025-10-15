@@ -881,7 +881,7 @@ function renderGame() {
 
   return `
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🎮 Game</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">Game</h2>
       ${clickBtn}
       <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; background: rgba(76, 175, 80, 0.05);">
         <h3 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm); margin-bottom: 0.75rem;">${state.player.name || "Player"} Status</h3>
@@ -1200,7 +1200,7 @@ function renderThemes() {
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🎨 Visual Themes</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">Visual Themes</h2>
 
       <div class="text-sm text-neon-gray mb-4 text-center">
         Customize your game's appearance with beautiful color schemes
@@ -1239,7 +1239,7 @@ function renderThemes() {
 function renderUpgrades() {
   return `
     <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🛠️ ${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.title") : "Upgrades"}</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.title") : "Upgrades"}</h2>
 
       <div class="bulk-options" style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
         ${renderButton({
@@ -1529,7 +1529,7 @@ function renderAchievements() {
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🏆 Achievements</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">Achievements</h2>
 
       <div style="text-align: center; margin: 1rem 0;">
         <div class="achievement-stats" style="text-align:center; margin:.5rem 0 .75rem; padding:.35rem .75rem; border:1px solid var(--border-color); border-radius:999px; width:fit-content; margin:0 auto .75rem; background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));">
@@ -1729,7 +1729,7 @@ function renderShop() {
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🏪 Premium Shop</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">Premium Shop</h2>
 
       <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
         <div class="shop-balance">
@@ -2009,7 +2009,7 @@ function renderLeaderboard() {
     html = `<li style="padding: 1rem; text-align: center; color: var(--text-secondary);">Error loading leaderboard data</li>`;
   }
   return `<div class="neon-card" style="padding: 1rem 0.5rem;">
-    <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">🏆 Leaderboard</h2>
+    <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">Leaderboard</h2>
     <style>
       @keyframes medalPulse {
         0% { transform: scale(1); }
@@ -2092,7 +2092,7 @@ function renderPrestige() {
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);"><img src="src/assets/items/I_Sapphire.png" alt="Prestige" style="width:1.2rem;height:1.2rem;vertical-align:middle;display:inline-block;margin-right:0.35rem;"/> Prestige</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">Prestige</h2>
       <div class="text-center mb-4" style="display:flex; flex-direction:column; align-items:center; gap:.35rem;">
         <div class="text-lg" style="font-weight:900;">Level <span class="event-number-glow">${state.prestige.level.toLocaleString("en-US")}</span></div>
         <div class="text-sm text-neon-gray">
@@ -2186,7 +2186,7 @@ function renderDaily() {
 
   return `
     <div class="neon-card px-3 py-4 mb-2">
-      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">📅 ${window.Packet && Packet.i18n ? Packet.i18n.t("daily.title").replace(/^📅\s*/, "") : "Daily Rewards"}</h2>
+      <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.title").replace(/^📅\s*/, "") : "Daily Rewards"}</h2>
       <div style="text-align: center; color: var(--text-secondary); margin-bottom: 1rem;">${window.Packet && Packet.i18n ? Packet.i18n.t("daily.subtitle") : "Build your streak for better rewards!"}</div>
 
       <!-- Streak Progress -->
