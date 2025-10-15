@@ -2489,7 +2489,7 @@ function renderDaily() {
     return `
       <div style="border: 2px solid ${claimed ? "#4ade80" : current ? "#ffd700" : "var(--border-color)"}; border-radius: 12px; padding: 1rem; background: ${claimed ? "rgba(74, 222, 128, 0.1)" : current ? "rgba(255, 215, 0, 0.1)" : "rgba(0,0,0,.15)"}; text-align: center; position: relative; ${current ? "animation: dailyPulse 2s ease-in-out infinite;" : ""}" data-day="${index + 1}">
         <div style="margin-bottom: 1rem;">
-          <div style="width: 40px; height: 40px; border-radius: 50%; background: ${claimed ? "#4ade80" : current ? "#ffd700" : "var(--border-color)"}; color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; margin: 0 auto; font-size: 1.2rem;">
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: ${claimed ? "#4ade80" : current ? "#ffd700" : "#6b7280"}; color: ${claimed ? "#000" : current ? "#000" : "#fff"}; display: flex; align-items: center; justify-content: center; font-weight: bold; margin: 0 auto; font-size: 1.2rem;">
             ${statusIcon}
           </div>
           ${current ? '<div style="position: absolute; top: -4px; right: -4px; width: 12px; height: 12px; background: #ffd700; border-radius: 50%; animation: dailyPulse 1s ease-in-out infinite;"></div>' : ""}
