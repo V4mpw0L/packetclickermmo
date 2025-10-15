@@ -88,15 +88,21 @@ export function showComboTotalHUD(total, color = null, totalXP = null) {
   const numberBorderStyle = isCelestial
     ? "border: 1px solid #ff0080; animation: celestialBorderOnly 3s linear infinite;"
     : `border: 1px solid ${c};`;
+  const celestialTextStyle = isCelestial
+    ? "animation: celestialRainbowText 3s linear infinite; background: linear-gradient(90deg, #ff0080 0%, #00ff80 25%, #8000ff 50%, #ff8000 75%, #ff0080 100%); background-size: 400% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;"
+    : "color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);";
+  const celestialLabelStyle = isCelestial
+    ? "animation: celestialRainbowText 3s linear infinite; background: linear-gradient(90deg, #ff0080 0%, #00ff80 25%, #8000ff 50%, #ff8000 75%, #ff0080 100%); background-size: 400% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;"
+    : "";
 
   hud.innerHTML = `
     <div style="text-align: center; line-height: 1.4;">
-      <div style="margin-bottom: 0.3rem;">COMBO:</div>
-      <div style="padding: 0.15rem 0.4rem; ${numberBorderStyle} border-radius: 999px; background: rgba(0,0,0,0.25); font-weight: bold; margin-bottom: 0.6rem; display: inline-block; color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">x${comboCount}</div>
-      <div style="margin-bottom: 0.3rem;">Total Packets:</div>
-      <div style="padding: 0.15rem 0.4rem; ${numberBorderStyle} border-radius: 999px; background: rgba(0,0,0,0.25); font-weight: bold; margin-bottom: 0.6rem; display: inline-block; color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">+${Number(total || 0).toLocaleString()}</div>
-      <div style="margin-bottom: 0.3rem;">Total EXP:</div>
-      <div style="padding: 0.15rem 0.4rem; ${numberBorderStyle} border-radius: 999px; background: rgba(0,0,0,0.25); font-weight: bold; display: inline-block; color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 215, 0, 0.4);">+${Number(totalXP || 0).toLocaleString()}</div>
+      <div style="margin-bottom: 0.3rem; ${celestialLabelStyle}">COMBO:</div>
+      <div style="padding: 0.15rem 0.4rem; ${numberBorderStyle} border-radius: 999px; background: rgba(0,0,0,0.25); font-weight: bold; margin-bottom: 0.6rem; display: inline-block; ${celestialTextStyle}">x${comboCount}</div>
+      <div style="margin-bottom: 0.3rem; ${celestialLabelStyle}">Total Packets:</div>
+      <div style="padding: 0.15rem 0.4rem; ${numberBorderStyle} border-radius: 999px; background: rgba(0,0,0,0.25); font-weight: bold; margin-bottom: 0.6rem; display: inline-block; ${celestialTextStyle}">+${Number(total || 0).toLocaleString()}</div>
+      <div style="margin-bottom: 0.3rem; ${celestialLabelStyle}">Total EXP:</div>
+      <div style="padding: 0.15rem 0.4rem; ${numberBorderStyle} border-radius: 999px; background: rgba(0,0,0,0.25); font-weight: bold; display: inline-block; ${celestialTextStyle}">+${Number(totalXP || 0).toLocaleString()}</div>
     </div>
   `;
 

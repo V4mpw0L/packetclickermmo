@@ -2836,6 +2836,37 @@ footer {
     }
 }
 
+@keyframes celestialRainbowText {
+    0% {
+        background: linear-gradient(
+            90deg,
+            #ff0080 0%,
+            #00ff80 25%,
+            #8000ff 50%,
+            #ff8000 75%,
+            #ff0080 100%
+        );
+        background-size: 400% 100%;
+        background-position: 0% 50%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+    }
+    25% {
+        background-position: 25% 50%;
+    }
+    50% {
+        background-position: 50% 50%;
+    }
+    75% {
+        background-position: 75% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
 @keyframes celestialRainbowBg {
     0% {
         background: linear-gradient(
