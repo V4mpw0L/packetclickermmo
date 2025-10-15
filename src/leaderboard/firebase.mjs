@@ -567,6 +567,18 @@ async function flushWrite() {
       prestigeLevel: payload.prestigeLevel,
     });
 
+    // Additional detailed logging for level/prestige debugging
+    console.log("[Leaderboard] DETAILED payload debug:", {
+      name: payload.name,
+      packets: payload.packets,
+      level: payload.level,
+      prestigeLevel: payload.prestigeLevel,
+      deviceId: payload.deviceId,
+      levelType: typeof payload.level,
+      prestigeType: typeof payload.prestigeLevel,
+      allKeys: Object.keys(payload),
+    });
+
     await setDoc(ref, payload, { merge: true });
 
     if (!_lastWriteMs) {
@@ -674,6 +686,18 @@ function subscribe(callback, opts = {}) {
           snap.forEach((doc) => {
             const d = doc.data() || {};
             const avatar = sanitizeAvatar(d.avatar);
+
+            // Debug: Log raw document data to see what's actually stored
+            console.log(`[Leaderboard] Raw doc data for ${doc.id}:`, {
+              name: d.name,
+              packets: d.packets,
+              level: d.level,
+              prestigeLevel: d.prestigeLevel,
+              avatar: d.avatar ? "present" : "missing",
+              deviceId: d.deviceId,
+              updatedAt: d.updatedAt,
+            });
+
             rows.push({
               id: doc.id,
               name: sanitizeName(d.name),
