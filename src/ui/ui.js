@@ -84,15 +84,34 @@
     const theme = themes[themeId];
     if (!theme) return;
 
-    // Mark active theme
+    // Mark active theme - this triggers CSS :root[data-theme] selectors
     document.documentElement.setAttribute("data-theme", themeId);
 
-    // Update CSS custom properties
+    // Enhanced CSS custom properties for comprehensive theming
     const root = document.documentElement.style;
     if (Array.isArray(theme.colors) && theme.colors.length >= 3) {
+      // Core theme colors
       root.setProperty("--primary-color", theme.colors[0]);
       root.setProperty("--secondary-color", theme.colors[1]);
       root.setProperty("--bg-secondary", theme.colors[2]);
+
+      // Enhanced theme variables for better consistency
+      root.setProperty("--border-color", theme.colors[0]);
+      root.setProperty("--border-color-subtle", theme.colors[0] + "4D"); // 30% opacity
+      root.setProperty("--shadow-color", theme.colors[0] + "26"); // 15% opacity
+
+      // Dynamic text colors based on theme
+      const isDarkTheme = themeId === "dark";
+      const isLightBg = ["cyberpunk", "neon", "ocean"].includes(themeId);
+
+      if (isDarkTheme) {
+        root.setProperty("--text-primary", "#ffffff");
+        root.setProperty("--text-secondary", "#cccccc");
+        root.setProperty("--text-muted", "#888888");
+      } else if (isLightBg) {
+        root.setProperty("--text-primary", theme.colors[0]);
+        root.setProperty("--text-secondary", theme.colors[1]);
+      }
     }
 
     // Persist on existing state/save if present (non-breaking)
