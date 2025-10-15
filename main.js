@@ -6102,48 +6102,6 @@ function init() {
     Leaderboard.subscribe(function (rows) {
       state.leaderboardLive = Array.isArray(rows) ? rows : [];
 
-      // Check if our own data is stale and force refresh if needed
-      if (Array.isArray(rows) && rows.length > 0) {
-        const myId =
-          typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId
-            ? Leaderboard.getDeviceId()
-            : state.player.name;
-        const myEntry = rows.find((row) => row && row.id === myId);
-
-        if (myEntry) {
-          const currentLevel = getLevelInfo().level;
-          const currentPrestige = state.prestige.level;
-
-          // If our leaderboard data is stale, force an immediate update
-          if (
-            myEntry.level !== currentLevel ||
-            myEntry.prestigeLevel !== currentPrestige
-          ) {
-            console.log("[Leaderboard] Detected stale data - forcing update:", {
-              leaderboardLevel: myEntry.level,
-              currentLevel: currentLevel,
-              leaderboardPrestige: myEntry.prestigeLevel,
-              currentPrestige: currentPrestige,
-            });
-
-            // Force immediate submission
-            if (typeof Leaderboard !== "undefined" && Leaderboard.submit) {
-              const avatarToSubmit = getSafeAvatarUrl(state.player.avatar);
-              Leaderboard.submit(
-                {
-                  name: state.player.name,
-                  avatar: avatarToSubmit,
-                  packets: state.packets,
-                  level: currentLevel,
-                  prestigeLevel: currentPrestige,
-                },
-                { throttleMs: 0 },
-              );
-            }
-          }
-        }
-      }
-
       // Immediately update HUD when leaderboard data changes
       if (typeof updateTopBar === "function") updateTopBar();
       if (typeof renderTab === "function") renderTab();
