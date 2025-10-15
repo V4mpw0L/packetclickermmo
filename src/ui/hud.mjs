@@ -37,7 +37,7 @@ export function showComboTotalHUD(total, color = null) {
 
     // Inline safety styles (in case CSS is unavailable)
     hud.style.position = "absolute";
-    hud.style.top = `${viewport.scrollY + viewport.viewportHeight * 0.18}px`;
+    hud.style.top = `${viewport.scrollY + Math.max(160, viewport.viewportHeight * 0.32)}px`;
     hud.style.left = "50%";
     hud.style.transform = "translate(-50%, 0)";
     hud.style.padding = "0.4rem 0.8rem";
@@ -185,7 +185,7 @@ export function showHudNotify(msg, icon = "✨", duration = 1800) {
   hud.id = HUD_IDS.notify;
   hud.className = "hud-notify hud-notify-follow";
   hud.style.position = "absolute";
-  hud.style.top = `${viewport.scrollY + Math.max(30, viewport.viewportHeight * 0.06)}px`;
+  hud.style.top = `${viewport.scrollY + Math.max(140, viewport.viewportHeight * 0.28)}px`;
   hud.style.left = "50%";
   hud.style.transform = "translate(-50%, 0)";
   hud.style.padding = "10px 18px";
