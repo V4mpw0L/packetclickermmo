@@ -440,16 +440,12 @@ function submit(
     ) {
       return;
     }
-
     _pendingDoc = docData;
 
     if (_writeTimer) clearTimeout(_writeTimer);
 
-    // For immediate updates (throttleMs = 0), ignore backoff
-    const delay = throttleMs === 0 ? 0 : Math.max(_backoffMs || 0, throttleMs);
-
-    if (delay === 0) {
-      // Immediate submission for level/prestige changes
+    // For immediate updates (throttleMs = 0), ignore backoff and submit immediately
+    if (throttleMs === 0) {
       console.log("[Leaderboard] Immediate submission triggered", {
         level: docData.level,
         prestigeLevel: docData.prestigeLevel,
@@ -457,6 +453,7 @@ function submit(
       });
       flushWrite();
     } else {
+      const delay = Math.max(_backoffMs || 0, throttleMs);
       _writeTimer = setTimeout(flushWrite, delay);
     }
   } catch (e) {

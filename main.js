@@ -795,15 +795,19 @@ function gainXP(amount) {
     // Check for level-based achievements
     checkAchievements();
 
-    // Immediately update leaderboard with new level (only when level actually changes)
+    // Immediately update leaderboard with new level AND update HUD
+    console.log(
+      "[Level Up] Level increased - updating leaderboard immediately:",
+      {
+        oldLevel: oldLevelInfo.level,
+        newLevel: newLevelInfo.level,
+        prestigeLevel: state.prestige.level,
+      },
+    );
+
+    // Force immediate leaderboard submission for level change
     try {
       if (typeof Leaderboard !== "undefined" && Leaderboard.submit) {
-        console.log("[Level Up] Submitting level change to leaderboard:", {
-          oldLevel: oldLevelInfo.level,
-          newLevel: newLevelInfo.level,
-          prestigeLevel: state.prestige.level,
-        });
-
         const avatarToSubmit = getSafeAvatarUrl(state.player.avatar);
         Leaderboard.submit(
           {
@@ -813,12 +817,17 @@ function gainXP(amount) {
             level: newLevelInfo.level,
             prestigeLevel: state.prestige.level,
           },
-          { throttleMs: 0 },
+          { throttleMs: 0 }, // Force immediate submission
         );
+        console.log("[Level Up] Leaderboard submission triggered");
       }
     } catch (e) {
       console.warn("[Level Up] Failed to submit to leaderboard:", e);
     }
+
+    // Update HUD immediately
+    updateTopBar();
+    if (typeof renderTab === "function") renderTab();
   }
 
   updateLevelDisplay();
@@ -5564,15 +5573,19 @@ function doPrestige() {
   renderTab();
   checkAchievements();
 
-  // Immediately update leaderboard with new prestige level
+  // Immediately update leaderboard with new prestige level AND update HUD
+  console.log(
+    "[Prestige] Prestige completed - updating leaderboard immediately:",
+    {
+      prestigeLevel: state.prestige.level,
+      packetsReset: 0,
+      level: getLevelInfo().level,
+    },
+  );
+
+  // Force immediate leaderboard submission for prestige change
   try {
     if (typeof Leaderboard !== "undefined" && Leaderboard.submit) {
-      console.log("[Prestige] Submitting prestige change to leaderboard:", {
-        prestigeLevel: state.prestige.level,
-        packetsReset: 0,
-        level: getLevelInfo().level,
-      });
-
       const avatarToSubmit = getSafeAvatarUrl(state.player.avatar);
       Leaderboard.submit(
         {
@@ -5582,12 +5595,17 @@ function doPrestige() {
           level: getLevelInfo().level,
           prestigeLevel: state.prestige.level,
         },
-        { throttleMs: 0 },
+        { throttleMs: 0 }, // Force immediate submission
       );
+      console.log("[Prestige] Leaderboard submission triggered");
     }
   } catch (e) {
     console.warn("[Prestige] Failed to submit to leaderboard:", e);
   }
+
+  // Update HUD immediately
+  updateTopBar();
+  if (typeof renderTab === "function") renderTab();
 }
 
 function buyPrestigeUpgrade(upgradeId) {
@@ -6040,7 +6058,19 @@ function init() {
 
     // Live subscription (keeps UI in sync across devices)
     Leaderboard.subscribe(function (rows) {
+      console.log("[DEBUG] Leaderboard subscription received:", rows);
+      if (Array.isArray(rows) && rows.length > 0) {
+        console.log("[DEBUG] First player data:", {
+          name: rows[0].name,
+          packets: rows[0].packets,
+          level: rows[0].level,
+          prestigeLevel: rows[0].prestigeLevel,
+        });
+      }
       state.leaderboardLive = Array.isArray(rows) ? rows : [];
+
+      // Immediately update HUD when leaderboard data changes
+      if (typeof updateTopBar === "function") updateTopBar();
       if (typeof renderTab === "function") renderTab();
     });
     console.log("[DEBUG] Leaderboard.subscribe completed");
@@ -6064,21 +6094,23 @@ function init() {
         navigator.onLine === false
       )
         return;
-      Leaderboard.submit(
-        {
-          name: state.player.name,
-          avatar:
-            state.player.avatar &&
-            typeof state.player.avatar === "string" &&
-            state.player.avatar.trim() !== ""
-              ? state.player.avatar
-              : DEFAULT_AVATAR,
-          packets: state.packets,
-          level: getLevelInfo().level,
-          prestigeLevel: state.prestige.level,
-        },
-        { throttleMs: 20000 },
-      );
+
+      const currentData = {
+        name: state.player.name,
+        avatar:
+          state.player.avatar &&
+          typeof state.player.avatar === "string" &&
+          state.player.avatar.trim() !== ""
+            ? state.player.avatar
+            : DEFAULT_AVATAR,
+        packets: state.packets,
+        level: getLevelInfo().level,
+        prestigeLevel: state.prestige.level,
+      };
+
+      console.log("[DEBUG] Regular leaderboard submission:", currentData);
+
+      Leaderboard.submit(currentData, { throttleMs: 20000 });
     };
 
     // Immediate submit once after init so other devices see us quickly (no throttle)
