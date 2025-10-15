@@ -675,6 +675,17 @@ function subscribe(callback, opts = {}) {
             const d = doc.data() || {};
             const avatar = sanitizeAvatar(d.avatar);
 
+            // Debug: Log what's actually in each document
+            console.log(`[DEBUG] Document ${doc.id}:`, {
+              name: d.name,
+              packets: d.packets,
+              level: d.level,
+              prestigeLevel: d.prestigeLevel,
+              hasLevel: "level" in d,
+              hasPrestige: "prestigeLevel" in d,
+              allKeys: Object.keys(d),
+            });
+
             rows.push({
               id: doc.id,
               name: sanitizeName(d.name),
