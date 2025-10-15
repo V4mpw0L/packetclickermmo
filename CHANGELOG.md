@@ -1,5 +1,29 @@
 # 📝 Changelog - Packet Clicker
 
+## Version 0.0.38 - XP System & Boost Improvements
+*Released: January 2025*
+
+### ⭐ **XP System Enhancements**
+- **Level Up Modal Improvements** - Resized modal with cleaner auto-close behavior (no manual close button)
+- **XP Display Formatting** - Fixed decimal overflow issues, now displays clean integer values with proper formatting
+- **Top Bar Consistency** - Made XP numbers (M/M) same font size as level number for visual balance
+
+### 🚀 **New XP Boost Items**
+- **🌟 Celestial Wisdom** - 50% XP gain for 30 seconds (999 gems, Celestial rarity)
+- **📚 Study Guide** - 5% XP gain for 5 minutes (3 gems, Common rarity)
+- **Smart XP Calculation** - Boosts stack multiplicatively and round to clean integers
+- **Perfect Integration** - XP boosts work with admin panel, UI display, and boost shop
+
+### 🎯 **Temporary Boosts Organization**
+- **Rarity-Based Sorting** - Boosts now organized by rarity (Common → Celestial) like equipment system
+- **Visual Hierarchy** - Easier progression from affordable to premium boosts
+- **Consistent Pricing** - Both celestial boosts (Quantum Boost & Celestial Wisdom) cost 999 gems
+
+### 🔧 **Technical Improvements**
+- **State Management** - Added XP boosts to save migration and admin systems
+- **UI Polish** - Enhanced boost display with proper rarity colors and animations
+- **Code Quality** - Clean XP boost logic with proper validation and error handling
+
 ## Version 0.0.37 - Avatar System Expansion & UI Polish
 *Released: January 2025*
 
