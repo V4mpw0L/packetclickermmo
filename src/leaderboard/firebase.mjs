@@ -991,6 +991,12 @@ const Leaderboard = {
                   id: doc.id,
                   name: sanitizeName(d.name),
                   packets: clamp(d.packets, 0, Number.MAX_SAFE_INTEGER),
+                  level: clamp(d.level || 1, 1, Number.MAX_SAFE_INTEGER),
+                  prestigeLevel: clamp(
+                    d.prestigeLevel || 0,
+                    0,
+                    Number.MAX_SAFE_INTEGER,
+                  ),
                   avatar: sanitizeAvatar(d.avatar),
                   updatedAt: d.updatedAt?.toMillis
                     ? d.updatedAt.toMillis()
