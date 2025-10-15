@@ -334,7 +334,27 @@ export function handleComboEffect(clickCombo, amount, state) {
     const extra = Math.floor(amount * 0.99);
     safeAddPackets(extra);
     displayedGain += extra;
-    effectText = `<span class="celestial-text-layer" style="animation: celestialTextOnly 3s linear infinite; text-shadow: 0 0 10px rgba(255,0,128,0.8), 0 0 20px rgba(255,0,128,0.6), 0 0 30px rgba(255,0,128,0.4), 0 0 40px rgba(0,255,128,0.3), 2px 2px 4px rgba(0,0,0,0.8); font-weight: bold;">CELESTIAL!<br>+${displayedGain}<br>(${amount}+99%)</span>`;
+    effectText = `<span class="celestial-text-layer" style="font-weight: bold;">
+      <span style="animation: celestialTextOnly 3s linear infinite; animation-delay: 0s;">C</span><span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -0.3s;">E</span><span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -0.6s;">L</span><span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -0.9s;">E</span><span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -1.2s;">S</span><span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -1.5s;">T</span><span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -1.8s;">I</span><span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -2.1s;">A</span><span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -2.4s;">L</span><span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -2.7s;">!</span><br>
+      ${displayedGain
+        .toString()
+        .split("")
+        .map(
+          (char, i) =>
+            `<span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -${i * 0.3}s;">${char}</span>`,
+        )
+        .join("")}<br>
+      <span style="animation: celestialTextOnly 3s linear infinite; animation-delay: 0s;">(</span>${amount
+        .toString()
+        .split("")
+        .map(
+          (char, i) =>
+            `<span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -${i * 0.3}s;">${char}</span>`,
+        )
+        .join(
+          "",
+        )}<span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -0.3s;">+</span><span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -0.6s;">9</span><span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -0.9s;">9</span><span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -1.2s;">%</span><span style="animation: celestialTextOnly 3s linear infinite; animation-delay: -1.5s;">)</span>
+    </span>`;
 
     if (hasDOM()) {
       try {
