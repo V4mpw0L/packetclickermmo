@@ -826,7 +826,7 @@ service cloud.firestore {
         request.resource.data.name.size() <= 24 &&
         request.resource.data.packets is int &&
         request.resource.data.packets >= 0 &&
-        request.resource.data.packets <= 1000000000 &&
+        request.resource.data.packets <= 9007199254740991 &&
         (!('avatar' in request.resource.data) || (request.resource.data.avatar is string && request.resource.data.avatar.size() <= 256));
     }
   }
@@ -849,7 +849,7 @@ service cloud.firestore {
         request.resource.data.name.size() <= 24 &&
         request.resource.data.packets is int &&
         request.resource.data.packets >= 0 &&
-        request.resource.data.packets <= 1000000000 &&
+        request.resource.data.packets <= 9007199254740991 &&
         (!('avatar' in request.resource.data) || (request.resource.data.avatar is string && request.resource.data.avatar.size() <= 256));
     }
   }
