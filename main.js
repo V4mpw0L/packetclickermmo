@@ -1309,13 +1309,13 @@ function renderBoosts() {
       <div class="boost-card-compact"
            style="
              ${isCelestial ? "border: none; animation: celestialRainbowRounded 3s linear infinite;" : `border: 2px solid ${style.border};`}
-             background: ${style.bg};
+             background: ${active ? "linear-gradient(135deg, #4a5568 0%, #2d3748 50%, #1a202c 100%)" : style.bg};
              border-radius: 10px;
              padding: 0.75rem;
-
+             ${active ? "box-shadow: inset 0 2px 8px rgba(0,0,0,0.4), 0 0 0 2px rgba(76, 175, 80, 0.3);" : ""}
              transition: all 0.3s ease;
              cursor: ${active || !canAfford ? "not-allowed" : "pointer"};
-             opacity: ${active || !canAfford ? "0.6" : "1"};
+             opacity: ${!canAfford && !active ? "0.6" : "1"};
              display: flex;
              flex-direction: column;
              align-items: center;
@@ -1323,25 +1323,26 @@ function renderBoosts() {
              height: 100%;
              min-height: 200px;
              justify-content: space-between;
+             ${active ? "filter: grayscale(0.3) brightness(0.85);" : ""}
            "
            onclick="${active || !canAfford ? "" : `buyBoost('${boost.id}')`}"
-           onmouseover="this.style.transform='translateY(-3px)'"
-           onmouseout="this.style.transform='translateY(0px)'">
+           onmouseover="${active ? "" : "this.style.transform='translateY(-3px)'"}"
+           onmouseout="${active ? "" : "this.style.transform='translateY(0px)'"}">
 
         <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">
           ${boost.icon}
         </div>
 
         <div style="flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%;">
-          <div style="font-size: 0.9rem; font-weight: 800; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : `color: ${style.border};`} margin-bottom: 0.25rem; line-height: 1.2;">
+          <div style="font-size: 0.9rem; font-weight: 800; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : `color: ${active ? "#a0aec0" : style.border};`} margin-bottom: 0.25rem; line-height: 1.2;">
             ${boost.name.replace(/^[^A-Za-z]*\s*/, "")}
           </div>
 
-          <div style="font-size: 0.7rem; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : `color: ${rarity.color};`} text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 0.5rem;">
+          <div style="font-size: 0.7rem; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : `color: ${active ? "#718096" : rarity.color};`} text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 0.5rem;">
             ${rarity.name}
           </div>
 
-          <div style="font-size: 0.75rem; color: #e2e8f0; margin-bottom: 0.5rem; line-height: 1.3;">
+          <div style="font-size: 0.75rem; color: ${active ? "#a0aec0" : "#e2e8f0"}; margin-bottom: 0.5rem; line-height: 1.3;">
             ${boost.desc}
           </div>
         </div>
@@ -1354,8 +1355,8 @@ function renderBoosts() {
 
           ${
             active
-              ? `<div style="padding: 0.4rem; background: rgba(76, 175, 80, 0.15); border: 1px solid #4caf50; border-radius: 6px; font-size: 0.7rem;">
-                  <div style="color: #4caf50; font-weight: bold;">⚡ ACTIVE</div>
+              ? `<div style="padding: 0.4rem; background: linear-gradient(135deg, #4a5568 0%, #2d3748 50%, #1a202c 100%); border: 1px solid #4a5568; border-radius: 6px; font-size: 0.7rem;">
+                  <div style="color: #4caf50; font-weight: bold;">ACTIVE</div>
                   <div style="color: #22c55e;"><span class="event-number-glow">${formatTime(remaining)}</span></div>
                  </div>`
               : !canAfford
