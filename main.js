@@ -2758,7 +2758,7 @@ function showEditProfile() {
        <label class="block mb-3">
          <span class="block mb-1 font-semibold">Name:</span>
          <input type="text" id="profile-name" value="${state.player.name}" maxlength="14"
-                class="w-full p-2 bg-gray-700 rounded border border-neon-cyan focus:outline-none focus:border-yellow-400" readonly onfocus="this.removeAttribute('readonly')">
+                class="w-full p-2 bg-gray-700 rounded border border-neon-cyan" readonly style="cursor: default; user-select: text; background-color: rgba(107, 114, 128, 0.5);">
        </label>
        <div class="mb-4">
          <span class="block mb-2 font-semibold">Avatar:</span>
@@ -2775,7 +2775,7 @@ function showEditProfile() {
          </div>
        </div>
 
-       <button type="submit" class="neon-btn w-full">Save</button>
+
      </form>
   `,
   );
@@ -2981,44 +2981,6 @@ function showEditProfile() {
       reader.readAsDataURL(file);
     };
   }
-  document.getElementById("profile-form").onsubmit = function (e) {
-    e.preventDefault();
-    let newName = document.getElementById("profile-name").value.trim();
-    if (newName) {
-      state.player.name = newName.slice(0, 14);
-      save();
-
-      // Update leaderboard with new name
-      try {
-        if (typeof Leaderboard !== "undefined" && Leaderboard.submit) {
-          const avatarToSubmit = getSafeAvatarUrl(state.player.avatar);
-          Leaderboard.submit(
-            {
-              name: state.player.name,
-              avatar: avatarToSubmit,
-              packets: state.packets,
-              level: getLevelInfo().level,
-              prestigeLevel: state.prestige.level,
-            },
-            { throttleMs: 0 },
-          );
-        }
-      } catch (_) {}
-
-      updateTopBar();
-      showHudNotify(
-        window.Packet && Packet.i18n
-          ? Packet.i18n.t("notify.profileUpdated")
-          : "Profile updated!",
-        "👤",
-      );
-    }
-
-    closeModal();
-    try {
-      renderTab();
-    } catch (_) {}
-  };
 }
 
 // =============== GRAPHICS SETTINGS ===============
