@@ -912,12 +912,12 @@ function showLevelUpModal(newLevel, oldLevel) {
         <span style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem;">Keep clicking to gain more XP!</span>
       </div>
       <div style="color: var(--text-secondary); font-size: 0.8rem; font-style: italic; margin-top: 1rem;">
-        This modal will close automatically in 3 seconds...
+        This modal will close automatically in 5 seconds...
       </div>
     </div>
   `;
 
-  // Auto-close after 3 seconds
+  // Auto-close after 5 seconds
   const autoCloseTimeout = setTimeout(() => {
     if (backdrop && modal) {
       backdrop.classList.add("hidden");
@@ -925,7 +925,7 @@ function showLevelUpModal(newLevel, oldLevel) {
       modal.classList.add("hidden");
       backdrop.removeEventListener("click", closeOnClick);
     }
-  }, 3000);
+  }, 5000);
 
   // Allow manual close by clicking backdrop
   const closeOnClick = (e) => {
