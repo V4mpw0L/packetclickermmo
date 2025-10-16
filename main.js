@@ -2156,6 +2156,11 @@ function showMobileCursorFeedback() {
 // =============== LEADERBOARD TAB ===============
 // Helper function to format large numbers compactly
 function formatCompactNumber(num) {
+  if (num >= 1e15)
+    return (
+      (num / 1e15).toFixed(3) +
+      '<span style="animation: celestialTextOnly 3s linear infinite;">Q</span>'
+    );
   if (num >= 1e12)
     return (
       (num / 1e12).toFixed(3) +
