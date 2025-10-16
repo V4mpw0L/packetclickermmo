@@ -2159,7 +2159,7 @@ function formatCompactNumber(num) {
   if (num >= 1e12)
     return (
       (num / 1e12).toFixed(3) +
-      '<span style="color: #a855f7; text-shadow: 0 0 4px #a855f7;">T</span>'
+      '<span style="color: #ff00ff; text-shadow: 0 0 4px #ff00ff;">T</span>'
     );
   if (num >= 1e9)
     return (
