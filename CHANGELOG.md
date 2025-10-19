@@ -1,10 +1,10 @@
 # 📝 Changelog - PacketClickerMMO
 
-## Version 0.0.45 - Latest Updates
+## Version 0.0.46 - Latest Updates
 *Released: January 2025*
 
 ### 🔄 **Version Update**
-- **Version Bump** - Updated from 0.0.44 to 0.0.45
+- **Version Bump** - Updated from 0.0.45 to 0.0.46
 - **Maintenance Release** - General improvements and bug fixes
 
 ## Version 0.0.42 - Enhanced Theme System & Visual Improvements
