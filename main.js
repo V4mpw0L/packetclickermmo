@@ -2009,16 +2009,35 @@ function renderShop() {
     </div>`;
   };
 
-  // Premium Gem Packs Buttons (compact)
-  const gemButtons = GEM_PACKS.map((p) =>
-    renderButton({
-      className: "shop-premium-btn",
-      label: `<div class="shop-premium-content" style="min-height:64px;">
-        <div class="shop-gem-amount" style="font-size:1.3rem;"><img src="src/assets/gem.png" alt="Gems" style="height:1.3rem;width:1.3rem;vertical-align:middle;display:inline-block;margin-right:0.05rem;" aria-hidden="true"/> <span class="gem-number">${p.gems.toLocaleString("en-US")}</span></div>
-        <div class="shop-gem-price" style="font-size:1.08rem;"><img src="src/assets/dollar.png" alt="$" style="height:1.15rem;width:1.15rem;vertical-align:middle;display:inline-block;margin-right:0.1rem;" aria-hidden="true"/> $${p.price.toFixed(2)}</div>
-      </div>`,
-      dataAttr: `data-gem-pack="${p.id}"`,
-    }),
+  // Premium Gem Packs Buttons (custom golden buttons)
+  const gemButtons = GEM_PACKS.map(
+    (p) =>
+      `<button class="premium-gold-gem-btn" data-gem-pack="${p.id}" style="
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+      border: 3px solid #ffd700;
+      border-radius: 12px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    " onmouseover="this.style.transform='translateY(-3px) scale(1.02)'; this.style.boxShadow='0 6px 25px rgba(255, 215, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'; this.style.borderColor='#ffed4e';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 4px 15px rgba(255, 215, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'; this.style.borderColor='#ffd700';">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 1.3rem; font-weight: 900; color: #1a1a1a; text-shadow: 0 1px 2px rgba(255,255,255,0.3);">
+        <img src="src/assets/gem.png" alt="Gems" style="height:1.3rem;width:1.3rem;" aria-hidden="true"/>
+        <span class="gem-number" style="color: #1a1a1a !important; text-shadow: none !important;">${p.gems.toLocaleString("en-US")}</span>
+      </div>
+      <div style="font-size: 1.1rem; font-weight: 800; color: #2d2d2d; display: flex; align-items: center; gap: 0.3rem;">
+        <img src="src/assets/dollar.png" alt="$" style="height:1.15rem;width:1.15rem;" aria-hidden="true"/>
+        <span>$${p.price.toFixed(2)}</span>
+      </div>
+    </button>`,
   );
 
   // VIP Items Buttons (compact)
