@@ -279,6 +279,9 @@ const state = {
     endTime: 0,
     multiplier: 1,
   },
+
+  // Visual Effects Setting
+  visualEffects: false, // Default disabled
   // Theme System
   theme: "cyberpunk", // cyberpunk, neon, dark, matrix, retro
   // Statistics
@@ -3120,6 +3123,16 @@ function showSettings() {
         </div>
 
         <div class="neon-card" style="padding: 0.75rem;">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" id="setting-visual-effects" ${state.player.visualEffects ? "checked" : ""}/>
+            <span>Visual Effects</span>
+          </label>
+          <div class="text-xs text-neon-gray mt-1">
+            Enable packet explosion effects during combos
+          </div>
+        </div>
+
+        <div class="neon-card" style="padding: 0.75rem;">
           <label class="block mb-1 font-semibold" data-i18n="settings.graphics">Graphics Quality</label>
           <select id="graphics-select" class="w-full p-2 bg-gray-700 rounded border border-neon-cyan mb-2">
             <option value="high" ${state.player.graphics === "high" ? "selected" : ""} data-i18n="settings.graphicsHigh">High (Default)</option>
@@ -3176,6 +3189,14 @@ function showSettings() {
         // Sound toggle
         const soundEl = document.getElementById("setting-sound");
         state.player.sound = !!(soundEl && soundEl.checked);
+
+        // Visual effects toggle
+        const visualEffectsEl = document.getElementById(
+          "setting-visual-effects",
+        );
+        state.player.visualEffects = !!(
+          visualEffectsEl && visualEffectsEl.checked
+        );
 
         // Graphics quality
         const graphicsEl = document.getElementById("graphics-select");
@@ -4103,6 +4124,116 @@ function renderAdminAchievementsTab() {
   `;
 }
 
+// =============== PACKET EXPLOSION EFFECTS ===============
+function createPacketExplosion(combo, clickBtn) {
+  // Check if visual effects are enabled in settings
+  if (!state.player.visualEffects || !clickBtn || combo < 5) return;
+
+  const rect = clickBtn.getBoundingClientRect();
+  const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + scrollY + rect.height / 2;
+
+  // Get viewport dimensions for containment
+  const vw = Math.max(
+    document.documentElement.clientWidth || 0,
+    window.innerWidth || 0,
+  );
+  const vh = Math.max(
+    document.documentElement.clientHeight || 0,
+    window.innerHeight || 0,
+  );
+  const margin = 50; // Keep particles away from edges
+
+  // Calculate intensity based on combo - full screen spread
+  let particleCount = 0;
+  let maxSpread = Math.min(vw, vh) * 0.8; // 80% of smaller dimension
+  let duration = 800;
+
+  if (combo >= 500) {
+    particleCount = 12;
+    maxSpread = Math.max(vw, vh) * 0.9; // 90% of larger dimension for celestial
+    duration = 1200;
+  } else if (combo >= 200) {
+    particleCount = 9;
+    maxSpread = Math.max(vw, vh) * 0.8; // 80% of larger dimension
+    duration = 1100;
+  } else if (combo >= 50) {
+    particleCount = 7;
+    maxSpread = Math.min(vw, vh) * 0.7; // 70% of smaller dimension
+    duration = 1000;
+  } else if (combo >= 15) {
+    particleCount = 5;
+    maxSpread = Math.min(vw, vh) * 0.6; // 60% of smaller dimension
+    duration = 900;
+  } else if (combo >= 5) {
+    particleCount = 3;
+    maxSpread = Math.min(vw, vh) * 0.5; // 50% of smaller dimension
+    duration = 800;
+  }
+
+  // Create packet particles with better distribution
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement("div");
+    particle.className = "packet-explosion-particle";
+    particle.innerHTML = '<span class="icon-packet"></span>';
+
+    // Better angle distribution for even spread
+    const angle =
+      (Math.PI * 2 * i) / particleCount + (Math.random() - 0.5) * 0.3;
+    const distance = maxSpread * (0.3 + Math.random() * 0.7); // Varied distances across full spread
+
+    // Calculate end position with viewport clamping
+    let endX = centerX + Math.cos(angle) * distance;
+    let endY = centerY + Math.sin(angle) * distance;
+
+    // Clamp to viewport bounds
+    endX = Math.max(margin, Math.min(vw - margin, endX));
+    endY = Math.max(scrollY + margin, Math.min(scrollY + vh - margin, endY));
+
+    // Set initial position
+    particle.style.position = "absolute";
+    particle.style.left = centerX + "px";
+    particle.style.top = centerY + "px";
+    particle.style.pointerEvents = "none";
+    particle.style.zIndex = "9999";
+    particle.style.fontSize = "1.1rem";
+    particle.style.opacity = "1";
+    particle.style.willChange = "transform, opacity";
+    particle.style.transition = `all ${duration}ms cubic-bezier(0.25, 0.1, 0.25, 1)`;
+
+    // Add color effects for different combos
+    if (combo >= 500) {
+      particle.style.filter = "hue-rotate(0deg) saturate(1.3) brightness(1.1)";
+      particle.style.animation = "celestialRainbowHue 0.8s linear infinite";
+    } else if (combo >= 200) {
+      particle.style.filter =
+        "hue-rotate(340deg) saturate(1.2) brightness(1.05)";
+    } else if (combo >= 50) {
+      particle.style.filter = "hue-rotate(280deg) saturate(1.1)";
+    } else if (combo >= 15) {
+      particle.style.filter = "hue-rotate(60deg) saturate(1.05)";
+    }
+
+    document.body.appendChild(particle);
+
+    // Animate the particle with better timing
+    requestAnimationFrame(() => {
+      particle.style.left = endX + "px";
+      particle.style.top = endY + "px";
+      particle.style.opacity = "0";
+      particle.style.transform = "scale(0.3) rotate(180deg)";
+    });
+
+    // Remove particle after animation
+    setTimeout(() => {
+      if (particle && particle.parentNode) {
+        particle.parentNode.removeChild(particle);
+      }
+    }, duration + 50);
+  }
+}
+
 // =============== RANDOM EVENTS ===============
 function triggerRandomEvent() {
   if (state.randomEvent.active) return;
@@ -4546,6 +4677,9 @@ function clickPacket(event) {
 
     const clickBtn = document.getElementById("click-btn");
     if (clickBtn) {
+      // Packet explosion effect based on combo
+      createPacketExplosion(clickCombo, clickBtn);
+
       const rect = clickBtn.getBoundingClientRect();
       const scrollY =
         window.pageYOffset || document.documentElement.scrollTop || 0;
@@ -4986,6 +5120,11 @@ function migrateSaveToCurrentVersion() {
       endTime: 0,
       multiplier: 1,
     };
+  }
+
+  // Ensure visual effects setting exists (default disabled)
+  if (typeof state.player.visualEffects !== "boolean") {
+    state.player.visualEffects = false;
   }
 
   // Ensure daily rewards system exists

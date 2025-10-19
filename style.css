@@ -3230,6 +3230,39 @@ footer {
     box-sizing: border-box;
 }
 
+/* Packet explosion effects */
+.packet-explosion-particle {
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    transform-origin: center;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform, opacity;
+}
+
+@keyframes celestialRainbowHue {
+    0% {
+        filter: hue-rotate(0deg) saturate(1.3) brightness(1.1);
+    }
+    25% {
+        filter: hue-rotate(90deg) saturate(1.3) brightness(1.1);
+    }
+    50% {
+        filter: hue-rotate(180deg) saturate(1.3) brightness(1.1);
+    }
+    75% {
+        filter: hue-rotate(270deg) saturate(1.3) brightness(1.1);
+    }
+    100% {
+        filter: hue-rotate(360deg) saturate(1.3) brightness(1.1);
+    }
+}
+
 /* Mobile equipment grid optimization */
 .eq-list {
     display: grid;
