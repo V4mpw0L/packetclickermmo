@@ -2488,14 +2488,24 @@ function renderLeaderboard() {
       .medal-silver { animation: medalPulseSilver 2s ease-in-out infinite alternate; }
       .medal-bronze { animation: medalPulseBronze 2.2s ease-in-out infinite alternate; }
       .crown-badge { margin-right: 0.25rem; font-size: 1.15em; }
+      @keyframes crownGlow {
+        0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.2); }
+        50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), inset 0 0 15px rgba(255, 215, 0, 0.3); }
+      }
     </style>
     ${(() => {
       const t = bots.slice(0, 3);
       return `
       <div class="podium-wrap" style="display:flex; justify-content:center; gap:1rem; align-items:flex-end; margin: 0.75rem 0 0.75rem 0;">
         <div class="podium-item" style="display:flex; flex-direction:column; align-items:center;">
-          <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #c0c0c0; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);">
-            <img src="${getSafeAvatarUrl((t[1] && t[1].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
+          <div style="position: relative; width:64px; height:64px;">
+            <!-- Silver crown points -->
+            <div style="position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 10px; height: 12px; background: linear-gradient(180deg, #c0c0c0, #e8e8e8); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 3px rgba(192, 192, 192, 0.5));"></div>
+            <div style="position: absolute; top: 2px; left: -4px; width: 8px; height: 10px; background: linear-gradient(180deg, #c0c0c0, #e8e8e8); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(-45deg); filter: drop-shadow(0 0 3px rgba(192, 192, 192, 0.5));"></div>
+            <div style="position: absolute; top: 2px; right: -4px; width: 8px; height: 10px; background: linear-gradient(180deg, #c0c0c0, #e8e8e8); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(45deg); filter: drop-shadow(0 0 3px rgba(192, 192, 192, 0.5));"></div>
+            <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #c0c0c0; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent); box-shadow: 0 0 12px rgba(192, 192, 192, 0.3), inset 0 0 6px rgba(192, 192, 192, 0.1);">
+              <img src="${getSafeAvatarUrl((t[1] && t[1].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
+            </div>
           </div>
           <div style="font-size:0.8rem; font-weight:bold; margin-top:0.25rem; color:#c0c0c0; text-align:center; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
             <div style="font-size:0.65rem; color:#ffd700; margin-bottom:0.15rem; padding:0.1rem 0.3rem; background:rgba(0,0,0,0.4); border-radius:8px;">Lvl ${Math.max(1, parseInt((t[1] && t[1].level) || 1))}</div>
@@ -2506,8 +2516,16 @@ function renderLeaderboard() {
           <div style="margin-top:0.15rem; font-size:1.1rem;">🥈</div>
         </div>
         <div class="podium-item" style="display:flex; flex-direction:column; align-items:center; transform: translateY(-8px);">
-          <div style="display:flex; align-items:center; justify-content:center; width:84px; height:84px; border-radius:50%; border:4px solid #ffd700; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.22), transparent);">
-            <img src="${getSafeAvatarUrl((t[0] && t[0].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
+          <div style="position: relative; width:84px; height:84px;">
+            <!-- Golden crown points - 5 points -->
+            <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 14px; height: 16px; background: linear-gradient(180deg, #ffd700, #ffed4e); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.7));"></div>
+            <div style="position: absolute; top: 0px; left: -6px; width: 12px; height: 14px; background: linear-gradient(180deg, #ffd700, #ffed4e); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(-40deg); filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.6));"></div>
+            <div style="position: absolute; top: 0px; right: -6px; width: 12px; height: 14px; background: linear-gradient(180deg, #ffd700, #ffed4e); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(40deg); filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.6));"></div>
+            <div style="position: absolute; top: 16px; left: -10px; width: 10px; height: 12px; background: linear-gradient(180deg, #ffd700, #ffed4e); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(-70deg); filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.5));"></div>
+            <div style="position: absolute; top: 16px; right: -10px; width: 10px; height: 12px; background: linear-gradient(180deg, #ffd700, #ffed4e); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(70deg); filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.5));"></div>
+            <div style="display:flex; align-items:center; justify-content:center; width:84px; height:84px; border-radius:50%; border:4px solid #ffd700; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25), rgba(255,215,0,0.1)); animation: crownGlow 2s ease-in-out infinite;">
+              <img src="${getSafeAvatarUrl((t[0] && t[0].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
+            </div>
           </div>
           <div style="font-size:0.9rem; font-weight:bold; margin-top:0.25rem; color:#ffd700; text-align:center; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
             <div style="font-size:0.7rem; color:#ffd700; margin-bottom:0.15rem; padding:0.1rem 0.35rem; background:rgba(0,0,0,0.4); border-radius:8px;">Lvl ${Math.max(1, parseInt((t[0] && t[0].level) || 1))}</div>
@@ -2518,8 +2536,14 @@ function renderLeaderboard() {
           <div style="margin-top:0.15rem; font-size:1.1rem;">🥇</div>
         </div>
         <div class="podium-item" style="display:flex; flex-direction:column; align-items:center;">
-          <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #cd7f32; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent);">
-            <img src="${getSafeAvatarUrl((t[2] && t[2].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
+          <div style="position: relative; width:64px; height:64px;">
+            <!-- Bronze crown points -->
+            <div style="position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 10px; height: 12px; background: linear-gradient(180deg, #cd7f32, #e89b60); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 3px rgba(205, 127, 50, 0.5));"></div>
+            <div style="position: absolute; top: 2px; left: -4px; width: 8px; height: 10px; background: linear-gradient(180deg, #cd7f32, #e89b60); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(-45deg); filter: drop-shadow(0 0 3px rgba(205, 127, 50, 0.5));"></div>
+            <div style="position: absolute; top: 2px; right: -4px; width: 8px; height: 10px; background: linear-gradient(180deg, #cd7f32, #e89b60); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(45deg); filter: drop-shadow(0 0 3px rgba(205, 127, 50, 0.5));"></div>
+            <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #cd7f32; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent); box-shadow: 0 0 12px rgba(205, 127, 50, 0.3), inset 0 0 6px rgba(205, 127, 50, 0.1);">
+              <img src="${getSafeAvatarUrl((t[2] && t[2].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
+            </div>
           </div>
           <div style="font-size:0.8rem; font-weight:bold; margin-top:0.25rem; color:#cd7f32; text-align:center; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
             <div style="font-size:0.65rem; color:#ffd700; margin-bottom:0.15rem; padding:0.1rem 0.3rem; background:rgba(0,0,0,0.4); border-radius:8px;">Lvl ${Math.max(1, parseInt((t[2] && t[2].level) || 1))}</div>
