@@ -543,14 +543,10 @@ body .modal-box .space-y-3 > * + * {
     flex-shrink: 0;
     grid-area: settings;
     justify-self: end;
-    flex: 0 0 auto;
-    min-width: max-content;
     position: absolute;
-    right: var(--spacing-md);
-    top: 50%;
-    transform: translateY(-50%);
+    right: 12px;
+    top: 4px;
     z-index: 10;
-    justify-content: center;
 }
 .top-bar .controls #gem-display {
     display: none;
@@ -4483,13 +4479,10 @@ button {
     }
 
     .top-bar .controls {
-        position: static;
-        transform: none;
+        position: absolute;
+        right: 8px;
+        top: 3px;
         width: auto;
-        justify-content: center;
-        margin-top: 0.5rem;
-        right: auto;
-        top: auto;
     }
 
     #vip-badge {
