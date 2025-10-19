@@ -2029,6 +2029,28 @@ function renderShop() {
       justify-content: center;
       gap: 0.5rem;
     " onmouseover="this.style.transform='translateY(-3px) scale(1.02)'; this.style.boxShadow='0 6px 25px rgba(255, 215, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'; this.style.borderColor='#ffed4e';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 4px 15px rgba(255, 215, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'; this.style.borderColor='#ffd700';">
+      ${
+        p.badge
+          ? `<div style="
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        background: linear-gradient(135deg, #ff0080, #ff0040);
+        color: white;
+        padding: 0.15rem 0.4rem;
+        font-size: 0.5rem;
+        font-weight: 900;
+        letter-spacing: 0.03em;
+        transform: rotate(0deg);
+        box-shadow: 0 2px 6px rgba(255, 0, 64, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-top-right-radius: 10px;
+        border-bottom-left-radius: 8px;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        z-index: 10;
+      ">${p.badge}</div>`
+          : ""
+      }
       <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 1.3rem; font-weight: 900; color: #00e5ff; text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6);">
         <img src="src/assets/gem.png" alt="Gems" style="height:1.3rem;width:1.3rem;" aria-hidden="true"/>
         <span class="gem-number" style="color: #00e5ff !important; text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6) !important;">${p.gems.toLocaleString("en-US")}</span>

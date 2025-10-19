@@ -115,30 +115,35 @@
         label: "10 Gems",
         gems: 10,
         price: 0.99,
+        badge: null,
       },
       {
         id: "medium",
         label: "60 Gems",
         gems: 60,
         price: 4.99,
+        badge: null,
       },
       {
         id: "big",
         label: "150 Gems",
         gems: 150,
         price: 9.99,
+        badge: null,
       },
       {
         id: "large",
         label: "2500 Gems",
         gems: 2500,
         price: 49.99,
+        badge: "BEST VALUE",
       },
       {
         id: "mega",
         label: "6000 Gems",
         gems: 6000,
         price: 99.99,
+        badge: null,
       },
     ];
 
