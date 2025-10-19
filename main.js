@@ -1550,69 +1550,173 @@ function renderThemes() {
 
 // =============== UPGRADES PANEL ===============
 function renderUpgrades() {
+  const clickCost = upgradeCost("click");
+  const idleCost = upgradeCost("idle");
+  const critCost = upgradeCost("crit");
+
+  const canAffordClick = state.packets >= clickCost;
+  const canAffordIdle = state.packets >= idleCost;
+  const canAffordCrit = state.packets >= critCost;
+
   return `
-    <div class="neon-card flex flex-col gap-4 px-3 py-4 mb-3">
+    <div class="neon-card px-3 py-4 mb-2">
       <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.title") : "Upgrades"}</h2>
 
-      <div class="bulk-options" style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
-        ${renderButton({
-          id: "bulk-x1",
-          className: "bulk-btn",
-          label:
-            window.Packet && Packet.i18n
-              ? Packet.i18n.t("upgrades.bulkX1")
-              : "x1",
-          dataAttr: 'data-bulk="1"',
-        })}
-        ${renderButton({
-          id: "bulk-x10",
-          className: "bulk-btn",
-          label:
-            window.Packet && Packet.i18n
-              ? Packet.i18n.t("upgrades.bulkX10")
-              : "x10",
-          dataAttr: 'data-bulk="10"',
-        })}
-        ${renderButton({
-          id: "bulk-x100",
-          className: "bulk-btn",
-          label:
-            window.Packet && Packet.i18n
-              ? Packet.i18n.t("upgrades.bulkX100")
-              : "x100",
-          dataAttr: 'data-bulk="100"',
-        })}
-        ${renderButton({
-          id: "bulk-max",
-          className: "bulk-btn",
-          label:
-            window.Packet && Packet.i18n
-              ? Packet.i18n.t("upgrades.bulkMax")
-              : "MAX",
-          dataAttr: 'data-bulk="max"',
-        })}
+      <!-- Bulk Purchase Options -->
+      <div style="text-align: center; margin-bottom: 1rem;">
+        <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">Bulk Purchase</div>
+        <div style="display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+          ${renderButton({
+            id: "bulk-x1",
+            className: "bulk-btn",
+            label:
+              window.Packet && Packet.i18n
+                ? Packet.i18n.t("upgrades.bulkX1")
+                : "x1",
+            dataAttr: 'data-bulk="1"',
+          })}
+          ${renderButton({
+            id: "bulk-x10",
+            className: "bulk-btn",
+            label:
+              window.Packet && Packet.i18n
+                ? Packet.i18n.t("upgrades.bulkX10")
+                : "x10",
+            dataAttr: 'data-bulk="10"',
+          })}
+          ${renderButton({
+            id: "bulk-x100",
+            className: "bulk-btn",
+            label:
+              window.Packet && Packet.i18n
+                ? Packet.i18n.t("upgrades.bulkX100")
+                : "x100",
+            dataAttr: 'data-bulk="100"',
+          })}
+          ${renderButton({
+            id: "bulk-max",
+            className: "bulk-btn",
+            label:
+              window.Packet && Packet.i18n
+                ? Packet.i18n.t("upgrades.bulkMax")
+                : "MAX",
+            dataAttr: 'data-bulk="max"',
+          })}
+        </div>
       </div>
 
-      ${renderButton({
-        id: "upgrade-click",
-        className: "upgrade-btn",
-        label: `${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.clickPower") : "+1/click"} — <span>${upgradeCost("click").toLocaleString("en-US")}</span> <span class="icon-packet"></span>`,
-        dataAttr: `data-level="${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.level") : "Lvl."} ${state.upgrades.click}"`,
-      })}
-      ${renderButton({
-        id: "upgrade-idle",
-        className: "upgrade-btn",
-        label: `${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.idlePower") : "+1/sec"} — <span>${upgradeCost("idle").toLocaleString("en-US")}</span> <span class="icon-packet"></span>`,
-        dataAttr: `data-level="${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.level") : "Lvl."} ${state.upgrades.idle}"`,
-      })}
-      ${renderButton({
-        id: "upgrade-crit",
-        className: "upgrade-btn",
-        label: `${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.critChance") : "+0.5% crit"} — <span>${upgradeCost("crit").toLocaleString("en-US")}</span> <span class="icon-packet"></span>`,
-        dataAttr: `data-level="${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.level") : "Lvl."} ${state.upgrades.crit}"`,
-      })}
-      <div class="text-neon-gray text-xs mt-1">
-        ${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.description") : "Each upgrade increases cost. Critical Hits give 2x per click!"}
+      <!-- Upgrade Cards -->
+      <div style="display: grid; gap: 1rem;">
+
+        <!-- Click Power Upgrade -->
+        <div class="upgrade-card" style="border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem; background: linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05)); ${!canAffordClick ? "opacity: 0.6;" : ""}">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                <span style="font-size: 1.2rem;">👆</span>
+                <h3 style="color: var(--primary-color); font-weight: bold; font-size: 1rem; margin: 0;">Click Power</h3>
+              </div>
+              <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0; line-height: 1.3;">+1 packet per click</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.5rem; background: rgba(0,0,0,0.4); border-radius: 999px; border: 1px solid var(--border-color);">
+              <span style="color: #ffd700; font-weight: 600; font-size: 0.8rem;">Lvl</span>
+              <span class="event-number-glow" style="color: #ffd700; font-weight: bold;">${state.upgrades.click}</span>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <div style="color: var(--text-secondary); font-size: 0.8rem;">
+              Current: <span class="event-number-glow" style="color: var(--primary-color);">${(1 + state.upgrades.click).toLocaleString()}</span> per click
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.8rem;">
+              Next: <span class="event-number-glow" style="color: var(--accent-color);">${(2 + state.upgrades.click).toLocaleString()}</span>
+            </div>
+          </div>
+
+          <button id="upgrade-click" class="upgrade-btn ${canAffordClick ? "" : "disabled"}" style="width: 100%; padding: 0.75rem; background: ${canAffordClick ? "var(--accent-color)" : "rgba(255,255,255,0.1)"}; color: ${canAffordClick ? "#000" : "var(--text-secondary)"}; border: 1px solid ${canAffordClick ? "var(--accent-color)" : "var(--border-color)"}; border-radius: 8px; font-weight: bold; cursor: ${canAffordClick ? "pointer" : "not-allowed"}; transition: all 0.2s ease;" ${!canAffordClick ? "disabled" : ""}>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem;">
+              <span class="icon-packet"></span>
+              <span>${formatCompactNumber(clickCost)}</span>
+              ${state.randomEvent.active && state.randomEvent.type === "upgradeDiscount" ? '<span style="color: #4ade80; font-size: 0.8rem;">(50% OFF!)</span>' : ""}
+            </div>
+          </button>
+        </div>
+
+        <!-- Idle Power Upgrade -->
+        <div class="upgrade-card" style="border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem; background: linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05)); ${!canAffordIdle ? "opacity: 0.6;" : ""}">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                <span style="font-size: 1.2rem;">⚡</span>
+                <h3 style="color: var(--secondary-color); font-weight: bold; font-size: 1rem; margin: 0;">Idle Power</h3>
+              </div>
+              <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0; line-height: 1.3;">+1 packet per second</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.5rem; background: rgba(0,0,0,0.4); border-radius: 999px; border: 1px solid var(--border-color);">
+              <span style="color: #ffd700; font-weight: 600; font-size: 0.8rem;">Lvl</span>
+              <span class="event-number-glow" style="color: #ffd700; font-weight: bold;">${state.upgrades.idle}</span>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <div style="color: var(--text-secondary); font-size: 0.8rem;">
+              Current: <span class="event-number-glow" style="color: var(--secondary-color);">${state.upgrades.idle.toLocaleString()}</span> per sec
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.8rem;">
+              Next: <span class="event-number-glow" style="color: var(--accent-color);">${(state.upgrades.idle + 1).toLocaleString()}</span>
+            </div>
+          </div>
+
+          <button id="upgrade-idle" class="upgrade-btn ${canAffordIdle ? "" : "disabled"}" style="width: 100%; padding: 0.75rem; background: ${canAffordIdle ? "var(--secondary-color)" : "rgba(255,255,255,0.1)"}; color: ${canAffordIdle ? "#000" : "var(--text-secondary)"}; border: 1px solid ${canAffordIdle ? "var(--secondary-color)" : "var(--border-color)"}; border-radius: 8px; font-weight: bold; cursor: ${canAffordIdle ? "pointer" : "not-allowed"}; transition: all 0.2s ease;" ${!canAffordIdle ? "disabled" : ""}>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem;">
+              <span class="icon-packet"></span>
+              <span>${formatCompactNumber(idleCost)}</span>
+              ${state.randomEvent.active && state.randomEvent.type === "upgradeDiscount" ? '<span style="color: #4ade80; font-size: 0.8rem;">(50% OFF!)</span>' : ""}
+            </div>
+          </button>
+        </div>
+
+        <!-- Critical Chance Upgrade -->
+        <div class="upgrade-card" style="border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem; background: linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05)); ${!canAffordCrit ? "opacity: 0.6;" : ""}">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                <span style="font-size: 1.2rem;">💥</span>
+                <h3 style="color: #ff6b6b; font-weight: bold; font-size: 1rem; margin: 0;">Critical Chance</h3>
+              </div>
+              <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0; line-height: 1.3;">+0.5% critical hit chance</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.5rem; background: rgba(0,0,0,0.4); border-radius: 999px; border: 1px solid var(--border-color);">
+              <span style="color: #ffd700; font-weight: 600; font-size: 0.8rem;">Lvl</span>
+              <span class="event-number-glow" style="color: #ffd700; font-weight: bold;">${state.upgrades.crit}</span>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <div style="color: var(--text-secondary); font-size: 0.8rem;">
+              Current: <span class="event-number-glow" style="color: #ff6b6b;">${(state.upgrades.crit * 0.5).toFixed(1)}%</span> crit chance
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.8rem;">
+              Next: <span class="event-number-glow" style="color: var(--accent-color);">${((state.upgrades.crit + 1) * 0.5).toFixed(1)}%</span>
+            </div>
+          </div>
+
+          <button id="upgrade-crit" class="upgrade-btn ${canAffordCrit ? "" : "disabled"}" style="width: 100%; padding: 0.75rem; background: ${canAffordCrit ? "#ff6b6b" : "rgba(255,255,255,0.1)"}; color: ${canAffordCrit ? "#fff" : "var(--text-secondary)"}; border: 1px solid ${canAffordCrit ? "#ff6b6b" : "var(--border-color)"}; border-radius: 8px; font-weight: bold; cursor: ${canAffordCrit ? "pointer" : "not-allowed"}; transition: all 0.2s ease;" ${!canAffordCrit ? "disabled" : ""}>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem;">
+              <span class="icon-packet"></span>
+              <span>${formatCompactNumber(critCost)}</span>
+              ${state.randomEvent.active && state.randomEvent.type === "upgradeDiscount" ? '<span style="color: #4ade80; font-size: 0.8rem;">(50% OFF!)</span>' : ""}
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Info Text -->
+      <div style="text-align: center; margin-top: 1rem; padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid var(--border-color);">
+        <div style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.4;">
+          ${window.Packet && Packet.i18n ? Packet.i18n.t("upgrades.description") : "Each upgrade increases cost. Critical Hits give 2x per click!"}
+          ${state.randomEvent.active && state.randomEvent.type === "upgradeDiscount" ? '<br><span style="color: #4ade80; font-weight: bold;">🎉 Upgrade Sale Active! 50% OFF all upgrades!</span>' : ""}
+        </div>
       </div>
     </div>
   `;
