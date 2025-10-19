@@ -1701,7 +1701,7 @@ function renderUpgrades() {
             </div>
           </div>
 
-          <button id="upgrade-crit" class="upgrade-btn ${canAffordCrit ? "" : "disabled"}" style="width: 100%; padding: 0.75rem; background: ${canAffordCrit ? "#ff6b6b" : "rgba(255,255,255,0.1)"}; color: ${canAffordCrit ? "#fff" : "var(--text-secondary)"}; border: 1px solid ${canAffordCrit ? "#ff6b6b" : "var(--border-color)"}; border-radius: 8px; font-weight: bold; cursor: ${canAffordCrit ? "pointer" : "not-allowed"}; transition: all 0.2s ease;" ${!canAffordCrit ? "disabled" : ""}>
+          <button id="upgrade-crit" class="upgrade-btn ${canAffordCrit ? "" : "disabled"}" style="width: 100%; padding: 0.75rem; background: ${canAffordCrit ? "#ff6b6b" : "rgba(255,255,255,0.1)"}; color: ${canAffordCrit ? "#000" : "var(--text-secondary)"}; border: 1px solid ${canAffordCrit ? "#ff6b6b" : "var(--border-color)"}; border-radius: 8px; font-weight: bold; cursor: ${canAffordCrit ? "pointer" : "not-allowed"}; transition: all 0.2s ease;" ${!canAffordCrit ? "disabled" : ""}>
             <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem;">
               <span class="icon-packet"></span>
               <span>${formatCompactNumber(critCost)}</span>
@@ -1806,7 +1806,7 @@ function updateUpgradeButtonLabels() {
         break;
     }
 
-    const label = `${effectText} — <span>${cost.toLocaleString("en-US")}</span> <span class="icon-packet"></span>`;
+    const label = `${effectText} — <span>${formatCompactNumber(cost)}</span> <span class="icon-packet"></span>`;
     btn.innerHTML = label;
 
     if (state.packets < cost) {
@@ -2263,27 +2263,27 @@ function formatCompactNumber(num) {
   if (num >= 1e15)
     return (
       (num / 1e15).toFixed(3) +
-      '<span style="animation: celestialTextOnly 3s linear infinite;">Q</span>'
+      '<span style="animation: celestialTextOnly 3s linear infinite; background: rgba(0,0,0,0.7); padding: 0.1rem 0.25rem; border-radius: 4px;">Q</span>'
     );
   if (num >= 1e12)
     return (
       (num / 1e12).toFixed(3) +
-      '<span style="color: #ff00ff; text-shadow: 0 0 4px #ff00ff;">T</span>'
+      '<span style="color: #ff00ff; text-shadow: 0 0 4px #ff00ff; background: rgba(0,0,0,0.7); padding: 0.1rem 0.25rem; border-radius: 4px;">T</span>'
     );
   if (num >= 1e9)
     return (
       (num / 1e9).toFixed(3) +
-      '<span style="color: #22d3ee; text-shadow: 0 0 4px #22d3ee;">B</span>'
+      '<span style="color: #22d3ee; text-shadow: 0 0 4px #22d3ee; background: rgba(0,0,0,0.7); padding: 0.1rem 0.25rem; border-radius: 4px;">B</span>'
     );
   if (num >= 1e6)
     return (
       (num / 1e6).toFixed(3) +
-      '<span style="color: #ffd700; text-shadow: 0 0 4px #ffd700;">M</span>'
+      '<span style="color: #ffd700; text-shadow: 0 0 4px #ffd700; background: rgba(0,0,0,0.7); padding: 0.1rem 0.25rem; border-radius: 4px;">M</span>'
     );
   if (num >= 1e3)
     return (
       (num / 1e3).toFixed(3) +
-      '<span style="color: #c0c0c0; text-shadow: 0 0 4px #c0c0c0;">K</span>'
+      '<span style="color: #c0c0c0; text-shadow: 0 0 4px #c0c0c0; background: rgba(0,0,0,0.7); padding: 0.1rem 0.25rem; border-radius: 4px;">K</span>'
     );
   return num.toLocaleString("en-US");
 }
