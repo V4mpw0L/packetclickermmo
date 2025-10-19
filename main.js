@@ -1938,7 +1938,7 @@ function renderAchievements() {
       <div class="achievement-content" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
         <div class="achievement-name" style="text-align: center;">${ach.name}</div>
         <div class="achievement-desc" style="text-align: center;">${ach.desc}</div>
-        ${ach.gem ? `<div class="achievement-reward" style="text-align: center;">${unlocked ? "✓" : "+" + ach.gem} 💎</div>` : ""}
+        ${ach.gem ? `<div class="achievement-reward" style="text-align: center;">${unlocked ? "✓" : "<span class='gem-number'>+" + ach.gem + "</span>"} 💎</div>` : ""}
       </div>
     </div>`;
   }).join("");
@@ -5558,7 +5558,7 @@ function checkAchievements() {
             <div style="margin-bottom: 1rem; color: var(--text-secondary);">${ach.desc}</div>
             <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 8px;">
               <span style="color: var(--text-secondary);">Reward:</span>
-              <span class="event-number-glow" style="font-size: 1.3rem; font-weight: 900;">+${ach.gem}</span>
+              <span class="event-number-glow gem-number" style="font-size: 1.3rem; font-weight: 900;">+${ach.gem}</span>
               <img src="src/assets/gem.png" alt="Gems" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/>
             </div>
           </div>`,
