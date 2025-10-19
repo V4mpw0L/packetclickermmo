@@ -2469,7 +2469,7 @@ function renderLeaderboard() {
     console.error("Error rendering leaderboard list:", error);
     html = `<li style="padding: 1rem; text-align: center; color: var(--text-secondary);">Error loading leaderboard data</li>`;
   }
-  return `<div class="neon-card" style="padding: 1rem 0.5rem;">
+  return `<div class="neon-card" style="padding: 1rem 0.5rem; overflow: visible;">
     <h2 class="tab-title" style="background: linear-gradient(90deg, #c4ebea33, transparent); padding: 0.25rem 0.5rem; border-radius: var(--border-radius-sm);">Leaderboard</h2>
     <style>
       @keyframes medalPulse {
@@ -2496,7 +2496,7 @@ function renderLeaderboard() {
     ${(() => {
       const t = bots.slice(0, 3);
       return `
-      <div class="podium-wrap" style="display:flex; justify-content:center; gap:1rem; align-items:flex-end; margin: 0.75rem 0 0.75rem 0;">
+      <div class="podium-wrap" style="display:flex; justify-content:center; gap:1rem; align-items:flex-end; margin: 0.75rem 0 0.75rem 0; padding-top: 2rem; overflow: visible;">
         <div class="podium-item" style="display:flex; flex-direction:column; align-items:center;">
           <div style="position: relative; width:64px; height:64px;">
             <!-- Silver crown with diamond gem -->
