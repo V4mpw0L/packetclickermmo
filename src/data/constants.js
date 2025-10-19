@@ -129,6 +129,12 @@
         price: 9.99,
       },
       {
+        id: "large",
+        label: "2500 Gems",
+        gems: 2500,
+        price: 49.99,
+      },
+      {
         id: "mega",
         label: "6000 Gems",
         gems: 6000,
