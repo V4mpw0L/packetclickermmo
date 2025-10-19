@@ -1,6 +1,6 @@
 {
   "name": "Packet Clicker MMO",
-  "version": "0.0.42",
+  "version": "0.0.43",
   "short_name": "PacketClickerMMO",
   "start_url": "./",
   "display": "standalone",
@@ -15,37 +15,37 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "src/assets/packet-512.png?v=0.0.42",
+      "src": "src/assets/packet-512.png?v=0.0.43",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "src/assets/packet-512.png?v=0.0.42",
+      "src": "src/assets/packet-512.png?v=0.0.43",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "src/assets/packet.webp?v=0.0.42",
+      "src": "src/assets/packet.webp?v=0.0.43",
       "sizes": "30x30",
       "type": "image/webp",
       "purpose": "any"
     },
     {
-      "src": "src/assets/packet-32.png?v=0.0.42",
+      "src": "src/assets/packet-32.png?v=0.0.43",
       "sizes": "32x32",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "src/assets/packet-48.png?v=0.0.42",
+      "src": "src/assets/packet-48.png?v=0.0.43",
       "sizes": "48x48",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "src/assets/packet-64.png?v=0.0.42",
+      "src": "src/assets/packet-64.png?v=0.0.43",
       "sizes": "64x64",
       "type": "image/png",
       "purpose": "any"
