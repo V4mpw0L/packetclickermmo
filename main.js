@@ -734,7 +734,7 @@ function updateLevelDisplay() {
   // Update XP display
   const xpDisplay = document.getElementById("level-xp-display");
   if (xpDisplay) {
-    xpDisplay.textContent = `${levelInfo.currentXP.toLocaleString()}/${levelInfo.xpRequired.toLocaleString()}`;
+    xpDisplay.innerHTML = `${formatCompactNumber(levelInfo.currentXP)}/${formatCompactNumber(levelInfo.xpRequired)}`;
   }
 
   // Update progress bar
@@ -1003,7 +1003,7 @@ function updateTopBar() {
 
   // Pills to show under the name (centered by CSS)
   let packets = `<span class="ml-2 text-neon-green font-bold" id="packets-bar" style="font-size:1em;display:inline-block;min-width:65px;text-align:right;"><span class="icon-packet"></span> <span class="event-number-glow">${formatCompactNumber(state.packets)}</span></span>`;
-  let gemPill = `<span id="gem-pill-clickable" class="ml-2 text-neon-green font-bold" style="font-size:1em;display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .5rem;border:1px solid var(--border-color);border-radius:999px;background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));cursor:pointer;transition:all 0.2s ease;"><img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/><span class="event-number-glow">${state.gems.toLocaleString("en-US")}</span></span>`;
+  let gemPill = `<span id="gem-pill-clickable" class="ml-2 text-neon-green font-bold" style="font-size:1em;display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .5rem;border:1px solid var(--border-color);border-radius:999px;background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));cursor:pointer;transition:all 0.2s ease;"><img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/><span class="event-number-glow">${formatCompactNumber(state.gems)}</span></span>`;
 
   if (isVIP()) {
     let ms = state.player.vipUntil - Date.now();
