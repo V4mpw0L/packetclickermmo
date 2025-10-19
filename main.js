@@ -1006,7 +1006,7 @@ function updateTopBar() {
 
   // Pills to show under the name (centered by CSS)
   let packets = `<span class="ml-2 text-neon-green font-bold" id="packets-bar" style="font-size:1em;display:inline-block;min-width:65px;text-align:right;"><span class="icon-packet"></span> <span class="event-number-glow">${formatCompactNumber(state.packets)}</span></span>`;
-  let gemPill = `<span id="gem-pill-clickable" class="ml-2 text-neon-green font-bold" style="font-size:1em;display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .5rem;border:1px solid var(--border-color);border-radius:999px;background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));cursor:pointer;transition:all 0.2s ease;"><img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/><span class="event-number-glow">${formatCompactNumber(state.gems)}</span></span>`;
+  let gemPill = `<span id="gem-pill-clickable" class="ml-2 text-neon-green font-bold" style="font-size:1em;display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .5rem;border:1px solid var(--border-color);border-radius:999px;background:linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));cursor:pointer;transition:all 0.2s ease;"><img src="src/assets/gem.png" alt="Gems" style="height:1.1rem;width:1.1rem;vertical-align:middle;display:inline-block;" aria-hidden="true"/><span class="event-number-glow gem-number">${formatCompactNumber(state.gems)}</span></span>`;
 
   if (isVIP()) {
     let ms = state.player.vipUntil - Date.now();
@@ -1352,7 +1352,7 @@ function renderBoosts() {
 
         <div style="width: 100%; margin-top: auto;">
           <div style="display: flex; align-items: center; justify-content: center; gap: 0.25rem; padding: 0.4rem 0.6rem; background: rgba(0,0,0,0.4); border-radius: 999px; ${isCelestial ? "border: 1px solid #ff0080; animation: celestialTextRainbow 3s linear infinite;" : `border: 1px solid ${style.border}40;`} margin-bottom: 0.5rem;">
-            <span class="event-number-glow" style="font-size: 1rem; font-weight: 800; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : ""}">${boost.gems.toLocaleString("en-US")}</span>
+            <span class="event-number-glow gem-number" style="font-size: 1rem; font-weight: 800; ${isCelestial ? "animation: celestialTextOnly 3s linear infinite;" : ""}">${boost.gems.toLocaleString("en-US")}</span>
             <img src="src/assets/gem.png" alt="Gems" style="height:0.9rem;width:0.9rem;" aria-hidden="true"/>
           </div>
 
@@ -1406,7 +1406,7 @@ function renderBoosts() {
         </div>
         <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(90deg, rgba(76, 175, 80, 0.1), rgba(34, 197, 94, 0.1)); border: 1px solid #4caf50; border-radius: 999px;">
           <span style="color: #4caf50; font-weight: bold;">Your Gems:</span>
-          <span class="event-number-glow" style="font-size: 1.3rem; font-weight: 900;">${state.gems.toLocaleString("en-US")}</span>
+          <span class="event-number-glow gem-number" style="font-size: 1.3rem; font-weight: 900;">${state.gems.toLocaleString("en-US")}</span>
           <img src="src/assets/gem.png" alt="Gems" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/>
         </div>
       </div>
@@ -2014,7 +2014,7 @@ function renderShop() {
     renderButton({
       className: "shop-premium-btn",
       label: `<div class="shop-premium-content" style="min-height:64px;">
-        <div class="shop-gem-amount" style="font-size:1.3rem;"><img src="src/assets/gem.png" alt="Gems" style="height:1.3rem;width:1.3rem;vertical-align:middle;display:inline-block;margin-right:0.05rem;" aria-hidden="true"/> ${p.gems.toLocaleString("en-US")}</div>
+        <div class="shop-gem-amount" style="font-size:1.3rem;"><img src="src/assets/gem.png" alt="Gems" style="height:1.3rem;width:1.3rem;vertical-align:middle;display:inline-block;margin-right:0.05rem;" aria-hidden="true"/> <span class="gem-number">${p.gems.toLocaleString("en-US")}</span></div>
         <div class="shop-gem-price" style="font-size:1.08rem;"><img src="src/assets/dollar.png" alt="$" style="height:1.15rem;width:1.15rem;vertical-align:middle;display:inline-block;margin-right:0.1rem;" aria-hidden="true"/> $${p.price.toFixed(2)}</div>
       </div>`,
       dataAttr: `data-gem-pack="${p.id}"`,
@@ -2034,7 +2034,7 @@ function renderShop() {
             ${
               owned
                 ? '<span class="shop-owned-text">✓</span>'
-                : `${item.gems.toLocaleString("en-US")}<img src="src/assets/gem.png" alt="Gems" style="height:0.8rem;width:0.8rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
+                : `<span class="gem-number">${item.gems.toLocaleString("en-US")}</span><img src="src/assets/gem.png" alt="Gems" style="height:0.8rem;width:0.8rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
             }
           </div>
         </div>`,
@@ -2059,7 +2059,7 @@ function renderShop() {
             ${
               owned
                 ? '<span class="shop-owned-text">✓</span>'
-                : `${item.gems.toLocaleString("en-US")}<img src="src/assets/gem.png" alt="Gems" style="height:0.8rem;width:0.8rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
+                : `<span class="gem-number">${item.gems.toLocaleString("en-US")}</span><img src="src/assets/gem.png" alt="Gems" style="height:0.8rem;width:0.8rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
             }
           </div>
           <div class="shop-item-desc" style="display:none;"></div>
@@ -2083,7 +2083,7 @@ function renderShop() {
             ${
               owned
                 ? '<span class="shop-owned-text">✓</span>'
-                : `${item.gems.toLocaleString("en-US")}<img src="src/assets/gem.png" alt="Gems" style="height:0.8rem;width:0.8rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
+                : `<span class="gem-number">${item.gems.toLocaleString("en-US")}</span><img src="src/assets/gem.png" alt="Gems" style="height:0.8rem;width:0.8rem;vertical-align:middle;margin-left:0.2rem;" aria-hidden="true"/>`
             }
           </div>
         </div>`,
@@ -2149,7 +2149,7 @@ function renderShop() {
       <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
         <div class="shop-balance">
           <img src="src/assets/gem.png" alt="Gems" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/>
-          <span class="event-number-glow">${state.gems.toLocaleString("en-US")}</span>
+          <span class="event-number-glow gem-number">${state.gems.toLocaleString("en-US")}</span>
         </div>
       </div>
 
@@ -2648,7 +2648,7 @@ function renderDaily() {
         <!-- Beautiful Gem Card -->
         <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.75rem; padding: 0.75rem; background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05)); border: 1px solid #ffd700; border-radius: 8px; box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);">
           <img src="src/assets/gem.png" alt="Gems" style="width: 20px; height: 20px;" />
-          <span style="font-size: 1rem; color: #ffd700; font-weight: 700;">${reward.gems.toLocaleString()}</span>
+          <span class="gem-number" style="font-size: 1rem; font-weight: 700;">${reward.gems.toLocaleString()}</span>
         </div>
 
         <!-- Beautiful Packets Card -->
@@ -2688,7 +2688,7 @@ function renderDaily() {
             <div style="flex: 1; max-width: 180px; padding: 1rem; background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05)); border: 2px solid #ffd700; border-radius: 10px; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);">
               <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
                 <img src="src/assets/gem.png" alt="Gems" style="width: 24px; height: 24px;" />
-                <span style="font-size: 1.2rem; color: #ffd700; font-weight: 700;">${nextReward.gems.toLocaleString()}</span>
+                <span class="gem-number" style="font-size: 1.2rem; font-weight: 700;">${nextReward.gems.toLocaleString()}</span>
               </div>
               <div style="font-size: 0.8rem; color: #ffd700; opacity: 0.8;">Gems</div>
             </div>
@@ -3318,7 +3318,7 @@ function renderAdminItemsTab() {
             <button id="admin-add-gems" class="neon-btn" style="font-size: 0.8rem;">Add Gems</button>
             <button id="admin-set-gems" class="neon-btn" style="font-size: 0.8rem;">Set Gems</button>
           </div>
-          <div style="font-size: 0.9rem; color: #a0aec0;">Current Gems: <span id="admin-current-gems">${state.gems.toLocaleString("en-US")}</span></div>
+          <div style="font-size: 0.9rem; color: #a0aec0;">Current Gems: <span id="admin-current-gems" class="gem-number">${state.gems.toLocaleString("en-US")}</span></div>
         </div>
 
         <div class="neon-card" style="padding: 1rem;">
@@ -5446,7 +5446,7 @@ function buyGemPack(packId) {
     `<div style="text-align: center; padding: 1rem;">
       <div style="margin-bottom: 1rem;">You received</div>
       <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 8px;">
-        <span class="event-number-glow" style="font-size: 1.5rem; font-weight: 900;">${pack.gems.toLocaleString("en-US")}</span>
+        <span class="event-number-glow gem-number" style="font-size: 1.5rem; font-weight: 900;">${pack.gems.toLocaleString("en-US")}</span>
         <img src="src/assets/gem.png" alt="Gems" style="height:1.5rem;width:1.5rem;" aria-hidden="true"/>
       </div>
       <div style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic;">Implement real payments for store publishing.</div>
@@ -5498,7 +5498,7 @@ function buyShopItem(itemId) {
       <div style="font-weight: bold; font-size: 1.2rem; color: var(--primary-color); margin: 1rem 0;">${item.label}</div>
       <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 8px;">
         <span style="color: var(--text-secondary);">Cost:</span>
-        <span class="event-number-glow" style="font-size: 1.3rem; font-weight: 900;">${item.gems.toLocaleString("en-US")}</span>
+        <span class="event-number-glow gem-number" style="font-size: 1.3rem; font-weight: 900;">${item.gems.toLocaleString("en-US")}</span>
         <img src="src/assets/gem.png" alt="Gems" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/>
       </div>
       ${item.type === "vip" ? '<div style="color: var(--text-secondary); font-size: 0.9rem;">Enjoy your VIP benefits!</div>' : ""}
@@ -5929,7 +5929,7 @@ function buyBoost(boostId) {
       </div>
       <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd700; border-radius: 8px;">
         <span style="color: var(--text-secondary);">Cost:</span>
-        <span class="event-number-glow" style="font-size: 1.3rem; font-weight: 900;">${boost.gems.toLocaleString("en-US")}</span>
+        <span class="event-number-glow gem-number" style="font-size: 1.3rem; font-weight: 900;">${boost.gems.toLocaleString("en-US")}</span>
         <img src="src/assets/gem.png" alt="Gems" style="height:1.2rem;width:1.2rem;" aria-hidden="true"/>
       </div>
       <div style="padding: 0.75rem; background: linear-gradient(45deg, rgba(251, 191, 36, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid #fbbf24; border-radius: 8px;">
@@ -6043,7 +6043,7 @@ function claimDailyReward() {
 
   showModal(
     "Daily Reward!",
-    `You received <span class="event-number-glow">${reward.gems.toLocaleString("en-US")}</span> 💎 and <span class="event-number-glow">${reward.packets.toLocaleString("en-US")}</span> <span class="icon-packet"></span>!<br>Streak: <span class="event-number-glow">${state.dailyRewards.streak}</span> days${reward.bonus ? `<br><span style="color:#f4e29f; font-style:italic; font-size:0.9rem;">${reward.bonus}</span>` : ""}`,
+    `You received <span class="event-number-glow gem-number">${reward.gems.toLocaleString("en-US")}</span> 💎 and <span class="event-number-glow">${reward.packets.toLocaleString("en-US")}</span> <span class="icon-packet"></span>!<br>Streak: <span class="event-number-glow">${state.dailyRewards.streak}</span> days${reward.bonus ? `<br><span style="color:#f4e29f; font-style:italic; font-size:0.9rem;">${reward.bonus}</span>` : ""}`,
   );
   showHudNotify(
     window.Packet && Packet.i18n

@@ -913,6 +913,16 @@ body .modal-box .space-y-3 > * + * {
     letter-spacing: 0.05em;
 }
 
+/* Cyan gem numbers with dark shadow and glow */
+.gem-number {
+    color: #00e5ff !important;
+    text-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 8px rgba(0, 229, 255, 0.4),
+        0 0 12px rgba(0, 229, 255, 0.2);
+    font-weight: bold;
+}
+
 .gem-price {
     font-size: 0.9rem;
     font-weight: 700;
@@ -1066,6 +1076,14 @@ body .modal-box .space-y-3 > * + * {
     font-weight: 900;
     color: var(--bg-primary);
     letter-spacing: 0.05em;
+}
+
+.shop-gem-amount .gem-number {
+    color: #00e5ff !important;
+    text-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 8px rgba(0, 229, 255, 0.4),
+        0 0 12px rgba(0, 229, 255, 0.2);
 }
 
 .shop-gem-price {
