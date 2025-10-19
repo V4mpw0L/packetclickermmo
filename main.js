@@ -2678,7 +2678,7 @@ function renderDaily() {
         <!-- Beautiful Packets Card -->
         <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; padding: 0.75rem; background: linear-gradient(135deg, rgba(29, 233, 182, 0.1), rgba(29, 233, 182, 0.05)); border: 1px solid var(--primary-color); border-radius: 8px; box-shadow: 0 0 8px rgba(29, 233, 182, 0.2);">
           <span class="icon-packet" style="font-size: 1rem;"></span>
-          <span style="font-size: 1rem; color: var(--primary-color); font-weight: 700;">${reward.packets.toLocaleString()}</span>
+          <span style="font-size: 1rem; color: #ffd700; font-weight: 700;">${reward.packets.toLocaleString()}</span>
         </div>
 
         ${reward.bonus ? `<div style="font-size: 0.8rem; color: #f4e29f; font-style: italic; font-weight: 600;">${reward.bonus}</div>` : ""}
@@ -2721,7 +2721,7 @@ function renderDaily() {
             <div style="flex: 1; max-width: 180px; padding: 1rem; background: linear-gradient(135deg, rgba(29, 233, 182, 0.15), rgba(29, 233, 182, 0.05)); border: 2px solid var(--primary-color); border-radius: 10px; box-shadow: 0 0 15px rgba(29, 233, 182, 0.3);">
               <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
                 <span class="icon-packet" style="font-size: 1.2rem;"></span>
-                <span style="font-size: 1.2rem; color: var(--primary-color); font-weight: 700;">${nextReward.packets.toLocaleString()}</span>
+                <span style="font-size: 1.2rem; color: #ffd700; font-weight: 700;">${nextReward.packets.toLocaleString()}</span>
               </div>
               <div style="font-size: 0.8rem; color: var(--primary-color); opacity: 0.8;">Packets</div>
             </div>
