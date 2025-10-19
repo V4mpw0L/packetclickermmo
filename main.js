@@ -2499,10 +2499,20 @@ function renderLeaderboard() {
       <div class="podium-wrap" style="display:flex; justify-content:center; gap:1rem; align-items:flex-end; margin: 0.75rem 0 0.75rem 0;">
         <div class="podium-item" style="display:flex; flex-direction:column; align-items:center;">
           <div style="position: relative; width:64px; height:64px;">
-            <!-- Silver crown points -->
-            <div style="position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 10px; height: 12px; background: linear-gradient(180deg, #c0c0c0, #e8e8e8); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 3px rgba(192, 192, 192, 0.5));"></div>
-            <div style="position: absolute; top: 2px; left: -4px; width: 8px; height: 10px; background: linear-gradient(180deg, #c0c0c0, #e8e8e8); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(-45deg); filter: drop-shadow(0 0 3px rgba(192, 192, 192, 0.5));"></div>
-            <div style="position: absolute; top: 2px; right: -4px; width: 8px; height: 10px; background: linear-gradient(180deg, #c0c0c0, #e8e8e8); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(45deg); filter: drop-shadow(0 0 3px rgba(192, 192, 192, 0.5));"></div>
+            <!-- Silver crown with diamond gem -->
+            <div style="position: absolute; top: -18px; left: 50%; transform: translateX(-50%); z-index: 10;">
+              <!-- Crown base -->
+              <div style="position: relative; width: 32px; height: 16px;">
+                <!-- Crown band -->
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(180deg, #e8e8e8, #c0c0c0); border-radius: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>
+                <!-- Crown points -->
+                <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 8px; height: 12px; background: linear-gradient(180deg, #e8e8e8, #c0c0c0); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 4px rgba(192, 192, 192, 0.6));"></div>
+                <div style="position: absolute; top: 3px; left: 2px; width: 6px; height: 10px; background: linear-gradient(180deg, #e8e8e8, #c0c0c0); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 3px rgba(192, 192, 192, 0.5));"></div>
+                <div style="position: absolute; top: 3px; right: 2px; width: 6px; height: 10px; background: linear-gradient(180deg, #e8e8e8, #c0c0c0); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 3px rgba(192, 192, 192, 0.5));"></div>
+                <!-- Diamond gem -->
+                <div style="position: absolute; top: 1px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; background: linear-gradient(135deg, #fff, #b3e5fc, #81d4fa); clip-path: polygon(50% 0%, 100% 35%, 75% 100%, 25% 100%, 0% 35%); filter: drop-shadow(0 0 3px rgba(129, 212, 250, 0.8)); animation: gemSparkle 2s ease-in-out infinite;"></div>
+              </div>
+            </div>
             <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #c0c0c0; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent); box-shadow: 0 0 12px rgba(192, 192, 192, 0.3), inset 0 0 6px rgba(192, 192, 192, 0.1);">
               <img src="${getSafeAvatarUrl((t[1] && t[1].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
             </div>
@@ -2517,12 +2527,26 @@ function renderLeaderboard() {
         </div>
         <div class="podium-item" style="display:flex; flex-direction:column; align-items:center; transform: translateY(-8px);">
           <div style="position: relative; width:84px; height:84px;">
-            <!-- Golden crown points - 5 points -->
-            <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 14px; height: 16px; background: linear-gradient(180deg, #ffd700, #ffed4e); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.7));"></div>
-            <div style="position: absolute; top: 0px; left: -6px; width: 12px; height: 14px; background: linear-gradient(180deg, #ffd700, #ffed4e); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(-40deg); filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.6));"></div>
-            <div style="position: absolute; top: 0px; right: -6px; width: 12px; height: 14px; background: linear-gradient(180deg, #ffd700, #ffed4e); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(40deg); filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.6));"></div>
-            <div style="position: absolute; top: 16px; left: -10px; width: 10px; height: 12px; background: linear-gradient(180deg, #ffd700, #ffed4e); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(-70deg); filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.5));"></div>
-            <div style="position: absolute; top: 16px; right: -10px; width: 10px; height: 12px; background: linear-gradient(180deg, #ffd700, #ffed4e); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(70deg); filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.5));"></div>
+            <!-- Royal gold crown with ruby gem -->
+            <div style="position: absolute; top: -28px; left: 50%; transform: translateX(-50%); z-index: 10;">
+              <!-- Crown base -->
+              <div style="position: relative; width: 44px; height: 22px;">
+                <!-- Crown band with detail -->
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 6px; background: linear-gradient(180deg, #ffed4e, #ffd700, #daa520); border-radius: 3px; box-shadow: 0 3px 6px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,255,255,0.3);"></div>
+                <!-- Decorative band details -->
+                <div style="position: absolute; bottom: 2px; left: 4px; width: 3px; height: 3px; background: #daa520; border-radius: 50%;"></div>
+                <div style="position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 3px; height: 3px; background: #daa520; border-radius: 50%;"></div>
+                <div style="position: absolute; bottom: 2px; right: 4px; width: 3px; height: 3px; background: #daa520; border-radius: 50%;"></div>
+                <!-- 5 Crown points -->
+                <div style="position: absolute; top: -2px; left: 50%; transform: translateX(-50%); width: 10px; height: 16px; background: linear-gradient(180deg, #ffed4e, #ffd700); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.9)); box-shadow: inset 0 0 3px rgba(255,255,255,0.5);"></div>
+                <div style="position: absolute; top: 2px; left: 6px; width: 8px; height: 13px; background: linear-gradient(180deg, #ffed4e, #ffd700); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8));"></div>
+                <div style="position: absolute; top: 2px; right: 6px; width: 8px; height: 13px; background: linear-gradient(180deg, #ffed4e, #ffd700); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8));"></div>
+                <div style="position: absolute; top: 6px; left: 0px; width: 7px; height: 11px; background: linear-gradient(180deg, #ffed4e, #ffd700); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.7));"></div>
+                <div style="position: absolute; top: 6px; right: 0px; width: 7px; height: 11px; background: linear-gradient(180deg, #ffed4e, #ffd700); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.7));"></div>
+                <!-- Ruby gem -->
+                <div style="position: absolute; top: 0px; left: 50%; transform: translateX(-50%); width: 7px; height: 7px; background: linear-gradient(135deg, #ff0040, #dc143c, #8b0000); clip-path: polygon(50% 0%, 100% 35%, 75% 100%, 25% 100%, 0% 35%); filter: drop-shadow(0 0 6px rgba(255, 0, 64, 0.9)); animation: gemSparkle 1.5s ease-in-out infinite; box-shadow: inset 0 0 2px rgba(255,255,255,0.6);"></div>
+              </div>
+            </div>
             <div style="display:flex; align-items:center; justify-content:center; width:84px; height:84px; border-radius:50%; border:4px solid #ffd700; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25), rgba(255,215,0,0.1)); animation: crownGlow 2s ease-in-out infinite;">
               <img src="${getSafeAvatarUrl((t[0] && t[0].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
             </div>
@@ -2537,10 +2561,20 @@ function renderLeaderboard() {
         </div>
         <div class="podium-item" style="display:flex; flex-direction:column; align-items:center;">
           <div style="position: relative; width:64px; height:64px;">
-            <!-- Bronze crown points -->
-            <div style="position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 10px; height: 12px; background: linear-gradient(180deg, #cd7f32, #e89b60); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 3px rgba(205, 127, 50, 0.5));"></div>
-            <div style="position: absolute; top: 2px; left: -4px; width: 8px; height: 10px; background: linear-gradient(180deg, #cd7f32, #e89b60); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(-45deg); filter: drop-shadow(0 0 3px rgba(205, 127, 50, 0.5));"></div>
-            <div style="position: absolute; top: 2px; right: -4px; width: 8px; height: 10px; background: linear-gradient(180deg, #cd7f32, #e89b60); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); transform: rotate(45deg); filter: drop-shadow(0 0 3px rgba(205, 127, 50, 0.5));"></div>
+            <!-- Bronze crown with amber gem -->
+            <div style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); z-index: 10;">
+              <!-- Crown base -->
+              <div style="position: relative; width: 28px; height: 14px;">
+                <!-- Crown band -->
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(180deg, #e89b60, #cd7f32); border-radius: 1.5px; box-shadow: 0 2px 3px rgba(0,0,0,0.3);"></div>
+                <!-- Crown points -->
+                <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 6px; height: 10px; background: linear-gradient(180deg, #e89b60, #cd7f32); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 3px rgba(205, 127, 50, 0.6));"></div>
+                <div style="position: absolute; top: 3px; left: 3px; width: 5px; height: 8px; background: linear-gradient(180deg, #e89b60, #cd7f32); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 2px rgba(205, 127, 50, 0.5));"></div>
+                <div style="position: absolute; top: 3px; right: 3px; width: 5px; height: 8px; background: linear-gradient(180deg, #e89b60, #cd7f32); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); filter: drop-shadow(0 0 2px rgba(205, 127, 50, 0.5));"></div>
+                <!-- Amber gem -->
+                <div style="position: absolute; top: 1px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: linear-gradient(135deg, #ffbf00, #ff8c00, #d2691e); clip-path: polygon(50% 0%, 100% 35%, 75% 100%, 25% 100%, 0% 35%); filter: drop-shadow(0 0 3px rgba(255, 140, 0, 0.7)); animation: gemSparkle 2.5s ease-in-out infinite;"></div>
+              </div>
+            </div>
             <div style="display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; border:3px solid #cd7f32; overflow:hidden; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent); box-shadow: 0 0 12px rgba(205, 127, 50, 0.3), inset 0 0 6px rgba(205, 127, 50, 0.1);">
               <img src="${getSafeAvatarUrl((t[2] && t[2].avatar) || DEFAULT_AVATAR)}" alt="" style="width:100%; height:100%; object-fit:cover;" />
             </div>
