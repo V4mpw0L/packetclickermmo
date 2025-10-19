@@ -2029,11 +2029,11 @@ function renderShop() {
       justify-content: center;
       gap: 0.5rem;
     " onmouseover="this.style.transform='translateY(-3px) scale(1.02)'; this.style.boxShadow='0 6px 25px rgba(255, 215, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)'; this.style.borderColor='#ffed4e';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 4px 15px rgba(255, 215, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'; this.style.borderColor='#ffd700';">
-      <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 1.3rem; font-weight: 900; color: #1a1a1a; text-shadow: 0 1px 2px rgba(255,255,255,0.3);">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 1.3rem; font-weight: 900; color: #00e5ff; text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6);">
         <img src="src/assets/gem.png" alt="Gems" style="height:1.3rem;width:1.3rem;" aria-hidden="true"/>
-        <span class="gem-number" style="color: #1a1a1a !important; text-shadow: none !important;">${p.gems.toLocaleString("en-US")}</span>
+        <span class="gem-number" style="color: #00e5ff !important; text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6) !important;">${p.gems.toLocaleString("en-US")}</span>
       </div>
-      <div style="font-size: 1.1rem; font-weight: 800; color: #2d2d2d; display: flex; align-items: center; gap: 0.3rem;">
+      <div style="font-size: 1.1rem; font-weight: 800; color: #2d5016; display: flex; align-items: center; gap: 0.3rem;">
         <img src="src/assets/dollar.png" alt="$" style="height:1.15rem;width:1.15rem;" aria-hidden="true"/>
         <span>$${p.price.toFixed(2)}</span>
       </div>
