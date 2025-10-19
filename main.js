@@ -2344,7 +2344,7 @@ function renderLeaderboard() {
         const safePrestigeLevel = Math.max(0, parseInt(p.prestigeLevel) || 0);
 
         return `
-    <li style="display: flex; gap: 0.5rem; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid #273742;">
+    <li style="display: flex; gap: 0.5rem; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid #273742; ${p.id === (typeof Leaderboard !== "undefined" && Leaderboard.getDeviceId ? Leaderboard.getDeviceId() : state.player.name) ? "border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 8px; padding: 0.4rem 0.5rem;" : ""}">
       <span style="width: 1.8rem; text-align: right; color: var(--secondary-color); font-weight: bold; font-size: 0.85em;">${idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : ""}<span class="event-number-glow" style="font-size: 0.9em;">${idx + 1}</span></span>
       <img src="${safeAvatar}" class="${idx === 0 ? "medal-gold" : idx === 1 ? "medal-silver" : idx === 2 ? "medal-bronze" : ""}" style="width: 1.8rem; height: 1.8rem; border-radius: 50%; border: ${idx === 0 || idx === 1 || idx === 2 ? "2px" : "1px"} solid ${idx === 0 ? "#ffd700" : idx === 1 ? "#c0c0c0" : idx === 2 ? "#cd7f32" : "var(--primary-color)"};" alt="" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}'; console.warn('Avatar failed to load for ${safeName}, using default');">
       <div style="display: flex; align-items: center; gap: 0.35rem; flex: 1; min-width: 0;">
